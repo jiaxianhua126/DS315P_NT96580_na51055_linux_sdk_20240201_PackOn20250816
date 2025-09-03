@@ -1,0 +1,5 @@
+---- g_ucBGOpening_yuv Matches (4 in 4 files) ----
+BG_Opening.h (code\application\source\cardv\srccode\uiwnd\sportcam\resource):extern const UINT8 g_ucBGOpening_yuv[];
+SysVideo_Exe.c (code\application\source\cardv\srccode\system):	memcpy((void *)logo_frame_buf_va,(void *)g_ucBGOpening_yuv,LOGO_YUV_BLK_SIZE);
+Welcome.c (code\application\source\cardv\srccode\uiwnd\sportcam\resource):const UINT8 g_ucBGOpening_yuv[] = {
+Welcome_Pernis_White.c (code\application\source\cardv\srccode\uiwnd\sportcam\resource):const UINT8 g_ucBGOpening_yuv[] = {

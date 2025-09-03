@@ -1,0 +1,98 @@
+/build
+/rtos
+/tools
+/logs
+/output
+/build
+*no_tracer.c
+*.o.d
+*.dtb
+/BSP/busybox
+/BSP/linux-kernel
+/BSP/u-boot
+
+
+
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# Python
+*.pyc
+__install
+*.o.d
+*_no_tracer.o.d
+*_no_tracer.c
+
+code/application/external/iperf-2.0.5
+code/application/external/hostapd-8189ftv_8_O_8.x_rtw_r31832.20190226
+code/application/external/hostapd-2.5
+code/application/external/wpa_supplicant-2.5
+code/application/external/iperf-3.0.12/
+code/application/external/wireless_tools.30.rtl/
+code/application/external/dhd_priv/
+code/application/external/wireless_tools.29
+code/lib/external/openssl-1.0.2d
+code/lib/external/libnl-3.2.27
+code/lib/external/libiconv-1.16/
+code/lib/external/zbar-0.10/
+code/application/source/cardv/extern.lds
+code/application/source/mem/mem
+code/application/source/mem/mem.sym
+code/lib/source/nvtlibc/libnvtlibc.so
+code/lib/source/nvtlibc/libnvtlibc.a
+
+code/hdal/samples/
+
+.nvt_finish
+
+siprj
