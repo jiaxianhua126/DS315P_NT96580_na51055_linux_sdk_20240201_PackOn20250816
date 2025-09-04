@@ -45,6 +45,13 @@
 
 #include "comm/timer.h"
 #include "kwrap/semaphore.h"
+#include "kwrap/cmdsys.h"
+#include "sw_md.h"
+#if(WIFI_AP_FUNC==ENABLE)
+#include "UIApp/Network/WifiAppCmd.h"
+#include "UIApp/Network/UIAppWiFiCmd.h"
+#endif
+#include "DxInput.h"
 
 #define THIS_DBGLVL         2 // 0=FATAL, 1=ERR, 2=WRN, 3=UNIT, 4=FUNC, 5=IND, 6=MSG, 7=VALUE, 8=USER
 ///////////////////////////////////////////////////////////////////////////////
@@ -388,6 +395,11 @@ static void MovieExe_DispCB(HD_VIDEO_FRAME *pEthcamSrc, HD_VIDEO_FRAME *pSrcImg)
 #if ((SENSOR_CAPS_COUNT & SENSOR_ON_MASK)==0 && ETH_REARCAM_CAPS_COUNT)
 	disp_buf.w = DevSize.w;
 	disp_buf.h = DevSize.h;
+#endif
+
+#if defined(_disp_if8b_lcd1_ili9341_)
+	disp_buf.w = 320;
+	disp_buf.h = 240;
 #endif
 
 #if ( ETH_REARCAM_CAPS_COUNT >= 2)
@@ -1246,8 +1258,8 @@ void MovieExe_EthCam_ChgDispCB(UINT32 DualCam)
 		#endif
 
 #if((ETH_REARCAM_CAPS_COUNT+SENSOR_CAPS_COUNT)  == 2)
-		UI_SetData(FL_DUAL_CAM, DUALCAM_BEHIND);
-		UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_BEHIND);
+		UI_SetData(FL_DUAL_CAM, DUALCAM_BOTH);
+		UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_BOTH);
 #else//#elif(ETH_REARCAM_CAPS_COUNT >= 2)
 		UI_SetData(FL_DUAL_CAM, DUALCAM_BOTH);
 		UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_BOTH);
@@ -4224,11 +4236,29 @@ void VdoBsCb_EthCam(MOVIE_CFG_REC_ID id, HD_VIDEOENC_BS *pvenc_data)
 
 }
 #endif
+
 static IQT_LDC_PARAM ldc = {0};
+BOOL MovieExe_GetMovieTMNREn(void)
+{
+#if 0
+    if ((UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_2560x1440P60)
+		||(UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_1920x1080P60)){
+        return FALSE;
+    } else {
+        return FALSE;
+    }
+#else
+    return TRUE;
+#endif
+}
 INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32 i;
 	HD_RESULT hd_ret;
+#if (SHDR_FUNC == ENABLE)
+	AET_SHDR shdr = {0};
+	shdr.id = 0;
+#endif
 
 #if defined(_NVT_ETHREARCAM_RX_)
 	MOVIEMULTI_MAX_LINK_INFO MaxLinkInfo = {1, 1, 1, 1, ETH_REARCAM_CAPS_COUNT};   //Img, Disp, Wifi, AudCap, EthCam
@@ -4285,6 +4315,15 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			info_hdr.vcap_func  &= ~HD_VIDEOCAP_FUNC_SHDR;
 			info_hdr.vproc_func &= ~HD_VIDEOPROC_FUNC_SHDR;
 		}
+		#if 1
+		if (MovieExe_GetMovieTMNREn()) {
+			info_hdr.vcap_func |= HD_VIDEOPROC_FUNC_3DNR;
+			info_hdr.vproc_func |= HD_VIDEOPROC_FUNC_3DNR;
+		} else {
+			info_hdr.vcap_func &= ~HD_VIDEOPROC_FUNC_3DNR;
+			info_hdr.vproc_func &= ~HD_VIDEOPROC_FUNC_3DNR;
+		}
+		#endif
 		ImageApp_MovieMulti_Config(MOVIE_CONFIG_RECORD_INFO, (UINT32)&info_hdr);
 		#else  // (SHDR_FUNC == ENABLE)
 		ImageApp_MovieMulti_Config(MOVIE_CONFIG_RECORD_INFO, (UINT32)&gMovie_Rec_Info[i]);
@@ -4297,9 +4336,17 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		System_GetSensorInfo(i, SENSOR_SENOUT_FMT, &(sen_cfg.senout_pxlfmt));
 		System_GetSensorInfo(i, SENSOR_CAPOUT_FMT, &(sen_cfg.capout_pxlfmt));
 		System_GetSensorInfo(i, SENSOR_DATA_LANE, &(sen_cfg.data_lane));
-		System_GetSensorInfo(i, SENSOR_AE_PATH, &(sen_cfg.ae_path));
-		System_GetSensorInfo(i, SENSOR_AWB_PATH, &(sen_cfg.awb_path));
-		System_GetSensorInfo(i, SENSOR_IQ_PATH, &(sen_cfg.iq_path));
+		system("echo w dbg 0 0x00000008 > /proc/hdal/vendor/iq/cmd");
+		if (UI_GetData(FL_MOVIE_HDR) == MOVIE_HDR_OFF) {
+			System_GetSensorInfo(i, SENSOR_AE_PATH, &(sen_cfg.ae_path));
+			System_GetSensorInfo(i, SENSOR_AWB_PATH, &(sen_cfg.awb_path));
+			nvt_cmdsys_runcmd("iq set_dbg 0 0x00000008");
+			System_GetSensorInfo(i, SENSOR_IQ_PATH, &(sen_cfg.iq_path));
+		} else {
+			System_GetSensorInfo(i, SENSOR_AE_PATH_HDR, &(sen_cfg.ae_path));
+			System_GetSensorInfo(i, SENSOR_AWB_PATH_HDR, &(sen_cfg.awb_path));
+			System_GetSensorInfo(i, SENSOR_IQ_PATH_HDR, &(sen_cfg.iq_path));
+		}
 		System_GetSensorInfo(i, SENSOR_IQ_SHADING_PATH, &(sen_cfg.iq_shading_path));
 		System_GetSensorInfo(i, SENSOR_IQ_DPC_PATH, &(sen_cfg.iq_dpc_path));
 		System_GetSensorInfo(i, SENSOR_IQ_LDC_PATH, &(sen_cfg.iq_ldc_path));
@@ -4310,6 +4357,11 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 				sen_cfg.capout_pxlfmt &= ~HD_VIDEO_PXLFMT_PLANE_MASK;
 				sen_cfg.capout_pxlfmt |= (1 << 24);
 			}
+		}
+		if (UI_GetData(FL_MOVIE_HDR) == MOVIE_HDR_ON) {
+			vendor_isp_get_ae(AET_ITEM_SHDR,&shdr);
+			shdr.shdr.fixed_iso_en = 1;
+			vendor_isp_set_ae(AET_ITEM_SHDR,&shdr);
 		}
 		#endif // (SHDR_FUNC == ENABLE)
 		ImageApp_MovieMulti_Config(MOVIE_CONFIG_SENSOR_INFO, (UINT32)&sen_cfg);
@@ -4402,6 +4454,115 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		}
 	}
 #endif
+
+#if (SEN_EVB_IMX675)
+#if (MOVIE_YUV_COMPRESS==DISABLE)
+	//DBG_DUMP("call _sen_evb_imx335_\r\n");
+	//MOVIEMULTI_IPL_SIZE_INFO ipl_size1={{2592,1944},30};
+	MOVIEMULTI_IPL_SIZE_INFO ipl_size2={{2592,1460},30};
+	//MOVIEMULTI_IPL_SIZE_INFO ipl_size2={{2560,1440},30};
+	//MOVIEMULTI_IPL_SIZE_INFO ipl_size3={{2560,1200},30};
+	//MOVIEMULTI_IPL_SIZE_INFO ipl_size4={{2560,1440},30};
+	//MOVIEMULTI_IPL_SIZE_INFO ipl_size5={{2560,1440},60};
+	//MOVIEMULTI_IPL_SIZE_INFO ipl_size6={{2560,1200},60};
+	//MOVIEMULTI_IPL_SIZE_INFO ipl_size7={{2560,1440},60};
+	switch(UI_GetData(FL_MOVIE_SIZE)) {
+	#if 0
+	case MOVIE_SIZE_FRONT_2592x1944P30:
+		ipl_size2.size.w = 2592;
+        ipl_size2.size.h = 1944;
+        ipl_size2.fps = 60;
+		//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_USER_IMG_SIZE, (UINT32)&ipl_size1);
+		//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_FORCED_IMG_SIZE, MOVIE_IPL_SIZE_USER);
+		break;
+	case MOVIE_SIZE_FRONT_2304x1296P60:
+		ipl_size2.size.w = 2560;
+        ipl_size2.size.h = 1440;
+        ipl_size2.fps = 60;
+		break;
+	
+	#endif
+	case MOVIE_SIZE_FRONT_2560x1440P60:
+	case MOVIE_SIZE_FRONT_1920x1080P60:
+		ipl_size2.size.w = 2560;
+        ipl_size2.size.h = 1440;
+        ipl_size2.fps = 60;
+		break;
+	//case MOVIE_SIZE_FRONT_2560x1600P30:
+	case MOVIE_SIZE_FRONT_2560x1440P30:
+	case MOVIE_SIZE_FRONT_2304x1296P30:
+		ipl_size2.size.w = 2592;
+        ipl_size2.size.h = 1460;
+        ipl_size2.fps = 30;
+		break;
+	#if 0
+	case MOVIE_SIZE_FRONT_2560x1080P60:
+		ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_USER_IMG_SIZE, (UINT32)&ipl_size6);
+		ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_FORCED_IMG_SIZE, MOVIE_IPL_SIZE_USER);
+		break;
+	case MOVIE_SIZE_FRONT_2560x1080P30:
+		ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_USER_IMG_SIZE, (UINT32)&ipl_size3);
+		ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_FORCED_IMG_SIZE, MOVIE_IPL_SIZE_USER);
+		break;
+	#endif
+	case MOVIE_SIZE_FRONT_1920x1080P30:
+		ipl_size2.size.w = 2560;
+        ipl_size2.size.h = 1440;
+        ipl_size2.fps = 30;
+		break;
+	default:
+		break;
+	}
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_USER_IMG_SIZE, (UINT32)&ipl_size2);
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_FORCED_IMG_SIZE, MOVIE_IPL_SIZE_USER);
+
+#else
+	//DBG_DUMP("call _sen_evb_imx335_\r\n");
+	MOVIEMULTI_IPL_SIZE_INFO ipl_size2={{2560,1440},30};
+	switch(UI_GetData(FL_MOVIE_SIZE)) {
+	case MOVIE_SIZE_FRONT_2560x1440P60:
+		ipl_size2.size.w = 2560;
+        ipl_size2.size.h = 1440;
+        ipl_size2.fps = 60;
+		break;
+	//case MOVIE_SIZE_FRONT_2560x1600P30:
+	case MOVIE_SIZE_FRONT_2560x1440P30:
+		ipl_size2.size.w = 2560;
+        ipl_size2.size.h = 1440;
+        ipl_size2.fps = 30;
+		break;
+	#if 0
+	case MOVIE_SIZE_FRONT_2304x1296P60:
+		ipl_size2.size.w = 2304;
+        ipl_size2.size.h = 1296;
+        ipl_size2.fps = 60;
+		break;
+	#endif
+	case MOVIE_SIZE_FRONT_2304x1296P30:
+		ipl_size2.size.w = 2304;
+        ipl_size2.size.h = 1296;
+        ipl_size2.fps = 30;
+		break;
+	case MOVIE_SIZE_FRONT_1920x1080P60:
+		ipl_size2.size.w = 1920;
+        ipl_size2.size.h = 1080;
+        ipl_size2.fps = 60;
+		break;
+	case MOVIE_SIZE_FRONT_1920x1080P30:
+		ipl_size2.size.w = 1920;
+        ipl_size2.size.h = 1080;
+        ipl_size2.fps = 30;
+		break;
+	default:
+		break;
+	}
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_USER_IMG_SIZE, (UINT32)&ipl_size2);
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_FORCED_IMG_SIZE, MOVIE_IPL_SIZE_USER);
+
+#endif
+#endif
+
+
 #if (defined(_NVT_ETHREARCAM_TX_))
 	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_VDO_QUALITY_BASE_MODE_EN, ENABLE);//for single tile
 	ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_VDO_QUALITY_BASE_MODE_EN, ENABLE);//for single tile
@@ -4975,12 +5136,13 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 #if (SENSOR_INSERT_FUNCTION == ENABLE)
 	System_EnableSensorDet();
 #endif
+	Delay_DelayMs(500);//avoid lcd diplay flicker
 	ImageApp_MovieMulti_DispStart(_CFG_DISP_ID_1);
 	// start acap function
 	ImageApp_MovieMulti_AudCapStart(0);
 
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_WDR,           1,  SysGetFlag(FL_MOVIE_WDR));
-	//Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_SHDR,                1,  UI_GetData(FL_MOVIE_HDR));
+	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_SHDR,                1,  UI_GetData(FL_MOVIE_HDR));
 
 #if(defined(_NVT_ETHREARCAM_RX_))
 	EthCamNet_EthHubChkPortReady();
@@ -5843,12 +6005,24 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			ImageApp_MovieMulti_RecStart(gMovie_Clone_Info[i].rec_id);
 		}
 
-		if (movie_rec_mask & mask) {
+		if (movie_rec_mask & mask) {			
+			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_UTC_AUTO_EN,TRUE);//add by haotek.
 			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_FLUSH_SEC, 10);
 			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_WRITE_BLKSIZE, 0x200000);
 			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_BUFRESSEC, uifile_buffer_reserved_sec);
 			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_BUFRESSEC_EMR, uifile_buffer_reserved_sec + gMovie_Rec_Option.emr_sec);
-			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_MAX_POP_SIZE, (16*1024*1024));
+			//#NT#2023/03/27#HTK ADD -begin
+			#if (FRONT_MOOV_FUNC==ENABLE)//(_HTK_TODO_==ENABLE)
+			  if(gMovie_Rec_Info[i].file_format==_CFG_FILE_FORMAT_MP4){
+					ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_FRONT_MOOV, TRUE);
+					ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_FRONT_MOOV_FLUSH_SEC, 10);
+					DBG_DUMP("===========FRONT MOOV FUNC OPEN.=====================\r\n");
+				}else{
+					ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_FRONT_MOOV, FALSE);
+					DBG_DUMP("===========FRONT MOOV FUNC CLOSE.=====================\r\n");
+				}
+			#endif
+			//#NT#2023/03/27#HTK ADD -end
 
 #if ((MOVIE_EIS == ENABLE) && (MOVIE_EIS_GYRO_LOG == ENABLE))
 			if ((SysGetFlag(FL_MOVIE_EIS) == EIS_ON) && (MovieExe_GetFps(_CFG_REC_ID_1) <= 60)) {
@@ -5932,6 +6106,19 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			EthCam_SendXMLCmd(j, ETHCAM_PORT_DATA1 ,ETHCAM_CMD_TX_STREAM_STOP, 0);
 	#endif
 			MovieExe_SetRecParamByRecID(_CFG_ETHCAM_ID_1 + j);
+			//#NT#2023/03/27#HTK ADD -begin
+			#if (FRONT_MOOV_FUNC==ENABLE)//(_HTK_TODO_==ENABLE)
+			if(gEthcamRecInfoRecFormat ==_CFG_FILE_FORMAT_MP4){
+				ImageApp_MovieMulti_SetParam(_CFG_ETHCAM_ID_1 + j, MOVIEMULTI_PARAM_FILE_FRONT_MOOV, TRUE);
+				ImageApp_MovieMulti_SetParam(_CFG_ETHCAM_ID_1 + j, MOVIEMULTI_PARAM_FILE_FRONT_MOOV_FLUSH_SEC, 10);
+				DBG_DUMP("===========REAR MOOV FUNC OPEN.=====================\r\n");
+			}else{
+				ImageApp_MovieMulti_SetParam(_CFG_ETHCAM_ID_1 + j, MOVIEMULTI_PARAM_FILE_FRONT_MOOV, FALSE);
+				DBG_DUMP("===========REAR MOOV FUNC CLOSE.=====================\r\n");
+			}
+			#endif
+			//#NT#2023/03/27#HTK ADD -end			
+			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_UTC_AUTO_EN,TRUE);//add by haotek.
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_FLUSH_SEC, 10);
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_WRITE_BLKSIZE, 0x200000);
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_BUFRESSEC, uifile_buffer_reserved_sec);
@@ -6656,6 +6843,39 @@ INT32 MovieExe_OnMotionDetRun(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 	}
 	return NVTEVT_CONSUME;
 }
+void FlowMovie_SyncEthCamMneu(UINT8 id,BOOL bReOpen)
+{
+	#if 1
+	ETHCAM_MENU_SETTING sEthCamMenuSetting[ETH_REARCAM_CAPS_COUNT]={0};
+	EthCam_SendXMLCmd(id, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_MENU_SETTING, bReOpen);
+	#if (ETH_REARCAM_CAPS_COUNT>=2)
+	sEthCamMenuSetting[id].Size=MOVIE_SIZE_FRONT_1920x1080P30;//MOVIE_SIZE_CLONE_1920x1080P30_1280x720P60;//UI_GetData(FL_MOVIE_SIZE);
+	#else
+	sEthCamMenuSetting[id].Size= 40;//MOVIE_SIZE_CLONE_1920x1080P30_1280x720P30;//UI_GetData(FL_MOVIE_SIZE);
+	#endif
+	sEthCamMenuSetting[id].WDR=MOVIE_WDR_OFF;//tx_671_always close,if you open wdr ,hdr will close .
+	sEthCamMenuSetting[id].EV=UI_GetData(FL_EV);
+	sEthCamMenuSetting[id].DateImprint=UI_GetData(FL_MOVIE_DATEIMPRINT);
+	sEthCamMenuSetting[id].SensorRotate=UI_GetData(FL_MOVIE_SENSOR_ROTATE);
+	sEthCamMenuSetting[id].Codec=MOVIE_CODEC_H265;//UI_GetData(FL_MOVIE_CODEC);
+	//sEthCamMenuSetting[id].Codec=UI_GetData(FL_MOVIE_CODEC);
+	#if (ETH_REARCAM_CAPS_COUNT == 1)
+	sEthCamMenuSetting[id].TimeLapse=UI_GetData(FL_MOVIE_TIMELAPSE_REC);
+	#else
+	sEthCamMenuSetting[id].TimeLapse=MOVIE_TIMELAPSEREC_OFF;
+	#endif
+	DBG_DUMP("Size=%d\r\n", sEthCamMenuSetting[id].Size);
+	sEthCamMenuSetting[id].ParkingMode=MOVIE_TIMELAPSEREC_OFF;//TBD
+	sEthCamMenuSetting[id].ParkingTimeLapse=MOVIE_TIMELAPSEREC_OFF;//TBD
+	sEthCamMenuSetting[id].ACCTrigParkMode=MOVIE_TIMELAPSEREC_OFF;//TBD
+	sEthCamMenuSetting[id].HDR=MOVIE_HDR_ON;// UI_GetData(FL_MOVIE_HDR);
+	EthCam_SendXMLData(id, (UINT8 *)&sEthCamMenuSetting[id], sizeof(ETHCAM_MENU_SETTING));
+	//if(memcmp(&g_sEthCamMenuSetting, &sEthCamMenuSetting, sizeof(ETHCAM_MENU_SETTING))){
+	//	bReOpenMovie=1;
+	//}
+	//memcpy(&g_sEthCamMenuSetting[id], &sEthCamMenuSetting[id], sizeof(ETHCAM_MENU_SETTING));	
+	#endif
+}
 
 BOOL FlowMovie_CheckReOpenItem(void)
 {
@@ -6880,34 +7100,12 @@ BOOL FlowMovie_CheckReOpenItem(void)
 			}
 		}
 	}
-	ETHCAM_MENU_SETTING sEthCamMenuSetting[ETH_REARCAM_CAPS_COUNT]={0};
+	
+	//ETHCAM_MENU_SETTING sEthCamMenuSetting[ETH_REARCAM_CAPS_COUNT]={0};
 	for(j=0;j<ETH_REARCAM_CAPS_COUNT;j++){
 		if(socketCliEthCmd_IsConn(j) && EthCamNet_GetEthLinkStatus(j)==ETHCAM_LINK_UP){
 			AllPathLinkStatus++;
-			//EthCam_SendXMLCmd(j, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_MENU_SETTING, bReOpen);
-			#if (ETH_REARCAM_CAPS_COUNT>=2)
-			sEthCamMenuSetting[j].Size=MOVIE_SIZE_FRONT_1920x1080P30;//MOVIE_SIZE_CLONE_1920x1080P30_1280x720P60;//UI_GetData(FL_MOVIE_SIZE);
-			#else
-			sEthCamMenuSetting[j].Size=MOVIE_SIZE_CLONE_1920x1080P30_1280x720P30;//UI_GetData(FL_MOVIE_SIZE);
-			#endif
-			sEthCamMenuSetting[j].WDR=UI_GetData(FL_MOVIE_WDR);
-			sEthCamMenuSetting[j].EV=UI_GetData(FL_EV);
-			sEthCamMenuSetting[j].DateImprint=UI_GetData(FL_MOVIE_DATEIMPRINT);
-			sEthCamMenuSetting[j].SensorRotate=UI_GetData(FL_MOVIE_SENSOR_ROTATE);
-			//sEthCamMenuSetting[j].Codec=MOVIE_CODEC_H265;//UI_GetData(FL_MOVIE_CODEC);
-			sEthCamMenuSetting[j].Codec=UI_GetData(FL_MOVIE_CODEC);
-#if (ETH_REARCAM_CAPS_COUNT == 1)
-			sEthCamMenuSetting[j].TimeLapse=UI_GetData(FL_MOVIE_TIMELAPSE_REC);
-#else
-			sEthCamMenuSetting[j].TimeLapse=MOVIE_TIMELAPSEREC_OFF;
-#endif
-			DBG_DUMP("Size=%d\r\n", sEthCamMenuSetting[j].Size);
-			//EthCam_SendXMLData(j, (UINT8 *)&sEthCamMenuSetting[j], sizeof(ETHCAM_MENU_SETTING));
-			EthCam_SendXMLCmdData(j, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_MENU_SETTING, bReOpen, (UINT8 *)&sEthCamMenuSetting[j], sizeof(ETHCAM_MENU_SETTING));
-			//if(memcmp(&g_sEthCamMenuSetting, &sEthCamMenuSetting, sizeof(ETHCAM_MENU_SETTING))){
-			//	bReOpenMovie=1;
-			//}
-			//memcpy(&g_sEthCamMenuSetting[j], &sEthCamMenuSetting[j], sizeof(ETHCAM_MENU_SETTING));
+			FlowMovie_SyncEthCamMneu(j,bReOpen);
 			if(bReOpen){
 				socketCliEthData1_SetRecv(j, 0);
 				socketCliEthData2_SetRecv(j, 0);

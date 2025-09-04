@@ -96,8 +96,8 @@ static UINT32 g_WaterlogoVEncHDPathId[VENC_OUT_PORTID_MAX]={0}; //hd_videoenc_op
 static UINT32 g_VsStampStart[VENC_OUT_PORTID_MAX][VSSTAMP_MAX_VIDEOENC_PATH]={0}; //date stamp, main , clone, rawenc , wifi , 0, 1, 2, 3
 static UINT32 isUI_GfxInitLiteOpened = FALSE;
 static STAMP_ADDR_INFO g_GfxInitPoolAddr={0};
-static BOOL         g_bMovieStampSwTimerOpen = FALSE;
-static SWTIMER_ID   g_MovieStampSwTimerID;
+//static BOOL         g_bMovieStampSwTimerOpen = FALSE;
+//static SWTIMER_ID   g_MovieStampSwTimerID;
 
 //IC HW limitation
 #if defined(_BSP_NA51055_)
@@ -336,6 +336,7 @@ UINT32 MovieStamp_TriggerUpdateChk(void)
 	return 0;
 }
 
+#if 0
 static void MovieStamp_SwTimerHdl(UINT32 uiEvent)
 {
 	MovieStampTsk_TrigUpdate();
@@ -363,6 +364,17 @@ static void MovieStamp_SwTimerClose(void)
 		g_bMovieStampSwTimerOpen = FALSE;
 	}
 }
+#else
+static void MovieStamp_TimerOpen(void)
+{
+	SxTimer_SetFuncActive(SX_TIMER_DET_MOVIESTAMP_ID, TRUE);
+}
+
+static void MovieStamp_TimerClose(void)
+{
+	SxTimer_SetFuncActive(SX_TIMER_DET_MOVIESTAMP_ID, FALSE);
+}
+#endif
 
 void MovieStamp_Enable(void)
 {
@@ -380,7 +392,8 @@ void MovieStamp_Enable(void)
 	MovieStampTsk_Open();
 
 	// use SW timer to check current time
-	MovieStamp_SwTimerOpen();
+	//MovieStamp_SwTimerOpen();
+	MovieStamp_TimerOpen();
 }
 
 void MovieStamp_Disable(void)
@@ -388,7 +401,8 @@ void MovieStamp_Disable(void)
 	UINT32 i;
 
 	// close SW timer
-	MovieStamp_SwTimerClose();
+	//MovieStamp_SwTimerClose();
+	MovieStamp_TimerClose();
 
 	// close movie stamp task
 #if defined(_UI_STYLE_LVGL_)

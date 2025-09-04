@@ -1,8 +1,14 @@
 //#include "BG_Images.h"
+#include "PrjCfg.h"
 
-//¿ª»úlogo
+//å¼€æœºlogo
+#if 0//(MACHINE_TYPE==MACHINE_TYPE_S2P)
 #include "welcome.c"
 #include "Goodbye.c"
+#else
+#include "Goodbye_Pernis_White.c"
+#include "Welcome_Pernis_White.c"
+#endif
 
 int Logo_getBGOpening_size(void)
 {

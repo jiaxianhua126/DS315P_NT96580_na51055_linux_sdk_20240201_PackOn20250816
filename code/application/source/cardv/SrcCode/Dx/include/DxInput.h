@@ -102,5 +102,24 @@ extern void DetTP_GetXY(INT32 *pX, INT32 *pY);
 */
 extern BOOL DetTP_IsPenDown(void);
 
+#if 1
+#if 1//(!defined(_Disp_VIRTUAL_LCD1_OFF_))
+extern void GPIOMap_TurnOnLCDBacklight(void);
+extern void GPIOMap_TurnOffLCDBacklight(void);
+extern BOOL GPIOMap_IsLCDBacklightOn(void);
+//void dispdev_lcdDisplayOn(void);
+//void dispdev_lcdDisplayOff(void);
+
+#endif
+//extern BOOL DxUSB_GetIsUSBPlug(void);
+//extern BOOL GPIOMap_DetACCPlugIn(void);
+//extern void EnterParkingTimer_Set(UINT32 value);
+extern BOOL GPIOMap_EthCam1Det(void);
+extern BOOL GPIOMap_EthCam2Det(void);
+extern void GPIOMap_SensorPowerOn(BOOL en);
+extern void GPIOMap_Sensor2PowerOn(BOOL en);
+
+#endif
+
 //@}
 #endif //_DXINPUT_H_

@@ -329,13 +329,18 @@ void DrvCARD_EnableCardPower(BOOL bEn)
 	gpio_setDir(GPIO_CARD_POWER, GPIO_DIR_OUTPUT);
 	if (bEn) {
 		DBG_IND("[SD] - card power enable\r\n");
-		gpio_clearPin(GPIO_CARD_POWER);
+		//gpio_clearPin(GPIO_CARD_POWER);
+		gpio_setPin(GPIO_CARD_POWER);
 		SwTimer_DelayMs(20);
+		DBG_DUMP("enable DGPIO = %d\n",gpio_getPin(GPIO_CARD_POWER)); 
+		
 	} else {
 
 		DBG_IND("[SD] - card power disable\r\n");
-		gpio_setPin(GPIO_CARD_POWER);
+		//gpio_setPin(GPIO_CARD_POWER);
+		gpio_clearPin(GPIO_CARD_POWER);
 		SwTimer_DelayMs(350);
+		DBG_DUMP("disable DGPIO = %d",gpio_getPin(GPIO_CARD_POWER)); 
 	}
 }
 

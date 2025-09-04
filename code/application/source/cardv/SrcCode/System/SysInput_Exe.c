@@ -15,6 +15,8 @@
 #include "PrjInc.h"
 #include "GxInput.h"
 #include "KeyDef.h"
+#include "UIApp/MovieStamp/MovieStampAPI.h"
+#include "UIApp/MovieStamp/MovieStamp.h"
 
 
 #if 0
@@ -59,6 +61,7 @@ int SX_TIMER_DET_PWR_ID = -1;
 int SX_TIMER_DET_MODE_ID = -1;
 int SX_TIMER_AUTO_INPUT_ID = -1;
 int SX_TIMER_DET_GSENSOR_ID = -1;
+int SX_TIMER_DET_MOVIESTAMP_ID = -1;
 
 void UI_DetPwrKey(void);
 void UI_DetNormalKey(void);
@@ -80,6 +83,8 @@ SX_TIMER_ITEM(Input_DetC1Key, UI_DetCustom1Key, 3, FALSE)
 #if defined(_TOUCH_ON_)
 SX_TIMER_ITEM(Input_DetTP, GxTouch_DetTP, TOUCH_TIMER_CNT, FALSE)
 #endif
+
+SX_TIMER_ITEM(Input_DetMovieStamp, MovieStampTsk_TrigUpdate,25, FALSE)//500ms
 
 static BOOL         m_uiAnyKeyUnlockEn        = FALSE;
 
@@ -424,6 +429,9 @@ void System_OnInputInit(void)
 #if defined(_TOUCH_ON_)
 		SX_TIMER_DET_TOUCH_ID = SxTimer_AddItem(&Timer_Input_DetTP);
 #endif
+
+		SX_TIMER_DET_MOVIESTAMP_ID = SxTimer_AddItem(&Timer_Input_DetMovieStamp);
+
 #if (STATUSKEY_FUNCTION == ENABLE)
 		GxKey_DetStatusKey();
 #endif

@@ -66,6 +66,10 @@
 #define ETHCAM_CMD_SET_TX_GPS                  		9037
 #define ETHCAM_CMD_EIS_INFO				           	9038
 
+//HTK_ADD_20230517
+#define ETHCAM_CMD_SYNC_GPS_INFO                 9103
+#define ETHCAM_CMD_GET_MOTION_DET                9104
+//HTK_ADD_20230517
 
 #define ETHCAM_CMD_ROOT        '/'
 #define ETHCAM_CMD_CUSTOM_TAG  '?'
@@ -229,9 +233,15 @@ typedef struct {
 	UINT32 WDR;
 	UINT32 EV;
 	UINT32 DateImprint;
+	UINT32 GPSImprint;
 	UINT32 SensorRotate;
 	UINT32 Codec;
 	UINT32 TimeLapse;
+	UINT32 DetectLED;
+	UINT32 ParkingMode;
+	UINT32 ParkingTimeLapse;
+	UINT32 ACCTrigParkMode;
+	UINT32 HDR;
 } ETHCAM_MENU_SETTING;
 
 typedef struct {

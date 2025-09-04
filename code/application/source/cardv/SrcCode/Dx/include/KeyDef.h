@@ -30,6 +30,9 @@
 #define FLGKEY_FACEDETECT               0x00004000
 #define FLGKEY_I                        0x00008000
 #define FLGKEY_CUSTOM1                  0x00010000
+//#define FLGKEY_EMERG                    0x00020000
+#define FLGKEY_KEY_POWER_ACC            0x00020000
+
 
 //special normal key
 #define FLGKEY_KEY_POWER                0x80000000

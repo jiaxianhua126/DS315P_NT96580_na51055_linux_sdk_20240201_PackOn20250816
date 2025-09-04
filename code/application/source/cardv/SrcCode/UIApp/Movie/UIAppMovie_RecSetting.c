@@ -29,19 +29,19 @@ MOVIE_RECODE_INFO gMovie_Rec_Info[SENSOR_MAX_NUM] = {
 		#endif
 		{16, 9},				//MOVIE_CFG_IMG_RATIO
 		{1920, 1080},			//MOVIE_CFG_RAWENC_SIZE
-		(HD_VIDEOCAP_FUNC_AE | HD_VIDEOCAP_FUNC_AWB),	//MOVIE_CFG_VCAP_FUNC
+		(HD_VIDEOCAP_FUNC_AE | HD_VIDEOCAP_FUNC_AWB | HD_VIDEOCAP_FUNC_SHDR),	//MOVIE_CFG_VCAP_FUNC
 		ENABLE,					//MOVIE_CFG_DISP_ENABLE
 		TRUE,					//ipl_set_enable,  FALSE: can not set sensor info, TRUE: can set sensor info
 		_CFG_DAR_DEFAULT,		//MOVIE_CFG_DAR
 		{0},					//MOVIE_CFG_AQ_INFO
 		{0},					//MOVIE_CFG_CBR_INFO
 		FALSE,					//Sensor rotate setting
-#if (defined(_MODEL_580_SDV_SJ10_) || defined(_MODEL_580_SDV_SJ10_FAST_BT_) || defined(_MODEL_580_SDV_I860_))
+#if (defined(_MODEL_580_SDV_SJ10_) || defined(_MODEL_580_SDV_SJ10_FAST_BT_))
 		(HD_VIDEOPROC_FUNC_COLORNR),		//MOVIE_CFG_VPROC_FUNC
 #elif (defined(_MODEL_580_SDV_C300_) || defined(_MODEL_580_SDV_C300_FAST_BT_))
 		(HD_VIDEOPROC_FUNC_COLORNR),		//MOVIE_CFG_VPROC_FUNC
 #else
-		(HD_VIDEOPROC_FUNC_WDR | HD_VIDEOPROC_FUNC_DEFOG | HD_VIDEOPROC_FUNC_COLORNR | HD_VIDEOPROC_FUNC_3DNR),		//MOVIE_CFG_VPROC_FUNC
+		(HD_VIDEOPROC_FUNC_WDR | HD_VIDEOPROC_FUNC_COLORNR |HD_VIDEOPROC_FUNC_3DNR |HD_VIDEOPROC_FUNC_SHDR),     //MOVIE_CFG_VPROC_FUNC
 #endif
 		{16, 9},				//video display aspect ratio
 	},
@@ -223,7 +223,7 @@ MOVIE_STRM_INFO gMovie_Strm_Info = {
 	350 * 1024,					//MOVIE_CFG_TARGET_RATE
 	_CFG_CODEC_H264,			//MOVIE_CFG_CODEC
 	15,							//MOVIE_CFG_GOP_NUM
-	_CFG_AUD_CODEC_AAC,			//MOVIE_CFG_AUD_CODEC
+	_CFG_AUD_CODEC_NONE,		//MOVIE_CFG_AUD_CODEC
 	TRUE,						//MOVIE_CFG_RTSP_STRM_OUT
 	{0},						//MOVIE_CFG_AQ_INFO, Defined by g_MovieRecSizeTable[].
 	{0},						// MOVIE_CFG_CBR_INFO, Defined by g_MovieRecSizeTable[].
@@ -306,9 +306,9 @@ MOVIEMULTI_AUDIO_INFO   gMovie_Audio_Info = {
 	_CFG_AUDIO_CH_RIGHT,            //MOVIE_CFG_AUD_CH
 	1,                         //MOVIE_CFG_AUD_CH_NUM
 #else
-	32000,                     //MOVIE_CFG_AUD_RATE
-	_CFG_AUDIO_CH_STEREO,      //MOVIE_CFG_AUD_CH
-	2,                         //MOVIE_CFG_AUD_CH_NUM
+	16000,                     //MOVIE_CFG_AUD_RATE
+	_CFG_AUDIO_CH_RIGHT,       //MOVIE_CFG_AUD_CH //_CFG_AUDIO_CH_STEREO,
+	1,                         //MOVIE_CFG_AUD_CH_NUM
 #endif
 };
 

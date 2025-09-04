@@ -66,9 +66,11 @@ void DetSensor(void)
 			if ((cp == 0) && (p == 1)) {
 				uiSensorEnableState_fw |= SENSOR_2;
 				bChg=1;
+				DBG_ERR("------- SENSOR2_INSERT --------- \r\n");
 			} else if ((cp == 1) && (p == 0)) {
 				uiSensorEnableState_fw &= ~SENSOR_2;
 				bChg=1;
+				DBG_ERR("------- SENSOR2_REMOVE --------- \r\n");
 			}
 			cp = p;
 		}else{
@@ -287,7 +289,7 @@ ER System_GetSensorInfo(UINT32 id, UINT32 param, void *value)
 						ppath->id = id;
 						strncpy(ppath->path, p_str, 31);
 						ppath->addr = (UINT32)p_fdt_app;
-						//DBG_DUMP("ae_path %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
+						DBG_DUMP("ae_path %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
 						ret = E_OK;
 					}
 				}
@@ -309,7 +311,7 @@ ER System_GetSensorInfo(UINT32 id, UINT32 param, void *value)
 						ppath->id = id;
 						strncpy(ppath->path, p_str, 31);
 						ppath->addr = (UINT32)p_fdt_app;
-						//DBG_DUMP("awb_path %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
+						DBG_DUMP("awb_path %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
 						ret = E_OK;
 					}
 				}
@@ -361,6 +363,72 @@ ER System_GetSensorInfo(UINT32 id, UINT32 param, void *value)
 			break;
 		}
 
+	case SENSOR_AE_PATH_HDR: {
+			if (value != 0) {
+				SENSOR_PATH_INFO *ppath = (SENSOR_PATH_INFO *)value;
+				ppath->path[0] = 0;
+				snprintf(node_path, sizeof(node_path)-1, "/isp/sensor@%d", id);
+				//if ((node_ofst = fdt_path_offset(p_fdt, node_path)) > 0) {
+					if (p_fdt_app && ((node_ofst = fdt_path_offset(p_fdt_app, node_path)) > 0)) {
+						// iq_path
+						pfdt_node = fdt_getprop(p_fdt_app, node_ofst, "ae_path_hdr", (int *)&data_len);
+						p_str = (char *)pfdt_node;
+						if (p_str != NULL) {
+							ppath->id = id;
+							strncpy(ppath->path, p_str, 31);
+							ppath->addr = (UINT32)p_fdt_app;
+							DBG_DUMP("ae_path_hdr %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
+							ret = E_OK;
+						}
+					}	
+			}
+			break;
+		}
+
+	case SENSOR_AWB_PATH_HDR: {
+			if (value != 0) {
+				SENSOR_PATH_INFO *ppath = (SENSOR_PATH_INFO *)value;
+				ppath->path[0] = 0;
+				snprintf(node_path, sizeof(node_path)-1, "/isp/sensor@%d", id);
+				//if ((node_ofst = fdt_path_offset(p_fdt, node_path)) > 0) {
+					if (p_fdt_app && ((node_ofst = fdt_path_offset(p_fdt_app, node_path)) > 0)) {
+						// iq_path
+						pfdt_node = fdt_getprop(p_fdt_app, node_ofst, "awb_path_hdr", (int *)&data_len);
+						p_str = (char *)pfdt_node;
+						if (p_str != NULL) {
+							ppath->id = id;
+							strncpy(ppath->path, p_str, 31);
+							ppath->addr = (UINT32)p_fdt_app;
+							DBG_DUMP("awb_path_hdr %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
+							ret = E_OK;
+						}
+					}	
+			}
+			break;
+		}
+
+	case SENSOR_IQ_PATH_HDR: {
+			if (value != 0) {
+				SENSOR_PATH_INFO *ppath = (SENSOR_PATH_INFO *)value;
+				ppath->path[0] = 0;
+				snprintf(node_path, sizeof(node_path)-1, "/isp/sensor@%d", id);
+				//if ((node_ofst = fdt_path_offset(p_fdt, node_path)) > 0) {
+					if (p_fdt_app && ((node_ofst = fdt_path_offset(p_fdt_app, node_path)) > 0)) {
+						// iq_path
+						pfdt_node = fdt_getprop(p_fdt_app, node_ofst, "iq_path_hdr", (int *)&data_len);
+						p_str = (char *)pfdt_node;
+						if (p_str != NULL) {
+							ppath->id = id;
+							strncpy(ppath->path, p_str, 31);
+							ppath->addr = (UINT32)p_fdt_app;
+							DBG_DUMP("iq_path_hdr %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
+							ret = E_OK;
+						}
+					}	
+			}
+			break;
+		}
+
 	case SENSOR_IQ_SHADING_PATH: {
 			if (value != 0) {
 				SENSOR_PATH_INFO *ppath = (SENSOR_PATH_INFO *)value;
@@ -375,7 +443,7 @@ ER System_GetSensorInfo(UINT32 id, UINT32 param, void *value)
 						ppath->id = id;
 						strncpy(ppath->path, p_str, 31);
 						ppath->addr = (UINT32)p_fdt_app;
-						//DBG_DUMP("iq_shading_path %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
+						DBG_DUMP("iq_shading_path %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
 						ret = E_OK;
 					}
 				}

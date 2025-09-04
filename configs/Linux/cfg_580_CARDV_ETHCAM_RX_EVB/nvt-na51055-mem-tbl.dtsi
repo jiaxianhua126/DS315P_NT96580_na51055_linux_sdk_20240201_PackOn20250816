@@ -16,17 +16,18 @@
 	nvt_memory_cfg {
 		#address-cells = <1>;
 		#size-cells = <1>;
-		dram {          reg = <0x00000000 0x10000000>;  };
+		dram {          reg = <0x00000000 0x20000000>;  };
 		core2entry1 {   reg = <0x00000000 0x00100000>;  };
 		fdt {           reg = <0x00100000 0x00100000>;  };              /* recycled after linux started */
 		shmem {         reg = <0x00200000 0x00100000>;  };              /* recycled after linux started */
 		loader {        reg = <0x01000000 0x00100000>;  };              /* recycled after linux started */
-		linuxtmp {      reg = <0x01100000 0x0CF00000>;  };              /* recycled after linux started */
-		uboot {         reg = <0x0E000000 0x01FC0000>;  };              /* recycled after linux started */
-		core2entry2 {   reg = <0x0FFC0000 0x00040000>;  };
+		linuxtmp {      reg = <0x01100000 0x1CF00000>;  };              /* recycled after linux started */
+		uboot {         reg = <0x1E000000 0x01E00000>;  };              /* recycled after linux started */
+		logo-fb {       reg = <0x1FE00000 0x001C0000>;  };              /* recycled after linux started */
+		core2entry2 {   reg = <0x1FFC0000 0x00040000>;  };
 	};
 	/* Linux system memory region*/
-	memory { device_type = "memory"; reg = <0x00000000 0x04000000>; };
+	memory { device_type = "memory"; reg = <0x00000000 0x06000000>; };
 
 	/* Linux setup reserved memory */
 	reserved-memory {
@@ -34,10 +35,10 @@
 		#size-cells = <1>;
 		ranges;
 
-		cma0: cma0@0x02400000 {
+		cma0: cma0@0x03000000 {
 			compatible = "shared-dma-pool";
 			reusable;
-			reg = <0x02400000 0x400000>;
+			reg = <0x03000000 0x03000000>;
 			alignment = <0x400000>;
 			status = "okay";
 		};
@@ -52,14 +53,14 @@
 	hdal-memory {
 		#address-cells = <1>;
 		#size-cells = <1>;
-		media { reg = <0x04000000 0x0C000000>; };
+		media { reg = <0x06000000 0x1A000000>; };
 	};
 
 	hdal-maxpath-cfg {
 		/* First is for VCAP0, second for VCAP1 and so on.*/
-		vdocap_active_list   = <1 1 0 0 0 0 0 0>;
-		vdoprc_maxdevice   = <2>;
-		vdoenc_maxpath   = <8>;
+		vdocap_active_list   = <1 1 1 1 0 0 0 0>;
+		vdoprc_maxdevice   = <4>;
+		vdoenc_maxpath   = <12>;
 		vdodec_maxpath   = <3>;
 		vdoout_maxdevice   = <1>;
 		adocap_maxdevice   = <1>;
@@ -69,12 +70,12 @@
 		/* gfx jog list */
 		gfx_maxjob       = <2>;
 		/* stamp max img buffer number */
-		stamp_maximg     = <4>;
+		stamp_maximg     = <16>;
 		/* First is internal stamp number, second is external stamp number */
 		vdoprc_maxstamp  = <4  4>;
 		/* First is internal mask number, second is external mask number */
 		vdoprc_maxmask   = <4  4>;
-		vdoenc_maxstamp  = <4  4>;
+		vdoenc_maxstamp  = <16  16>;
 		vdoenc_maxmask   = <0  64>;
 		vdoout_maxstamp  = <0  16>;
 		vdoout_maxmask   = <0  64>;

@@ -8,8 +8,9 @@
 
 / {
 	nvt_info {						/* Get from ModelConfig.txt */
-		BIN_NAME = "FW98528A";
-		BIN_NAME_T = "FW98528T";
+		/*BIN_NAME = "FWT221A";*/
+		BIN_NAME = "FW205WGS";
+		BIN_NAME_T = "FW96580T";
 		RTOS_APP_MAIN = "cardv"; /* Optional, if OS type is Linux, dont care it. */
 		/* EMBMEM_BLK_SIZE, Normally, 2KPageNand=0x20000, 512PageNand=0x4000, SPI=0x10000 */
 		EMBMEM_BLK_SIZE = "0x20000";
@@ -41,8 +42,11 @@
 		 * disp_ifdsi_lcd1_nt35510
 		 * disp_if8b_lcd1_pw35p00
 		 * disp_if8b_lcd1_psd300_ili8961
+		 * disp_if8b_lcd1_t15p
+		 * disp_if8b_lcd1_ili9342c
+		 * disp_if8b_lcd1_ili9341
 		 */
-		LCD1 = "disp_if8b_lcd1_pw35p00";
+		LCD1 = "disp_if8b_lcd1_ili9341";
 
 		/**
 		 * [SENSOR]
@@ -54,8 +58,8 @@
 		 * sen_imx290
 		 * sen_os05a10
 		 */
-		SENSOR1     = "sen_imx317";
-		SENSOR1_CFG = "sen_imx317";
+		SENSOR1     = "sen_imx675";
+		SENSOR1_CFG = "sen_imx675";
 		SENSOR2     = "sen_off";
 		SENSOR2_CFG = "sen_off";
 
@@ -64,7 +68,7 @@
 		 * UI_STYLE_SPORTCAM
 		 * UI_STYLE_LVGL
 		 */
-		UI_STYLE = "UI_STYLE_LVGL";
+		UI_STYLE = "UI_STYLE_SPORTCAM";
 
 		/**
 		 * [TSE]
@@ -77,7 +81,7 @@
 		 * ======= Linux common =========
 		 * application/external
 		 */
-		NVT_CFG_APP_EXTERNAL = "hostapd wireless_tool iperf-3";
+		NVT_CFG_APP_EXTERNAL = "hostapd wireless_tool iperf-3 wpa_supplicant dhd_priv";
 		/* application include list */
 		NVT_CFG_APP = "hfs lviewd nvtrtspd msdcnvt arm_neon_perf mem test cardv memcpy drystone-2.0";
 		/* rootfs etc folder */
@@ -153,7 +157,7 @@
 		 * NVT_SDIO_WIFI_BRCM
 		 * NVT_SDIO_WIFI_NVT
 		 */
-		NVT_SDIO_WIFI = "NVT_SDIO_WIFI_RTK";
+		NVT_SDIO_WIFI = "NVT_SDIO_WIFI_BRCM";
 
 		/**
 		 * [NVT_USB_WIFI]
@@ -178,8 +182,9 @@
 		 * [WIFI_BRCM_MDL]  : sub item for NVT_SDIO_WIFI_BRCM
 		 * WIFI_BRCM_MDL_43438a1_ampk6212axtal26
 		 * WIFI_BRCM_MDL_43455c0_ampk6255c0
+		 * WIFI_BRCM_MDL_43456c5_ampk6256c5
 		 */
-		WIFI_BRCM_MDL = "WIFI_BRCM_MDL_43438a1_ampk6212axtal26";
+		WIFI_BRCM_MDL = "WIFI_BRCM_MDL_43456c5_ampk6256c5";
 
 		/**
 		 * [WIFI_NVT_MDL]  : sub item for NVT_SDIO_WIFI_NVT
