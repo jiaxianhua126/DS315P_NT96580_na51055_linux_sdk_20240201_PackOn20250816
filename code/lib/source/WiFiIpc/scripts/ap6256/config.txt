@@ -1,0 +1,24 @@
+#use DMA 0;not use DMA 1
+#txglom_mode=0
+#deferred_tx_len=12
+#frameburst=1
+#txglomsize=11
+#txinrx_thres=10
+#lrl=15
+#srl=15
+#disable_proptx=0
+#wl_preinit=ampdu_hostreorder=0,nmode=1,gmode=1,nreqd=1,ampdu_ba_wsize=8
+#force_wme_ac=1
+#wme_ac_ap_vi=aifsn 1 ecwmin 1 ecwmax 1 txop 0x5e
+#android_msg_level=0xf0f
+#tiput_monitor_ms=1000
+dhd_poll=1
+#meburst=1
+###########disable debug msg##############
+android_msg_level=0
+dhd_msg_level=0
+dump_msg_level=0
+sd_msglevel=0
+dbus_msglevel=0
+config_msg_level=0
+############################################

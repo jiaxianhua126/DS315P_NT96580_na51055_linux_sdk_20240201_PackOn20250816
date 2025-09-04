@@ -1,16 +1,20 @@
 / {
 	isp {
 		sensor@0 {
-			ae_path                 = "/isp/ae/imx290_ae_0";
-			awb_path                = "/isp/awb/imx290_awb_0";
-			iq_path                 = "/isp/iq/imx290_iq_0";
-			iq_cap_path				= "/isp/iq/imx290_iq_0_cap";
+			ae_path                 = "/isp/ae/imx675_ae_0";
+			awb_path                = "/isp/awb/imx675_awb_0";
+			iq_path                 = "/isp/iq/imx675_iq_0";
+			iq_shading_path			= "/isp/iq/imx675_iq_shading_0";
+			/*HDR PATH                                      */
+			ae_path_hdr             = "/isp/ae/imx675_ae_0_hdr";
+			awb_path_hdr            = "/isp/awb/imx675_awb_0_hdr";
+			iq_path_hdr             = "/isp/iq/imx675_iq_0_hdr";
 		};
 		sensor@1 {
-			ae_path                 = "/isp/ae/imx290_ae_0";
-			awb_path                = "/isp/awb/imx290_awb_0";
-			iq_path                 = "/isp/iq/imx290_iq_0";
-			iq_cap_path				= "/isp/iq/imx290_iq_0_cap";
+			ae_path                 = "/isp/ae/imx675_ae_0";
+			awb_path                = "/isp/awb/imx675_awb_0";
+			iq_path                 = "/isp/iq/imx675_iq_0";
+			iq_cap_path				= "/isp/iq/imx675_iq_0";
 		};
 		/* label for ae, awb, iq table */
 		ae: ae {
@@ -23,8 +27,11 @@
 };
 
 /* Note: put include files in the tail since label should be declared first. */
-#include "imx290_ae_0.dtsi"
-#include "imx290_awb_0.dtsi"
-#include "imx290_iq_0.dtsi"
-#include "imx290_iq_0_cap.dtsi"
+#include "imx675_ae_0.dtsi"
+#include "imx675_awb_0.dtsi"
+#include "imx675_iq_0.dtsi"
+#include "imx675_iq_shading_0.dtsi"
+#include "imx675_ae_0_hdr.dtsi"
+#include "imx675_awb_0_hdr.dtsi"
+#include "imx675_iq_0_hdr.dtsi"
 

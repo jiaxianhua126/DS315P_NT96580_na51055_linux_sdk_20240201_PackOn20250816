@@ -6,9 +6,9 @@
 	sensor{pinmux = <0x0>;};
 	sensor2{pinmux = <0x0>;};
 	mipi_lvds{pinmux = <0x0>;};
-	i2c{pinmux = <0x0>;};
-	sif{pinmux = <0x8>;};
-	uart{pinmux = <0x1>;};
+	i2c{pinmux = <0x40>;};
+	sif{pinmux = <0x00>;};
+	uart{pinmux = <0x65>;};
 	spi{pinmux = <0x0>;};
 	sdp{pinmux = <0x0>;};
 	remote{pinmux = <0x0>;};
@@ -18,6 +18,6 @@
 	audio{pinmux = <0x0>;};
 	lcd{pinmux = <0x10000000>;};
 	tv{pinmux = <0x0>;};
-	eth{pinmux = <0x12>;};
+	eth{pinmux = <0x0>;};
 	misc{pinmux = <0x0>;};
 };

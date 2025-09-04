@@ -12,10 +12,16 @@
 */
 
 ////////////////////////////////////////////////////////////////////////////////
+#include <unistd.h>
+#include <sys/reboot.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdio.h>
 #include "PrjInc.h"
 #include "Utility/SwTimer.h"
 #include "vendor_common.h"
 #include "UIApp/Network/EthCamAppNetwork.h"
+#include "GxStrg.h"
 
 #define THIS_DBGLVL         2 // 0=FATAL, 1=ERR, 2=WRN, 3=UNIT, 4=FUNC, 5=IND, 6=MSG, 7=VALUE, 8=USER
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,6 +43,87 @@ extern VControl FlowCommonCtrl;
 extern VControl UIWifiCmdObjCtrl;
 #endif
 static BOOL g_IsShutdownBegin = FALSE;
+void System_ResetNOW(void)
+{
+	//DBG_DUMP("GxSystem_SWResetNOW!!\r\n");
+	reboot(0);
+}
+void GxSystem_SWResetNOW(void)
+{
+	//DBG_DUMP("GxSystem_SWResetNOW!!\r\n");
+	sync();
+	SwTimer_DelayMs(100);
+	reboot(RB_AUTOBOOT);
+}
+INT32 UIMenuWndSetupDefaultSetting_Menu_Default_Reboot(BOOL std)
+{
+	//DBG_DUMP("FL_MOVIE_SIZE_MENU = %d\n",SysGetFlag(FL_MOVIE_SIZE_MENU));
+	//DBG_DUMP("FL_MOVIE_SIZE = %d\n",SysGetFlag(FL_MOVIE_SIZE));
+    Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_SYSRESET, 0);
+    //SysSetFlag(FL_SYS_SOFT_RESET, SOFT_RESET_ON);
+    //SysSetFlag(FL_FIRSTPOWERON, FIRSTPOWERON_TRUE);  //@Ken 140620 for first power on
+    Save_MenuInfo();
+    //rtc_reset();  //reset time
+	//DBG_DUMP("FL_MOVIE_SIZE_MENU = %d\n",SysGetFlag(FL_MOVIE_SIZE_MENU));
+	//DBG_DUMP("FL_MOVIE_SIZE = %d\n",SysGetFlag(FL_MOVIE_SIZE));
+
+    if (std == TRUE) {
+		//GPIOMap_TurnOffLCDBacklight();
+        SwTimer_DelayMs(100);
+        GxSystem_SWResetNOW();//GxSystem_Reboot();
+    }
+    return 0;
+}
+
+#define DELETE_FWBIN_FILE_NAME  "A:\\"_BIN_NAME_".bin"
+#define DELETE_FWBIN_FILE_NOTE  "A:\\update_no_delete.htk"
+void DeleteBinFile(void)
+{
+    FST_FILE fp = NULL;
+    BOOL bin_file_found, bin_file_delete;
+    INT32 ret = -1;
+    if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
+        DBG_DUMP("System_GetState(SYS_STATE_CARD)  = %d!\r\n",  System_GetState(SYS_STATE_CARD) );
+        return;
+    }
+
+    //DBG_DUMP("\r\n");
+    //DBG_DUMP("================================\r\n");
+    //DBG_DUMP("DeleteBinFile!!\r\n");
+    //DBG_DUMP("================================\r\n");
+    //DBG_DUMP("\r\n");
+    fp = FileSys_OpenFile(DELETE_FWBIN_FILE_NAME, FST_OPEN_READ|FST_OPEN_EXISTING);
+    if (fp) {
+        //DBG_DUMP("bin_file_found = TRUE\r\n");
+        bin_file_found = TRUE;
+        FileSys_CloseFile(fp);
+    } else {
+        bin_file_found = FALSE;
+    }
+
+    fp = FileSys_OpenFile(DELETE_FWBIN_FILE_NOTE, FST_OPEN_READ|FST_OPEN_EXISTING);
+    if (fp) {
+        //DBG_DUMP("bin_file_delete = FALSE\r\n");
+        bin_file_delete = FALSE;
+        FileSys_CloseFile(fp);
+    } else {
+        bin_file_delete = TRUE;
+    }
+
+    if (bin_file_found && bin_file_delete) {
+        ret = FileSys_DeleteFile(DELETE_FWBIN_FILE_NAME);
+        if (ret == FST_STA_OK) {
+            //DBG_DUMP("FileSys_DeleteFile ok!!\r\n");
+            UIMenuWndSetupDefaultSetting_Menu_Default_Reboot(TRUE);
+	   //SysResetFlag();
+        } else {
+            //DBG_DUMP("FileSys_DeleteFile fail!!\r\n");
+        }
+    } else if ((bin_file_found == TRUE) && (bin_file_delete == FALSE)) {
+        UIMenuWndSetupDefaultSetting_Menu_Default_Reboot(FALSE);
+	//SysResetFlag();
+    }
+}
 
 void System_InstallAppObj(void)
 {
@@ -201,7 +288,8 @@ INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
 		//wait fs init finish
 #if (POWERON_WAIT_FS_READY == ENABLE)
-		if (System_GetState(SYS_STATE_POWERON) == SYSTEM_POWERON_SAFE) {
+		//if (System_GetState(SYS_STATE_POWERON) == SYSTEM_POWERON_SAFE) 
+		{
 #if(ONVIF_PROFILE_S!=ENABLE) //No File System
 			//#NT#2017/04/18#Niven Cho -begin
             //#NT#FIX that B:\\ come first mounted.
@@ -223,8 +311,8 @@ INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			DBG_WRN("FS init is not OK!\r\n");
 		}
 
-		if (System_GetState(SYS_STATE_POWERON) == SYSTEM_POWERON_SAFE) {
-			if (System_OnStrgInit_EMBMEM_GetGxStrgType() == FST_FS_TYPE_UITRON) {
+		//if (System_GetState(SYS_STATE_POWERON) == SYSTEM_POWERON_SAFE) {
+			//if (System_OnStrgInit_EMBMEM_GetGxStrgType() == FST_FS_TYPE_UITRON) {
 #if (IPCAM_FUNC != ENABLE)
 				UI_SetFileDBFileID();
 #endif
@@ -237,9 +325,10 @@ INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 					System_SetState(SYS_STATE_CARD, CARD_REMOVED);
 				}
 				System_SetState(SYS_STATE_FS, uiFSStatus);
-			}
-		}
+			//}
+		//}
 #endif
+		DeleteBinFile();
 
 		//wait disp init finish
 		//wait audio init finish

@@ -57,7 +57,7 @@ HOSTAPD=`ps`
 HOSTAPD=`echo $HOSTAPD | grep hostapd`
 if [ -n "$HOSTAPD" ]; then
         echo "hostapd is running. Try to stop it"
-	killall hostapd
+	killall -9 hostapd
 	while [ 1 ]
 	do
 		HOSTAPD=`ps`
@@ -106,6 +106,7 @@ if [ -n "$WPA" ]; then
         ifconfig wlan0 down
 fi
 
+echo "rm /var/run/hostapd.conf"
 rm /var/run/hostapd.conf
 rm /var/run/wpa_supplicant.conf
 

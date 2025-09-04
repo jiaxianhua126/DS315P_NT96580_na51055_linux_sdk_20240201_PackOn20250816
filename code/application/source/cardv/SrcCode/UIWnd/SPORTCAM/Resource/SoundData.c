@@ -26,7 +26,7 @@
 #include <kwrap/debug.h>
 ///////////////////////////////////////////////////////////////////////////////
 
-#if ((_BOARD_DRAM_SIZE_ == 0x04000000) || (SENSOR_CAPS_COUNT >= 2) ||  (defined(_NVT_ETHREARCAM_RX_) && (ETH_REARCAM_CAPS_COUNT >= 2)))
+#if 1//((_BOARD_DRAM_SIZE_ == 0x04000000) || (SENSOR_CAPS_COUNT >= 2) ||  (defined(_NVT_ETHREARCAM_RX_) && (ETH_REARCAM_CAPS_COUNT >= 2)))
 #define SOUND_AUDIO_SR		AUDIO_SR_16000
 #else
 #define SOUND_AUDIO_SR		AUDIO_SR_32000

@@ -58,6 +58,7 @@ extern int SX_TIMER_DET_EV_ID;
 extern int SX_TIMER_DET_SHOWADC;
 extern int SX_TIMER_DET_MEM;
 extern int SX_TIMER_NET_CONNECT_ID;
+extern int SX_TIMER_DET_MOVIESTAMP_ID;
 
 #define AUTO_INPUT_TIMER_CNT    2
 

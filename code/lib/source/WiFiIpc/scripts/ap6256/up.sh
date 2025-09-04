@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo $#
+echo $*
+
 TRY=0
 HOSTAPD=`ps`
 AMPK_AP=0
@@ -55,11 +58,30 @@ if [ -n "$WPA" ]; then
         ifconfig wlan0 down
 fi
 
+
+
 if [ "$1" == "ap" ]; then
 	echo /lib/firmware/bcmdhd/fw_bcmdhd_apsta.bin > /sys/module/bcmdhd/parameters/firmware_path
 	ifconfig wlan0 up
-	echo channel=149 >> /var/run/hostapd.conf
-	echo hw_mode=a >> /var/run/hostapd.conf
+
+	if [ "$2" == "5G" ]; then
+		echo channel=48 >> /var/run/hostapd.conf
+		echo hw_mode=a >> /var/run/hostapd.conf
+		echo "5G mode successful"
+	elif [ "$2" == "5.8G" ]; then
+		echo channel=149 >> /var/run/hostapd.conf
+		echo hw_mode=a >> /var/run/hostapd.conf
+		echo "5G mode successful"
+	elif [ "$2" == "2.4G" ]; then
+		echo channel=6 >> /var/run/hostapd.conf
+		echo hw_mode=g >> /var/run/hostapd.conf
+		echo "2.4G mode successful"
+	else
+		echo channel=48 >> /var/run/hostapd.conf
+		echo hw_mode=a >> /var/run/hostapd.conf
+		echo "5G mode successful"
+	fi
+
 	echo driver=nl80211 >> /var/run/hostapd.conf
 	echo wmm_enabled=1 >> /var/run/hostapd.conf
 	hostapd /var/run/hostapd.conf &
@@ -157,4 +179,5 @@ elif [ "$1" == "sta" ]; then
         done
 fi
 
+echo "exit up.sh"
 exit 255

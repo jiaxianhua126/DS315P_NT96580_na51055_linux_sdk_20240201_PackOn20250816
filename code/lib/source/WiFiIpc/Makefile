@@ -57,15 +57,18 @@ ifeq ($(NVT_SDIO_WIFI), NVT_SDIO_WIFI_RTK)
     endif
 else ifeq ($(NVT_SDIO_WIFI), NVT_SDIO_WIFI_BRCM)
     ifeq ($(WIFI_BRCM_MDL), WIFI_BRCM_MDL_43456c5_ampk6256c5)
+		@echo AP6256 ......
 		@cp -avfr scripts/ap6256/*.sh $(ROOTFS_DIR)/rootfs/usr/share/wifiscripts/
 		@mkdir -p $(FWDIR)
 		@cp -af scripts/ap6256/fw_bcm43456c5_ag_apsta.bin $(FWDIR)
 		@cp -af scripts/ap6256/nvram_ap6256.txt $(FWDIR)
+		@cp -af scripts/ap6256/config.txt $(FWDIR)
     else
 		@cp -avfr scripts/ap6256/*.sh $(ROOTFS_DIR)/rootfs/usr/share/wifiscripts/
 		@mkdir -p $(FWDIR)
 		@cp -af scripts/ap6256/fw_bcm43456c5_ag_apsta.bin $(FWDIR)
 		@cp -af scripts/ap6256/nvram_ap6256.txt $(FWDIR)
+		@cp -af scripts/ap6256/config.txt $(FWDIR)
     endif
 else
 	@cp -avfr scripts/8189ftv/* $(ROOTFS_DIR)/rootfs/usr/share/wifiscripts/

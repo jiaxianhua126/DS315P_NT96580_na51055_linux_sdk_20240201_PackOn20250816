@@ -91,6 +91,7 @@ static UINT32  g_uiDateTimerID = NULL_TIMER;
 static UINT32  g_UIStopRecTimerID = NULL_TIMER;
 
 static BOOL    g_uiRecordIngMotionDet = TRUE;
+static volatile BOOL g_PreviewStable_Record = FALSE;
 
 INT32 UIFlowWndMovie_OnExeRecord(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -227,6 +228,7 @@ INT32 UIFlowWndMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 	gMovData.State = MOV_ST_VIEW;
 	Ux_DefaultEvent(pCtrl,NVTEVT_OPEN_WINDOW,paramNum,paramArray);
 	FlowMovie_UpdateIcons(TRUE);
+	g_PreviewStable_Record = TRUE;
 
 	return NVTEVT_CONSUME;
 }
@@ -725,6 +727,7 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 	#if (ETH_POWER_DOWN==ENABLE)
     static BOOL bFirstEntry = TRUE;
     #endif
+	static UINT32 recnt = 0;
 
 	uiEvent = paramNum ? paramArray[0] : 0;
 
@@ -769,6 +772,15 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
         	system("mem w 0xF02B38F8 0x61");
         }
     	#endif
+		if (g_PreviewStable_Record == TRUE) 
+		{
+			recnt++;
+			if ((gMovData.State != MOV_ST_REC)&&(recnt>=3)) 
+			{
+				g_PreviewStable_Record = FALSE;
+				Ux_PostEvent(NVTEVT_KEY_SHUTTER2, 1, NVTEVT_KEY_PRESS);
+			}
+		}
 		break;
 	}
 

@@ -40,8 +40,8 @@
 #endif
 
 #if (ETH_REARCAM_CAPS_COUNT>=2)
-#define MDC_GPIO	P_GPIO_2  //SCL
-#define MDIO_GPIO	P_GPIO_3   //SDA
+#define MDC_GPIO	P_GPIO_21  //SCL
+#define MDIO_GPIO	P_GPIO_22   //SDA
 #endif
 
 #define ETHCAM_EIS                      DISABLE
@@ -59,6 +59,8 @@
 #else
 #endif
 
+#define SEN_EVB_IMX335					0
+#define SEN_EVB_IMX675					1
 //..............................................................................
 // FW version and name
 #define FW_UPDATE_NAME                  "A:\\FW98525Z.bin"
@@ -107,10 +109,10 @@
 #define POWERON_FAST_CPU2_BOOT          DISABLE
 #define POWERON_FAST_RECORD             DISABLE
 #define POWERON_FAST_WIFI               DISABLE //NOTE: need to enable POWERON_FAST_CPU2_BOOT too
-#define POWERON_WAIT_FS_READY           DISABLE
+#define POWERON_WAIT_FS_READY           ENABLE
 #define WAITPHOTO_FUNCTION              DISABLE
-#define POWERONLOGO_FUNCTION            DISABLE
-#define POWEROFFLOGO_FUNCTION           DISABLE
+#define POWERONLOGO_FUNCTION            ENABLE
+#define POWEROFFLOGO_FUNCTION           ENABLE//DISABLE
 #if ((POWERON_FAST_BOOT == DISABLE) || (POWERON_FAST_RECORD == DISABLE))
 #define POWERONSOUND_FUNCTION           ENABLE
 #else
@@ -118,9 +120,7 @@
 #endif
 #define POWEROFFSOUND_FUNCTION          DISABLE
 #define _LOGO_                          _LOGO_NOVATEK_
-#if (defined(_LCDTYPE_ILI9341_IF8B_) || \
-     defined(_LCDTYPE_TG078UW006A0_DSI_)|| \
-     defined(_LCDTYPE_UT35067A0_ILI9488_DSI_))
+#if defined(_disp_if8b_lcd1_ili9341_)
 #define LOGO_DISP_LAYER                 LAYER_VDO1 // VDO2 logo has no rotation
 #else
 #define LOGO_DISP_LAYER                 LAYER_VDO2
@@ -204,16 +204,17 @@
 //auto power-off when battery level = empty
 #define EMPTYPWROFF_FUNCTION            DISABLE
 //auto sleep
-#define AUTOSLEEP_FUNCTION              ENABLE //Auto Detect
+#define AUTOSLEEP_FUNCTION              DISABLE//ENABLE //Auto Detect
 //auto power-off
 #define AUTOPWROFF_FUNCTION             ENABLE //Auto Detect
 
+
 //..............................................................................
 // Date-Time Config
-#define DEF_YEAR                        2015
+#define DEF_YEAR                        2025
 #define DEF_MONTH                       1
 #define DEF_DAY                         1
-#define MIN_YEAR                        2000
+#define MIN_YEAR                        2025
 #define MAX_YEAR                        2050
 
 
@@ -358,8 +359,10 @@
 #define TOOL_LAYOUT_W                   320//640
 #define TOOL_LAYOUT_H                   240//480
 #define OSD_USE_DOUBLE_BUFFER           DISABLE //use double buffer
-#if (defined(_Disp_IF8B_LCD1_ILI9341_))
+#if defined(_disp_if8b_lcd1_ili9341_)
 #define OSD_USE_ROTATE_BUFFER           ENABLE  //use rotate buffer (enable to support LCD with stripe-type subpixel)
+#elif defined(_disp_ifdsi_lcd1_ut35067a0_ili9488_)
+#define OSD_USE_ROTATE_BUFFER           ENABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #else
 #define OSD_USE_ROTATE_BUFFER           DISABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #endif
@@ -379,11 +382,14 @@
 #define VDO_USE_DOUBLE_BUFFER           DISABLE //use double buffer
 #define VDO2_USE_DOUBLE_BUFFER          DISABLE
 #define VDO_USE_PHOTO_SOURCE            DISABLE  //display photo video streaming
-#if (defined(_Disp_IF8B_LCD1_ILI9341_))
-#define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_90
+#if defined(_disp_if8b_lcd1_ili9341_)
+#define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_270
 #define VDO_USE_ROTATE_BUFFER           ENABLE  //use rotate buffer (enable to support LCD with stripe-type subpixel)
+#elif defined(_disp_ifdsi_lcd1_ut35067a0_ili9488_)
+#define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_270
+#define VDO_USE_ROTATE_BUFFER           ENABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #else
-#define VDO_ROTATE_DIR                  0
+#define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_0
 #define VDO_USE_ROTATE_BUFFER           DISABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #endif
 
@@ -412,7 +418,7 @@
 #elif defined(_Disp_IF8B_LCD1_AUCN01_)
 #define LCDMODE                         DISP_LCDMODE_RGBD320 //DISP_LCDMODE_YUV640
 #elif defined(_Disp_IF8B_LCD1_PW35P00_HX8238D_) || \
-      defined(_Disp_IF8B_LCD1_ILI9341_)
+      defined(_disp_if8b_lcd1_ili9341_) || defined(_Disp_IF8B_LCD1_T15P11_)
 #define LCDMODE                         0//DISP_LCDMODE_RGB_SERIAL
 #else
 #error "Unknown _LCD_"
@@ -537,7 +543,7 @@
 #define PIP_VIEW_LR                     DISABLE //(DISABLE: display 2 sensor by PipView in left, right view, side by side, DISABLE: normal pipview)
 
 #define SBS_VIEW_FUNC                   DISABLE // SbsView (DISABLE: display 2 sensor by SbsView, DISABLE: display user selected sensor)
-#define SHDR_FUNC                       DISABLE // DISABLE
+#define SHDR_FUNC                       ENABLE
 #define WDR_FUNC                        ENABLE
 #define DEFOG_FUNC                      ENABLE // DISABLE
 
@@ -576,9 +582,10 @@
 
 #define MOVIE_MAPPING_MULTIREC			DISABLE
 
-#define MOVIE_DIRECT_FUNC               ENABLE  // direct mode function
-
-
+#define MOVIE_DIRECT_FUNC               DISABLE  // direct mode function ENABLE
+//D2D mode =  MOVIE_DIRECT_FUNC ÔO¶¨ DISABLE
+//power_saving=1 codec Ê¹ÓÃ PLL15 clock £¬ß@ÊÇ 529 ÔÚÓÃµÄ
+//power_saving=0 codec Ê¹ÓÃ 320M clock £¬ß@ÊÇ 580 ÔÚÓÃµÄ
 #define MOVIE_DIS                       DISABLE
 #define MOVIE_FD_FUNC_                  DISABLE
 #define MOVIE_FD_DRAW_VIDEO             DISABLE
@@ -899,6 +906,10 @@
 #define VIDEO_FUNC_H265            		DISABLE
 #define STOP_REC_BK  DISABLE
 #define NMEDIAPLAY_FUNC                 DISABLE     // switch SMediaPlay and NMediaPlay flow, use NMediaPlay when DISABLE to be set.
+#define FSCK_FUNC                       ENABLE    //fsck is for disk checking (only FAT format),solve the problem of mount sd error.
+#define MOVIE_YUV_COMPRESS              ENABLE//DISABLE
+#define FRONT_MOOV_FUNC					ENABLE
+#define GDC_POWER_DOWN         			ENABLE //2KP60 IN 60FPS,OUT 53FPS ,DROP 7FPS
 
 /*******************************************************************************************
  * LVGL UI Style config

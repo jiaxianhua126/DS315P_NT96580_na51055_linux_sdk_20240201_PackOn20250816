@@ -100,6 +100,7 @@ static UINT32 *g_pDzoomStop = NULL;
 static UINT32 g_uiEthcamTriggerThumbPathId[ETHCAM_PATH_ID_MAX] = {0};
 static UINT32 g_uiEthcamDecErrPathId = 0;
 static UINT32 g_uiEthcamCheckPortReadyIPAddr = 0;
+extern void FlowMovie_SyncEthCamMneu(UINT8 id,BOOL bReopen);
 
 UINT32 gUIStopBckGndDummyWait = FALSE;
 #if USE_FILEDB
@@ -1454,6 +1455,8 @@ static UINT32 BackgroundEthCamGetTxInfo(void)
 				#endif
 
 				#if 1
+				FlowMovie_SyncEthCamMneu(i,FALSE);
+				#else
 				//sync menu
 				//EthCam_SendXMLCmd(i, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_MENU_SETTING, 0);
 				ETHCAM_MENU_SETTING sEthCamMenuSetting;
@@ -1703,7 +1706,9 @@ static UINT32 BackgroundEthCamSyncTime(void)
 			//EthCam_SendXMLData(i, (UINT8 *)&Curr_DateTime, sizeof(struct tm));
 			//EthCam_SendXMLData(i, (UINT8 *)&Curr_DateTime, sizeof(Curr_DateTime));
 			EthCam_SendXMLCmdData(i, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_TIME, 0 ,(UINT8 *)&Curr_DateTime, sizeof(Curr_DateTime));
-
+			#if 1
+			FlowMovie_SyncEthCamMneu(i,FALSE);
+			#else
 			//sync menu
 			//EthCam_SendXMLCmd(i, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_MENU_SETTING, 0);
 			ETHCAM_MENU_SETTING sEthCamMenuSetting;
@@ -1721,6 +1726,7 @@ static UINT32 BackgroundEthCamSyncTime(void)
 			sEthCamMenuSetting.TimeLapse=UI_GetData(FL_MOVIE_TIMELAPSE_REC);
 			//EthCam_SendXMLData(i, (UINT8 *)&sEthCamMenuSetting, sizeof(ETHCAM_MENU_SETTING));
 			EthCam_SendXMLCmdData(i, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_MENU_SETTING, 0,(UINT8 *)&sEthCamMenuSetting, sizeof(ETHCAM_MENU_SETTING));
+			#endif
 		}
 	}
 #endif
