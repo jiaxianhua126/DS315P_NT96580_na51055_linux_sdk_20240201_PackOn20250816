@@ -85,6 +85,7 @@ ETHCAM_TX_AUDINFO sEthCamTxAudInfo[ETHCAM_PATH_ID_MAX]={0};
 ETHCAM_FWUD sEthCamFwUd={0};
 //static TIMER_ID     g_EthCamCmd_TimerID = 0;
 CHAR g_SndTskParserBuf[2048]={0};
+char gFWEthcamVersion[ETHCAM_PATH_ID_MAX][30] = {0};
 
 #if(defined(_NVT_ETHREARCAM_RX_))
 static UINT32   g_EthCamCmdGetFrame_TimerID = 0;
@@ -2797,6 +2798,35 @@ int EthCam_EISInfo(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize
 	//XML_DefaultFormat(ETHCAM_CMD_EIS_INFO, ETHCAM_RET_OK, bufAddr, bufSize, mimeType);
 	return ETHCAM_CMD_GETDATA_RETURN_OK;
 }
+//char g_GPSstamp_buffer_TX[128]="DOD FS580+ N99.999999 E999.999999 angle=360 999 KM/H";
+char g_GPSstamp_buffer_TX[128]="DOD FS580+ N99.999999 E999.999999 angle360 999 KM/H";
+
+int EthCam_SyncGPSInfo(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+#if(defined(_NVT_ETHREARCAM_TX_))
+	if (argument && segmentCount==0) {
+		XML_DefaultFormat(ETHCAM_CMD_SYNC_GPS_INFO, ETHCAM_RET_CONTINUE, bufAddr, bufSize, mimeType);
+		return CYG_HFS_CB_GETDATA_RETURN_CONTINUE;
+	}else{
+		memcpy((UINT8*)&g_GPSstamp_buffer_TX, (UINT8*)bufAddr, sizeof(g_GPSstamp_buffer_TX));
+		//DBG_DUMP("EthCam_SyncGPSInfo = %s\r\n", g_GPSstamp_buffer_TX);
+	}
+#endif
+	XML_DefaultFormat(ETHCAM_CMD_SYNC_GPS_INFO, ETHCAM_RET_OK, bufAddr, bufSize, mimeType);
+	return ETHCAM_CMD_GETDATA_RETURN_OK;
+}
+int EthCam_GetMotionDetect(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+#if(defined(_NVT_ETHREARCAM_TX_))
+
+	ETHCAM_PATH_ID path_id;
+	ETHCAM_PORT_TYPE port_type;
+	EthCam_GetDest(path, &path_id, &port_type);
+	//debug_msg("Movie_md_GetResult()=%d\r\n",Movie_md_GetResult());
+#endif
+	XML_ValueResult(ETHCAM_CMD_GET_MOTION_DET, ETHCAM_RET_OK/*Movie_md_GetResult()*/, bufAddr, bufSize, mimeType);
+	return ETHCAM_CMD_GETDATA_RETURN_OK;
+}
 
 //======================XML Cmd Result CB Satrt======================
 void EthCam_Startup_CB(INT32 bEnd, void *output_data)
@@ -3078,6 +3108,11 @@ void EthCam_TxIOStatus_CB(INT32 bEnd, void *output_data)
 void EthCam_TxFWVersion_CB(INT32 bEnd, void *output_data)
 {
 	ETHCAM_XML_STRING_RESULT *output=(ETHCAM_XML_STRING_RESULT*)output_data;
+	if(output->path_id==ETHCAM_PATH_ID_1){
+        memcpy(gFWEthcamVersion[ETHCAM_PATH_ID_1], output->string, sizeof(gFWEthcamVersion[ETHCAM_PATH_ID_1]));
+    }else if(output->path_id==ETHCAM_PATH_ID_2){
+        memcpy(gFWEthcamVersion[ETHCAM_PATH_ID_2], output->string, sizeof(gFWEthcamVersion[ETHCAM_PATH_ID_2]));
+    }
 	DBG_DUMP("TxFWVersion cmd=%d, path_id=%d, status=%d, string=%s\r\n",output->cmd, output->path_id,output->status,output->string);
 }
 void EthCam_SetTxIPReset_CB(INT32 bEnd, void *output_data)
@@ -3155,10 +3190,22 @@ void EthCam_EISInfo_CB(INT32 bEnd, void *output_data)
 	DBG_DUMP("[%d]EISInfo, EN=%d, SrcTp=%d, Ver=%d, GyroS=%d, LutS=%d, LutSz=%d\r\n",output->path_id,sEthCamTxEISInfo[output->path_id].Enable,sEthCamTxEISInfo[output->path_id].SrcType,sEthCamTxEISInfo[output->path_id].Version,sEthCamTxEISInfo[output->path_id].GyroSend,sEthCamTxEISInfo[output->path_id].LutSend,sEthCamTxEISInfo[output->path_id].LutSize);
 	#endif
 }
+void EthCam_SyncGPSInfo_CB(INT32 bEnd, void *output_data)
+{
+	//ETHCAM_XML_DEFAULT_FORMAT *output=(ETHCAM_XML_DEFAULT_FORMAT*)output_data;
+	//DBG_IND("cmd=%d, status=%d\r\n",output->cmd, output->status);
+}
 
 //======================XML Cmd Result CB End======================
 
+void EthCam_GetMotionDetect_CB(INT32 bEnd, void *output_data)
+{
+	extern BOOL gEthCamMotionDet;
 
+	ETHCAM_XML_VALUE_RESULT *output=(ETHCAM_XML_VALUE_RESULT*)output_data;
+	//DBG_DUMP("GetMotionDetect cmd=%d, path_id=%d, status=%d, value=%d\r\n",output->cmd, output->path_id,output->status,output->value);
+	gEthCamMotionDet = output->value;
+}
 
 void EthCamCmd_SetResultTable(ETHCAM_XML_RESULT *pAppCmdTbl)
 {
@@ -3211,6 +3258,8 @@ ETHCAM_CMD_ITEM(ETHCAM_CMD_SET_TX_AUDCAP, 0, (UINT32)EthCam_SetTxAudCap, 0, FL_N
 ETHCAM_CMD_ITEM(ETHCAM_CMD_SET_TX_AUDINFO, 0, (UINT32)EthCam_SetTxAudInfo, 0, FL_NULL)
 ETHCAM_CMD_ITEM(ETHCAM_CMD_SET_TX_CLONE_WRITEFILE, 0, (UINT32)EthCam_SetTxCloneWriteFIle, 0, FL_NULL)
 ETHCAM_CMD_ITEM(ETHCAM_CMD_EIS_INFO, 0, (UINT32)EthCam_EISInfo, 0, FL_NULL)
+ETHCAM_CMD_ITEM(ETHCAM_CMD_SYNC_GPS_INFO, 0, (UINT32)EthCam_SyncGPSInfo, 0, FL_NULL)
+ETHCAM_CMD_ITEM(ETHCAM_CMD_GET_MOTION_DET, 0, (UINT32)EthCam_GetMotionDetect, 0, FL_NULL)
 ETHCAM_CMD_END()
 
 
@@ -3249,5 +3298,7 @@ ETHCAM_XML_RESULT EthCamXMLResultTbl[]={
 	{ETHCAM_CMD_SET_TX_FLIP, 					ETHCAM_XML_RESULT_TYPE_DEFAULT_FORMAT, 		EthCam_SetTxFlip_CB},
 	{ETHCAM_CMD_SET_TX_GPS, 					ETHCAM_XML_RESULT_TYPE_DEFAULT_FORMAT, 		NULL},
 	{ETHCAM_CMD_EIS_INFO, 						ETHCAM_XML_RESULT_TYPE_LIST, 					EthCam_EISInfo_CB},
+	{ETHCAM_CMD_SYNC_GPS_INFO, 					ETHCAM_XML_RESULT_TYPE_DEFAULT_FORMAT, 		EthCam_SyncGPSInfo_CB},
+	{ETHCAM_CMD_GET_MOTION_DET, 				ETHCAM_XML_RESULT_TYPE_VALUE_RESULT, 		EthCam_GetMotionDetect_CB},
 };
 #endif

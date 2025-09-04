@@ -475,6 +475,306 @@ static INT32 DrvPower_GetTempCompentation(INT32 tempValue)
 	return 0;
 }
 
+static UINT32 DrvPower_GetPowerOnSrc(void)
+{
+	UINT32 ret = 0;
+	#if defined(_MCU_ENABLE_)
+	ret = MCUCtrl_SendCmd(UART_CMD_POWER_ON_REASON, 0, 0, 0);
+	#else
+	ret = rtc_getPWROnSource();
+	#endif
+
+	return ret;
+}
+
+#define USE_HWTIMER     DISABLE //ENABLE
+
+static void __add_1s(struct tm *ct)
+{
+	if (ct->tm_sec == 59) {
+		if (ct->tm_min == 59) {
+			ct->tm_hour += 1;
+			ct->tm_min = 0;
+			ct->tm_sec = 0;
+		} else {
+			ct->tm_min += 1;
+			ct->tm_sec = 0;
+		}
+	} else {
+		ct->tm_sec += 1;
+	}
+}
+
+
+static void DrvPower_PowerOff_ClearCounter(void)
+{
+	rtc_resetShutdownTimer();
+}
+
+static BOOL gLoopQuit = FALSE;
+extern void _DrvPowerBatt_Quit(void);
+void _DrvPowerBatt_Quit(void)
+{
+	gLoopQuit = TRUE;
+}
+
+static void DrvPower_PowerOff(void)
+{
+	DBG_DUMP("(pwr-off)\r\n");
+
+#if (_FPGA_EMULATION_ != ENABLE)
+	Delay_DelayUs(800);
+	rtc_poweroffPWR(); //this func will turn-off system power
+
+	// Loop forever
+	while (!gLoopQuit) { //fix for CID 43219
+		;
+	}
+#else
+	// Loop forever
+	while (1) {
+		;
+	}
+#endif
+}
+
+//-----------------------------------------------------------------------------
+// Power Reset (Power Alarm)
+//-----------------------------------------------------------------------------
+static void DrvPower_PowerReset_Enable(BOOL bEnable)
+{
+	if (bEnable != 0) {
+		rtc_enablePWRAlarm();
+		DBG_DUMP("+(pwr-alarm)\r\n");
+	} else {
+		DBG_DUMP("-(pwr-alarm)\r\n");
+		rtc_disablePWRAlarm();
+	}
+}
+
+static void DrvPower_PowerReset_ClearCounter(void)
+{
+	DBG_ERR("Not Support!");
+}
+
+static void DrvPower_PowerReset(void)
+{
+	struct tm CurrDT;
+	DrvPower_PowerReset_Enable(FALSE);
+
+	CurrDT = HwClock_GetTime(TIME_ID_CURRENT);
+	__add_1s(&CurrDT);
+	__add_1s(&CurrDT);
+	__add_1s(&CurrDT);
+	HwClock_SetTime(TIME_ID_HWRT, CurrDT, 0);
+
+	DrvPower_PowerReset_Enable(TRUE);
+	DrvPower_PowerOff();
+}
+
+//-----------------------------------------------------------------------------
+// Soft Reset (Watch Dog)
+//-----------------------------------------------------------------------------
+
+//#Fine tune the watch dog timer value
+#define WDT_TIMER_INTERVAL         160
+#define WDT_TIMEOUT                350     //350 ms
+
+#if (USE_HWTIMER == ENABLE)
+static TIMER_ID     g_WatchDog_TimerID = 0xffffffffU;
+#else
+static SWTIMER_ID   g_WatchDog_TimerID = 0xffffffffU;
+#endif
+static UINT32       g_WatchDog_Timeout = 0;
+static BOOL         g_WatchDog_Enable = 0;
+
+static void _WatchDog_Isr(UINT32 uiEvent)
+{
+	// kick
+	wdt_trigger();
+}
+
+static void DrvPower_SoftReset_ClearCounter(void)
+{
+	// kick
+	wdt_trigger();
+}
+
+static void DrvPower_SoftReset_SetCounter(UINT32 uiTimeOut)
+{
+	if (g_WatchDog_TimerID != 0xffffffffU) {
+		return;    //already enable
+	}
+	g_WatchDog_Timeout = uiTimeOut;
+}
+
+static void DrvPower_SoftReset_Enable(BOOL bEnable)
+{
+	if (bEnable) {
+		if (g_WatchDog_Enable) {
+			return;
+		}
+
+#if (USE_HWTIMER == ENABLE)
+		if (timer_open(&g_WatchDog_TimerID, _WatchDog_Isr) != E_OK)
+#else
+		if (SwTimer_Open(&g_WatchDog_TimerID, _WatchDog_Isr) != E_OK)
+#endif
+		{
+			DBG_ERR("WDT timer open failed!\r\n");
+			g_WatchDog_TimerID = 0xffffffffU;
+			return;
+		}
+
+		//to avoid wdt already in use
+		wdt_close();
+		DBG_DUMP("+(watch-dog)\r\n");
+		Delay_DelayUs(1000); //wait message output complet
+		// Open
+		wdt_open();
+		// Config WDT to [uiTimeOut] ms, reset system
+		wdt_setConfig(WDT_CONFIG_ID_MODE, WDT_MODE_RESET);
+		wdt_setConfig(WDT_CONFIG_ID_TIMEOUT, g_WatchDog_Timeout);
+		// Enable WDT
+		wdt_enable();
+		// Assign ISR
+#if (USE_HWTIMER == ENABLE)
+		timer_cfg(g_WatchDog_TimerID, 1000 * WDT_TIMER_INTERVAL, TIMER_MODE_FREE_RUN | TIMER_MODE_ENABLE_INT, TIMER_STATE_PLAY);
+#else
+		SwTimer_Cfg(g_WatchDog_TimerID, WDT_TIMER_INTERVAL, SWTIMER_MODE_FREE_RUN);
+		SwTimer_Start(g_WatchDog_TimerID);
+#endif
+
+		g_WatchDog_Enable = 1;
+	} else {
+		if (!g_WatchDog_Enable) {
+			return;
+		}
+
+		if (g_WatchDog_TimerID != 0xffffffffU) {
+#if (USE_HWTIMER == ENABLE)
+			timer_close(g_WatchDog_TimerID);
+#else
+			SwTimer_Close(g_WatchDog_TimerID);
+#endif
+			g_WatchDog_TimerID = 0;
+		}
+		DBG_DUMP("-(watch-dog)\r\n");
+		// Disable WDT
+		wdt_disable();
+		wdt_close();
+
+		g_WatchDog_Enable = 0;
+	}
+}
+
+static void DrvPower_SoftReset(void)
+{
+	DrvPower_SoftReset_Enable(FALSE);
+	DBG_DUMP("(sw-reset)\r\n");
+#if (_FPGA_EMULATION_ != ENABLE)
+	Delay_DelayUs(1000); //wait message output complete
+#endif
+
+	//setting wdt start
+	// Open
+	wdt_open();
+	// Config WDT to 350 ms, reset system
+	wdt_setConfig(WDT_CONFIG_ID_MODE, WDT_MODE_RESET);
+	//#NT#2017/11/22#HM Tseng -begin
+	//#NT#Only for normal reboot
+	wdt_setConfig(WDT_CONFIG_ID_EXT_RESET, WDT_EXT_RESET);
+	//#NT#2017/11/22#HM Tseng -end
+	//wdt_setConfig(WDT_CONFIG_ID_TIMEOUT, WDT_TIMEOUT);
+	wdt_setConfig(WDT_CONFIG_ID_MANUAL_RESET, WDT_MANUAL_RESET);
+	// Enable WDT
+	wdt_enable();
+
+	//wait to system reset
+#if (_FPGA_EMULATION_ != ENABLE)
+	abort();
+#else
+	// Loop forever
+	while (1) {
+		_ASM_NOP
+	}
+#endif
+}
+
+static UINT32 DrvPower_GetPowerKey(UINT32 pwrID)
+{
+	switch (pwrID) {
+	case POWER_ID_PSW1:
+		return rtc_getPWRStatus();
+		break;
+	case POWER_ID_PSW2:
+		return rtc_getPWR2Status();
+		break;
+	case POWER_ID_PSW3:
+		return rtc_getPWR3Status();
+		break;
+	case POWER_ID_PSW4:
+		return rtc_getPWR4Status();
+		break;
+	case POWER_ID_HWRT:
+		return rtc_isPWRAlarmEnabled();
+		break;
+	case POWER_ID_SWRT:
+		return 0; //keep 1 if soft reset
+		break;
+	default:
+		DBG_ERR("unknown pwr id (%d)\r\n", pwrID);
+		break;
+	}
+	return 0;
+}
+
+
+static void DrvPower_SetPowerKey(UINT32 pwrID, UINT32 value)
+{
+	switch (pwrID) {
+	case POWER_ID_PSW1:
+		if (value == 0xf0) { //keep power on - clear power off timer
+			DrvPower_PowerOff_ClearCounter();
+		}
+		if (value == 0xff) { //power off NOW
+			DrvPower_PowerOff();
+		}
+		break;
+	case POWER_ID_HWRT:
+		if (value == 0) { //disable h/w reset timer
+			DrvPower_PowerReset_Enable(FALSE);
+		}
+		if (value == 1) { //enable h/w reset timer
+			DrvPower_PowerReset_Enable(TRUE);
+		}
+		if (value == 0xf0) { //keep power on - clear h/w reset timer
+			DrvPower_PowerReset_ClearCounter();
+		}
+		if (value == 0xff) { //h/w reset NOW
+			DrvPower_PowerReset();
+		}
+		break;
+	case POWER_ID_SWRT:
+		if (value == 0) { //disable s/w reset timer
+			DrvPower_SoftReset_Enable(FALSE);
+		}
+		if (value == 1) { //enable s/w reset timer
+			DrvPower_SoftReset_Enable(TRUE);
+		}
+		if (value == 0xf0) { //keep power on - clear s/w reset timer
+			DrvPower_SoftReset_ClearCounter();
+		}
+		if (value == 0xff) { //s/w reset NOW
+			DrvPower_SoftReset();
+		}
+		break;
+	default:
+		DBG_ERR("unknown pwr id (%d)\r\n", pwrID);
+		break;
+	}
+}
+
 static void   DrvPower_SetControl(DRVPWR_CTRL DrvPwrCtrl, UINT32 value)
 {
 	DBG_IND("DrvPwrCtrl(%d), value(%d)\r\n", DrvPwrCtrl, value);
@@ -523,6 +823,9 @@ static void   DrvPower_SetControl(DRVPWR_CTRL DrvPwrCtrl, UINT32 value)
 		}
 		break;
 #endif
+	case DRVPWR_CTRL_SWRT_COUNTER:
+		DrvPower_SoftReset_SetCounter(value);
+		break;
 	case DRVPWR_CTRL_PSW1:
 		hwpower_set_power_key(POWER_ID_PSW1, value);
 		break;
@@ -609,6 +912,15 @@ static UINT32  DrvPower_GetControl(DRVPWR_CTRL DrvPwrCtrl)
 		break;
 	case DRVPWR_CTRL_PSW1:
 		rvalue = hwpower_get_power_key(POWER_ID_PSW1);
+		break;
+	case DRVPWR_CTRL_PSW2:
+		rvalue = hwpower_get_power_key(POWER_ID_PSW2);
+		break;
+	case DRVPWR_CTRL_PSW3:
+		rvalue = hwpower_get_power_key(POWER_ID_PSW3);
+		break;
+	case DRVPWR_CTRL_PSW4:
+		rvalue = hwpower_get_power_key(POWER_ID_PSW4);
 		break;
 	case DRVPWR_CTRL_HWRT:
 		rvalue = hwpower_get_power_key(POWER_ID_HWRT);

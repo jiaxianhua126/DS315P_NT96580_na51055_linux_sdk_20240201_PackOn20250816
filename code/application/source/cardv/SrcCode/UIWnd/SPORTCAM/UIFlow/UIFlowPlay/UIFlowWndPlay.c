@@ -10,6 +10,15 @@
 #include "ImageApp/ImageApp_MoviePlay.h"
 #include "UIApp/Play/UIAppMoviePlay.h"
 #include "FileDB.h"
+#include "GxVideoFile.h"
+#include "UIApp/Play/UIAppPlay.h" 
+
+//#include "SMediaPlayAPI.h"
+
+//#include "../../audio_common/include/Audio.h"
+//#include "Audio.h"
+#include "UIApp/AppDisp_PBView.h"
+
 #define FLOW_MOV_PLAY_REAET		DISABLE
 #if (FLOW_MOV_PLAY_REAET == ENABLE)
 #include "kwrap/util.h"
@@ -26,12 +35,28 @@
 #endif
 ///////////////////////////////////////////////////////////////////////////////
 
-#if _TODO
-UINT32         g_uiUIFlowWndPlayCurrentVolume   = AUDIO_VOL_5;
+#if 1//_TODO
+#define PLAY_KEY_PRESS_MASK        (FLGKEY_KEY_MASK_DEFAULT)
+#define PLAY_KEY_RELEASE_MASK      (FLGKEY_KEY_MASK_DEFAULT)//FLGKEY_KEY_MASK_NULL//(FLGKEY_UP | FLGKEY_DOWN | FLGKEY_LEFT | FLGKEY_RIGHT)
+#define PLAY_KEY_CONTINUE_MASK     FLGKEY_KEY_CONT_MASK_DEFAULT
+
+#define FULL_FILE_PATH_LEN      64
+
+#define BROWSER_VIEW			ENABLE
+
+BOOL           g_bUIFlowWndPlayNoImgWndOpened   = FALSE;
+UINT32         g_uiUIFlowWndPlayCurrentVolume   = 5;//AUDIO_VOL_5;
 UINT32         g_uiUIFlowWndPlayCurrenSpeed     = SMEDIAPLAY_SPEED_NORMAL;
 UINT32         g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
 MOVIEPLAY_FILEPLAY_INFO gMovie_Play_Info        = {0};
 FST_FILE       gphUIFlowMovPlay_Filehdl         = NULL;
+
+typedef enum {
+	UIFLOW_PLAY_DISP_ID_1 = 0,
+	UIFLOW_PLAY_DISP_ID_2,
+	UIFLOW_PLAY_DISP_ID_MAX,
+	ENUM_DUMMY4WORD(UIFLOW_PLAY_DISP_ID)
+} UIFLOW_PLAY_DISP_ID;
 
 MOVIEPLAY_DISP_INFO  gUIFlowWndPlayDispConfig[4] = {
     //enable  disp_id       w     h      ratio     rotate dir
@@ -56,6 +81,11 @@ UINT32         g_uiUIFlowWndPlayCurrenSpeed     = SMEDIAPLAY_SPEED_NORMAL;
 UINT32         g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
 BOOL           g_bUIFlowWndPlayNoImgWndOpened   = FALSE;
 FST_FILE       gphUIFlowMovPlay_Filehdl         = NULL;
+extern void FlowPB_IconDrawTabNavi(BOOL bShow);
+#endif
+#if (BOOT_RECOVERY_FILE==ENABLE)
+extern UINT8 g_FileRecoveryFlag;
+extern UINT8 g_FileRecoverDouFlag;
 #endif
 extern void FlowPB_IconDrawTabNavi(BOOL bShow);
 
@@ -64,25 +94,17 @@ void UIFlowMoviePlay_SetSpeed(INT16 uiChangeSpeedLevel);
 
 //---------------------UIFlowWndPlayCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndPlay)
-CTRL_LIST_ITEM(UIFlowWndPlay_TabNavi)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticICN_DSCMode)
-CTRL_LIST_ITEM(UIFlowWndPlay_StatusICN_Flash)
-CTRL_LIST_ITEM(UIFlowWndPlay_StatusICN_EV)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_Size)
-CTRL_LIST_ITEM(UIFlowWndPlay_StatusICN_WB)
-CTRL_LIST_ITEM(UIFlowWndPlay_StatusICN_Quality)
-CTRL_LIST_ITEM(UIFlowWndPlay_StatusICN_Sharpness)
-CTRL_LIST_ITEM(UIFlowWndPlay_StatusICN_Storage)
 CTRL_LIST_ITEM(UIFlowWndPlay_StatusICN_Battery)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_Filename)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticICN_Protect)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_Date)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_Time)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_MovPlayTime)
-#if defined(_KEY_METHOD_2KEY_)
-CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_LeftBtn)
-CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_RightBtn)
-#endif
+CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_VideoTotalTime)
+CTRL_LIST_ITEM(UIFlowWndPlay_Static_Speed)
+CTRL_LIST_ITEM(UIFlowWndPlay_TipsBar)
 CTRL_LIST_END
 
 //----------------------UIFlowWndPlayCtrl Event---------------------------
@@ -127,8 +149,8 @@ EVENT_ITEM(NVTEVT_KEY_MENU, UIFlowWndPlay_OnKeyMenu)
 EVENT_ITEM(NVTEVT_KEY_DISPLAY, UIFlowWndPlay_OnKeyDisplay)
 EVENT_ITEM(NVTEVT_KEY_MODE, UIFlowWndPlay_OnKeyMode)
 EVENT_ITEM(NVTEVT_CHILD_CLOSE, UIFlowWndPlay_OnChildClose)
-EVENT_ITEM(NVTEVT_BATTERY, UIFlowWndPlay_OnBattery)
-EVENT_ITEM(NVTEVT_BATTERY_LOW, UIFlowWndPlay_OnBatteryLow)
+//EVENT_ITEM(NVTEVT_BATTERY,UIFlowWndPlay_OnBattery)
+//EVENT_ITEM(NVTEVT_BATTERY_LOW,UIFlowWndPlay_OnBatteryLow)
 EVENT_ITEM(NVTEVT_KEY_SHUTTER2, UIFlowWndPlay_OnKeyShutter2)
 EVENT_ITEM(NVTEVT_KEY_ENTER, UIFlowWndPlay_OnKeyEnter)
 EVENT_ITEM(NVTEVT_KEY_PLAYBACK, UIFlowWndPlay_OnKeyPlayback)
@@ -138,9 +160,48 @@ EVENT_ITEM(NVTEVT_CB_MOVIE_ERR, UIFlowWndPlay_OnMovieError)
 EVENT_ITEM(NVTEVT_STORAGE_INIT, UIFlowWndPlay_OnStorageInit)
 EVENT_ITEM(NVTEVT_STORAGE_CHANGE, UIFlowWndPlay_OnStorageChange)
 EVENT_END
+#if (BOOT_RECOVERY_FILE==ENABLE)
+static void UIFlowWndPlay_FileRecovery(void)
+{
+    UINT32 uiStatus, uiCurrMode;
+    uiStatus = PB_WaitCommandFinish(PB_WAIT_INFINITE);
+    PB_GetParam(PBPRMID_PLAYBACK_MODE, &uiCurrMode);
 
+    // Decode Error & Read Error
+    if( uiStatus & (PB_STA_ERR_FILE | PB_STA_ERR_DECODE) )
+    {
+        if(uiCurrMode == PLAYMODE_AVI || uiCurrMode == PLAYMODE_MOVMJPG)
+        {
+            UINT32  uiBuffAddr, uiBuffSize;
+            CHAR    chaFullName[64] = { 0 };
 
-extern void PBView_DrawErrorView(void);
+            //UxState_SetData(&UIFlowWndPlay_StatusTxt_FileRecoveryRemindCtrl,STATE_CURITEM,UIFlowWndPlay_StatusTxt_FileRecoveryRemind_STRID_RECOVERING);
+            //UxCtrl_SetShow(&UIFlowWndPlay_StatusTxt_FileRecoveryRemindCtrl, TRUE);
+            //Ux_RedrawAllWind();
+            PB_GetParam(PBPRMID_DATABUF_ADDR, &uiBuffAddr);
+            PB_GetParam(PBPRMID_DATABUF_SIZE, &uiBuffSize);
+            PB_GetParam(PBPRMID_CURR_FILEPATH, (UINT32 *)&chaFullName);
+            SMediaPlay_FileRecovery(chaFullName, uiBuffAddr, uiBuffSize);
+            FileDB_Refresh(0);//2016/04/11
+            uiStatus = UIPlay_PlaySingle(PB_SINGLE_CURR);
+            /*
+            if( uiStatus == PB_STA_DONE)
+            {
+                UxState_SetData(&UIFlowWndPlay_StatusTxt_FileRecoveryRemindCtrl,STATE_CURITEM,UIFlowWndPlay_StatusTxt_FileRecoveryRemind_STRID_MVRECOVER_OK);
+                UxCtrl_SetShow(&UIFlowWndPlay_StatusTxt_FileRecoveryRemindCtrl, TRUE);
+                return;
+            }
+            else
+            {
+                UxState_SetData(&UIFlowWndPlay_StatusTxt_FileRecoveryRemindCtrl,STATE_CURITEM,UIFlowWndPlay_StatusTxt_FileRecoveryRemind_STRID_MVRECOVER_FAIL);
+                UxCtrl_SetShow(&UIFlowWndPlay_StatusTxt_FileRecoveryRemindCtrl, TRUE);
+                return;
+            }*/
+        }
+        //Ux_OpenWindow(&UIFlowWndWrnMsgCtrl,2,FLOWWRNMSG_ISSUE_PICTURE_ERR,FLOWWRNMSG_TIMER_KEEP);
+    }
+}
+#endif
 static void UIFlowWndPlay_CheckStatus(void)
 {
 	UINT32 uiStatus, uiCurrMode;
@@ -165,7 +226,6 @@ static void UIFlowWndPlay_CheckStatus(void)
 				return;
 			}
 		}
-		PBView_DrawErrorView();
 		Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_PICTURE_ERR, FLOWWRNMSG_TIMER_2SEC);
 	}
 }
@@ -212,36 +272,118 @@ INT32 UIFlowWndPlay_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	return NVTEVT_CONSUME;
 }
 #else // normal mode
+static BOOL uiShowFileType = TRUE;
+void UIFlowPlayShowFileTypeEnable(BOOL En)
+{
+    uiShowFileType = En;
+}
+BOOL UIPlayGet_FileType(void)
+{
+    return uiShowFileType;
+}
+
 INT32 UIFlowWndPlay_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	UINT32 uiFileNum = 0;
-	PLAY_SINGLE_OBJ FlowPlaySingleObj;
 	UINT32  uiStatus;
+	UINT32 uiFileNum = 0;
+#if 1//(SDHOTPLUG_FUNCTION == ENABLE)
+	if (UIStorageCheck(STORAGE_CHECK_ERROR, NULL) == TRUE) {
+		Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, UIFlowWndWrnMsg_StatusTXT_Msg_STRID_PLEASE_INSERT_SD, FLOWWRNMSG_TIMER_KEEP);
+		return NVTEVT_CONSUME;
+	}
+#endif
+	g_bUIFlowWndPlayNoImgWndOpened = FALSE;
+#if (BOOT_RECOVERY_FILE==ENABLE)
+    if(g_FileRecoveryFlag == TRUE)
+    {
+        PB_WaitCommandFinish(PB_WAIT_INFINITE);
+        //After playback ready, point to the last file
+        PB_GetParam(PBPRMID_TOTAL_FILE_COUNT, &uiFileNum);
+        //    PB_OpenSpecFileBySeq(DCF_GetDBInfo(DCF_INFO_TOL_FILE_COUNT), TRUE);
+        PB_OpenSpecFileBySeq(uiFileNum, TRUE);
+        UIPlay_PlaySingle(PB_SINGLE_CURR);
+        uiStatus = PB_WaitCommandFinish(PB_WAIT_INFINITE);
 
-	PB_WaitCommandFinish(PB_WAIT_INFINITE);  // Will this affect the OSD screen? By KS Hung on 20190805.
-	//After playback ready, point to the last file
-	PB_GetParam(PBPRMID_TOTAL_FILE_COUNT, &uiFileNum);
-	PB_OpenSpecFileBySeq(uiFileNum, TRUE);
-	FlowPlaySingleObj.PlayCommand = PB_SINGLE_CURR;
-	FlowPlaySingleObj.PlayCommand |= PB_SINGLE_PRIMARY;
-	FlowPlaySingleObj.JumpOffset  = 1;
-	PB_PlaySingleMode(&FlowPlaySingleObj);
-	uiStatus = PB_WaitCommandFinish(PB_WAIT_INFINITE);    // Will this affect the OSD screen? By KS Hung on 20190805.
+        //disable video2 and enable video 1
+        Display_ShowPreview();
 
-	//disable video2 and enable video 1
-	Display_ShowPreview();
+        UpdateVdoWinForPB();
+        //GxDisplay_Set(LAYER_OSD1, LAYER_STATE_ENABLE, 1);
+        //GxDisplay_Set(LAYER_OSD2, LAYER_STATE_ENABLE, 1);
+        FlowPB_UpdateIcons(0);
 
-	if (uiStatus & PB_STA_NOIMAGE)
-		//if(DCF_GetDBInfo(DCF_INFO_TOL_FILE_COUNT)==0)
-	{
-		Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_2SEC);
-		g_bUIFlowWndPlayNoImgWndOpened = TRUE;
-	} else {
-		g_PlbData.VideoPBSpeed = PLB_FWD_MOV_1x;
-		g_PlbData.State = PLB_ST_FULL;
-		UxTab_SetData(&UIFlowWndPlay_TabNaviCtrl, TAB_FOCUS, UIFlowWndPlay_TabNavi_ButtonPlay);
-		UIFlowWndPlay_CheckStatus();
-		FlowPB_UpdateIcons(1);
+        if (uiStatus & PB_STA_NOIMAGE) {
+            g_FileRecoveryFlag = 0;
+            Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
+            Ux_DefaultEvent(pCtrl, NVTEVT_OPEN_WINDOW, paramNum, paramArray);
+            return NVTEVT_CONSUME;
+        }
+
+        UIFlowWndPlay_FileRecovery();
+        //Ux_RedrawAllWind();
+        //Display_SetEnable(LAYER_VDO1, TRUE);
+        //Delay_DelayMs(1000);
+        g_FileRecoveryFlag = FALSE;
+         if(g_FileRecoverDouFlag==2)
+        {
+            g_FileRecoverDouFlag = FALSE;
+            UIPlay_PlaySingle(PB_SINGLE_PREV);
+            UIFlowWndPlay_FileRecovery();
+        }
+        //FlowPB_UpdateIcons(1);            
+        //Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
+
+        Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
+    
+        Ux_DefaultEvent(pCtrl,NVTEVT_OPEN_WINDOW,paramNum,paramArray);
+        return NVTEVT_CONSUME;
+    }
+#endif
+    if (UIPlayGet_FileType()) {
+        /*
+        if (uiStatus == PB_STA_NOIMAGE &&uiFirst) {
+            //Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_3SEC);
+            uiFirst = FALSE;
+        }
+        else*/
+        {
+            Ux_OpenWindow((VControl *)(&UIMenuWndPlayFileTypeCtrl), 0);
+            UIFlowPlayShowFileTypeEnable(FALSE);
+            //uiFirst = TRUE;
+        }
+    } else {
+        PB_WaitCommandFinish(PB_WAIT_INFINITE);
+        //After playback ready, point to the last file
+        PB_GetParam(PBPRMID_TOTAL_FILE_COUNT, &uiFileNum);
+        //PB_OpenSpecFileBySeq(DCF_GetDBInfo(DCF_INFO_TOL_FILE_COUNT), TRUE);
+        PB_OpenSpecFileBySeq(uiFileNum, TRUE);
+        UIPlay_PlaySingle(PB_SINGLE_CURR);
+        uiStatus = PB_WaitCommandFinish(PB_WAIT_INFINITE);
+
+        //disable video2 and enable video 1
+        Display_ShowPreview();
+
+        UpdateVdoWinForPB();
+
+        if (uiStatus & PB_STA_NOIMAGE)
+            //if(DCF_GetDBInfo(DCF_INFO_TOL_FILE_COUNT) == 0)
+        {
+            if (UIMenuWndPlayFileType_GetFileType()) {
+                Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_3SEC);
+            } else {
+                Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_VIDEO, FLOWWRNMSG_TIMER_3SEC);
+            }
+            g_bUIFlowWndPlayNoImgWndOpened = TRUE;
+            g_PlbData.State = PLB_ST_FULL;
+        } else {
+            g_PlbData.VideoPBSpeed = PLB_FWD_MOV_1x;
+            //g_PlbData.State = PLB_ST_FULL;
+            //UxTab_SetData(&UIFlowWndPlay_TabNaviCtrl, TAB_FOCUS, UIFlowWndPlay_TabNavi_ButtonPlay);
+            //UIFlowWndPlay_CheckStatus();
+            g_PlbData.State = PLB_ST_THUMB;
+            //FlowPB_UpdateIcons(1);
+            Ux_OpenWindow((VControl *)(&UIFlowWndPlayThumbCtrl), 0);
+        }
 	}
 
 	// Set mask key
@@ -271,6 +413,16 @@ INT32 UIFlowWndPlay_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 		UIFlowMoviePlay_SetSpeed(g_PlbData.VideoPBSpeed);
 		g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
 		Ux_SendEvent(0, NVTEVT_EXE_CLOSEPLAY, 0);
+
+		ImageApp_MoviePlay_Close();
+        if (gMovie_Play_Info.event_cb) {
+			#if (NMEDIAPLAY_FUNC == DISABLE)
+			gMovie_Play_Info.event_cb(5,0,0,0); // release ISF_Data by AppDisp_ScaleView
+			#else //((NMEDIAPLAY_FUNC == ENABLE))
+			gMovie_Play_Info.event_cb(5,0,0,0);
+			#endif
+		}
+
 		if (gphUIFlowMovPlay_Filehdl) {
 			FileSys_CloseFile(gphUIFlowMovPlay_Filehdl);
 			gphUIFlowMovPlay_Filehdl = NULL;
@@ -278,17 +430,20 @@ INT32 UIFlowWndPlay_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 		break;
 	}
 
-    #if _TODO
+	//#NT#2012/10/23#Philex Lin - begin
+	// enable auto power off/USB detect timer
+	// enable sound key tone
 	KeyScan_EnableMisc(TRUE);
-	#endif
-
+	//#NT#2012/10/23#Philex Lin - end
+	//g_PlbData.VideoPBSpeed=PLB_FWD_MOV_1x;
 	Ux_DefaultEvent(pCtrl, NVTEVT_CLOSE_WINDOW, paramNum, paramArray);
 	return NVTEVT_CONSUME;
 }
 
 INT32 UIFlowWndPlay_OnKeyNext(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	INT32 vdo_idx = -1;
+    #if 0//_TODO
+	UINT32 vdo_idx = 0;
 
 	if (NVTEVT_KEY_RELEASE == paramArray[0]) {
 		return NVTEVT_CONSUME;
@@ -303,7 +458,6 @@ INT32 UIFlowWndPlay_OnKeyNext(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
     case PLB_ST_BWD_MOV:
 		#if 1//_TODO
         if(g_PlbData.VideoPBSpeed < PLB_FWD_MOV_8x)
-
         {
             g_PlbData.VideoPBSpeed ++;
 
@@ -334,6 +488,9 @@ INT32 UIFlowWndPlay_OnKeyNext(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 
 			// Set speed and direction
 			UIFlowMoviePlay_SetSpeed(g_PlbData.VideoPBSpeed);
+			#if _TODO
+			vdo_idx = AppDisp_MoviePlayView_GetDispIdx(); // get current display video index
+			#endif
 			ImageApp_MoviePlay_FilePlay_UpdateSpeedDirect(g_uiUIFlowWndPlayCurrenSpeed, g_uiUIFlowWndPlayCurrenDirection, vdo_idx);
 
             //FlowPB_IconDrawMovSpeed();
@@ -342,18 +499,24 @@ INT32 UIFlowWndPlay_OnKeyNext(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 		#endif
         break;
 	case PLB_ST_PAUSE_MOV:
+		#if _TODO
+		vdo_idx = AppDisp_MoviePlayView_GetDispIdx(); // get current display video index
+        Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_NULL);
+		ImageApp_MoviePlay_FilePlay_StepByStep(SMEDIAPLAY_DIR_FORWARD, vdo_idx);
+        Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
+		#endif
         break;
 	default:
 		break;
 	}
-
-
+#endif
 	return NVTEVT_CONSUME;
 }
 
 INT32 UIFlowWndPlay_OnKeyPrev(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	INT32 vdo_idx = -1;
+	#if 0//_TODO
+		UINT32 vdo_idx = 0;
 
 	if (NVTEVT_KEY_RELEASE == paramArray[0]) {
 		return NVTEVT_CONSUME;
@@ -396,40 +559,47 @@ INT32 UIFlowWndPlay_OnKeyPrev(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
                 g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
             }
 
+			// Set speed and direction
 			UIFlowMoviePlay_SetSpeed(g_PlbData.VideoPBSpeed);
+			#if _TODO
+			vdo_idx = AppDisp_MoviePlayView_GetDispIdx(); // get current display video index
+			#endif
 			ImageApp_MoviePlay_FilePlay_UpdateSpeedDirect(g_uiUIFlowWndPlayCurrenSpeed, g_uiUIFlowWndPlayCurrenDirection, vdo_idx);
 
+
+            //FlowPB_IconDrawMovSpeed();
             Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
         }
 		#endif
         break;
 	case PLB_ST_PAUSE_MOV:
+		#if _TODO
+        Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_NULL);
+		vdo_idx = AppDisp_MoviePlayView_GetDispIdx(); // get current display video index
+		ImageApp_MoviePlay_FilePlay_StepByStep(SMEDIAPLAY_DIR_BACKWARD, vdo_idx);
+        Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
+		#endif
         break;
 	default:
 		break;
 	}
-
+	#endif
 	return NVTEVT_CONSUME;
 }
 
 INT32 UIFlowWndPlay_OnKeySelect(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
+#if 0
     UINT32 Tabfocus;
-    #if 1//_TODO
 	char   pFilePath[FULL_FILE_PATH_LEN] = {0};
 	UINT32 uiPBFileFmt = PBFMT_MP4;
 	UINT32 uiPBFileSize = 0;
-	#endif
 
 	if (NVTEVT_KEY_RELEASE == paramArray[0]) {
 		return NVTEVT_CONSUME;
 	}
 	switch (g_PlbData.State) {
 	case PLB_ST_FULL:
-		Tabfocus = UxTab_GetData(&UIFlowWndPlay_TabNaviCtrl, TAB_FOCUS);
-		switch (Tabfocus) {
-		case UIFlowWndPlay_TabNavi_ButtonPlay:
-			#if 1//_TODO
 			PB_GetParam(PBPRMID_CURR_FILEFMT, &uiPBFileFmt);
 			if (uiPBFileFmt & (PBFMT_MOVMJPG | PBFMT_AVI | PBFMT_MP4 | PBFMT_TS)) {
 				UINT32 u32CurrPbStatus = 0;
@@ -461,11 +631,6 @@ INT32 UIFlowWndPlay_OnKeySelect(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 					DBG_DUMP("UIFlowWndPlay_OnKeySelect: Can't open Video file!\r\n");
 					break;
 				}
-#if 0
-				KeyScan_EnableMisc(FALSE);
-				UIFlowMoviePlay_SetSpeed(g_PlbData.VideoPBSpeed);
-				g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
-#endif
 
 				FlowPB_UpdateIcons(0); /* FlowPB_IconDrawImageSize needs exif buffer, should be invoked before NVTEVT_EXE_CLOSE */
 
@@ -475,19 +640,13 @@ INT32 UIFlowWndPlay_OnKeySelect(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 				Ux_FlushEventByRange(NVTEVT_KEY_EVT_START, NVTEVT_KEY_EVT_END);
 
 				//stop scan
-#if 0
-				//SxTimer_SetFuncActive(SX_TIMER_DET_STRG_ID, FALSE);
-				SxTimer_SetFuncActive(SX_TIMER_DET_SYSTEM_BUSY_ID, FALSE);
-#endif
 
-#if 0
-				ImageApp_MoviePlay_Open();
-				ImageApp_MoviePlay_Start();
-#else			// Wake up CustomMoviePlayObjCtrl obj.
+
+			// Wake up CustomMoviePlayObjCtrl obj.
 				Ux_SetActiveApp(&CustomMoviePlayObjCtrl);
 				Ux_SendEvent(0, NVTEVT_EXE_OPENPLAY, 1, (UINT32)gphUIFlowMovPlay_Filehdl);
 				Ux_SendEvent(0, NVTEVT_EXE_STARTPLAY, 0);
-#endif
+
 
 				//set movie volumn
 				Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, UI_GetData(FL_MovieAudioPlayIndex), 1);
@@ -507,80 +666,18 @@ INT32 UIFlowWndPlay_OnKeySelect(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 				exam_msg("Play File Path = %s\r\n", pFilePath);
 				//#NT#2017/11/17#Adam Su -end
 			}
-			#endif
 			break;
-		case UIFlowWndPlay_TabNavi_ButtonLeft:
-			Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_NULL);
-			UIPlay_PlaySingle(PB_SINGLE_PREV);
-			UIFlowWndPlay_CheckStatus();
-			FlowPB_UpdateIcons(1);
-			Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
-			break;
-		case UIFlowWndPlay_TabNavi_ButtonRight:
-			Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_NULL);
-			UIPlay_PlaySingle(PB_SINGLE_NEXT);
-			UIFlowWndPlay_CheckStatus();
-			FlowPB_UpdateIcons(1);
-			Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
-			break;
-		case UIFlowWndPlay_TabNavi_ButtonUp:
-			Ux_OpenWindow(&MenuCommonConfirmCtrl, 1, IDM_DELETE_THIS);
-			break;
-		case UIFlowWndPlay_TabNavi_ButtonDown:
-			g_PlbData.State = PLB_ST_MENU;
-			// Reset specific menu items
-			SysSetFlag(FL_PROTECT, PROTECT_ONE);
-			// Set Tab menu to Playback menu
-			// Open common item menu
-			Ux_OpenWindow(&MenuCommonItemCtrl, 0);
-			Input_SetKeyMask(KEY_RELEASE, FLGKEY_KEY_MASK_DEFAULT);
-			break;
-		default:
-			break;
-		}
-		break;
-	case PLB_ST_MAGNIFY:
-		g_PlbData.State = PLB_ST_FULL;
-		FlowPB_UpdateIcons(1);
-		break;
 	case PLB_ST_PLAY_MOV:
 	case PLB_ST_PAUSE_MOV:
 		#if 1//_TODO
 		g_PlbData.State 	   = PLB_ST_FULL;
 		g_PlbData.VideoPBSpeed = PLB_FWD_MOV_1x;
-#if 0
-		UIFlowMoviePlay_SetSpeed(g_PlbData.VideoPBSpeed);
-		g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
-#endif
 
-		#if 0
-		ImageApp_MoviePlay_Close();
-		#else // Close MoviePlay module.
 		Ux_SendEvent(0, NVTEVT_EXE_CLOSEPLAY, 0);
 		Ux_SetActiveApp(&CustomPlayObjCtrl);
-		#endif
 
-#if 0
-		if (gMovie_Play_Info.event_cb) {
-			gMovie_Play_Info.event_cb(MOVIEPLAY_EVENT_STOP);
-		}
-		if (UIStorageCheck(STORAGE_CHECK_ERROR, NULL) == TRUE) {
-			return NVTEVT_CONSUME;
-		}
-#endif
 
-		#if 0
-		ImageApp_Play_Open();
-		#else // Wakeup playback task and ImageApp_Play module.
 		Ux_SendEvent(0, NVTEVT_EXE_OPEN, 0);
-		#endif
-#if 0
-		KeyScan_EnableMisc(TRUE);
-
-		if (SxTimer_GetFuncActive(SX_TIMER_DET_SYSTEM_BUSY_ID) == 0) {
-			SxTimer_SetFuncActive(SX_TIMER_DET_SYSTEM_BUSY_ID, TRUE);
-		}
-#endif
 
 		if (gphUIFlowMovPlay_Filehdl) {
 			FileSys_CloseFile(gphUIFlowMovPlay_Filehdl);
@@ -609,20 +706,197 @@ INT32 UIFlowWndPlay_OnKeySelect(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 		#endif
 		break;
 	}
-
+#endif
 	return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndPlay_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
+    UINT32  uiKeyAct;
+	UINT32	vdo_idx = 0;
+
+    uiKeyAct = paramArray[0];
+
+    switch (uiKeyAct) {
+    case NVTEVT_KEY_PRESS:
+        switch (g_PlbData.State) {
+        case PLB_ST_FULL:
+            Ux_OpenWindow((VControl *)(&UIMenuWndPlayQuickConfirmDelCtrl), 0);
+            break;
+
+        case PLB_ST_PLAY_MOV:
+        case PLB_ST_FWD_MOV:
+        case PLB_ST_BWD_MOV:
+            if (g_PlbData.VideoPBSpeed > PLB_BWD_MOV_4x) //PLB_BWD_MOV_8x
+            {
+                //g_PlbData.VideoPBSpeed --;
+				if (g_PlbData.VideoPBSpeed == PLB_FWD_MOV_1x) {
+					g_PlbData.VideoPBSpeed -= 2;
+				} else {
+					g_PlbData.VideoPBSpeed--;
+				}
+
+                Ux_FlushEventByRange(NVTEVT_KEY_EVT_START,NVTEVT_KEY_EVT_END);
+                Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_NULL);
+
+                if(g_PlbData.VideoPBSpeed > PLB_FWD_MOV_1x)
+                {
+                    g_PlbData.State = PLB_ST_FWD_MOV;
+                    g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
+                }
+                else if(g_PlbData.VideoPBSpeed < PLB_FWD_MOV_1x)
+                {
+                    g_PlbData.State = PLB_ST_BWD_MOV;
+                    g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_BACKWARD;
+                }
+                else   //uiCurrSpeedIndex == PLAYMOV_SPEED_FWD_1X
+                {
+                    g_PlbData.State = PLB_ST_PLAY_MOV;
+                    g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
+                }
+
+                // Set speed and direction
+                UIFlowMoviePlay_SetSpeed(g_PlbData.VideoPBSpeed);
+                #if 0//(NMEDIAPLAY_FUNC == DISABLE)
+                ImageApp_MoviePlay_SetParam(MOVIEPLAY_PARAM_CURSPD, g_uiUIFlowWndPlayCurrenSpeed);
+                ImageApp_MoviePlay_SetParam(MOVIEPLAY_PARAM_CURDIR, g_uiUIFlowWndPlayCurrenDirection);
+                ImageApp_MoviePlay_UpdateAll();
+                #else //(NMEDIAPLAY_FUNC == ENABLE)
+                //UINT32 vdo_idx = AppDisp_MoviePlayView_GetDispIdx(); // get current display video index
+                ImageApp_MoviePlay_FilePlay_UpdateSpeedDirect(g_uiUIFlowWndPlayCurrenSpeed, g_uiUIFlowWndPlayCurrenDirection, vdo_idx);
+                #endif
+
+                FlowPB_IconDrawMovSpeed();
+                Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
+            }
+            break;
+        }
+        break;
+    }
 	return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndPlay_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
+    UINT32  uiKeyAct;
+    UINT32  uiLockStatus;
+	UINT32  vdo_idx = 0;
+
+    uiKeyAct = paramArray[0];
+
+    switch (uiKeyAct) {
+    case NVTEVT_KEY_PRESS:
+        switch (g_PlbData.State) {
+        case PLB_ST_FULL:
+            PB_GetParam(PBPRMID_FILE_ATTR_LOCK, &uiLockStatus);
+            if (uiLockStatus) {
+                UIPlay_Protect(PLAY_UNPROTECT_ONE);
+            } else {
+                UIPlay_Protect(PLAY_PROTECT_ONE);
+            }
+            UIPlay_PlaySingle(PB_SINGLE_CURR);
+            FlowPB_UpdateIcons(1);
+            UIFlowWndPlay_CheckStatus();
+            break;
+
+        case PLB_ST_PLAY_MOV:
+        case PLB_ST_FWD_MOV:
+        case PLB_ST_BWD_MOV:
+            if (g_PlbData.VideoPBSpeed < PLB_FWD_MOV_4x)//PLB_FWD_MOV_8x
+            {
+                //g_PlbData.VideoPBSpeed ++;
+				if (g_PlbData.VideoPBSpeed == PLB_BWD_MOV_2x) {
+					g_PlbData.VideoPBSpeed += 2;
+				} else {
+					g_PlbData.VideoPBSpeed++;
+				}
+
+                Ux_FlushEventByRange(NVTEVT_KEY_EVT_START,NVTEVT_KEY_EVT_END);
+                Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_NULL);
+
+                if(g_PlbData.VideoPBSpeed > PLB_FWD_MOV_1x)
+                {
+                    g_PlbData.State = PLB_ST_FWD_MOV;
+                    g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
+                }
+                else if(g_PlbData.VideoPBSpeed < PLB_FWD_MOV_1x)
+                {
+                    g_PlbData.State = PLB_ST_BWD_MOV;
+                    g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_BACKWARD;
+                }
+                else   //uiCurrSpeedIndex == PLAYMOV_SPEED_FWD_1X
+                {
+                    g_PlbData.State = PLB_ST_PLAY_MOV;
+                    g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
+                }
+
+                // Set speed and direction
+                UIFlowMoviePlay_SetSpeed(g_PlbData.VideoPBSpeed);
+                #if 0//(NMEDIAPLAY_FUNC == DISABLE)
+                ImageApp_MoviePlay_SetParam(MOVIEPLAY_PARAM_CURSPD, g_uiUIFlowWndPlayCurrenSpeed);
+                ImageApp_MoviePlay_SetParam(MOVIEPLAY_PARAM_CURDIR, g_uiUIFlowWndPlayCurrenDirection);
+                ImageApp_MoviePlay_UpdateAll();
+                #else //(NMEDIAPLAY_FUNC == ENABLE)
+                //UINT32 vdo_idx = AppDisp_MoviePlayView_GetDispIdx(); // get current display video index
+                ImageApp_MoviePlay_FilePlay_UpdateSpeedDirect(g_uiUIFlowWndPlayCurrenSpeed, g_uiUIFlowWndPlayCurrenDirection,vdo_idx);
+                #endif
+
+                FlowPB_IconDrawMovSpeed();
+                Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
+            }
+            break;
+        }
+        break;
+    }
 	return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndPlay_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	return NVTEVT_CONSUME;
+    UINT32  uiKeyAct;
+
+    uiKeyAct = paramArray[0];
+
+    switch(uiKeyAct)
+    {
+    case NVTEVT_KEY_RELEASE:
+        switch(g_PlbData.State)
+        {
+        case PLB_ST_PLAY_MOV:
+        case PLB_ST_PAUSE_MOV:
+        case PLB_ST_FWD_MOV:
+        case PLB_ST_BWD_MOV:
+            // stop movie play
+            UIFlowWndPlay_OnMovieFinish(pCtrl, paramNum, paramArray);
+            break;
+
+        case PLB_ST_FULL:
+            Ux_OpenWindow((VControl *)(&UIFlowWndPlayThumbCtrl), 0);
+            break;
+        }
+        break;
+
+    /*
+    case NVTEVT_KEY_LONG_PRESS:
+        switch(g_PlbData.State)
+        {
+        case PLB_ST_PLAY_MOV:
+        case PLB_ST_PAUSE_MOV:
+        case PLB_ST_FWD_MOV:
+        case PLB_ST_BWD_MOV:
+            // stop movie play
+            UIFlowWndPlay_OnMovieFinish(pCtrl, paramNum, paramArray);
+            //break;
+
+        case PLB_ST_FULL:
+            Ux_FlushEventByRange(NVTEVT_KEY_EVT_START,NVTEVT_KEY_EVT_END);
+            Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_NULL);
+            Input_SetKeyMask(KEY_RELEASE, FLGKEY_KEY_MASK_NULL);
+            Input_SetKeyMask(KEY_CONTINUE, FLGKEY_KEY_MASK_NULL);
+            UIFlowPlayShowFileTypeEnable(TRUE);
+            Ux_SendEvent(&UISetupObjCtrl,NVTEVT_EXE_CHANGEDSCMODE,1,DSCMODE_CHGTO_NEXT);
+            break;
+        }
+        break;*/
+    }
+    return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndPlay_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -676,7 +950,11 @@ INT32 UIFlowWndPlay_OnChildClose(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 				//if(DCF_GetDBInfo(DCF_INFO_TOL_FILE_COUNT)==0)
 			{
 				if (!g_bUIFlowWndPlayNoImgWndOpened) {
-					Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_2SEC);
+                    if (UIMenuWndPlayFileType_GetFileType()) {
+                        Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_3SEC);
+                    } else {
+                        Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_VIDEO, FLOWWRNMSG_TIMER_3SEC);
+                    }
 					g_bUIFlowWndPlayNoImgWndOpened = TRUE;
 				}
 			} else {
@@ -686,11 +964,13 @@ INT32 UIFlowWndPlay_OnChildClose(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 			}
 			break;
 		case NVTRET_ENTER_MENU:
+            #if 0
 			// Reset specific menu items
 			SysSetFlag(FL_PROTECT, PROTECT_ONE);
 			// Open common item menu
 			Ux_OpenWindow(&MenuCommonItemCtrl, 0);
 			g_bUIFlowWndPlayNoImgWndOpened = FALSE;
+            #endif
 			break;
 		case NVTRET_WARNING:
 			Ux_PostEvent(paramArray[1], 0);
@@ -703,9 +983,14 @@ INT32 UIFlowWndPlay_OnChildClose(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 			//if(DCF_GetDBInfo(DCF_INFO_TOL_FILE_COUNT)==0)
 		{
 			if (!g_bUIFlowWndPlayNoImgWndOpened) {
-				Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_2SEC);
+                if (UIMenuWndPlayFileType_GetFileType()) {
+                    Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_3SEC);
+                } else {
+                    Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_VIDEO, FLOWWRNMSG_TIMER_3SEC);
+                }
 				g_bUIFlowWndPlayNoImgWndOpened = TRUE;
 			} else {
+                #if 0
 				g_PlbData.State = PLB_ST_MENU;
 				Input_SetKeyMask(KEY_RELEASE, FLGKEY_KEY_MASK_NULL);
 				// Reset specific menu items
@@ -713,23 +998,28 @@ INT32 UIFlowWndPlay_OnChildClose(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 				// Open common item menu
 				Ux_OpenWindow(&MenuCommonItemCtrl, 0);
 				Input_SetKeyMask(KEY_RELEASE, FLGKEY_KEY_MASK_DEFAULT);
+                #endif
 			}
 		} else { //file error
+			//UIPlay_PlaySingle(PB_SINGLE_CURR);
 			FlowPB_UpdateIcons(1);
+			//UIFlowWndPlay_CheckStatus();
 		}
 	}
 	g_PlbData.State = PLB_ST_FULL;
 
-    #if _TODO
+	//#NT#2012/10/23#Philex Lin - begin
+	// enable auto power off/USB detect timer
+	// enable sound key tone flag
 	KeyScan_EnableMisc(TRUE);
-	#endif
+	//#NT#2012/10/23#Philex Lin - end
 
 	// set mask key
+	//Ux_FlushEvent();
 	Input_SetKeyMask(KEY_PRESS, PLAY_KEY_PRESS_MASK);
 	Input_SetKeyMask(KEY_RELEASE, PLAY_KEY_RELEASE_MASK);
 	Input_SetKeyMask(KEY_CONTINUE, PLAY_KEY_CONTINUE_MASK);
 	Ux_DefaultEvent(pCtrl, NVTEVT_CHILD_CLOSE, paramNum, paramArray);
-
 	return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndPlay_OnBattery(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -788,11 +1078,137 @@ INT32 UIFlowWndPlay_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *para
 	default:
 		break;
 	}
-
 	return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
+    UINT32 uiKeyAct;
+    char   pFilePath[FULL_FILE_PATH_LEN];
+    //UINT32 fileType = DCF_FILE_TYPE_JPG;
+    UINT32 uiPBFileFmt = PBFMT_MP4;
+    UINT32 uiPBFileSize = 0;
+	if (!UIMenuWndPlayFileType_GetFileType()) {
+
+    uiKeyAct = paramArray[0];
+
+    switch (uiKeyAct) {
+    case NVTEVT_KEY_PRESS:
+        switch (g_PlbData.State) {
+        case PLB_ST_FULL:
+        default:
+			PB_GetParam(PBPRMID_CURR_FILEFMT, &uiPBFileFmt);
+			if (uiPBFileFmt & (PBFMT_MOVMJPG | PBFMT_AVI | PBFMT_MP4 | PBFMT_TS)) {
+				UINT32 u32CurrPbStatus = 0;
+
+			    PB_GetParam(PBPRMID_PLAYBACK_STATUS, &u32CurrPbStatus);
+				if (u32CurrPbStatus != PB_STA_DONE){
+					return NVTEVT_CONSUME;
+				}
+
+				// Open Video File
+				if (gphUIFlowMovPlay_Filehdl) {
+					FileSys_CloseFile(gphUIFlowMovPlay_Filehdl);
+					gphUIFlowMovPlay_Filehdl = NULL;
+				}
+				if (uiPBFileFmt & PBFMT_TS) {
+					PB_GetParam(PBPRMID_CURR_FILESIZE, &uiPBFileSize);
+					if (uiPBFileSize <= 0x10000) {
+						DBG_DUMP("Wrong video file format!! \r\n");
+						break;
+					}
+				}
+				// Get Current index
+				PB_GetParam(PBPRMID_CURR_FILEPATH, (UINT32 *)pFilePath);
+
+				// Open Test Media File
+				gphUIFlowMovPlay_Filehdl = FileSys_OpenFile(pFilePath, FST_OPEN_READ);
+
+				if (!gphUIFlowMovPlay_Filehdl) {
+					DBG_DUMP("UIFlowWndPlay_OnKeySelect: Can't open Video file!\r\n");
+					break;
+				}
+
+				//FlowPB_UpdateIcons(0); /* FlowPB_IconDrawImageSize needs exif buffer, should be invoked before NVTEVT_EXE_CLOSE */
+
+				Ux_SendEvent(0, NVTEVT_EXE_CLOSE, 0); //CustomPlayObjCmdMap
+
+				//flush event first
+				Ux_FlushEventByRange(NVTEVT_KEY_EVT_START, NVTEVT_KEY_EVT_END);
+
+				//stop scan
+
+
+			// Wake up CustomMoviePlayObjCtrl obj.
+				Ux_SetActiveApp(&CustomMoviePlayObjCtrl);
+				Ux_SendEvent(0, NVTEVT_EXE_OPENPLAY, 1, (UINT32)gphUIFlowMovPlay_Filehdl);
+				Ux_SendEvent(0, NVTEVT_EXE_STARTPLAY, 0);
+
+
+				//set movie volumn again to avoid volumn changed by beep sound
+				Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, UI_GetData(FL_MovieAudioPlayIndex), 1);
+
+				g_PlbData.State = PLB_ST_PLAY_MOV;
+				FlowPB_IconDrawMovPlay(TRUE);
+			   	FlowPB_IconDrawMovStop(TRUE);
+			   	FlowPB_IconDrawMovPlayTime(TRUE);
+			   	//FlowPB_IconDrawMovBwd(TRUE);
+			   	//FlowPB_IconDrawMovFwd(TRUE);
+			   	FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
+                FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
+
+			} else {
+				g_PlbData.State = PLB_ST_MAGNIFY;
+				//FlowPB_UpdateIcons(0);
+				//FlowPB_IconDrawLeftBtn(TRUE);
+
+				//#NT#2017/11/17#Adam Su -begin
+				//#NT#AUTO_TEST
+				PB_GetParam(PBPRMID_CURR_FILEPATH, (UINT32 *)pFilePath);
+				exam_msg("Play File Path = %s\r\n", pFilePath);
+				//#NT#2017/11/17#Adam Su -end
+			}
+			break;	
+        case PLB_ST_PLAY_MOV:
+        case PLB_ST_FWD_MOV:
+        case PLB_ST_BWD_MOV:
+            //Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_PAUSEPLAY, 0);
+			Ux_SendEvent(0, NVTEVT_EXE_PAUSEPLAY, 0);
+            g_PlbData.State = PLB_ST_PAUSE_MOV;
+            FlowPB_IconDrawMovPlay(TRUE);
+            FlowPB_IconDrawMovStop(TRUE);
+            //FlowPB_IconDrawMovBwd(TRUE);
+            //FlowPB_IconDrawMovFwd(TRUE);
+            FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
+            FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
+            //#NT#2012/10/23#Philex Lin - begin
+            // enable auto power off/USB detect timer
+            // enable sound key tone flag
+            KeyScan_EnableMisc(TRUE);
+            //#NT#2012/10/23#Philex Lin - end
+            break;
+
+    	case PLB_ST_PAUSE_MOV:
+            //#NT#2012/10/23#Philex Lin - begin
+            // disable auto power off/USB detect timer
+            // disable key tone flag
+            KeyScan_EnableMisc(FALSE);
+            //#NT#2012/10/23#Philex Lin - end
+            // Start to Play
+            //set movie volumn again to avoid volumn changed by beep sound
+            Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, UI_GetData(FL_MovieAudioPlayIndex), 1);
+			Ux_SendEvent(0, NVTEVT_EXE_RESUMEPLAY, 0);
+            g_PlbData.State = PLB_ST_PLAY_MOV;
+            FlowPB_IconDrawMovPlay(TRUE);
+            FlowPB_IconDrawMovStop(TRUE);
+            //FlowPB_IconDrawMovBwd(TRUE);
+            //FlowPB_IconDrawMovFwd(TRUE);
+            FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
+            FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
+            break;
+        }
+		break;
+	    }
+	}	
 	return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndPlay_OnKeyPlayback(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -866,7 +1282,11 @@ INT32 UIFlowWndPlay_OnMovieFinish(VControl *pCtrl, UINT32 paramNum, UINT32 *para
 }
 INT32 UIFlowWndPlay_OnMovieOneSec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    FlowPB_IconDrawMovPlayTime(TRUE);
+    if (g_PlbData.State != PLB_ST_FULL) {
+        FlowPB_IconDrawVideoTotalTime(FALSE);
+        FlowPB_IconDrawMovPlayTime(TRUE);
+    }
+
 	return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndPlay_OnMovieError(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -889,11 +1309,10 @@ INT32 UIFlowWndPlay_OnStorageChange(VControl *pCtrl, UINT32 paramNum, UINT32 *pa
 
 void UIFlowMoviePlay_SetSpeed(INT16 uiChangeSpeedLevel)
 {
-#if 1//_TODO
 	switch (uiChangeSpeedLevel) {
 	default:
 	case PLB_FWD_MOV_1x:
-	case PLB_BWD_MOV_1x:
+	//case PLB_BWD_MOV_1x:
 		g_uiUIFlowWndPlayCurrenSpeed = SMEDIAPLAY_SPEED_NORMAL;
 		break;
 
@@ -913,70 +1332,14 @@ void UIFlowMoviePlay_SetSpeed(INT16 uiChangeSpeedLevel)
 		break;
 
 	}
-#endif
 }
-
-//----------------------UIFlowWndPlay_TabNaviCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_TabNavi)
-EVENT_END
-
-//----------------------ButtonPlayCtrl Event---------------------------
-EVENT_BEGIN(ButtonPlay)
-EVENT_END
-
-//----------------------ButtonLeftCtrl Event---------------------------
-EVENT_BEGIN(ButtonLeft)
-EVENT_END
-
-//----------------------ButtonRightCtrl Event---------------------------
-EVENT_BEGIN(ButtonRight)
-EVENT_END
-
-//----------------------ButtonUpCtrl Event---------------------------
-EVENT_BEGIN(ButtonUp)
-EVENT_END
-
-//----------------------ButtonDownCtrl Event---------------------------
-EVENT_BEGIN(ButtonDown)
-EVENT_END
 
 //----------------------UIFlowWndPlay_StaticICN_DSCModeCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndPlay_StaticICN_DSCMode)
 EVENT_END
 
-//----------------------UIFlowWndPlay_StatusICN_FlashCtrl Event---------------------------
-INT32 UIFlowWndPlay_StatusICN_Flash_OnKeyRight(VControl *, UINT32, UINT32 *);
-EVENT_BEGIN(UIFlowWndPlay_StatusICN_Flash)
-EVENT_ITEM(NVTEVT_KEY_RIGHT, UIFlowWndPlay_StatusICN_Flash_OnKeyRight)
-EVENT_END
-
-INT32 UIFlowWndPlay_StatusICN_Flash_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
-{
-	Ux_SendEvent(pCtrl, NVTEVT_NEXT_ITEM, 0);
-	return NVTEVT_CONSUME;
-}
-//----------------------UIFlowWndPlay_StatusICN_EVCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_StatusICN_EV)
-EVENT_END
-
 //----------------------UIFlowWndPlay_StaticTXT_SizeCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndPlay_StaticTXT_Size)
-EVENT_END
-
-//----------------------UIFlowWndPlay_StatusICN_WBCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_StatusICN_WB)
-EVENT_END
-
-//----------------------UIFlowWndPlay_StatusICN_QualityCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_StatusICN_Quality)
-EVENT_END
-
-//----------------------UIFlowWndPlay_StatusICN_SharpnessCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_StatusICN_Sharpness)
-EVENT_END
-
-//----------------------UIFlowWndPlay_StatusICN_StorageCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_StatusICN_Storage)
 EVENT_END
 
 //----------------------UIFlowWndPlay_StatusICN_BatteryCtrl Event---------------------------
@@ -1003,11 +1366,39 @@ EVENT_END
 EVENT_BEGIN(UIFlowWndPlay_StaticTXT_MovPlayTime)
 EVENT_END
 
-//----------------------UIFlowWndPlay_StaticTXT_LeftBtnCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_StaticTXT_LeftBtn)
+//----------------------UIFlowWndPlay_StaticTXT_VideoTotalTimeCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_StaticTXT_VideoTotalTime)
 EVENT_END
 
-//----------------------UIFlowWndPlay_StaticTXT_RightBtnCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_StaticTXT_RightBtn)
+//----------------------UIFlowWndPlay_Static_SpeedCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_Static_Speed)
+EVENT_END
+
+//---------------------UIFlowWndPlay_TipsBarCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndPlay_TipsBar)
+CTRL_LIST_ITEM(UIFlowWndPlay_TipsIconReturn)
+CTRL_LIST_ITEM(UIFlowWndPlay_TipsIconDel)
+CTRL_LIST_ITEM(UIFlowWndPlay_TipsIconLock)
+CTRL_LIST_ITEM(UIFlowWndPlay_TipsIconPlay)
+CTRL_LIST_END
+
+//----------------------UIFlowWndPlay_TipsBarCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_TipsBar)
+EVENT_END
+
+//----------------------UIFlowWndPlay_TipsIconReturnCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_TipsIconReturn)
+EVENT_END
+
+//----------------------UIFlowWndPlay_TipsIconDelCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_TipsIconDel)
+EVENT_END
+
+//----------------------UIFlowWndPlay_TipsIconLockCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_TipsIconLock)
+EVENT_END
+
+//----------------------UIFlowWndPlay_TipsIconPlayCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_TipsIconPlay)
 EVENT_END
 

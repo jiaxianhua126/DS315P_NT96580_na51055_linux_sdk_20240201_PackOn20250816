@@ -27,6 +27,8 @@
 #endif
 #include "Utility/SwTimer.h"
 #include "SysMain.h"
+#include "DxInput.h"
+#include "GxUSB.h"
 //#NT#2016/05/30#Lincy Lin -end
 ///////////////////////////////////////////////////////////////////////////////
 #define __MODULE__          UIBKGObj
@@ -89,6 +91,9 @@ static UINT32 BackgroundEthCamSetTxSysInfo(void);
 static UINT32 BackgroundEthCamCheckPortReady(void);
 static UINT32 BackgroundEthCamUpdateUIInfo(void);
 static UINT32 BackgroundEthCamIperfTest(void);
+static UINT32 BackgroundEthCamSyncGPSInfo(void);
+static UINT32 BackgroundEthCamGetMotionDetectInfo(void);
+static UINT32 BackgroundEthCamSyncTime_Only(void);
 #endif
 
 static UINT32 g_uiDpofOPMode = PLAYDPOF_SETONE;
@@ -181,6 +186,9 @@ BKG_JOB_ENTRY gBackgroundExtFuncTable[] = {
 	{NVTEVT_BKW_ETHCAM_CHECKPORT_READY,    BackgroundEthCamCheckPortReady},
 	{NVTEVT_BKW_ETHCAM_UPDATE_UI,    BackgroundEthCamUpdateUIInfo},
 	{NVTEVT_BKW_ETHCAM_IPERF_TEST,    BackgroundEthCamIperfTest},
+    {NVTEVT_BKW_ETHCAM_SYNC_TIME_ONLY,	BackgroundEthCamSyncTime_Only},
+    {NVTEVT_BKW_ETHCAM_SYNC_GPS_INFO,       BackgroundEthCamSyncGPSInfo},
+    {NVTEVT_BKW_ETHCAM_GET_MOTION_DETECT_INFO, BackgroundEthCamGetMotionDetectInfo},
 
 #endif
 
@@ -393,7 +401,7 @@ INT32 Background_DeleteAll(void)
         ret = E_NOMEM;
 		return ret;
 	}
-
+	DBG_DUMP("call Background_DeleteAll\r\n");
 	pFDBInitObj->u32MemSize = POOL_SIZE_FILEDB;
 	FileDBHdl               = FileDB_Create(pFDBInitObj);
 
@@ -871,8 +879,11 @@ UINT32 BackgroundFormatCard(void)
 		LogFile_ReOpen();
 #endif
 		//#NT#2016/05/30#Lincy Lin -end
+		UIVoice_Play(DEMOSOUND_SOUND_MCARDFORMATSUCCESSFUL_TONE);
 		vos_util_delay_ms(1000);
         SysMain_system("sync");
+	} else {
+		UIVoice_Play(DEMOSOUND_SOUND_MCARDFORMATFAIL_TONE);	
 	}
 	MovieExe_ResetFileSN();
     DBG_FUNC_END("\r\n");
@@ -1265,10 +1276,43 @@ static UINT32 BackgroundWiFiClearACL(void)
 static UINT32 BackgroundStopRecProcess(void)
 {
 	//debug_err(("StopRec\r\n\n\n\n\n"));
-    #if defined(_UI_STYLE_LVGL_)
+    #if 0 //defined(_UI_STYLE_LVGL_)
 	Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_STOP, 0);
     #else
-	FlowMovie_StopRec();
+	//FlowMovie_StopRec();
+	#if defined(_NVT_ETHREARCAM_RX_)
+	if(SysInit_GetEthTxFW_Update_getstd()
+		||SysInit_GetEthBootFW_Update_getstd())
+	{
+		return NVTRET_ERROR;
+	}
+	if(System_GetShutdownBegin()||!GxUSB_GetIsUSBPlug()){
+		DBG_DUMP("BackgroundStopRecProcess ignore \r\n\n\n\n\n");
+		return NVTRET_ERROR;	
+	}
+	FlowMovie_USBRemovePowerOff();
+	#if REBOOT_ETHCAM_FUNC
+	Delay_DelayMs(1000);
+	if(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE){
+		if(GPIOMap_EthCam1Det()){
+			DBG_DUMP("======BackgroundStopRecProcess=======\r\n");
+			GPIOMap_Sensor2PowerOn(FALSE);
+			Delay_DelayMs(1000);
+			GPIOMap_Sensor2PowerOn(TRUE);
+			if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) 
+			{
+				bWiFiModeChanged = TRUE;
+				Ux_PostEvent(NVTEVT_SYSTEM_MODE, 2, PRIMARY_MODE_MOVIE, SYS_SUBMODE_WIFI);
+			}
+			else
+			{
+				Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
+			}
+			
+		}
+	}
+	#endif
+	#endif
     #endif
     return NVTRET_OK;
 }
@@ -1742,6 +1786,32 @@ static UINT32 BackgroundEthCamDecErr(void)
 	EthCam_SendXMLCmd(DecErrPathId, ETHCAM_PORT_DATA2 ,ETHCAM_CMD_TX_STREAM_STOP, 0);
 #endif
 	EthCamCmd_GetFrameTimerEn(1);
+
+	#if REBOOT_ETHCAM_FUNC
+	if(SysInit_GetEthTxFW_Update_getstd()
+		||SysInit_GetEthBootFW_Update_getstd())
+	{
+		return NVTRET_ERROR;
+	}
+	//Delay_DelayMs(1000);
+	if(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE){
+		if(GPIOMap_EthCam1Det()){
+			DBG_DUMP("======BackgroundEthCamDecErr=======\r\n");
+			GPIOMap_Sensor2PowerOn(FALSE);
+			Delay_DelayMs(3000);
+			GPIOMap_Sensor2PowerOn(TRUE);
+		    if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) 
+			{
+				bWiFiModeChanged = TRUE;
+				Ux_PostEvent(NVTEVT_SYSTEM_MODE, 2, PRIMARY_MODE_MOVIE, SYS_SUBMODE_WIFI);
+			}
+			else
+			{
+				Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
+			}
+		}
+	}
+	#endif
 #endif
 	return NVTRET_OK;
 }
@@ -1789,6 +1859,8 @@ static UINT32 BackgroundEthCamSetTxSysInfo(void)
 				EthCam_SendXMLCmdData(i, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_EIS_INFO, 0, (UINT8 *)&sEthCamTxEISInfo[i], sizeof(ETHCAM_CMD_EISINFO));
 				#endif
 			}
+			CHKPNT;
+			EthCam_SendXMLCmd(i, ETHCAM_PORT_DEFAULT, ETHCAM_CMD_TX_FW_VERSION, 0);
 		}
 	}
 #endif
@@ -1845,6 +1917,82 @@ static UINT32 BackgroundEthCamIperfTest(void)
 	return NVTRET_OK;
 }
 
+
+extern char g_GPSstamp_buffer[128];
+extern char gUICustomer_StrBuf[20];
+static UINT32 BackgroundEthCamSyncGPSInfo(void)
+{
+#if(defined(_NVT_ETHREARCAM_RX_))
+	UINT32 i;
+    char buffer[128] = {0};
+	#if 0
+	static UINT32 cnt = 0;
+	//send msg one time every two seconds
+	if((cnt%2)==0){
+		for (i=0; i<ETH_REARCAM_CAPS_COUNT; i++){
+			if(EthCamNet_GetEthLinkStatus(i)==ETHCAM_LINK_UP){
+				//sync gps Info
+				//memset(buffer,0,sizeof(buffer));
+				sprintf(buffer,"%s  %s", gUICustomer_StrBuf, g_GPSstamp_buffer);
+				#if 1
+				EthCam_SendXMLCmd(i, ETHCAM_PORT_DEFAULT, ETHCAM_CMD_SYNC_GPS_INFO, 0);
+				EthCam_SendXMLData(i, (UINT8 *)&buffer, sizeof(buffer));
+				#else
+				EthCam_SendXMLCmdData(i, ETHCAM_PORT_DEFAULT , ETHCAM_CMD_SYNC_GPS_INFO, 0, (UINT8 *)&buffer, sizeof(buffer));
+				#endif
+			}
+		}
+	}
+	cnt++;
+	#else//send msg one time every second
+	for (i=0; i<ETH_REARCAM_CAPS_COUNT; i++){
+		if(EthCamNet_GetEthLinkStatus(i)==ETHCAM_LINK_UP){
+			//sync gps Info
+			//memset(buffer,0,sizeof(buffer));
+			sprintf(buffer,"%s   %s", gUICustomer_StrBuf, g_GPSstamp_buffer);
+			#if 1
+			EthCam_SendXMLCmd(i, ETHCAM_PORT_DEFAULT, ETHCAM_CMD_SYNC_GPS_INFO, 0);
+			EthCam_SendXMLData(i, (UINT8 *)&buffer, sizeof(buffer));
+			#else
+			EthCam_SendXMLCmdData(i, ETHCAM_PORT_DEFAULT , ETHCAM_CMD_SYNC_GPS_INFO, 0, (UINT8 *)&buffer, sizeof(buffer));
+			#endif
+		}
+	}
+	#endif
+#endif
+	return NVTRET_OK;
+}
+
+static UINT32 BackgroundEthCamGetMotionDetectInfo(void)
+{
+#if(defined(_NVT_ETHREARCAM_RX_))
+	UINT32 i;
+	for (i=0; i<ETH_REARCAM_CAPS_COUNT; i++){
+		if(EthCamNet_GetEthLinkStatus(i)==ETHCAM_LINK_UP){
+			//get motion detect 
+			EthCam_SendXMLCmd(i, ETHCAM_PORT_DEFAULT, ETHCAM_CMD_GET_MOTION_DET, 0);
+		}
+	}
+#endif
+	return NVTRET_OK;
+}
+
+static UINT32 BackgroundEthCamSyncTime_Only(void)
+{
+#if(defined(_NVT_ETHREARCAM_RX_))
+	UINT32 i;
+	for (i=0; i<ETH_REARCAM_CAPS_COUNT; i++){
+		if(EthCamNet_GetEthLinkStatus(i)==ETHCAM_LINK_UP){
+			//sync time
+			struct tm Curr_DateTime ={0};
+			Curr_DateTime = hwclock_get_time(TIME_ID_CURRENT);
+			EthCam_SendXMLCmdData(i, ETHCAM_PORT_DEFAULT , ETHCAM_CMD_SYNC_TIME, 0, (UINT8 *)&Curr_DateTime, sizeof(struct tm));
+			DBG_DUMP("^GBackgroundEthCamSyncTime_only\r\n");
+		}
+	}
+#endif
+	return NVTRET_OK;
+}
 #endif
 
 void AppBKW_SetData(BKW_DATA_SET attribute, UINT32 value)

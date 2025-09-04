@@ -24,14 +24,17 @@
 #include <kwrap/debug.h>
 ///////////////////////////////////////////////////////////////////////////////
 
-#define DEFAULT_YEAR 	2000
-#define DEFAULT_MON 	1
-#define DEFAULT_DAY 	1
+#define DEFAULT_YEAR 	DEF_YEAR
+#define DEFAULT_MON 	DEF_MONTH
+#define DEFAULT_DAY 	DEF_DAY
 #define DEFAULT_HOUR 	0
 #define DEFAULT_MIN 	0
 #define DEFAULT_SEC 	0
 
 extern void *vdoout_get_buf(void);
+extern BOOL GPIOMap_DetACCPlugIn(void);
+BOOL isACCTrigPowerOn = FALSE;
+
 
 #if defined(_UI_STYLE_LVGL_)
 
@@ -453,6 +456,12 @@ int NvtMain(void)
 #endif
 	nvt_hdal_init();
 	nvt_user_init();
+
+    if (GPIOMap_DetACCPlugIn()) {
+        isACCTrigPowerOn = TRUE;
+    } else {
+        isACCTrigPowerOn = FALSE;
+    }
 
 	System_WaitForPowerOffStart();  // Wait for shutdown cmd
 	nvt_user_uninit();

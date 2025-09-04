@@ -19,6 +19,7 @@
 #define _DATESTAMPFONT20X44_H_
 
 #include "draw_lib.h"
+// #include "MovieStamp.h"
 
 // ICON DB
 extern const

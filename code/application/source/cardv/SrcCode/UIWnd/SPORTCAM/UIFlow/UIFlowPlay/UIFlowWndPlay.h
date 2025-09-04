@@ -5,131 +5,76 @@
 
 #include "UIFramework.h"
 
-extern VControl UIFlowWndPlayCtrl;//Panel type
+extern VControl UIFlowWndPlayCtrl;//Panel type 
 
-extern VControl UIFlowWndPlay_TabNaviCtrl;//Tab type
+extern VControl UIFlowWndPlay_StaticICN_DSCModeCtrl;//Static type 
 
-typedef enum {
-	UIFlowWndPlay_TabNavi_ButtonPlay,
-	UIFlowWndPlay_TabNavi_ButtonLeft,
-	UIFlowWndPlay_TabNavi_ButtonRight,
-	UIFlowWndPlay_TabNavi_ButtonUp,
-	UIFlowWndPlay_TabNavi_ButtonDown,
-	UIFlowWndPlay_TabNavi_MAX
-} UIFlowWndPlay_TabNavi_Setting;
+extern VControl UIFlowWndPlay_StaticTXT_SizeCtrl;//Static type 
 
-extern VControl ButtonPlayCtrl;//Button type
+extern VControl UIFlowWndPlay_StatusICN_BatteryCtrl;//Status type 
 
-extern VControl ButtonLeftCtrl;//Button type
+typedef enum
+{
+UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_FULL,
+UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_MED,
+UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_LOW,
+UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_EMPTY,
+UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_ZERO,
+UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_CHARGE,
+UIFlowWndPlay_StatusICN_Battery_MAX
+}UIFlowWndPlay_StatusICN_Battery_Setting;
 
-extern VControl ButtonRightCtrl;//Button type
+extern VControl UIFlowWndPlay_StaticTXT_FilenameCtrl;//Static type 
 
-extern VControl ButtonUpCtrl;//Button type
+extern VControl UIFlowWndPlay_StaticICN_ProtectCtrl;//Static type 
 
-extern VControl ButtonDownCtrl;//Button type
+extern VControl UIFlowWndPlay_StaticTXT_DateCtrl;//Static type 
 
-extern VControl UIFlowWndPlay_StaticICN_DSCModeCtrl;//Static type
+extern VControl UIFlowWndPlay_StaticTXT_TimeCtrl;//Static type 
 
-extern VControl UIFlowWndPlay_StatusICN_FlashCtrl;//Status type
+extern VControl UIFlowWndPlay_StaticTXT_MovPlayTimeCtrl;//Static type 
 
-typedef enum {
-	UIFLOW_PLAY_DISP_ID_1 = 0,
-	UIFLOW_PLAY_DISP_ID_2,
-	UIFLOW_PLAY_DISP_ID_MAX,
-	ENUM_DUMMY4WORD(UIFLOW_PLAY_DISP_ID)
-} UIFLOW_PLAY_DISP_ID;
+extern VControl UIFlowWndPlay_StaticTXT_VideoTotalTimeCtrl;//Static type 
 
-typedef enum {
-	UIFlowWndPlay_StatusICN_Flash_ICON_FLASH_AUTO,
-	UIFlowWndPlay_StatusICN_Flash_ICON_FLASH_ON,
-	UIFlowWndPlay_StatusICN_Flash_ICON_FLASH_RED_EYE,
-	UIFlowWndPlay_StatusICN_Flash_ICON_FLASH_OFF,
-	UIFlowWndPlay_StatusICN_Flash_MAX
-} UIFlowWndPlay_StatusICN_Flash_Setting;
+extern VControl UIFlowWndPlay_Static_SpeedCtrl;//Static type 
 
-extern VControl UIFlowWndPlay_StatusICN_EVCtrl;//Status type
+extern VControl UIFlowWndPlay_TipsBarCtrl;//Panel type 
 
-typedef enum {
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_M2P0,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_M1P6,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_M1P3,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_M1P0,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_M0P6,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_M0P3,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_P0P0,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_P0P3,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_P0P6,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_P1P0,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_P1P3,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_P1P6,
-	UIFlowWndPlay_StatusICN_EV_ICON_EV_P2P0,
-	UIFlowWndPlay_StatusICN_EV_MAX
-} UIFlowWndPlay_StatusICN_EV_Setting;
+extern VControl UIFlowWndPlay_TipsIconReturnCtrl;//Status type 
 
-extern VControl UIFlowWndPlay_StaticTXT_SizeCtrl;//Static type
+typedef enum
+{
+UIFlowWndPlay_TipsIconReturn_ICON_BACK,
+UIFlowWndPlay_TipsIconReturn_MAX
+}UIFlowWndPlay_TipsIconReturn_Setting;
 
-extern VControl UIFlowWndPlay_StatusICN_WBCtrl;//Status type
+extern VControl UIFlowWndPlay_TipsIconDelCtrl;//Status type 
 
-typedef enum {
-	UIFlowWndPlay_StatusICN_WB_ICON_WB_AUTO,
-	UIFlowWndPlay_StatusICN_WB_ICON_WB_DAYLIGHT,
-	UIFlowWndPlay_StatusICN_WB_ICON_WB_CLOUDY,
-	UIFlowWndPlay_StatusICN_WB_ICON_WB_TUNGSTEN,
-	UIFlowWndPlay_StatusICN_WB_ICON_WB_FLUORESCENT,
-	UIFlowWndPlay_StatusICN_WB_MAX
-} UIFlowWndPlay_StatusICN_WB_Setting;
+typedef enum
+{
+UIFlowWndPlay_TipsIconDel_ICON_DELETE,
+UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B,
+UIFlowWndPlay_TipsIconDel_MAX
+}UIFlowWndPlay_TipsIconDel_Setting;
 
-extern VControl UIFlowWndPlay_StatusICN_QualityCtrl;//Status type
+extern VControl UIFlowWndPlay_TipsIconLockCtrl;//Status type 
 
-typedef enum {
-	UIFlowWndPlay_StatusICN_Quality_ICON_QUALITY_FINE,
-	UIFlowWndPlay_StatusICN_Quality_ICON_QUALITY_NORMAL,
-	UIFlowWndPlay_StatusICN_Quality_ICON_QUALITY_BASIC,
-	UIFlowWndPlay_StatusICN_Quality_MAX
-} UIFlowWndPlay_StatusICN_Quality_Setting;
+typedef enum
+{
+UIFlowWndPlay_TipsIconLock_ICON_FILE_LOCK,
+UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F,
+UIFlowWndPlay_TipsIconLock_ICON_SET_LOCK,
+UIFlowWndPlay_TipsIconLock_MAX
+}UIFlowWndPlay_TipsIconLock_Setting;
 
-extern VControl UIFlowWndPlay_StatusICN_SharpnessCtrl;//Status type
+extern VControl UIFlowWndPlay_TipsIconPlayCtrl;//Status type 
 
-typedef enum {
-	UIFlowWndPlay_StatusICN_Sharpness_ICON_SHARPNESS_HIGH,
-	UIFlowWndPlay_StatusICN_Sharpness_ICON_SHARPNESS_MED,
-	UIFlowWndPlay_StatusICN_Sharpness_ICON_SHARPNESS_LOW,
-	UIFlowWndPlay_StatusICN_Sharpness_MAX
-} UIFlowWndPlay_StatusICN_Sharpness_Setting;
-
-extern VControl UIFlowWndPlay_StatusICN_StorageCtrl;//Status type
-
-typedef enum {
-	UIFlowWndPlay_StatusICN_Storage_ICON_INTERNAL_FLASH,
-	UIFlowWndPlay_StatusICN_Storage_ICON_SD_CARD,
-	UIFlowWndPlay_StatusICN_Storage_MAX
-} UIFlowWndPlay_StatusICN_Storage_Setting;
-
-extern VControl UIFlowWndPlay_StatusICN_BatteryCtrl;//Status type
-
-typedef enum {
-	UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_FULL,
-	UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_MED,
-	UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_LOW,
-	UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_EMPTY,
-	UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_ZERO,
-	UIFlowWndPlay_StatusICN_Battery_ICON_BATTERY_CHARGE,
-	UIFlowWndPlay_StatusICN_Battery_MAX
-} UIFlowWndPlay_StatusICN_Battery_Setting;
-
-extern VControl UIFlowWndPlay_StaticTXT_FilenameCtrl;//Static type
-
-extern VControl UIFlowWndPlay_StaticICN_ProtectCtrl;//Static type
-
-extern VControl UIFlowWndPlay_StaticTXT_DateCtrl;//Static type
-
-extern VControl UIFlowWndPlay_StaticTXT_TimeCtrl;//Static type
-
-extern VControl UIFlowWndPlay_StaticTXT_MovPlayTimeCtrl;//Static type
-
-extern VControl UIFlowWndPlay_StaticTXT_LeftBtnCtrl;//Static type
-
-extern VControl UIFlowWndPlay_StaticTXT_RightBtnCtrl;//Static type
+typedef enum
+{
+UIFlowWndPlay_TipsIconPlay_ICON_DIR_R,
+UIFlowWndPlay_TipsIconPlay_ICON_PAUSE,
+UIFlowWndPlay_TipsIconPlay_MAX
+}UIFlowWndPlay_TipsIconPlay_Setting;
 
 //---------------------UIFlowWndPlayCtrl User Export---------------------------
 #endif

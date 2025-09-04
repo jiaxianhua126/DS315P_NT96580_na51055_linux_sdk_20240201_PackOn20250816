@@ -14,6 +14,7 @@
 #include "UIAppWiFiCmdPhoto.h"
 //#include "ImageApp_Movie.h"
 #include "ImageApp/ImageApp_Photo.h"
+#include "ImageApp/ImageApp_MoviePlay.h"
 #include <kwrap/debug.h>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,7 +44,6 @@ static BOOL   bWifiAppHBStart = FALSE;
 static UINT32  gUIMenuWndWiFiHeartBeatTimerID = NULL_TIMER;
 
 //#NT#2016/03/23#Isiah Chang -end
-
 INT32 WiFiCmd_OnExeModeChange(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32 par = 0;
@@ -61,6 +61,7 @@ INT32 WiFiCmd_OnExeModeChange(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 	switch (par) {
 	case WIFI_APP_MODE_PHOTO:
 		//#NT#2015/07/24#KS Hung -begin
+		DBG_DUMP("call WIFI_APP_MODE_PHOTO\r\n");
 		if (curMode != PRIMARY_MODE_PHOTO) {
 			if (curMode == PRIMARY_MODE_MOVIE) {
 #if (!defined(_Gyro_None_) && (RSC_FUNC == ENABLE || MOVIE_RSC == ENABLE))
@@ -75,12 +76,17 @@ INT32 WiFiCmd_OnExeModeChange(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 		break;
 	case WIFI_APP_MODE_MOVIE:
 		//#NT#2015/07/24#KS Hung -begin
+	    DBG_DUMP("call WIFI_APP_MODE_MOVIE\r\n");
 		if (curMode != PRIMARY_MODE_MOVIE) {
 			if (curMode == PRIMARY_MODE_PHOTO) {
 #if (!defined(_Gyro_None_) && (RSC_FUNC == ENABLE || MOVIE_RSC == ENABLE))
 				PhotoExe_RSC_SetSwitch(SEL_RSC_RUNTIME, SEL_RSC_OFF);
 #endif
+			} else if (curMode == PRIMARY_MODE_PLAYBACK) {
+				bWiFiModeChanged = TRUE;
+				Display_SetEnable(LAYER_VDO1, FALSE); //turn off VDO1 to avoid garbage frame.
 			}
+			DBG_DUMP("call WiFiCmd_OnExeModeChange\r\n");	
 			Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
 		}
 		//#NT#2015/07/24#KS Hung -end
@@ -89,6 +95,7 @@ INT32 WiFiCmd_OnExeModeChange(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 		}
 		break;
 	case WIFI_APP_MODE_PLAYBACK:
+		DBG_DUMP("call WIFI_APP_MODE_PLAYBACK\r\n");
 		if (curMode != PRIMARY_MODE_PLAYBACK) {
 			Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_PLAYBACK);
 		} else {
@@ -113,7 +120,11 @@ INT32 WiFiCmd_OnExeSetSSID(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		DBG_IND("%d\r\n", strlen(Data));
 
 		if (1 == sscanf_s(Data, "%s", SSID, sizeof(SSID))) {
-			Ux_SendEvent(0, NVTEVT_EXE_WIFI_SET_SSID, 1, SSID);
+			if ((SysGetFlag(FL_WIFI_BAND) == WIFI_BAND_52G) ||(SysGetFlag(FL_WIFI_BAND) == WIFI_BAND_58G)) {
+				Ux_SendEvent(0, NVTEVT_EXE_WIFI_SET_SSID_5G, 1, SSID);
+			} else {
+				Ux_SendEvent(0, NVTEVT_EXE_WIFI_SET_SSID, 1, SSID);
+			}
 		}
 		WifiCmd_UnlockString(Data);
 	}
@@ -148,15 +159,19 @@ INT32 WiFiCmd_OnExeDate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	char *Data = 0;
 	UINT32 uiYear, uiMonth, uiDay;
 	DBG_IND("%s %s\r\n", __FUNCTION__, paramArray[0]);
+	//DBG_DUMP("call WiFiCmd_OnExeDate\r\n");
 	if (paramNum) {
 		Data = (char *)paramArray[0];
 		DBG_IND("%d\r\n", strlen(Data));
+		//DBG_DUMP("call WiFiCmd_OnExeDate Data = %s\r\n",Data);
 
 		if (3 == sscanf_s(Data, "%d-%d-%d;", &uiYear, &uiMonth, &uiDay)) {
+			//DBG_DUMP("call WiFiCmd_OnExeDate begin\r\n");
 			WifiCmd_UnlockString(Data);//setDate cost time,unlock string before rtc_setDate
+			//DBG_DUMP("call WiFiCmd_OnExeDate %d %d %d\r\n",uiYear,uiMonth,uiDay);
 			DBG_IND("Y:%d, M:%d, D:%d\r\n", uiYear, uiMonth, uiDay);
 		    Ux_SendEvent(&UISetupObjCtrl,NVTEVT_EXE_DATE,3, uiYear, uiMonth, uiDay);
-
+            FlowMovie_BaseDaySet(uiYear, uiMonth, uiDay);
 		} else {
 			WifiCmd_UnlockString(Data);
 		}
@@ -254,10 +269,34 @@ INT32 WiFiCmd_OnExeFormat(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	}
 	return NVTEVT_CONSUME;
 }
+extern void GxSystem_SWResetNOW(void);
 INT32 WiFiCmd_OnExeSysReset(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	DBG_IND("%s \r\n", __FUNCTION__);
-	Ux_SendEvent(0, NVTEVT_EXE_SYSRESET, 0);
+	if (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD) {
+        if (FlowWiFiMovie_GetRecCurrTime() <= 1) {
+            Delay_DelayMs(1000);
+        }
+        FlowWiFiMovie_StopRec();
+        Delay_DelayMs(100);
+    }
+    UI_ResetSSIDPASSPHRASE(); //reset Wi-Fi SSID and PASSPHRASE
+    Ux_SendEvent(0, NVTEVT_EXE_SYSRESET, 0);
+    SysSetFlag(FL_FIRSTPOWERON, FIRSTPOWERON_FALSE);
+
+    #if 0
+    Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
+    FlowWiFiMovie_UpdateIcons(TRUE);
+    UIFlowWndWiFiMovie_UpdateWiFiData(FALSE);
+    FlowWiFiMovie_IconDrawWiFiConnected(TRUE);
+    #else
+    SysSetFlag(FL_WIFI_AUTO, WIFI_ON);
+    Save_MenuInfo();
+    Delay_DelayMs(100);
+	GxSystem_SWResetNOW();
+    
+    #endif
+
 	return NVTEVT_CONSUME;
 }
 
@@ -267,14 +306,17 @@ INT32 WiFiCmd_OnExeFWUpdate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 	BKG_PostEvent(NVTEVT_BKW_FW_UPDATE);
 	return NVTEVT_CONSUME;
 }
+
 INT32 WiFiCmd_OnExeReconnect(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	DBG_IND("%s \r\n", __FUNCTION__);
 
-	#if 0
+	#if 0//´ò¿ªËÀ»ú
 	//before stop wifi should close RTSP/HTTP,and change to movie wifi mode after wifi start
 	if (System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE) {
-		ImageApp_Movie_Close();
+		//ImageApp_Movie_Close();
+		ImageApp_MovieMulti_Close();
+		ImageApp_MoviePlay_Close();
 	} else if (System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_PHOTO) {
 		ImageApp_Photo_Close();
 	}
@@ -296,9 +338,14 @@ INT32 WiFiCmd_OnExeReconnect(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 	Ux_SendEvent(0, NVTEVT_EXE_WIFI_STOP, 0);
 	Ux_SendEvent(0, NVTEVT_EXE_WIFI_START, 0);
 
-	#if 0
+#if 0
 	Ux_PostEvent(NVTEVT_SYSTEM_MODE, 2, PRIMARY_MODE_MOVIE, SYS_SUBMODE_WIFI);
-	#endif
+#else
+	SysSetFlag(FL_WIFI_AUTO, WIFI_AUTO_ON);
+	Save_MenuInfo();
+	Delay_DelayMs(100);
+	GxSystem_SWResetNOW();
+#endif
 
 	return NVTEVT_CONSUME;
 }
@@ -323,7 +370,17 @@ INT32 WiFiCmd_OnExePipStyle(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 		Data = paramArray[0];
 	}
 
-	Ux_SendEvent(0, NVTEVT_EXE_DUALCAM, 1, Data);
+	//Ux_SendEvent(0, NVTEVT_EXE_DUALCAM, 1, Data);
+#if (defined(_NVT_ETHREARCAM_RX_))
+	if (FlowMovie_IsEthCamConnectOK())
+#else
+	if (System_GetConnectSensor() == (SENSOR_1 | SENSOR_2)) 
+#endif
+	{
+	    SysSetFlag(FL_DUAL_CAM, Data);
+	    SysSetFlag(FL_DUAL_CAM_MENU, Data);
+	    //PipView_SetStyle(UI_GetData(FL_DUAL_CAM));
+	}
 #endif
 	return NVTEVT_CONSUME;
 }
@@ -374,6 +431,7 @@ void WiFiCmd_HBStop(void)
 	}
 
 }
+#if(WIFI_UI_FLOW_VER == WIFI_UI_VER_2_0)
 void WiFiCmd_HBOneSec(void)
 {
 
@@ -400,6 +458,26 @@ void WiFiCmd_HBOneSec(void)
 	}
 
 }
+#else
+void WiFiCmd_HBOneSec(void)
+{
+
+	if (bWifiAppHBStart) {
+
+		uiWifiAppHBCnt++;
+		DBG_IND("uiWifiAppHBCnt=%d\r\n",uiWifiAppHBCnt);
+		if (uiWifiAppHBCnt >= 60) {//every 5 sec ,so it is 60 seconds
+			DBG_ERR("HB timeout!!\r\n");
+			uiWifiAppHBCnt = 0;
+			bWifiAppHBStart = FALSE;
+
+			Ux_PostEvent(NVTEVT_WIFI_EXE_APP_SESSION_CLOSE, 0);
+		}
+	}
+
+}
+#endif
+
 //#NT#2016/03/23#Isiah Chang -begin
 //#NT#add new Wi-Fi UI flow.
 INT32 WiFiCmd_OnExeHB(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -424,7 +502,9 @@ INT32 WiFiCmd_OnExeHB(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 INT32 WiFiCmd_OnAppSessionClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	DBG_DUMP("Close Wi-Fi window\r\n");
-	Ux_PostEvent(NVTEVT_SYSTEM_MODE, 2, System_GetState(SYS_STATE_CURRMODE), SYS_SUBMODE_NORMAL);
+	//Ux_PostEvent(NVTEVT_SYSTEM_MODE, 2, System_GetState(SYS_STATE_CURRMODE), SYS_SUBMODE_NORMAL);
+	bWiFiModeChanged = TRUE;
+	Ux_PostEvent(NVTEVT_SYSTEM_MODE, 2, PRIMARY_MODE_MOVIE, SYS_SUBMODE_WIFI);
 	//Ux_PostEvent(NVTEVT_KEY_SELECT, 1, NVTEVT_KEY_PRESS);
 	return NVTEVT_CONSUME;
 }
@@ -488,8 +568,9 @@ EVENT_ENTRY UIWifiCmdObjCmdMap[] = {
 	{NVTEVT_WIFI_EXE_MOVIE_REC, WiFiCmd_OnExeMovieRec},
 	{NVTEVT_WIFI_EXE_MOVIE_REC_SIZE, WiFiCmd_OnExeSetMovieRecSize},
 	{NVTEVT_WIFI_EXE_CYCLIC_REC, WiFiCmd_OnExeCyclicRec},
-	{NVTEVT_WIFI_EXE_MOVIE_WDR, WiFiCmd_OnExeMovieHDR},
+	{NVTEVT_WIFI_EXE_MOVIE_WDR, WiFiCmd_OnExeMovieWDR},
 	{NVTEVT_WIFI_EXE_MOVIE_EV, WiFiCmd_OnExeSetMovieEV},
+    {NVTEVT_WIFI_EXE_MOVIE_EV2, WiFiCmd_OnExeSetMovieEV2},
 
 	{NVTEVT_WIFI_EXE_MOVIE_CONTRAST, WiFiCmd_OnExeSetMovieContrast},
 	{NVTEVT_WIFI_EXE_MOVIE_AUDIOIN, WiFiCmd_OnExeSetMovieAudioIn},
@@ -498,16 +579,27 @@ EVENT_ENTRY UIWifiCmdObjCmdMap[] = {
 	{NVTEVT_WIFI_EXE_MOVIE_QUALITY_SET, WiFiCmd_OnExeSetMovieQualitySet},
 
 	{NVTEVT_WIFI_EXE_MOTION_DET, WiFiCmd_OnExeSetMotionDet},
+	{NVTEVT_WIFI_EXE_PARKING_MOTION_DET, WiFiCmd_OnExeSetParkingMotionDet},
 	{NVTEVT_WIFI_EXE_MOVIE_AUDIO, WiFiCmd_OnExeSetMovieAudio},
+	{NVTEVT_WIFI_EXE_BAND, WiFiCmd_OnExeSetBand},
+	{NVTEVT_WIFI_EXE_MOVIE_VOICE, WiFiCmd_OnExeSetMovieVoice},
+	{NVTEVT_WIFI_EXE_MOVIE_MENU_COMING, WiFiCmd_OnExeSetMenuComingSound},
+	{NVTEVT_WIFI_EXE_PARKING_OFF_GPS, WiFiCmd_OnExeSetParkingOffGPS},
+	{NVTEVT_WIFI_EXE_DATE_FORMAT, WiFiCmd_OnExeSetDateFormat},
+	{NVTEVT_WIFI_EXE_ASR_CONTROL, WiFiCmd_OnExeSetAsrControl},
+	{NVTEVT_WIFI_EXE_ASR_CONTENT, WiFiCmd_OnExeSetAsrContent},
 	{NVTEVT_WIFI_EXE_DATEIMPRINT, WiFiCmd_OnExeSetMovieDateImprint},
 	{NVTEVT_WIFI_EXE_MOVIE_LIVEVIEW_SIZE, WiFiCmd_OnExeSetMovieLiveviewSize},
 	{NVTEVT_WIFI_EXE_MOVIE_GSENSOR_SENS, WiFiCmd_OnExeSetMovieGSesnorSensitivity},
+	{NVTEVT_WIFI_EXE_PARKING_GSENSOR, WiFiCmd_OnExeSetParkingGSensor},
 	{NVTEVT_WIFI_EXE_SET_AUTO_RECORDING, WiFiCmd_OnExeSetAutoRecording},
 	{NVTEVT_WIFI_EXE_MOVIE_REC_BITRATE, WiFiCmd_OnExeSetMovieRecBitRate},
 	{NVTEVT_WIFI_EXE_MOVIE_LIVEVIEW_BITRATE, WiFiCmd_OnExeSetMovieLiveviewBitRate},
 	{NVTEVT_WIFI_EXE_MOVIE_LIVEVIEW_START, WiFiCmd_OnExeMovieLiveviewStart},
 	{NVTEVT_WIFI_EXE_MOVIE_TRIGGER_RAWENC, WiFiCmd_OnExeTriggerMovieRawEnc},
 	{NVTEVT_WIFI_EXE_MOVIE_BRC_ADJUST, WiFiCmd_OnExeMovieBRCAdjust},
+	{NVTEVT_WIFI_EXE_MOVIE_HDR, WiFiCmd_OnExeMovieHDR},
+	{NVTEVT_WIFI_EXE_SET_HDRDET_TIME, WiFiCmd_OnExeSetHDRTime},
 
 	{NVTEVT_WIFI_EXE_MODE, WiFiCmd_OnExeModeChange},
 	{NVTEVT_WIFI_EXE_SET_SSID, WiFiCmd_OnExeSetSSID},
@@ -532,7 +624,37 @@ EVENT_ENTRY UIWifiCmdObjCmdMap[] = {
 //#NT#add new Wi-Fi UI flow.
 	{NVTEVT_WIFI_EXE_HEARTBEAT, WiFiCmd_OnExeHB},
 	{NVTEVT_WIFI_EXE_APP_SESSION_CLOSE, WiFiCmd_OnAppSessionClose},
-
+    {NVTEVT_WIFI_EXE_MOVIE_TIMELAPSE_REC, WiFiCmd_OnExeSetMovieTimeLapseRec},
+    {NVTEVT_WIFI_EXE_MOVIE_METERING, WiFiCmd_OnExeSetMovieMetering},
+    {NVTEVT_WIFI_EXE_MOVIE_BITRATE, WiFiCmd_OnExeSetMovieBitRate},
+    {NVTEVT_WIFI_EXE_MOVIE_GPS_STAMP, WiFiCmd_OnExeSetMovieGPSStamp},
+    {NVTEVT_WIFI_EXE_MOVIE_MODEL_STAMP, WiFiCmd_OnExeSetMovieModelStamp},
+    {NVTEVT_WIFI_EXE_BEEP, WiFiCmd_OnExeBeep},
+    {NVTEVT_WIFI_EXE_SCREEN_SAVER, WiFiCmd_OnExeScreenSaver},
+    {NVTEVT_WIFI_EXE_FREQUENCY, WiFiCmd_OnExeFrequency},
+    {NVTEVT_WIFI_EXE_GPS, WiFiCmd_OnExeGPS},
+    {NVTEVT_WIFI_EXE_TIMEZONE, WiFiCmd_OnExeTimeZone},
+    {NVTEVT_WIFI_EXE_SPEEDUNIT, WiFiCmd_OnExeSpeedUnit},
+    {NVTEVT_WIFI_EXE_SENSOR_ROTATE, WiFiCmd_OnExeSensorRotate},
+    {NVTEVT_WIFI_EXE_SENSOR2_ROTATE, WiFiCmd_OnExeSensor2Rotate},
+	{NVTEVT_WIFI_EXE_CUSTOM_STAMP, WiFiCmd_OnExeSetCustomStamp},
+    {NVTEVT_WIFI_EXE_FORMAT_WARNING, WiFiCmd_OnExeFormatWarning},
+    {NVTEVT_WIFI_EXE_PARKING_MODE, WiFiCmd_OnExeParkingMode},
+	{NVTEVT_WIFI_EXE_SET_CARNO, WiFiCmd_OnExeSetCarNo},
+   // {NVTEVT_WIFI_EXE_SYSREBOOT, WiFiCmd_OnExeSysReboot},
+    {NVTEVT_WIFI_EXE_BOOTDELAY, WiFiCmd_OnExeSysBootDelay},
+    {NVTEVT_WIFI_EXE_IR_REAR_COLOR, WiFiCmd_OnExeIRRearColor},
+    {NVTEVT_WIFI_EXE_REAR_SENSOR_MIRROR, WiFiCmd_OnExeRearSensorMirror},
+    {NVTEVT_WIFI_EXE_VIDEO_FORMAT, WiFiCmd_OnExeVideoFormat},
+    {NVTEVT_WIFI_EXE_MOVIE_CODEC, WiFiCmd_OnExeMovieCodec},
+	{NVTEVT_WIFI_EXE_VOLUME, WiFiCmd_OnExeVolume},
+    {NVTEVT_WIFI_EXE_SHUTDOWNTIMER, WiFiCmd_OnExeShutdownTimer},
+    {NVTEVT_WIFI_EXE_WATER_LOGO, WiFiCmd_OnExeWaterLogo},
+    {NVTEVT_WIFI_EXE_SET_STORAGE_TYPE, WiFiCmd_OnExeSetStorageType},
+    {NVTEVT_WIFI_EXE_ENTER_PARK_TIMER, WiFiCmd_OnExeSetEnterParkingTime},
+	{NVTEVT_WIFI_EXE_CUSTOM_FWUPDATE, WiFiCmd_OnExeCustomFWUpdate},
+	{NVTEVT_WIFI_EXE_SEND_FW_MD5, WiFiCmd_OnExeSendFWMD5},
+	{NVTEVT_WIFI_EXE_EDOGDATA_UPDATE, WiFiCmd_OnExeEdogDataUpdate},
 	{NVTEVT_NULL,                        0},  //End of Command Map
 };
 

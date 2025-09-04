@@ -1,0 +1,2 @@
+中文
+words=wo yao pai zhao,wo yao lu xiang,guan bi ping mu,da kai ping mu,da kai lu yin,guan bi lu yin,da kai re dian,guan bi re dian,da kai qian lu,xian shi qian lu,da kai hou lu,xian shi hou lu,zhua pai zhao pian,da kai nei lu,cha kan quan bu,shi pin jia suo,tiao gao liang du,tiao di liang du,fan hui zhu ye,da kai zuo lu,da kai you lu;thresh=0.32,0.32,0.29,0.29,0.26,0.24,0.22,0.20,0.20,0.17,0.21,0.17,0.15,0.20,0.12,0.12,0.07,0.09,0.08,0.23,0.37;

@@ -5,147 +5,179 @@
 
 #include "UIFramework.h"
 
-extern VControl UIFlowWndMovieCtrl;//Panel type
+extern VControl UIFlowWndMovieCtrl;//Panel type 
 
-extern VControl UIFlowWndMovie_Panel_Normal_DisplayCtrl;//Panel type
+extern VControl UIFlowWndMovie_Panel_Normal_DisplayCtrl;//Panel type 
 
-extern VControl UIFlowWndMovie_Static_cameraCtrl;//Static type
+extern VControl UIFlowWndMovie_Status_CyclicRecCtrl;//Status type 
 
-extern VControl UIFlowWndMovie_Status_CyclicRecCtrl;//Status type
+typedef enum
+{
+UIFlowWndMovie_Status_CyclicRec_ICONID_NULL,
+UIFlowWndMovie_Status_CyclicRec_ICON_CYCLIC_REC_3MIN,
+UIFlowWndMovie_Status_CyclicRec_ICON_CYCLIC_REC_5MIN,
+UIFlowWndMovie_Status_CyclicRec_ICON_CYCLIC_REC_10MIN,
+UIFlowWndMovie_Status_CyclicRec_MAX
+}UIFlowWndMovie_Status_CyclicRec_Setting;
 
-typedef enum {
-	UIFlowWndMovie_Status_CyclicRec_ICONID_NULL,
-	UIFlowWndMovie_Status_CyclicRec_ICON_CYCLIC_REC_1MIN,
-	UIFlowWndMovie_Status_CyclicRec_ICON_CYCLIC_REC_3MIN,
-	UIFlowWndMovie_Status_CyclicRec_ICON_CYCLIC_REC_5MIN,
-	UIFlowWndMovie_Status_CyclicRec_ICON_CYCLIC_REC_10MIN,
-	UIFlowWndMovie_Status_CyclicRec_MAX
-} UIFlowWndMovie_Status_CyclicRec_Setting;
+extern VControl UIFlowWndMovie_Status_MotionDetCtrl;//Status type 
 
-extern VControl UIFlowWndMovie_Status_MotionDetCtrl;//Status type
+typedef enum
+{
+UIFlowWndMovie_Status_MotionDet_ICONID_NULL,
+UIFlowWndMovie_Status_MotionDet_ICON_FLASH_REC,
+UIFlowWndMovie_Status_MotionDet_MAX
+}UIFlowWndMovie_Status_MotionDet_Setting;
 
-typedef enum {
-	UIFlowWndMovie_Status_MotionDet_ICONID_NULL,
-	UIFlowWndMovie_Status_MotionDet_ICON_MOTION_DET_ON,
-	UIFlowWndMovie_Status_MotionDet_MAX
-} UIFlowWndMovie_Status_MotionDet_Setting;
+extern VControl UIFlowWndMovie_Status_HDRCtrl;//Status type 
 
-extern VControl UIFlowWndMovie_Status_batteryCtrl;//Status type
+typedef enum
+{
+UIFlowWndMovie_Status_HDR_ICONID_NULL,
+UIFlowWndMovie_Status_HDR_ICON_MENU_HDR,
+UIFlowWndMovie_Status_HDR_MAX
+}UIFlowWndMovie_Status_HDR_Setting;
 
-typedef enum {
-	UIFlowWndMovie_Status_battery_ICON_BATTERY_FULL,
-	UIFlowWndMovie_Status_battery_ICON_BATTERY_MED,
-	UIFlowWndMovie_Status_battery_ICON_BATTERY_LOW,
-	UIFlowWndMovie_Status_battery_ICON_BATTERY_EMPTY,
-	UIFlowWndMovie_Status_battery_ICON_BATTERY_ZERO,
-	UIFlowWndMovie_Status_battery_ICON_BATTERY_CHARGE,
-	UIFlowWndMovie_Status_battery_MAX
-} UIFlowWndMovie_Status_battery_Setting;
+extern VControl UIFlowWndMovie_YMD_StaticCtrl;//Static type 
 
-extern VControl UIFlowWndMovie_YMD_StaticCtrl;//Static type
+extern VControl UIFlowWndMovie_HMS_StaticCtrl;//Static type 
 
-extern VControl UIFlowWndMovie_HMS_StaticCtrl;//Static type
+extern VControl UIFlowWndMovie_PanelCtrl;//Panel type 
 
-extern VControl UIFlowWndMovie_Status_RECCtrl;//Status type
+extern VControl UIFlowWndMovie_Static_timeCtrl;//Static type 
 
-typedef enum {
-	UIFlowWndMovie_Status_REC_ICON_REC_TRANSPAENT,
-	UIFlowWndMovie_Status_REC_ICON_REC_ELLIPSE,
-	UIFlowWndMovie_Status_REC_MAX
-} UIFlowWndMovie_Status_REC_Setting;
+extern VControl UIFlowWndMovie_Static_maxtimeCtrl;//Static type 
 
-extern VControl UIFlowWndMovie_Status_StorageCtrl;//Status type
+extern VControl UIFlowWndMovie_Static_resolutionCtrl;//Static type 
 
-typedef enum {
-	UIFlowWndMovie_Status_Storage_ICON_INTERNAL_FLASH,
-	UIFlowWndMovie_Status_Storage_ICON_SD_CARD,
-	UIFlowWndMovie_Status_Storage_ICON_SD_LOCK,
-	UIFlowWndMovie_Status_Storage_MAX
-} UIFlowWndMovie_Status_Storage_Setting;
+extern VControl UIFlowWndMovie_Zoom_StaticCtrl;//Static type 
 
-extern VControl UIFlowWndMovie_Static_timeCtrl;//Static type
+extern VControl UIFlowWndMovie_SOSCtrl;//Static type 
 
-extern VControl UIFlowWndMovie_Static_maxtimeCtrl;//Static type
+extern VControl UIFlowWndMovie_Status_AudioCtrl;//Status type 
 
-extern VControl UIFlowWndMovie_Static_resolutionCtrl;//Static type
+typedef enum
+{
+UIFlowWndMovie_Status_Audio_ICON_VOICE_OFF,
+UIFlowWndMovie_Status_Audio_ICON_VOICE_ON,
+UIFlowWndMovie_Status_Audio_MAX
+}UIFlowWndMovie_Status_Audio_Setting;
 
-extern VControl UIFlowWndMovie_Zoom_StaticCtrl;//Static type
+extern VControl UIFlowWndMovie_Status_EISCtrl;//Status type 
 
-extern VControl UIFlowWndMovie_StatusICN_EVCtrl;//Status type
+typedef enum
+{
+UIFlowWndMovie_Status_EIS_ICONID_NULL,
+UIFlowWndMovie_Status_EIS_ICON_SHAKE_ON,
+UIFlowWndMovie_Status_EIS_MAX
+}UIFlowWndMovie_Status_EIS_Setting;
 
-typedef enum {
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_P2P0,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_P1P6,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_P1P3,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_P1P0,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_P0P6,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_P0P3,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_P0P0,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_M0P3,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_M0P6,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_M1P0,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_M1P3,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_M1P6,
-	UIFlowWndMovie_StatusICN_EV_ICON_EV_M2P0,
-	UIFlowWndMovie_StatusICN_EV_MAX
-} UIFlowWndMovie_StatusICN_EV_Setting;
+extern VControl UIFlowWndMovie_CustomTypeCtrl;//Static type 
 
-extern VControl UIFlowWndMovie_Status_HDRCtrl;//Status type
+extern VControl UIFlowWndMovie_StaticIcon_PIMCtrl;//Static type 
 
-typedef enum {
-	UIFlowWndMovie_Status_HDR_ICONID_NULL,
-	UIFlowWndMovie_Status_HDR_ICON_HDR,
-	UIFlowWndMovie_Status_HDR_MAX
-} UIFlowWndMovie_Status_HDR_Setting;
+extern VControl UIFlowWndMovie_GPSSignalCtrl;//Static type 
 
-extern VControl UIFlowWndMovie_Status_WIFICtrl;//Status type
+extern VControl UIFlowWndMovie_GPSSignalCCtrl;//Static type 
 
-typedef enum {
-	UIFlowWndMovie_Status_WIFI_ICON_WIFI_OFF,
-	UIFlowWndMovie_Status_WIFI_ICON_WIFI_ON,
-	UIFlowWndMovie_Status_WIFI_ICON_CLOUD_ON,
-	UIFlowWndMovie_Status_WIFI_MAX
-} UIFlowWndMovie_Status_WIFI_Setting;
+extern VControl UIFlowWndMovie_GPSSignalCCCtrl;//Static type 
 
-extern VControl UIFlowWndMovie_StaticIcon_PIMCCtrl;//Static type
+extern VControl UIFlowWndMovie_FolderCheck_StatusTxtCtrl;//Status type 
 
-extern VControl UIFlowWndMovie_PNL_FDFrameCtrl;//Panel type
+typedef enum
+{
+UIFlowWndMovie_FolderCheck_StatusTxt_STRID_FORMAT_WARNING1,
+UIFlowWndMovie_FolderCheck_StatusTxt_MAX
+}UIFlowWndMovie_FolderCheck_StatusTxt_Setting;
 
-extern VControl UIFlowWndMovie_ADAS_DrawingLineCtrl;//Panel type
+extern VControl UIFlowWndMovie_StaticIcon_TimelapseCtrl;//Static type 
 
-extern VControl UIFlowWndMovie_ADAS_Alert_DisplayCtrl;//Panel type
+extern VControl UIFlowWndMovie_GPSCtrl;//Status type 
 
-//#NT#2016/03/02#Lincy Lin -begin
-//#NT#Support object tracking function
-extern VControl UIFlowWndMovie_OT_DrawRectCtrl;//Panel type
-//#NT#2016/03/02#Lincy Lin -end
-//#NT#2016/05/26#David Tsai -begin
-//#NT#Support tampering detection
-extern VControl UIFlowWndMovie_TD_DrawRectCtrl;//Panel type
-//#NT#2016/05/26#David Tsai -end
+typedef enum
+{
+UIFlowWndMovie_GPS_ICONID_NULL,
+UIFlowWndMovie_GPS_ICON_GPS_OFF,
+UIFlowWndMovie_GPS_ICON_GPS_ON,
+UIFlowWndMovie_GPS_MAX
+}UIFlowWndMovie_GPS_Setting;
 
-extern VControl UIFlowWndMovie_StatusICN_LDWS_AlertCtrl;//Status type
+extern VControl UIFlowWndMovie_StatusIcon_TPMSCtrl;//Status type 
 
-typedef enum {
-	UIFlowWndMovie_StatusICN_LDWS_Alert_ICON_LDWS_LEFT_ALERT,
-	UIFlowWndMovie_StatusICN_LDWS_Alert_ICON_LDWS_RIGHT_ALERT,
-	UIFlowWndMovie_StatusICN_LDWS_Alert_MAX
-} UIFlowWndMovie_StatusICN_LDWS_Alert_Setting;
+typedef enum
+{
+UIFlowWndMovie_StatusIcon_TPMS_ICONID_NULL,
+UIFlowWndMovie_StatusIcon_TPMS_ICON_TPMS_ALARM,
+UIFlowWndMovie_StatusIcon_TPMS_MAX
+}UIFlowWndMovie_StatusIcon_TPMS_Setting;
 
-extern VControl UIFlowWndMovie_StatusICN_FCWS_AlertCtrl;//Status type
+extern VControl UIFlowWndMovie_StatusIcon_CompassCtrl;//Status type 
 
-typedef enum {
-	UIFlowWndMovie_StatusICN_FCWS_Alert_ICON_FCW_FAR_ALERT,
-	UIFlowWndMovie_StatusICN_FCWS_Alert_ICON_FCW_NEAR_ALERT,
-	UIFlowWndMovie_StatusICN_FCWS_Alert_MAX
-} UIFlowWndMovie_StatusICN_FCWS_Alert_Setting;
+typedef enum
+{
+UIFlowWndMovie_StatusIcon_Compass_ICONID_NULL,
+UIFlowWndMovie_StatusIcon_Compass_ICON_NORTH_EAST,
+UIFlowWndMovie_StatusIcon_Compass_ICON_EAST,
+UIFlowWndMovie_StatusIcon_Compass_ICON_SOUTH_EAST,
+UIFlowWndMovie_StatusIcon_Compass_ICON_SOUTH,
+UIFlowWndMovie_StatusIcon_Compass_ICON_SOUTH_WEST,
+UIFlowWndMovie_StatusIcon_Compass_ICON_WEST,
+UIFlowWndMovie_StatusIcon_Compass_ICON_NORTH_WEST,
+UIFlowWndMovie_StatusIcon_Compass_ICON_NORTH,
+UIFlowWndMovie_StatusIcon_Compass_MAX
+}UIFlowWndMovie_StatusIcon_Compass_Setting;
 
-extern VControl UIFlowWndMovie_StatusICN_SNG_AlertCtrl;//Status type
+extern VControl UIFlowWndMovie_TipsBarCtrl;//Panel type 
 
-typedef enum {
-	UIFlowWndMovie_StatusICN_SNG_Alert_ICON_SNG_ALERT,
-	UIFlowWndMovie_StatusICN_SNG_Alert_MAX
-} UIFlowWndMovie_StatusICN_SNG_Alert_Setting;
+extern VControl UIFlowWndMovie_TipsIconSOSCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_TipsIconPLAYBACKCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_TipsIconSETTINGCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_TipsIconCLOSELCDCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_GPS_INFOCtrl;//Panel type 
+
+extern VControl UIFlowWndMovie_DATE_Y3Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_DATE_Y2Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_DATE_Y1Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_DATE_Y0Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_DATE_M1Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_DATE_M0Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_DATE_D1Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_DATE_D0Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_TIME_AMPMCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_TIME_H1Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_TIME_H0Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_TIME_M1Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_TIME_M0Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_PANEL_SPEEDCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_SPEED_N2Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_SPEED_N1Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_SPEED_N0Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_SPEED_UNITCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_GPS_STATUSCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_COMPASSCtrl;//Static type 
 
 //---------------------UIFlowWndMovieCtrl User Export---------------------------
 #endif

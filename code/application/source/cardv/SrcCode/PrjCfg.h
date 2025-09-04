@@ -34,7 +34,8 @@
 #define debug_ind(msg)
 #endif
 
-#define _Disp_IF8B_LCD1_PW35P00_HX8238D_  1
+//#define _Disp_IF8B_LCD1_PW35P00_HX8238D_  1
+#define _Disp_IF8B_LCD1_ILI9341_		  1
 
 #if defined(_MODEL_CARDV_EVB_)
 #include "PrjCfg_DVCam.h"

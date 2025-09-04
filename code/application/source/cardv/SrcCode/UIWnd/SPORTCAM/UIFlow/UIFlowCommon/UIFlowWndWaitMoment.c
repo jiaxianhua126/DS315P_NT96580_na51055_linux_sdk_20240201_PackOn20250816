@@ -80,6 +80,11 @@ INT32 UIFlowWndWaitMoment_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *param
             	snprintf(g_StringTmpBuf, sizeof(g_StringTmpBuf), "Tx UpdateFW Finish!");
             	UxState_SetItemData(&UIFlowWndWaitMoment_StatusTXT_MsgCtrl, 0, STATE_ITEM_STRID,  Txt_Pointer(g_StringTmpBuf));
 
+        }else if(UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_SENDFW_FAIL==g_uiWaitMomentMsg){
+        	memset(g_StringTmpBuf, 0, 64);
+            	snprintf(g_StringTmpBuf, sizeof(g_StringTmpBuf), "Send FW to Tx Fail!");
+            	UxState_SetItemData(&UIFlowWndWaitMoment_StatusTXT_MsgCtrl, 0, STATE_ITEM_STRID,  Txt_Pointer(g_StringTmpBuf));
+
         }else{
         	UxState_SetData(&UIFlowWndWaitMoment_StatusTXT_MsgCtrl, STATE_CURITEM, g_uiWaitMomentMsg);
         }

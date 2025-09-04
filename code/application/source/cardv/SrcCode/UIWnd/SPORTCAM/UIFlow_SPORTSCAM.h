@@ -57,6 +57,16 @@
 /* Setup UIMenu */
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/MenuSetup.h"
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupDateTime.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupCustomize.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupCarNo.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupDefaultSetting.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupFormatConfirm.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupFormatQuickConfirm.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupVersion.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupGPS.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndPreSetLanguage.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndPreSetDateTime.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupHDRTime.h"
 
 /****************************************************************************
  * Movie mode headers
@@ -68,12 +78,15 @@
 /* Movie UIFlow */
 #include "UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowWndMovie.h"
 #include "UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowMovieFuncs.h"
+#include "UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowWndMovieAddFunc.h"
 #include "UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowMovieIcons.h"
 #include "UIWnd/SPORTCAM/UIFlow/UIFlowCommon/UIFlowWndWrnMsgAPI.h"
 
 /* Movie UIInfo */
 #include "UIWnd/SPORTCAM/UIInfo/UIMovieMapping.h"
 #include "UIWnd/SPORTCAM/UIInfo/UIMovieInfo.h"
+#include "UIWnd/SPORTCAM/UIInfo/UICfgDefault.h"
+#include "UIWnd/SPORTCAM/Resource/UIResource.h"
 
 /****************************************************************************
  * Photo mode headers
@@ -110,7 +123,8 @@
 
 /* Playback UIMenu */
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuPlay/MenuPlayback.h"
-
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuPlay/UIMenuWndPlayFileType.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuPlay/UIMenuWndPlayQuickConfirmDel.h"
 
 /****************************************************************************
  * USB headers
@@ -134,5 +148,12 @@
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuWiFi/UIMenuWndWiFiMobileLinkOK.h"
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuWiFi/UIMenuWndWiFiLivestream.h"
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuWiFi/UIMenuWndWiFiQRCodeScan.h"
+
+//UIFlow WIFI
+#include "UIWnd/SPORTCAM/UIFlow/UIFlowWiFi/UIFlowWndWiFiMovie.h"
+#include "UIWnd/SPORTCAM/UIFlow/UIFlowWiFi/UIFlowWndWiFiMovieIcons.h"
+
+#include "UIWnd/SPORTCAM/UIFlow/UIFlowEdog/UIFlowWndEdogMsg_UiqueSky.h"
+#include "UIWnd/SPORTCAM/UIFlow/UIFlowEdog/UIFlowWndEdogMsg.h"	
 
 #endif

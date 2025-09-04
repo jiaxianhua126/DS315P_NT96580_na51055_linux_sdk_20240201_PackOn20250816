@@ -3,6 +3,7 @@
 #include "UIMenuWndSetupDateTime.h"
 #include "PrjInc.h"
 #include "GxTime.h"
+#include "comm/hwclock.h"
 #if(defined(_NVT_ETHREARCAM_RX_))
 #include "UIApp/Network/EthCamAppCmd.h"
 #include "UIApp/Network/EthCamAppNetwork.h"
@@ -36,10 +37,13 @@
 //---------------------UIMenuWndSetupDateTimeCtrl Public API  ----------------------------------
 
 //---------------------UIMenuWndSetupDateTimeCtrl Private API  ---------------------------------
-#define DATETIME_MAX_YEAR       2050
-#define DATETIME_DEFAULT_YEAR   2000
-#define DATETIME_DEFAULT_MONTH     1
-#define DATETIME_DEFAULT_DAY       1
+
+#define DATETIME_AMPM_ENABLE    DISABLE
+
+#define DATETIME_MAX_YEAR          MAX_YEAR
+#define DATETIME_DEFAULT_YEAR      DEF_YEAR
+#define DATETIME_DEFAULT_MONTH     DEF_MONTH
+#define DATETIME_DEFAULT_DAY       DEF_DAY
 #define DATETIME_DEFAULT_HOUR      0
 #define DATETIME_DEFAULT_MINUTE    0
 #define DATETIME_DEFAULT_SECOND    0
@@ -51,118 +55,193 @@
 #define DATETIME_SHIFT_X        20
 
 typedef enum {
-	UI_DATETIME_IDX_Y,
-	UI_DATETIME_IDX_Y2,
-	UI_DATETIME_IDX_Y3,
-	UI_DATETIME_IDX_Y4,
-	UI_DATETIME_IDX_M,
-	UI_DATETIME_IDX_M2,
-	UI_DATETIME_IDX_D,
-	UI_DATETIME_IDX_D2,
-	UI_DATETIME_IDX_HR,
-	UI_DATETIME_IDX_HR2,
-	UI_DATETIME_IDX_MIN,
-	UI_DATETIME_IDX_MIN2,
-	UI_DATETIME_IDX_SEC,
-	UI_DATETIME_IDX_SWITCH
+    UI_DATETIME_IDX_Y,
+    UI_DATETIME_IDX_M,
+    UI_DATETIME_IDX_D,
+    UI_DATETIME_IDX_HR,
+    UI_DATETIME_IDX_MIN,
+    UI_DATETIME_IDX_SEC,
+    UI_DATETIME_IDX_SWITCH
 } _UI_DATETIME_IDX_;
 //#NT#2010/06/01#Chris Chung -end
 
 //---------------------UIMenuWndSetupDateTimeCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIMenuWndSetupDateTime)
 CTRL_LIST_ITEM(UIMenuWndSetupDateTime_Tab)
+CTRL_LIST_ITEM(UIMenuWndSetupDateTime_Static_Title)
 CTRL_LIST_END
+
 //----------------------UIMenuWndSetupDateTimeCtrl Event---------------------------
 INT32 UIMenuWndSetupDateTime_OnOpen(VControl *, UINT32, UINT32 *);
 INT32 UIMenuWndSetupDateTime_OnClose(VControl *, UINT32, UINT32 *);
 INT32 UIMenuWndSetupDateTime_OnKeyMenu(VControl *, UINT32, UINT32 *);
 INT32 UIMenuWndSetupDateTime_OnKeyMode(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDateTime_OnKeyShutter2(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDateTime_OnBatteryLow(VControl *, UINT32, UINT32 *);
 EVENT_BEGIN(UIMenuWndSetupDateTime)
-EVENT_ITEM(NVTEVT_OPEN_WINDOW, UIMenuWndSetupDateTime_OnOpen)
-EVENT_ITEM(NVTEVT_CLOSE_WINDOW, UIMenuWndSetupDateTime_OnClose)
-EVENT_ITEM(NVTEVT_KEY_MENU, UIMenuWndSetupDateTime_OnKeyMenu)
-EVENT_ITEM(NVTEVT_KEY_MODE, UIMenuWndSetupDateTime_OnKeyMode)
+EVENT_ITEM(NVTEVT_OPEN_WINDOW,UIMenuWndSetupDateTime_OnOpen)
+EVENT_ITEM(NVTEVT_CLOSE_WINDOW,UIMenuWndSetupDateTime_OnClose)
+EVENT_ITEM(NVTEVT_KEY_LEFT,UIMenuWndSetupDateTime_OnKeyMenu)
+//EVENT_ITEM(NVTEVT_KEY_MODE,UIMenuWndSetupDateTime_OnKeyMode)
+//EVENT_ITEM(NVTEVT_KEY_SHUTTER2,UIMenuWndSetupDateTime_OnKeyShutter2)
+//EVENT_ITEM(NVTEVT_BATTERY_LOW,UIMenuWndSetupDateTime_OnBatteryLow)
 EVENT_END
 
 //#NT#2010/06/01#Chris Chung -begin
 static UINT32 g_year = DATETIME_DEFAULT_YEAR, g_month = DATETIME_DEFAULT_MONTH, g_day = DATETIME_DEFAULT_DAY;
 static UINT32 g_hour = DATETIME_DEFAULT_HOUR, g_min = DATETIME_DEFAULT_MINUTE, g_second = DATETIME_DEFAULT_SECOND;
-static char   itemY_Buf[32] = "0";
-static char   itemY2_Buf[32] = "0";
-static char   itemY3_Buf[32] = "0";
-static char   itemY4_Buf[32] = "0";
-static char   itemM_Buf[32] = "0";
-static char   itemM2_Buf[32] = "0";
-static char   itemD_Buf[32] = "0";
-static char   itemD2_Buf[32] = "0";
-static char   itemHR_Buf[32] = "0";
-static char   itemHR2_Buf[32] = "0";
-static char   itemMIN_Buf[32] = "0";
-static char   itemMIN2_Buf[32] = "0";
-static char   itemSEC_Buf[32] = "0";
+static char   itemY_Buf[32] = "0000";
+static char   itemM_Buf[32] = "00";
+static char   itemD_Buf[32] = "00";
+static char   itemHR_Buf[32] = "00";
+static char   itemMIN_Buf[32] = "00";
+static char   itemSEC_Buf[32] = "00";
+static char   itemAMPM_Buf[32] = "AM";
+static char   itemSwitch_Buf[32] = "YY";
 static char   itemOther0_Buf[32] = "/";
 static char   itemOther2_Buf[32] = ":";
+static char   itemOther4_Buf[32] = "/MM/DD";
 
 _ALIGNED(4) static const UINT8 DayOfMonth[2][12] = {
-	// Not leap year
-	{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
-	// Leap year
-	{31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+    // Not leap year
+    {31,28,31,30,31,30,31,31,30,31,30,31},
+    // Leap year
+    {31,29,31,30,31,30,31,31,30,31,30,31}
 };
 
+extern void FlowMovie_BaseDaySet(int year,int month,int day);
 
 static void UIMenuWndSetupDateTime_UpdateInfo(void)
 {
-#if 0
-	/* rect1_x: YYYY MM DD position */
-	Ux_RECT rect1_1_1 = { 96 - DATETIME_START_X,  61 - DATETIME_START_Y, 163 - DATETIME_START_X, 117 - DATETIME_START_Y};
-	Ux_RECT rect1_1_2 = {116 - DATETIME_START_X,  61 - DATETIME_START_Y, 163 - DATETIME_START_X, 117 - DATETIME_START_Y};
-	Ux_RECT rect1_2   = {173 - DATETIME_START_X,  61 - DATETIME_START_Y, 212 - DATETIME_START_X, 117 - DATETIME_START_Y};
-	Ux_RECT rect1_3   = {229 - DATETIME_START_X,  61 - DATETIME_START_Y, 268 - DATETIME_START_X, 117 - DATETIME_START_Y};
-#endif
+    /* rect1_x: YYYY MM DD position */
+    Ux_RECT rect1_1_1 = { 96-DATETIME_START_X,  61-DATETIME_START_Y, 163-DATETIME_START_X, 117-DATETIME_START_Y};
+    Ux_RECT rect1_1_2 = {116-DATETIME_START_X,  61-DATETIME_START_Y, 163-DATETIME_START_X, 117-DATETIME_START_Y};
+    Ux_RECT rect1_2   = {173-DATETIME_START_X,  61-DATETIME_START_Y, 212-DATETIME_START_X, 117-DATETIME_START_Y};
+    Ux_RECT rect1_3   = {229-DATETIME_START_X,  61-DATETIME_START_Y, 268-DATETIME_START_X, 117-DATETIME_START_Y};
+    #if (DATETIME_AMPM_ENABLE == ENABLE)
+    /* rect2_x: HH:MI:SEC AM position */
+    Ux_RECT rect2_1   = {116-DATETIME_START_X-DATETIME_SHIFT_X, 104-DATETIME_START_Y, 155-DATETIME_START_X-DATETIME_SHIFT_X, 160-DATETIME_START_Y};
+    Ux_RECT rect2_2   = {152-DATETIME_START_X-DATETIME_SHIFT_X, 117-DATETIME_START_Y, 172-DATETIME_START_X-DATETIME_SHIFT_X, 146-DATETIME_START_Y};
+    Ux_RECT rect2_3   = {173-DATETIME_START_X-DATETIME_SHIFT_X, 104-DATETIME_START_Y, 212-DATETIME_START_X-DATETIME_SHIFT_X, 160-DATETIME_START_Y};
+    Ux_RECT rect2_4   = {208-DATETIME_START_X-DATETIME_SHIFT_X, 117-DATETIME_START_Y, 228-DATETIME_START_X-DATETIME_SHIFT_X, 146-DATETIME_START_Y};
+    Ux_RECT rect2_5   = {229-DATETIME_START_X-DATETIME_SHIFT_X, 104-DATETIME_START_Y, 268-DATETIME_START_X-DATETIME_SHIFT_X, 160-DATETIME_START_Y};
+    Ux_RECT rect2_6   = {268-DATETIME_START_X-DATETIME_SHIFT_X, 104-DATETIME_START_Y, 307-DATETIME_START_X-DATETIME_SHIFT_X, 160-DATETIME_START_Y};
+    #endif
 
-	if (g_day > DayOfMonth[GxTime_IsLeapYear(g_year)][g_month - 1]) {
-		g_day = DayOfMonth[GxTime_IsLeapYear(g_year)][g_month - 1];
-	}
+    if (g_day > DayOfMonth[timeutil_is_leap_year(g_year)][g_month - 1]) {
+        g_day = DayOfMonth[timeutil_is_leap_year(g_year)][g_month - 1];
+    }
 
-	snprintf(itemY_Buf, 32, "%1ld", g_year / 1000);
-	snprintf(itemY2_Buf, 32, "%01ld", (g_year / 100) % 10);
-	snprintf(itemY3_Buf, 32, "%01ld", (g_year / 10) % 10);
-	snprintf(itemY4_Buf, 32, "%ld", g_year % 10);
-	snprintf(itemM_Buf, 32, "%01ld", g_month / 10);
-	snprintf(itemM2_Buf, 32, "%ld", g_month % 10);
-	snprintf(itemD_Buf, 32, "%01ld", g_day / 10);
-	snprintf(itemD2_Buf, 32, "%ld", g_day % 10);
-	snprintf(itemHR_Buf, 32, "%01ld", g_hour / 10);
-	snprintf(itemHR2_Buf, 32, "%ld", g_hour % 10);
-	snprintf(itemMIN_Buf, 32, "%01ld", g_min / 10);
-	snprintf(itemMIN2_Buf, 32, "%ld", g_min % 10);
-	snprintf(itemSEC_Buf, 32, "%02ld", g_second);
+    snprintf(itemY_Buf, 32, "%4ld", g_year);
+    snprintf(itemM_Buf, 32, "%02ld", g_month);
+    snprintf(itemD_Buf, 32, "%02ld", g_day);
+    #if (DATETIME_AMPM_ENABLE == ENABLE)
+    {
+        if (g_hour <= 12) {
+            snprintf(itemHR_Buf, 32, "%02ld", g_hour);
+        } else {
+            snprintf(itemHR_Buf, 32, "%02ld", g_hour-12);
+        }
 
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_YCtrl, 0, BTNITM_STRID, Txt_Pointer(itemY_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_Y2Ctrl, 0, BTNITM_STRID, Txt_Pointer(itemY2_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_Y3Ctrl, 0, BTNITM_STRID, Txt_Pointer(itemY3_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_Y4Ctrl, 0, BTNITM_STRID, Txt_Pointer(itemY4_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_MCtrl, 0, BTNITM_STRID, Txt_Pointer(itemM_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_M2Ctrl, 0, BTNITM_STRID, Txt_Pointer(itemM2_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_DCtrl, 0, BTNITM_STRID, Txt_Pointer(itemD_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_D2Ctrl, 0, BTNITM_STRID, Txt_Pointer(itemD2_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_HRCtrl, 0, BTNITM_STRID, Txt_Pointer(itemHR_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_HR2Ctrl, 0, BTNITM_STRID, Txt_Pointer(itemHR2_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_MINCtrl, 0, BTNITM_STRID, Txt_Pointer(itemMIN_Buf));
-	UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_MIN2Ctrl, 0, BTNITM_STRID, Txt_Pointer(itemMIN2_Buf));
+        if (g_hour <= 11) {
+            snprintf(itemAMPM_Buf, 32, "AM");
+        } else {
+            snprintf(itemAMPM_Buf, 32, "PM");
+        }
+    }
+    #else
+    snprintf(itemHR_Buf, 32, "%02ld", g_hour);
+    #endif
+    snprintf(itemMIN_Buf, 32, "%02ld", g_min);
+    snprintf(itemSEC_Buf, 32, "%02ld", g_second);
 
-	UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other0Ctrl, STATIC_VALUE, Txt_Pointer(itemOther0_Buf));
-	UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other1Ctrl, STATIC_VALUE, Txt_Pointer(itemOther0_Buf));
-	UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other2Ctrl, STATIC_VALUE, Txt_Pointer(itemOther2_Buf));
-	UxCtrl_SetDirty(&UIMenuWndSetupDateTime_TabCtrl, TRUE);
+    switch (SysGetFlag(FL_DATE_FORMAT)) {
+    case DATE_FORMAT_DMY:
+        snprintf(itemSwitch_Buf, 32, "DD");
+        snprintf(itemOther4_Buf, 32, "/MM/YY");
+        {
+            UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_DCtrl, rect1_1_2);
+            UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_MCtrl, rect1_2);
+            UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_YCtrl, rect1_3);
+        }
+        break;
+    case DATE_FORMAT_MDY:
+        snprintf(itemSwitch_Buf, 32, "MM");
+        snprintf(itemOther4_Buf, 32, "/DD/YY");
+        {
+            UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_MCtrl, rect1_1_2);
+            UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_DCtrl, rect1_2);
+            UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_YCtrl, rect1_3);
+        }
+        break;
+    case DATE_FORMAT_YMD:
+        snprintf(itemSwitch_Buf, 32, "YY");
+        snprintf(itemOther4_Buf, 32, "/MM/DD");
+        {
+            UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_YCtrl, rect1_1_1);
+            UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_MCtrl, rect1_2);
+            UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_DCtrl, rect1_3);
+        }
+        break;
+    }
+
+    #if (DATETIME_AMPM_ENABLE == ENABLE)
+    UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_HRCtrl,           rect2_1);
+    UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_VALUE_Other2Ctrl, rect2_2);
+    UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_MINCtrl,          rect2_3);
+    UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_VALUE_Other3Ctrl, rect2_4);
+    UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_SECCtrl,          rect2_5);
+    UxCtrl_SetPos(&UIMenuWndSetupDateTime_YMD_AMPMCtrl,         rect2_6);
+    #endif
+
+    UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_YCtrl, 0, BTNITM_STRID, Txt_Pointer(itemY_Buf));
+    UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_MCtrl, 0, BTNITM_STRID, Txt_Pointer(itemM_Buf));
+    UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_DCtrl, 0, BTNITM_STRID, Txt_Pointer(itemD_Buf));
+    UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_HRCtrl, 0, BTNITM_STRID, Txt_Pointer(itemHR_Buf));
+    UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_MINCtrl, 0, BTNITM_STRID, Txt_Pointer(itemMIN_Buf));
+    UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_SECCtrl, 0, BTNITM_STRID, Txt_Pointer(itemSEC_Buf));
+    UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_AMPMCtrl, 0, BTNITM_STRID, Txt_Pointer(itemAMPM_Buf));
+    UxButton_SetItemData(&UIMenuWndSetupDateTime_YMD_SwitchCtrl, 0, BTNITM_STRID, Txt_Pointer(itemSwitch_Buf));
+
+    UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other0Ctrl, STATIC_VALUE, Txt_Pointer(itemOther0_Buf));
+    UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other1Ctrl, STATIC_VALUE, Txt_Pointer(itemOther0_Buf));
+    UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other2Ctrl, STATIC_VALUE, Txt_Pointer(itemOther2_Buf));
+    UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other3Ctrl, STATIC_VALUE, Txt_Pointer(itemOther2_Buf));
+    UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other4Ctrl, STATIC_VALUE, Txt_Pointer(itemOther4_Buf));
+    Ux_SendEvent(&UISetupObjCtrl,NVTEVT_EXE_DATEFORMAT,    1,  SysGetFlag(FL_DATE_FORMAT));
 }
 //#NT#2010/06/01#Chris Chung -end
 
+static void UIMenuWndSetupDateTime_Confirm(void)
+{
+    struct tm Curr_DateTime = {0};
+
+    Curr_DateTime.tm_year = g_year;
+    Curr_DateTime.tm_mon = g_month;
+    Curr_DateTime.tm_mday = g_day;
+    Curr_DateTime.tm_hour = g_hour;
+    Curr_DateTime.tm_min = g_min;
+    Curr_DateTime.tm_sec = g_second;
+
+    GxTime_SetTime(Curr_DateTime);
+    FlowMovie_BaseDaySet(g_year, g_month, g_day);
+#if (defined(_NVT_ETHREARCAM_RX_))
+	UINT32 i;
+	for (i=0; i<ETH_REARCAM_CAPS_COUNT; i++){
+		if(EthCamNet_GetEthLinkStatus(i)==ETHCAM_LINK_UP){
+			//sync time
+			EthCam_SendXMLCmd(i, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_TIME, 0);
+			EthCam_SendXMLData(i, (UINT8 *)&Curr_DateTime, sizeof(struct tm));
+		}
+	}
+#endif
+    SysSetFlag(FL_FIRSTPOWERON, FIRSTPOWERON_FALSE);
+    Ux_CloseWindow(&UIMenuWndSetupDateTimeCtrl,0); // close whole tab menu
+}
+
 INT32 UIMenuWndSetupDateTime_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    DBG_FUNC_BEGIN("\r\n");
-	//#NT#2010/06/01#Chris Chung -begin
+    //#NT#2010/06/01#Chris Chung -begin
     struct tm Curr_DateTime;
     GxTime_GetTime(&Curr_DateTime);
 
@@ -174,18 +253,34 @@ INT32 UIMenuWndSetupDateTime_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *pa
 	g_second = Curr_DateTime.tm_sec;
     DBG_FUNC("Y=%d, M=%d D=%d\r\n", g_year,g_month, g_day);
 
-    UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_Y3);
-	Input_SetKeyMask(KEY_RELEASE, FLGKEY_KEY_MASK_NULL);
-	UIMenuWndSetupDateTime_UpdateInfo();
-	//#NT#2010/06/01#Chris Chung -end
-	Ux_DefaultEvent(pCtrl, NVTEVT_OPEN_WINDOW, paramNum, paramArray);
-    DBG_FUNC_END("\r\n");
-	return NVTEVT_CONSUME;
+    switch(SysGetFlag(FL_DATE_FORMAT))
+    {
+    case DATE_FORMAT_DMY:
+        UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, 2);
+        break;
+    case DATE_FORMAT_MDY:
+        UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, 1);
+        break;
+    case DATE_FORMAT_YMD:
+        UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, 0);
+        break;
+    }
+
+    #if (DATETIME_AMPM_ENABLE == ENABLE)
+    UxCtrl_SetShow(&UIMenuWndSetupDateTime_YMD_AMPMCtrl, TRUE);
+    #else
+    UxCtrl_SetShow(&UIMenuWndSetupDateTime_YMD_AMPMCtrl, FALSE);
+    #endif
+
+    UIMenuWndSetupDateTime_UpdateInfo();
+    //#NT#2010/06/01#Chris Chung -end
+    Ux_DefaultEvent(pCtrl,NVTEVT_OPEN_WINDOW,paramNum,paramArray);
+    return NVTEVT_CONSUME;
 }
 INT32 UIMenuWndSetupDateTime_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    DBG_FUNC_BEGIN("\r\n");
-    struct tm Curr_DateTime ={0};
+#if 0 //use UIMenuWndSetupDateTime_Confirm()
+    struct tm Curr_DateTime = {0};
 
 	Curr_DateTime.tm_year = g_year ;
 	Curr_DateTime.tm_mon = g_month ;
@@ -195,6 +290,7 @@ INT32 UIMenuWndSetupDateTime_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 	Curr_DateTime.tm_sec = g_second ;
 
     GxTime_SetTime(Curr_DateTime);
+    FlowMovie_BaseDaySet(g_year, g_month, g_day);
 #if(defined(_NVT_ETHREARCAM_RX_))
 	UINT32 i;
 	for (i=0; i<ETH_REARCAM_CAPS_COUNT; i++){
@@ -205,42 +301,40 @@ INT32 UIMenuWndSetupDateTime_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		}
 	}
 #endif
-
-	Ux_DefaultEvent(pCtrl, NVTEVT_CLOSE_WINDOW, paramNum, paramArray);
+#endif
+    Ux_DefaultEvent(pCtrl,NVTEVT_CLOSE_WINDOW,paramNum,paramArray);
     DBG_FUNC_END("\r\n");
 	return NVTEVT_CONSUME;
 }
 INT32 UIMenuWndSetupDateTime_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    DBG_FUNC_BEGIN("\r\n");
-    struct tm Curr_DateTime = {0};
+    UINT32  state = 0;
+    //struct  tm Curr_DateTime = {0};
 
-	Curr_DateTime.tm_year = g_year ;
-	Curr_DateTime.tm_mon = g_month ;
-	Curr_DateTime.tm_mday = g_day ;
-	Curr_DateTime.tm_hour = g_hour ;
-	Curr_DateTime.tm_min = g_min ;
-	Curr_DateTime.tm_sec = g_second ;
+    if (paramNum > 0) {
+        state = paramArray[0];
+    }
 
-    GxTime_SetTime(Curr_DateTime);
-#if(defined(_NVT_ETHREARCAM_RX_))
-	UINT32 i;
-	for (i=0; i<ETH_REARCAM_CAPS_COUNT; i++){
-		if(EthCamNet_GetEthLinkStatus(i)==ETHCAM_LINK_UP){
-			//sync time
-			EthCam_SendXMLCmd(i, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_TIME, 0);
-			EthCam_SendXMLData(i, (UINT8 *)&Curr_DateTime, sizeof(struct tm));
-		}
-	}
-#endif
+    switch (state) {
+    case NVTEVT_KEY_PRESS:
+        /*
+        Curr_DateTime.tm_year = g_year;
+        Curr_DateTime.tm_mon = g_month;
+        Curr_DateTime.tm_mday = g_day;
+        Curr_DateTime.tm_hour = g_hour;
+        Curr_DateTime.tm_min = g_min;
+        Curr_DateTime.tm_sec = g_second;
 
-	Ux_CloseWindow(&MenuCommonItemCtrl, 0); // close whole tab menu
-	DBG_FUNC_END("\r\n");
-	return NVTEVT_CONSUME;
+        GxTime_SetTime(Curr_DateTime);
+        */
+        SysSetFlag(FL_FIRSTPOWERON, FIRSTPOWERON_FALSE);
+        Ux_CloseWindow(&UIMenuWndSetupDateTimeCtrl,0); // close whole tab menu
+        break;
+    }
+    return NVTEVT_CONSUME;
 }
 INT32 UIMenuWndSetupDateTime_OnKeyMode(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    DBG_FUNC_BEGIN("\r\n");
     struct tm Curr_DateTime = {0};
 
 	Curr_DateTime.tm_year = g_year ;
@@ -260,247 +354,302 @@ INT32 UIMenuWndSetupDateTime_OnKeyMode(VControl *pCtrl, UINT32 paramNum, UINT32 
 			EthCam_SendXMLData(i, (UINT8 *)&Curr_DateTime, sizeof(struct tm));
 		}
 	}
+
 #endif
 
 	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_CHANGEDSCMODE, 1, DSCMODE_CHGTO_NEXT);
-    DBG_FUNC_END("\r\n");
 	return NVTEVT_CONSUME;
+}
+INT32 UIMenuWndSetupDateTime_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    Ux_SendEvent(&UISetupObjCtrl,NVTEVT_FORCETO_LIVEVIEW_MODE,0);
+    return NVTEVT_CONSUME;
+}
+INT32 UIMenuWndSetupDateTime_OnBatteryLow(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    Ux_OpenWindow(&UIFlowWndWrnMsgCtrl,2,UIFlowWndWrnMsg_StatusTXT_Msg_STRID_BATTERY_LOW, FLOWWRNMSG_TIMER_1SEC);
+    return NVTEVT_CONSUME;
 }
 
 //----------------------UIMenuWndSetupDateTime_TabCtrl Event---------------------------
-INT32 UIMenuWndSetupDateTime_Tab_OnKeySelect(VControl *, UINT32, UINT32 *);
-INT32 UIMenuWndSetupDateTime_Tab_OnKeyPrev(VControl *, UINT32, UINT32 *);
-INT32 UIMenuWndSetupDateTime_Tab_OnKeyNext(VControl *, UINT32, UINT32 *);
-INT32 UIMenuWndSetupDateTime_Tab_OnKeyExit(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyUp(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyDown(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyLeft(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyRight(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyEnter(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyShutter2(VControl *, UINT32, UINT32 *);
 EVENT_BEGIN(UIMenuWndSetupDateTime_Tab)
-EVENT_ITEM(NVTEVT_KEY_NEXT, UIMenuWndSetupDateTime_Tab_OnKeyNext)
-EVENT_ITEM(NVTEVT_KEY_PREV, UIMenuWndSetupDateTime_Tab_OnKeyPrev)
-EVENT_ITEM(NVTEVT_KEY_SELECT, UIMenuWndSetupDateTime_Tab_OnKeySelect)
-EVENT_ITEM(NVTEVT_KEY_SHUTTER2, UIMenuWndSetupDateTime_Tab_OnKeyExit)
-
+EVENT_ITEM(NVTEVT_KEY_UP,UIMenuWndSetupDateTime_Tab_OnKeyUp)
+EVENT_ITEM(NVTEVT_KEY_DOWN,UIMenuWndSetupDateTime_Tab_OnKeyDown)
+//EVENT_ITEM(NVTEVT_KEY_LEFT,UIMenuWndSetupDateTime_Tab_OnKeyLeft)
+//EVENT_ITEM(NVTEVT_KEY_MODE,UIMenuWndSetupDateTime_Tab_OnKeyRight)
+EVENT_ITEM(NVTEVT_KEY_ENTER,UIMenuWndSetupDateTime_Tab_OnKeyEnter)
+//EVENT_ITEM(NVTEVT_KEY_SHUTTER2,UIMenuWndSetupDateTime_Tab_OnKeyShutter2)
 EVENT_END
 
-INT32 UIMenuWndSetupDateTime_Tab_OnKeySelect(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    DBG_FUNC_BEGIN("\r\n");
-	//#NT#2010/05/19#Chris Chung -begin
-	switch (UxTab_GetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS)) {
-	case UI_DATETIME_IDX_Y3:
-		if (g_year >= DATETIME_MAX_YEAR / 10 * 10) {
-			g_year = g_year % 10;
-		} else {
-			g_year = g_year + 10;
-			if (g_year > DATETIME_MAX_YEAR) {
-				g_year = (g_year / 10) * 10;
-			}
-		}
+    UINT32  state = 0;
 
-		if (g_year < DATETIME_DEFAULT_YEAR) {
-			g_year = DATETIME_DEFAULT_YEAR;
-		}
-		break;
-	case UI_DATETIME_IDX_Y4:
-		if (g_year % 10 == 9) {
-			g_year = (g_year / 10) * 10;
-		} else {
-			g_year++;
-			if (g_year > DATETIME_MAX_YEAR) {
-				g_year = (g_year / 10) * 10;
-			}
-		}
+    if (paramNum > 0) {
+        state = paramArray[0];
+    }
 
-		if (g_year < DATETIME_DEFAULT_YEAR) {
-			g_year = DATETIME_DEFAULT_YEAR;
-		}
+    switch (state) {
+    case NVTEVT_KEY_PRESS:
+        //#NT#2010/05/19#Chris Chung -begin
+        switch (UxTab_GetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS)) {
+        case UI_DATETIME_IDX_Y:
+            if (g_year == DATETIME_MAX_YEAR) {
+                g_year = DATETIME_DEFAULT_YEAR;
+            } else {
+                g_year++;
+            }
+            break;
+        case UI_DATETIME_IDX_M:
+            if (g_month == 12) {
+                g_month = 1;
+            } else {
+                g_month++;
+            }
+            break;
+        case UI_DATETIME_IDX_D:
+            if(g_day == DayOfMonth[timeutil_is_leap_year(g_year)][g_month - 1]) {
+                g_day = 1;
+            } else {
+                g_day++;
+            }
+            break;
+        case UI_DATETIME_IDX_HR:
+            if (g_hour == 23) {
+                g_hour = 0;
+            } else {
+                g_hour++;
+            }
+            break;
+        case UI_DATETIME_IDX_MIN:
+            if (g_min == 59) {
+                g_min = 0;
+            } else {
+                g_min++;
+            }
+            break;
+        case UI_DATETIME_IDX_SEC:
+            if (g_second == 59) {
+                g_second = 0;
+            } else {
+                g_second++;
+            }
+            break;
+        case UI_DATETIME_IDX_SWITCH:
+            switch (SysGetFlag(FL_DATE_FORMAT)) {
+            case DATE_FORMAT_DMY:
+                SysSetFlag(FL_DATE_FORMAT, DATE_FORMAT_MDY);
+                break;
+            case DATE_FORMAT_MDY:
+                SysSetFlag(FL_DATE_FORMAT, DATE_FORMAT_YMD);
+                break;
+            case DATE_FORMAT_YMD:
+            default:
+                SysSetFlag(FL_DATE_FORMAT, DATE_FORMAT_DMY);
+                break;
+            }
+            break;
+        }
 
-		break;
-	case UI_DATETIME_IDX_M:
-		if (g_month >= 10) {
-			g_month = g_month % 10;
-		} else {
-			g_month = g_month + 10;
-			if (g_month > 12) {
-				g_month = (g_month / 10) * 10;
-			}
-		}
-		if (g_month < 1) {
-			g_month = 1;
-		}
-		break;
-	case UI_DATETIME_IDX_M2:
-		if (g_month % 10 == 9) {
-			g_month = (g_month / 10) * 10;
-		} else {
-			g_month++;
-			if (g_month > 12) {
-				g_month = (g_month / 10) * 10;
-			}
-		}
-		if (g_month < 1) {
-			g_month = 1;
-		}
-
-		break;
-	case UI_DATETIME_IDX_D:
-		DBGD(((DayOfMonth[GxTime_IsLeapYear(g_year)][g_month - 1] / 10) * 10));
-		if (g_day >= ((DayOfMonth[GxTime_IsLeapYear(g_year)][g_month - 1] / 10) * 10)) {
-			g_day = g_day % 10;
-		} else {
-			g_day = g_day + 10;
-			if (g_day > DayOfMonth[GxTime_IsLeapYear(g_year)][g_month - 1]) {
-				g_day = (g_day / 10) * 10;
-			}
-		}
-		if (g_day < 1) {
-			g_day = 1;
-		}
-		break;
-	case UI_DATETIME_IDX_D2:
-		if (g_day % 10 == 9) {
-			g_day = (g_day / 10) * 10;
-		} else {
-			g_day++;
-			if (g_day > DayOfMonth[GxTime_IsLeapYear(g_year)][g_month - 1]) {
-				g_day = (g_day / 10) * 10;
-			}
-		}
-		if (g_day < 1) {
-			g_day = 1;
-		}
-		break;
-	case UI_DATETIME_IDX_HR:
-		if (g_hour >= 20) {
-			g_hour = g_hour % 10;
-		} else {
-			g_hour = g_hour + 10;
-			if (g_hour > 23) {
-				g_hour = (g_hour / 10) * 10;
-			}
-		}
-		break;
-	case UI_DATETIME_IDX_HR2:
-		if (g_hour % 10 == 9) {
-			g_hour = (g_hour / 10) * 10;
-		} else {
-			g_hour++;
-			if (g_hour > 23) {
-				g_hour = (g_hour / 10) * 10;
-			}
-		}
-		break;
-	case UI_DATETIME_IDX_MIN:
-		if (g_min >= 50) {
-			g_min = g_min % 10;
-		} else {
-			g_min = g_min + 10;
-			if (g_min > 59) {
-				g_min = (g_min / 10) * 10;
-			}
-		}
-		break;
-	case UI_DATETIME_IDX_MIN2:
-		if (g_min % 10 == 9) {
-			g_min = (g_min / 10) * 10;
-		} else {
-			g_min++;
-			if (g_min > 59) {
-				g_min = (g_min / 10) * 10;
-			}
-		}
-		break;
-	}
-
-	UIMenuWndSetupDateTime_UpdateInfo();
-	//#NT#2010/05/19#Chris Chung -end
-	DBG_FUNC_END("\r\n");
-	return NVTEVT_CONSUME;
+        UIMenuWndSetupDateTime_UpdateInfo();
+        //#NT#2010/05/19#Chris Chung -end
+        break;
+    }
+    return NVTEVT_CONSUME;
 }
-
-INT32 UIMenuWndSetupDateTime_Tab_OnKeyNext(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    DBG_FUNC_BEGIN("\r\n");
-	if (UxTab_GetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS) == UI_DATETIME_IDX_MIN2) {
-		Ux_CloseWindow(&UIMenuWndSetupDateTimeCtrl, 0);
-	} else {
-		Ux_SendEvent(pCtrl, NVTEVT_NEXT_ITEM, 0);
-	}
+    UINT32  state = 0;
 
-	UIMenuWndSetupDateTime_UpdateInfo();
-    DBG_FUNC_END("\r\n");
-	return NVTEVT_CONSUME;
+    if (paramNum > 0) {
+        state = paramArray[0];
+    }
+
+    switch (state) {
+    case NVTEVT_KEY_PRESS:
+        //#NT#2010/05/19#Chris Chung -begin
+        switch (UxTab_GetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS)) {
+        case UI_DATETIME_IDX_Y:
+            if(g_year == DATETIME_DEFAULT_YEAR) {
+                g_year = DATETIME_MAX_YEAR;
+            } else {
+                g_year--;
+            }
+            break;
+        case UI_DATETIME_IDX_M:
+            if (g_month == 1) {
+                g_month = 12;
+            } else {
+                g_month--;
+            }
+            break;
+        case UI_DATETIME_IDX_D:
+            if (g_day == 1) {
+                g_day = DayOfMonth[timeutil_is_leap_year(g_year)][g_month - 1];
+            } else {
+                g_day--;
+            }
+            break;
+        case UI_DATETIME_IDX_HR:
+            if (g_hour == 0) {
+                g_hour = 23;
+            } else {
+                g_hour--;
+            }
+            break;
+        case UI_DATETIME_IDX_MIN:
+            if (g_min == 0) {
+                g_min = 59;
+            } else {
+                g_min--;
+            }
+            break;
+        case UI_DATETIME_IDX_SEC:
+            if (g_second == 0) {
+                g_second = 59;
+            } else {
+                g_second--;
+            }
+            break;
+        case UI_DATETIME_IDX_SWITCH:
+            switch (SysGetFlag(FL_DATE_FORMAT)) {
+            case DATE_FORMAT_DMY:
+                SysSetFlag(FL_DATE_FORMAT, DATE_FORMAT_YMD);
+                break;
+            case DATE_FORMAT_MDY:
+                SysSetFlag(FL_DATE_FORMAT, DATE_FORMAT_DMY);
+                break;
+            case DATE_FORMAT_YMD:
+            default:
+                SysSetFlag(FL_DATE_FORMAT, DATE_FORMAT_MDY);
+                break;
+            }
+            break;
+        }
+
+        UIMenuWndSetupDateTime_UpdateInfo();
+        //#NT#2010/05/19#Chris Chung -end
+        break;
+    }
+    return NVTEVT_CONSUME;
 }
-
-INT32 UIMenuWndSetupDateTime_Tab_OnKeyPrev(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    DBG_FUNC_BEGIN("\r\n");
-	if (UxTab_GetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS) == UI_DATETIME_IDX_Y) {
-		Ux_CloseWindow(&UIMenuWndSetupDateTimeCtrl, 0);
-	} else {
-		Ux_SendEvent(pCtrl, NVTEVT_PREVIOUS_ITEM, 0);
-	}
-
-	UIMenuWndSetupDateTime_UpdateInfo();
-    DBG_FUNC_END("\r\n");
-	return NVTEVT_CONSUME;
+    Ux_CloseWindow(&UIMenuWndSetupDateTimeCtrl,0); // close whole tab menu
+    return NVTEVT_CONSUME;
 }
-INT32 UIMenuWndSetupDateTime_Tab_OnKeyExit(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    DBG_FUNC_BEGIN("\r\n");
-	Ux_CloseWindow(&MenuCommonItemCtrl, 0);
-    DBG_FUNC_END("\r\n");
-	return NVTEVT_CONSUME;
+    UINT32  state = 0;
+
+    if (paramNum > 0) {
+        state = paramArray[0];
+    }
+
+    switch (state) {
+    case NVTEVT_KEY_PRESS:
+        //#NT#2010/05/19#Chris Chung -begin
+        switch (SysGetFlag(FL_DATE_FORMAT)) {
+        case DATE_FORMAT_DMY:
+            switch (UxTab_GetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS)) {
+            case UI_DATETIME_IDX_Y:
+                UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_HR);
+                break;
+            case UI_DATETIME_IDX_M:
+                UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_Y);
+                break;
+            case UI_DATETIME_IDX_D:
+                UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_M);
+                break;
+            case UI_DATETIME_IDX_SWITCH:
+                //UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_D);
+                UIMenuWndSetupDateTime_Confirm();
+                break;
+            default:
+                Ux_SendEvent(pCtrl,NVTEVT_NEXT_ITEM,0);
+            }
+            break;
+        case DATE_FORMAT_MDY:
+            switch (UxTab_GetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS)) {
+            case UI_DATETIME_IDX_Y:
+                UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_HR);
+                break;
+            case UI_DATETIME_IDX_M:
+                UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_D);
+                break;
+            case UI_DATETIME_IDX_D:
+                UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_Y);
+                break;
+            case UI_DATETIME_IDX_SWITCH:
+                //UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_M);
+                UIMenuWndSetupDateTime_Confirm();
+                break;
+            default:
+                Ux_SendEvent(pCtrl,NVTEVT_NEXT_ITEM,0);
+            }
+            break;
+        case DATE_FORMAT_YMD:
+            switch (UxTab_GetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS)) {
+            case UI_DATETIME_IDX_SWITCH:
+                //UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_Y);
+                UIMenuWndSetupDateTime_Confirm();
+                break;
+            default:
+                Ux_SendEvent(pCtrl,NVTEVT_NEXT_ITEM,0);
+            }
+        }
+        UIMenuWndSetupDateTime_UpdateInfo();
+        //#NT#2010/05/19#Chris Chung -end
+        break;
+    }
+    return NVTEVT_CONSUME;
+}
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    return UIMenuWndSetupDateTime_Tab_OnKeyRight(pCtrl,paramNum,paramArray);
+}
+INT32 UIMenuWndSetupDateTime_Tab_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    // the same behavior as RIGHT key!
+    return UIMenuWndSetupDateTime_Tab_OnKeyRight(pCtrl,paramNum,paramArray);
 }
 
 //----------------------UIMenuWndSetupDateTime_YMD_YCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_Y)
 EVENT_END
 
-//----------------------UIMenuWndSetupDateTime_YMD_Y2Ctrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_Y2)
-EVENT_END
-
-//----------------------UIMenuWndSetupDateTime_YMD_Y3Ctrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_Y3)
-EVENT_END
-
-//----------------------UIMenuWndSetupDateTime_YMD_Y4Ctrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_Y4)
-EVENT_END
-
 //----------------------UIMenuWndSetupDateTime_YMD_MCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_M)
-EVENT_END
-
-//----------------------UIMenuWndSetupDateTime_YMD_M2Ctrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_M2)
 EVENT_END
 
 //----------------------UIMenuWndSetupDateTime_YMD_DCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_D)
 EVENT_END
 
-//----------------------UIMenuWndSetupDateTime_YMD_D2Ctrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_D2)
-EVENT_END
-
 //----------------------UIMenuWndSetupDateTime_YMD_HRCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_HR)
-EVENT_END
-
-//----------------------UIMenuWndSetupDateTime_YMD_HR2Ctrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_HR2)
 EVENT_END
 
 //----------------------UIMenuWndSetupDateTime_YMD_MINCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_MIN)
 EVENT_END
 
-//----------------------UIMenuWndSetupDateTime_YMD_MIN2Ctrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_MIN2)
+//----------------------UIMenuWndSetupDateTime_YMD_SECCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_SEC)
 EVENT_END
 
-//----------------------UIMenuWndSetupDateTime_Tab_YMD_VALUECtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDateTime_Tab_YMD_VALUE)
+//----------------------UIMenuWndSetupDateTime_YMD_SwitchCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_Switch)
+EVENT_END
+
+//----------------------UIMenuWndSetupDateTime_YMD_AMPMCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_AMPM)
 EVENT_END
 
 //----------------------UIMenuWndSetupDateTime_YMD_VALUE_Other0Ctrl Event---------------------------
@@ -514,3 +663,16 @@ EVENT_END
 //----------------------UIMenuWndSetupDateTime_YMD_VALUE_Other2Ctrl Event---------------------------
 EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_VALUE_Other2)
 EVENT_END
+
+//----------------------UIMenuWndSetupDateTime_YMD_VALUE_Other3Ctrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_VALUE_Other3)
+EVENT_END
+
+//----------------------UIMenuWndSetupDateTime_YMD_VALUE_Other4Ctrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_VALUE_Other4)
+EVENT_END
+
+//----------------------UIMenuWndSetupDateTime_Static_TitleCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupDateTime_Static_Title)
+EVENT_END
+

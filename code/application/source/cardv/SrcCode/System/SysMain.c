@@ -25,8 +25,11 @@ extern void System_BootStart(void);
 extern void System_BootEnd(void);
 extern void System_ShutDownStart(void);
 extern void System_ShutDownEnd(void);
+extern void GxSystem_SWResetNOW(void);
+extern BOOL DxUSB_GetIsUSBPlug(void);
 
 BOOL g_bIsInitSystemFinish = TRUE;
+BOOL g_bIsNeedReboot = TRUE;
 
 int SX_TIMER_BURNIN_AUTORUN_ID = -1;
 
@@ -717,6 +720,24 @@ void UserMainProc(void)
 	System_OnUctrl();
 #endif
 
+#if 0
+	Load_MenuInfo();
+	printf("FL_BOOT_DELAY = %d\n",SysGetFlag(FL_BOOT_DELAY));
+	if (SysGetFlag(FL_BOOT_DELAY) == BOOT_DELAY_5SEC) {
+		Delay_DelayMs(0);//Delay_DelayMs(5000);
+	} else if (SysGetFlag(FL_BOOT_DELAY) == BOOT_DELAY_10SEC) {
+		Delay_DelayMs(5000);
+	} else if (SysGetFlag(FL_BOOT_DELAY) == BOOT_DELAY_15SEC) {
+		Delay_DelayMs(10000);
+	} else if (SysGetFlag(FL_BOOT_DELAY) == BOOT_DELAY_30SEC) {
+		Delay_DelayMs(25000);
+	} else {
+		Delay_DelayMs(5000);
+	}
+#else
+	Delay_DelayMs(3000);
+#endif
+
 	System_InstallAppObj(); //install VControl type list of App Object and UIControl Object
 	System_InstallModeObj(); //install SYS_MODE objects
 	TM_BOOT_END("flow", "preboot");
@@ -822,6 +843,16 @@ void UserMainProc(void)
 		}
 	}
 
+#if 1	
+    //det usb status
+    if (g_bIsNeedReboot) {
+	  DBG_DUMP("call  g_bIsNeedReboot!\r\n");
+        if (DxUSB_GetIsUSBPlug() == 1) {
+           DBG_DUMP("system reboot!\r\n");
+            GxSystem_SWResetNOW();//GxSystem_Reboot();
+        }
+    }
+#endif
 	//////////////////////////////////////////////////////////////
 	UserMainProc_Exit();
 	//////////////////////////////////////////////////////////////
@@ -829,6 +860,7 @@ void UserMainProc(void)
 	//debug_msg("event loop - end!\r\n");
 }
 #endif
+
 #if 0  //LOGFILE_FUNC TODO
 extern void LogFile_DumpMemAndSwReset(void);
 #endif //LOGFILE_FUNC TODO

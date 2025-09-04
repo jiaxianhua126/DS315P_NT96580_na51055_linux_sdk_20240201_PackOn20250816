@@ -4,396 +4,532 @@
 #include "UIWnd/UIFlow.h"
 #include "MenuCommonOptionRes.c"
 #include "MenuCommonOption.h"
-
-//#NT#2016/09/20#Bob Huang -begin
-//#NT#Support HDMI Display with 3DNR Out
-#if (_3DNROUT_FUNC == ENABLE)
-extern BOOL gb3DNROut;
-#endif
-//#NT#2016/09/20#Bob Huang -end
-
-//---------------------MenuCommonOptionCtrl Debug Definition -----------------------------
-#define _MENUCOMMONOPTION_ERROR_MSG        0
-#define _MENUCOMMONOPTION_TRACE_MSG        0
-
-#if (_MENUCOMMONOPTION_ERROR_MSG&(PRJ_DBG_LVL>=PRJ_DBG_LVL_ERR))
-#define MenuCommonOptionErrMsg(...)            debug_msg ("^R MenuCommonOption: "__VA_ARGS__)
-#else
-#define MenuCommonOptionErrMsg(...)
-#endif
-
-#if (_MENUCOMMONOPTION_TRACE_MSG&(PRJ_DBG_LVL>=PRJ_DBG_LVL_TRC))
-#define MenuCommonOptionTraceMsg(...)          debug_msg ("^B MenuCommonOption: "__VA_ARGS__)
-#else
-#define MenuCommonOptionTraceMsg(...)
-#endif
-
-//---------------------MenuCommonOptionCtrl Global Variables -----------------------------
-#define PAGE           4
-//---------------------MenuCommonOptionCtrl Prototype Declaration  -----------------------
-
-//---------------------MenuCommonOptionCtrl Public API  ----------------------------------
-
-//---------------------MenuCommonOptionCtrl Private API  ---------------------------------
-static TM_MENU *g_pOptionMenu = 0;
-
-static void MenuCommonOption_SetCurrentMenu(TM_MENU *pMenu)
-{
-	g_pOptionMenu = pMenu;
-}
-
-static TM_MENU *MenuCommonOption_GetCurrentMenu(void)
-{
-	return g_pOptionMenu;
-}
-
-static void MenuCommonOption_UpdateContent(TM_MENU *pMenu)
-{
-	TM_PAGE    *pPage;
-	TM_ITEM    *pItem;
-	TM_OPTION  *pOption;
-	UINT32      i;
-	UINT16      startIndex = 0;
-	UINT16      itemIndex = 0;
-	UINT16      SelOption = 0;
-	pPage = &pMenu->pPages[pMenu->SelPage];
-	pItem = &pPage->pItems[pPage->SelItem];
-	SelOption = SysGetFlag(pItem->SysFlag);
-	TM_CheckOptionStatus(pMenu, &SelOption, TRUE);
-	SysSetFlag(pItem->SysFlag, SelOption); //SelOption might change
-
-	pOption = &pItem->pOptions[SelOption];
-
-	if (pItem->Count) {
-		UxCtrl_SetShow(&MenuCommonOption_StatusCtrl, TRUE);
-		if (pOption->TextId & STRID_USER_START) {
-			UxMenu_SetItemData(&MenuCommonOption_StatusCtrl, 0, MNUITM_STRID,  Txt_Pointer(UIRes_GetUserString(pOption->TextId)));
-		} else {
-			UxMenu_SetItemData(&MenuCommonOption_StatusCtrl, 0, MNUITM_STRID,  pOption->TextId);
-		}
-	} else {
-		if (pItem->ItemId == IDM_VERSION) {
-			UxCtrl_SetShow(&MenuCommonOption_StatusCtrl, TRUE);
-			UxMenu_SetItemData(&MenuCommonOption_StatusCtrl, 0, MNUITM_STRID,  Txt_Pointer(Prj_GetVersionString()));
-		} else {
-			UxCtrl_SetShow(&MenuCommonOption_StatusCtrl, FALSE);
-		}
-	}
-
-	if (pItem->TextId & STRID_USER_START) {
-		UxMenu_SetItemData(&MenuCommonOption_TitleCtrl, 0, MNUITM_STRID,  Txt_Pointer(UIRes_GetUserString(pItem->TextId)));
-	} else {
-		UxMenu_SetItemData(&MenuCommonOption_TitleCtrl, 0, MNUITM_STRID,  pItem->TextId);
-	}
-
-
-	//find startIndex
-	TM_FindStartIndex(pMenu, PAGE, &startIndex);
-
-	//draw item form startIndex
-	itemIndex = startIndex;
-	for (i = 0; i < PAGE; i++) {
-		//check item if disable
-		TM_CheckItemStatus(pMenu, &itemIndex, TRUE);
-		if ((itemIndex == pPage->Count) && (i < PAGE)) {
-			UxList_SetItemData(&MenuCommonOption_ListCtrl, i, LSTITM_STATUS, STATUS_DISABLE);
-		} else {
-			pItem = &pPage->pItems[itemIndex];
-			UxList_SetItemData(&MenuCommonOption_ListCtrl, i, LSTITM_STATUS, STATUS_ENABLE);
-			UxList_SetItemData(&MenuCommonOption_ListCtrl, i, LSTITM_STRID,  pItem->TextId);
-			UxList_SetItemData(&MenuCommonOption_ListCtrl, i, LSTITM_ICONID, pItem->IconId);
-			itemIndex++;
-		}
-	}
-}
-static void MenuCommonOption_UpdatePosition(void)
-{
-	ISIZE str_size;
-	Ux_RECT MenuRect, NewRect;
-	UINT32 strId = UxMenu_GetItemData(&MenuCommonOption_TitleCtrl, CURITEM_INDEX, MNUITM_STRID);
-#if (DRAM_SIZE_64MB_DISP_OFF==DISABLE)
-	//avoid other tmp UI change font table
-	GxGfx_SetTextStroke((const FONT *)gDemoKit_Font, FONTSTYLE_NORMAL, SCALE_1X);
-#endif
-	if (strId & TEXT_POINTER) {
-		strId = (strId) & ~TEXT_POINTER;
-		GxGfx_TextPrint(0, 0, 0, "%s", strId);
-	} else {
-		GxGfx_Text(0, 0, 0, GxGfx_GetStringID(strId));
-	}
-
-	str_size = GxGfx_GetTextLastSize();
-	UxCtrl_GetPos(&MenuCommonOption_TitleCtrl, &MenuRect);
-	UxCtrl_GetPos(&MenuCommonOption_StatusCtrl, &NewRect);
-	NewRect.x1 = MenuRect.x1 + str_size.w + 5   ;
-	UxCtrl_SetPos(&MenuCommonOption_StatusCtrl, NewRect);
-}
-
+#include "DxInput.h"
 //---------------------MenuCommonOptionCtrl Control List---------------------------
 CTRL_LIST_BEGIN(MenuCommonOption)
-CTRL_LIST_ITEM(MenuCommonOption_List)
-CTRL_LIST_ITEM(MenuCommonOption_Title)
-CTRL_LIST_ITEM(MenuCommonOption_Status)
-#if defined(_KEY_METHOD_2KEY_)
-CTRL_LIST_ITEM(MenuCommOption_Panel)
-#endif
+CTRL_LIST_ITEM(MenuCommonOption_Panel)
+CTRL_LIST_ITEM(MenuCommonOption_PageNum)
 CTRL_LIST_END
 
 //----------------------MenuCommonOptionCtrl Event---------------------------
 INT32 MenuCommonOption_OnOpen(VControl *, UINT32, UINT32 *);
 INT32 MenuCommonOption_OnClose(VControl *, UINT32, UINT32 *);
-INT32 MenuCommonOption_OnChildClose(VControl *, UINT32, UINT32 *);
-INT32 MenuCommonOption_OnStorageChange(VControl *, UINT32, UINT32 *);
+INT32 MenuCommonOption_OnKeyLeft(VControl *, UINT32, UINT32 *);
+INT32 MenuCommonOption_OnKeyMenu(VControl *, UINT32, UINT32 *);
+INT32 MenuCommonOption_OnKeyMode(VControl *, UINT32, UINT32 *);
+INT32 MenuCommonOption_OnKeyShutter2(VControl *, UINT32, UINT32 *);
+INT32 MenuCommonOption_OnBatteryLow(VControl *, UINT32 , UINT32 *);
 EVENT_BEGIN(MenuCommonOption)
-EVENT_ITEM(NVTEVT_OPEN_WINDOW, MenuCommonOption_OnOpen)
-EVENT_ITEM(NVTEVT_CLOSE_WINDOW, MenuCommonOption_OnClose)
-EVENT_ITEM(NVTEVT_CHILD_CLOSE, MenuCommonOption_OnChildClose)
-EVENT_ITEM(NVTEVT_STORAGE_CHANGE, MenuCommonOption_OnStorageChange)
+EVENT_ITEM(NVTEVT_OPEN_WINDOW,MenuCommonOption_OnOpen)
+EVENT_ITEM(NVTEVT_CLOSE_WINDOW,MenuCommonOption_OnClose)
+EVENT_ITEM(NVTEVT_KEY_LEFT,MenuCommonOption_OnKeyLeft)
+//EVENT_ITEM(NVTEVT_KEY_MENU,MenuCommonOption_OnKeyMenu)
+//EVENT_ITEM(NVTEVT_KEY_MODE,MenuCommonOption_OnKeyMode)
+//EVENT_ITEM(NVTEVT_KEY_SHUTTER2,MenuCommonOption_OnKeyShutter2)
 EVENT_END
+
+static UINT32 g_uiMenuCommonOption_Sel = 0;
+static UINT8  g_Option_PageNumBuf[8];
+
+void MenuCommonOption_CalcPageInfo(VControl *pCtrl,UINT32 Sel)
+{
+    UINT32  i, uiItem, uiCurrItem, uiTotalItem, uiTotalItemOri;
+    UINT32  uiItemPerPage, uiCurrPage, uiTotalPage;
+
+    #if 0
+    TM_MENU*    pMenu = TM_GetMenu();
+    TM_PAGE*    pPage;
+    TM_ITEM*    pItem;
+
+    pPage = &pMenu->pPages[pMenu->SelPage];
+    pItem = &pPage->pItems[pPage->SelItem];
+    #endif
+
+    uiItem = UxMenu_GetData(pCtrl, MNU_CURITM);          // current item number in menu (include disabled items)
+    uiItemPerPage = UxMenu_GetData(pCtrl, MNU_PAGEITEM); // items per page
+    uiTotalItemOri = UxMenu_GetData(pCtrl, MNU_TOTITM);  // total item number
+
+    // check total item number and current item number (skip disabled items)
+    uiCurrItem = 0;
+    uiTotalItem = 0;
+
+    for (i = 0; i < uiTotalItemOri; i++) {
+        if (UxMenu_GetItemData(pCtrl, i, MNUITM_STATUS) == STATUS_ENABLE) {
+            uiTotalItem++;
+            if (i < uiItem)
+                uiCurrItem++;
+        }
+    }
+
+    uiCurrPage = (uiCurrItem / uiItemPerPage) + 1;
+    uiTotalPage = ((uiTotalItem % uiItemPerPage) == 0) ? (uiTotalItem / uiItemPerPage) : (uiTotalItem / uiItemPerPage + 1);
+
+    //debug_msg("*** uiTotalPage= %d ***\r\n",uiTotalPage);
+    if (1)//(uiTotalPage > 1)
+    {
+        sprintf((char *)g_Option_PageNumBuf, "%02d/%02d", uiCurrPage, uiTotalPage);
+        UxStatic_SetData(&MenuCommonOption_PageNumCtrl, STATIC_VALUE, Txt_Pointer(g_Option_PageNumBuf));
+        UxCtrl_SetShow(&MenuCommonOption_PageNumCtrl, TRUE);
+        UxCtrl_SetDirty(&MenuCommonOption_PageNumCtrl, TRUE);
+    }
+    else
+    {
+        UxCtrl_SetShow(&MenuCommonOption_PageNumCtrl, FALSE);
+    }
+}
+
+void MenuCommonOption_UpdateContent(TM_MENU* pMenu)
+{
+    UINT32      i;
+    TM_PAGE*    pPage;
+    TM_ITEM*    pItem;
+    TM_OPTION*  pOption;
+
+    pPage = &pMenu->pPages[pMenu->SelPage];
+    pItem = &pPage->pItems[pPage->SelItem];
+
+    UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_TOTITM, pItem->Count);
+    for (i = 0; i < pItem->Count; i++) {
+        pOption = &pItem->pOptions[i];
+
+        //tab option status to menu status
+        if ((pOption->Status & TM_OPTION_STATUS_MASK) == TM_OPTION_ENABLE) {
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+        } else {
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
+        }
+
+      if (pItem->ItemId == IDM_MOVIE_SIZE) 
+	  {
+            if (GPIOMap_EthCam1Det()) 
+			{
+                UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);//|STATUS_FOCUS_DISABLE
+				#if (!defined(COUNTRY_JP))	
+				switch (i) {
+                case MOVIE_SIZE_FRONT_3840x2160P30:
+                    if (SysGetFlag(FL_MOVIE_CODEC) == MOVIE_CODEC_H265) {
+                        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
+                    } else {
+                        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
+                    }
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("4KP30 + 1440P30"));
+                    break;
+                case MOVIE_SIZE_FRONT_2560x1440P60:
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1440P60 + 1440P30"));
+                    break;
+                case MOVIE_SIZE_FRONT_2560x1440P30:
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1440P30 + 1440P30"));
+                    break;
+				case MOVIE_SIZE_FRONT_2304x1296P60:
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1296P60 + 1440P30"));
+                    break;
+                case MOVIE_SIZE_FRONT_2304x1296P30:
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1296P30 + 1440P30"));
+                    break;
+                case MOVIE_SIZE_FRONT_1920x1080P60:
+                	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1080P60 + 1440P30"));
+                break;
+                case MOVIE_SIZE_FRONT_1920x1080P30:
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1080P30 + 1440P30"));
+                    break;
+                }
+				#else
+		 		switch (i) {
+                case MOVIE_SIZE_FRONT_3840x2160P30:
+                    if (SysGetFlag(FL_MOVIE_CODEC) == MOVIE_CODEC_H265) {
+                        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
+                    } else {
+                        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
+                    }
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("4KP27.5 + 1080P27.5"));
+                    break;
+                case MOVIE_SIZE_FRONT_2560x1440P60:
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1440P55 + 1080P27.5"));
+                    break;
+                case MOVIE_SIZE_FRONT_2560x1440P30:
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1440P27.5 + 1080P27.5"));
+                    break;
+				case MOVIE_SIZE_FRONT_2304x1296P60:
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1296P55 + 1080P27.5"));
+                    break;
+                case MOVIE_SIZE_FRONT_2304x1296P30:
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1296P27.5 + 1080P27.5"));
+                    break;
+                case MOVIE_SIZE_FRONT_1920x1080P60:
+                	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1080P55 + 1080P27.5"));
+                break;
+                case MOVIE_SIZE_FRONT_1920x1080P30:
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1080P27.5 + 1080P27.5"));
+                    break;
+                }
+				#endif
+            }
+			else
+			{
+				 //display user define string
+		        if (pOption->TextId & STRID_USER_START) 
+				{
+		            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer(UIRes_GetUserString(pOption->TextId)));
+					//printf("pOption->TextId=0x%x\r\n",pOption->TextId);
+		        } 
+				else 
+				{
+					//printf("pOption->TextId=0x%x\r\n",pOption->TextId);
+		            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  pOption->TextId);
+		        }
+
+			}
+  	}
+	else if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) 
+	{
+		if(GPIOMap_EthCam1Det())
+		{ 
+        //if (System_GetEnableSensor() == (SENSOR_1|SENSOR_2)) {
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);//|STATUS_NORMAL_BIT
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  pOption->TextId);
+        } 
+		else
+		{
+            g_uiMenuCommonOption_Sel = 0;  //for display show
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, (STATUS_DISABLE|STATUS_FOCUS_DISABLE));
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, 0, MNUITM_STATUS, STATUS_ENABLE);
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  pOption->TextId);
+        }
+    } 
+	else 
+	{
+        //display user define string
+        if (pOption->TextId & STRID_USER_START) 
+		{
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer(UIRes_GetUserString(pOption->TextId)));
+			//printf("pOption->TextId=0x%x\r\n",pOption->TextId);
+        } 
+		else 
+		{
+			//printf("pOption->TextId=0x%x\r\n",pOption->TextId);
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  pOption->TextId);
+        }
+    }
+		
+	if (pItem->ItemId == IDM_ASR_CONTENT) 
+	{
+		switch(SysGetFlag(FL_LANGUAGE)) 
+		{
+		case LANG_EN:
+		case LANG_JP:
+			UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, ASR_VIDEOSTOP, MNUITM_STATUS, STATUS_ENABLE);
+		break;
+		}
+	}
+    if (SysGetFlag(pItem->SysFlag)==i){
+		if(pItem->ItemId != IDM_ASR_CONTENT){
+			UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, ICON_SEL_FOCUS);
+		}else{
+        	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, ICON_TRANSPAENT);
+		}
+    }else{
+        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, ICON_TRANSPAENT);
+    }
+    }
+
+    UxCtrl_SetDirty(&MenuCommonOptionCtrl, TRUE);
+    //Ux_RedrawAllWind();
+}
 
 INT32 MenuCommonOption_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	TM_MENU    *pMenu;
-	TM_PAGE    *pPage;
-	TM_ITEM    *pItem;
-	TM_OPTION  *pOption;
-	UINT16      SelOption = 0;
+    TM_MENU*    pMenu = TM_GetMenu();
+    TM_PAGE*    pPage;
+    TM_ITEM*    pItem;
 
-	if (paramNum == 1) {
+    pPage = &pMenu->pPages[pMenu->SelPage];
+    pItem = &pPage->pItems[pPage->SelItem];
 
-		MenuCommonOption_SetCurrentMenu((TM_MENU *)paramArray[0]);
-		pMenu = MenuCommonOption_GetCurrentMenu();
-		pMenu->Status = TMS_ON_OPTION;
-		pMenu->SelPage = 0;
+    g_uiMenuCommonOption_Sel = SysGetFlag(pItem->SysFlag);
 
-		pPage = &pMenu->pPages[pMenu->SelPage];
-		pPage->SelItem = 0;
-		//check item if disable
-		TM_CheckItemStatus(pMenu, &pPage->SelItem, TRUE);
-		pItem = &pPage->pItems[pPage->SelItem];
-		if (pItem->Count > 0) {
-			SelOption = SysGetFlag(pItem->SysFlag);
-			//check option if disable
-			TM_CheckOptionStatus(pMenu, &SelOption, TRUE);
-			SysSetFlag(pItem->SysFlag, SelOption); //SelOption might change
+    //UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, SysGetFlag(pItem->SysFlag));
+    UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, g_uiMenuCommonOption_Sel);
 
-			pOption = &pItem->pOptions[SelOption];
+    if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) {
+		if (!GPIOMap_EthCam1Det()) {
+        //if (System_GetEnableSensor() == SENSOR_1) {
+            UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, 0);		
+        } else {
+            UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, SysGetFlag(pItem->SysFlag));
+        }
+    } else {
+        UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, SysGetFlag(pItem->SysFlag));
+    }
 
-			UxMenu_SetItemData(&MenuCommonOption_StatusCtrl, 0, MNUITM_STRID,  pOption->TextId);
-		}
+    MenuCommonOption_UpdateContent(pMenu);
+    MenuCommonOption_CalcPageInfo(&MenuCommonOption_MenuCtrl, g_uiMenuCommonOption_Sel);
 
-		UxList_SetData(&MenuCommonOption_ListCtrl, LST_CURITM, 0);
-		MenuCommonOption_UpdateContent(pMenu);
-		MenuCommonOption_UpdatePosition();
-        #if _TODO
-		UI_SetDisplayPalette(LAYER_OSD1, 0, 256, gDemoKit_PaletteOption_Palette);
-        #endif
-		Ux_DefaultEvent(pCtrl, NVTEVT_OPEN_WINDOW, paramNum, paramArray);
-	}
-	return NVTEVT_CONSUME;
+    Ux_DefaultEvent(pCtrl,NVTEVT_OPEN_WINDOW,paramNum,paramArray);
+    return NVTEVT_CONSUME;
 }
 INT32 MenuCommonOption_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    #if _TODO
-	UI_SetDisplayPalette(LAYER_OSD1, 0, 256, gDemoKit_Palette_Palette);
-    #endif
-	Ux_DefaultEvent(pCtrl, NVTEVT_CLOSE_WINDOW, paramNum, paramArray);
-	return NVTEVT_CONSUME;
+    Ux_DefaultEvent(pCtrl,NVTEVT_CLOSE_WINDOW,paramNum,paramArray);
+    return NVTEVT_CONSUME;
 }
-INT32 MenuCommonOption_OnChildClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 MenuCommonOption_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	TM_MENU    *pMenu = MenuCommonOption_GetCurrentMenu();
-	pMenu->Status = TMS_ON_OPTION;
-	MenuCommonOption_UpdateContent(pMenu);
-	MenuCommonOption_UpdatePosition();
-	Input_SetKeyMask(KEY_RELEASE, FLGKEY_KEY_MASK_DEFAULT);
-	Ux_DefaultEvent(pCtrl, NVTEVT_CHILD_CLOSE, paramNum, paramArray);
-	return NVTEVT_CONSUME;
+    UINT32  state = 0;
+
+    if (paramNum > 0) {
+        state = paramArray[0];
+    }
+
+    switch (state) {
+    case NVTEVT_KEY_PRESS:
+        Ux_CloseWindow(pCtrl,0); // close option menu
+        break;
+    }
+    return NVTEVT_CONSUME;
 }
-INT32 MenuCommonOption_OnStorageChange(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 MenuCommonOption_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-#if (SDHOTPLUG_FUNCTION == ENABLE)
-	Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
-#endif
-	return NVTEVT_CONSUME;
+    Ux_CloseWindow(&MenuCommonItemCtrl,0); // close whole tab menu
+    return NVTEVT_CONSUME;
 }
-//----------------------MenuCommonOption_ListCtrl Event---------------------------
-INT32 MenuCommonOption_List_OnKeyNext(VControl *, UINT32, UINT32 *);
-INT32 MenuCommonOption_List_OnKeyPrev(VControl *, UINT32, UINT32 *);
-INT32 MenuCommonOption_List_OnKeySelect(VControl *, UINT32, UINT32 *);
-INT32 MenuCommonOption_List_OnKeyExit(VControl *, UINT32, UINT32 *);
-EVENT_BEGIN(MenuCommonOption_List)
-EVENT_ITEM(NVTEVT_KEY_NEXT, MenuCommonOption_List_OnKeyNext)
-EVENT_ITEM(NVTEVT_KEY_PREV, MenuCommonOption_List_OnKeyPrev)
-EVENT_ITEM(NVTEVT_KEY_SELECT, MenuCommonOption_List_OnKeySelect)
-EVENT_ITEM(NVTEVT_KEY_SHUTTER2, MenuCommonOption_List_OnKeyExit)
-
-EVENT_END
-
-INT32 MenuCommonOption_List_OnKeyNext(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 MenuCommonOption_OnKeyMode(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	TM_MENU    *pMenu;
-	TM_PAGE    *pPage;
-	TM_ITEM    *pItem;
-
-	if (paramNum == 1) {
-		if (paramArray[0] == NVTEVT_KEY_PRESS) {
-			pMenu = MenuCommonOption_GetCurrentMenu();
-			pPage = &pMenu->pPages[pMenu->SelPage];
-			pItem = &pPage->pItems[pPage->SelItem];
-
-			pPage->SelItem++;
-			//check item if disable
-			TM_CheckItemStatus(pMenu, &pPage->SelItem, TRUE);
-
-			if (pPage->SelItem == pPage->Count) {
-				// Close current UI Window now
-				Ux_CloseWindow(&MenuCommonOptionCtrl, 2, pItem->ItemId, 0);
-			} else {
-				MenuCommonOption_UpdateContent(pMenu);
-				MenuCommonOption_UpdatePosition();
-				Ux_SendEvent(pCtrl, NVTEVT_NEXT_ITEM, 0);
-			}
-		}
-	}
-	return NVTEVT_CONSUME;
+    Ux_SendEvent(&UISetupObjCtrl,NVTEVT_EXE_CHANGEDSCMODE,1,DSCMODE_CHGTO_CURR);
+    return NVTEVT_CONSUME;
 }
-INT32 MenuCommonOption_List_OnKeyPrev(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 MenuCommonOption_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	TM_MENU    *pMenu;
-	TM_PAGE    *pPage;
-	TM_ITEM    *pItem;
-
-	if (paramNum == 1) {
-		if (paramArray[0] == NVTEVT_KEY_PRESS) {
-			pMenu = MenuCommonOption_GetCurrentMenu();
-			pPage = &pMenu->pPages[pMenu->SelPage];
-			pItem = &pPage->pItems[pPage->SelItem];
-
-			if (pPage->SelItem == 0) {
-				// Close current UI Window now
-				Ux_CloseWindow(&MenuCommonOptionCtrl, 2, pItem->ItemId, 0);
-			} else {
-				pPage->SelItem--;
-				//check item if disable
-				TM_CheckItemStatus(pMenu, &pPage->SelItem, FALSE);
-				if (pPage->SelItem == pPage->Count) {
-					// Close current UI Window now
-					Ux_CloseWindow(&MenuCommonOptionCtrl, 2, pItem->ItemId, 0);
-				} else {
-					MenuCommonOption_UpdateContent(pMenu);
-					MenuCommonOption_UpdatePosition();
-					Ux_SendEvent(pCtrl, NVTEVT_PREVIOUS_ITEM, 0);
-				}
-			}
-		}
-	}
-	return NVTEVT_CONSUME;
+    Ux_SendEvent(&UISetupObjCtrl,NVTEVT_FORCETO_LIVEVIEW_MODE,0);
+    return NVTEVT_CONSUME;
 }
-
-INT32 MenuCommonOption_List_OnKeySelect(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 MenuCommonOption_OnBatteryLow(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	TM_MENU    *pMenu;
-	TM_PAGE    *pPage;
-	TM_ITEM    *pItem;
-	TM_OPTION  *pOption;
-	UINT16      SelOption = 0;
-
-	if (paramNum == 1) {
-		pMenu = MenuCommonOption_GetCurrentMenu();
-		pPage = &pMenu->pPages[pMenu->SelPage];
-		pItem = &pPage->pItems[pPage->SelItem];
-
-		if (paramArray[0] == NVTEVT_KEY_PRESS) {
-			if (pItem->Count != 0 && pItem->SysFlag != 0) {
-				//#NT#2016/09/20#Bob Huang -begin
-				//#NT#Support HDMI Display with 3DNR Out
-				//Only support FHD p30 size, cannot change size when 3DNR Out enabled
-#if (_3DNROUT_FUNC == ENABLE)
-				if (pItem->SysFlag == FL_MOVIE_SIZE_MENU && gb3DNROut) {
-					Ux_SendEvent(pCtrl, NVTEVT_PRESS, 0);
-					return NVTEVT_CONSUME;
-				}
-#endif
-				//#NT#2016/09/20#Bob Huang -end
-				SelOption = SysGetFlag(pItem->SysFlag);
-				pMenu->Status = TMS_ON_OPTION;
-				SelOption++;
-				if (SelOption >= pItem->Count) {
-					SelOption = 0;
-				}
-				TM_CheckOptionStatus(pMenu, &SelOption, TRUE);
-
-				SysSetFlag(pItem->SysFlag, SelOption);
-				// notify upper layer the Option had been confirmed
-				TM_MENU_CALLBACK(pMenu, TMM_CONFIRM_OPTION, MAKE_LONG(pItem->ItemId, SelOption));
-
-				pOption = &pItem->pOptions[SysGetFlag(pItem->SysFlag)];
-				if (pOption->TextId & STRID_USER_START) {
-					UxMenu_SetItemData(&MenuCommonOption_StatusCtrl, 0, MNUITM_STRID,  Txt_Pointer(UIRes_GetUserString(pOption->TextId)));
-				} else {
-					UxMenu_SetItemData(&MenuCommonOption_StatusCtrl, 0, MNUITM_STRID,  pOption->TextId);
-				}
-
-				if (pItem->ItemId == IDM_LANGUAGE) {
-					MenuCommonOption_UpdatePosition();
-				}
-
-				Ux_SendEvent(pCtrl, NVTEVT_PRESS, 0);
-			} else if (pItem->pOptions != 0) {              // custom process
-				pMenu->Status = TMS_ON_CUSTOM;
-				TM_ITEM_CALLBACK(pItem, TMM_CONFIRM_OPTION, pItem->ItemId);              // execute custom pPage flow
-			}
-
-		} else if (paramArray[0] == NVTEVT_KEY_RELEASE) {
-			if (pItem->Count != 0 && pItem->SysFlag != 0) { // standard process
-				Ux_SendEvent(pCtrl, NVTEVT_RELEASE, 0);
-			}
-		}
-
-	}
-	return NVTEVT_CONSUME;
+    Ux_OpenWindow(&UIFlowWndWrnMsgCtrl,2,UIFlowWndWrnMsg_StatusTXT_Msg_STRID_BATTERY_LOW, FLOWWRNMSG_TIMER_1SEC);
+    return NVTEVT_CONSUME;
 }
-
-INT32 MenuCommonOption_List_OnKeyExit(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
-{
-	Ux_CloseWindow(&MenuCommonItemCtrl, 0);
-	return NVTEVT_CONSUME;
-}
-
-//----------------------MenuCommonOption_TitleCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonOption_Title)
-EVENT_END
-
-//----------------------MenuCommonOption_StatusCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonOption_Status)
-EVENT_END
-
-//---------------------MenuCommOption_PanelCtrl Control List---------------------------
-CTRL_LIST_BEGIN(MenuCommOption_Panel)
-CTRL_LIST_ITEM(MenuCommonOption_Left)
-CTRL_LIST_ITEM(MenuCommonOption_Right)
-CTRL_LIST_ITEM(MenuCommonOption_LeftIcon)
-CTRL_LIST_ITEM(MenuCommonOption_RightIcon)
+//---------------------MenuCommonOption_PanelCtrl Control List---------------------------
+CTRL_LIST_BEGIN(MenuCommonOption_Panel)
+CTRL_LIST_ITEM(MenuCommonOption_Menu)
 CTRL_LIST_END
 
-//----------------------MenuCommOption_PanelCtrl Event---------------------------
-EVENT_BEGIN(MenuCommOption_Panel)
+//----------------------MenuCommonOption_PanelCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonOption_Panel)
 EVENT_END
 
-//----------------------MenuCommonOption_LeftCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonOption_Left)
+//----------------------MenuCommonOption_MenuCtrl Event---------------------------
+INT32 MenuCommonOption_Menu_OnKeyUp(VControl *, UINT32, UINT32 *);
+INT32 MenuCommonOption_Menu_OnKeyDown(VControl *, UINT32, UINT32 *);
+INT32 MenuCommonOption_Menu_OnKeyEnter(VControl *, UINT32, UINT32 *);
+EVENT_BEGIN(MenuCommonOption_Menu)
+EVENT_ITEM(NVTEVT_KEY_UP,MenuCommonOption_Menu_OnKeyUp)
+EVENT_ITEM(NVTEVT_KEY_DOWN,MenuCommonOption_Menu_OnKeyDown)
+EVENT_ITEM(NVTEVT_KEY_ENTER,MenuCommonOption_Menu_OnKeyEnter)
 EVENT_END
 
-//----------------------MenuCommonOption_RightCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonOption_Right)
-EVENT_END
+INT32 MenuCommonOption_Menu_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    TM_MENU*    pMenu = TM_GetMenu();
+    TM_PAGE*    pPage;
+    TM_ITEM*    pItem;
+    UINT32      state = 0;
+    UINT32      uiSelOption = 0;
 
-//----------------------MenuCommonOption_LeftIconCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonOption_LeftIcon)
-EVENT_END
+    if (paramNum > 0) {
+        state = paramArray[0];
+    }
 
-//----------------------MenuCommonOption_RightIconCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonOption_RightIcon)
+    switch (state) {
+    case NVTEVT_KEY_PRESS:
+        pPage = &pMenu->pPages[pMenu->SelPage];
+        pItem = &pPage->pItems[pPage->SelItem];
+        uiSelOption = SysGetFlag(pItem->SysFlag);
+
+        if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) {
+            if (GPIOMap_EthCam1Det()) {
+            //if (System_GetEnableSensor() == SENSOR_1) {
+                Ux_SendEvent(pCtrl,NVTEVT_PREVIOUS_ITEM,0);
+            } else {
+                return NVTEVT_CONSUME;
+            }
+        }else {
+            Ux_SendEvent(pCtrl,NVTEVT_PREVIOUS_ITEM,0);
+        }
+        MenuCommonOption_CalcPageInfo(&MenuCommonOption_MenuCtrl, uiSelOption);
+        break;
+    }
+
+    return NVTEVT_CONSUME;
+}
+INT32 MenuCommonOption_Menu_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    TM_MENU*    pMenu = TM_GetMenu();
+    TM_PAGE*    pPage;
+    TM_ITEM*    pItem;
+    UINT32      state = 0;
+    UINT32      uiSelOption = 0;
+
+    if (paramNum > 0) {
+        state = paramArray[0];
+    }
+
+    switch(state)
+    {
+    case NVTEVT_KEY_PRESS:
+        pPage = &pMenu->pPages[pMenu->SelPage];
+        pItem = &pPage->pItems[pPage->SelItem];
+        uiSelOption = SysGetFlag(pItem->SysFlag);
+
+        if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) {
+            if (GPIOMap_EthCam1Det()) {
+            //if (System_GetEnableSensor() == SENSOR_1) {
+                Ux_SendEvent(pCtrl,NVTEVT_NEXT_ITEM,0);
+            } else {
+                return NVTEVT_CONSUME;
+            }
+        }else {
+            Ux_SendEvent(pCtrl,NVTEVT_NEXT_ITEM,0);
+        }
+        MenuCommonOption_CalcPageInfo(&MenuCommonOption_MenuCtrl, uiSelOption);
+        break;
+    }
+
+    return NVTEVT_CONSUME;
+}
+INT32 MenuCommonOption_Menu_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    TM_MENU*    pMenu = TM_GetMenu();
+    TM_PAGE*    pPage;
+    TM_ITEM*    pItem;
+    UINT32      uiSelOption;
+    UINT32      state = 0;
+
+    if (paramNum > 0) {
+        state = paramArray[0];
+    }
+
+    switch (state) {
+    case NVTEVT_KEY_PRESS:
+        pPage = &pMenu->pPages[pMenu->SelPage];
+        pItem = &pPage->pItems[pPage->SelItem];
+
+        if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) {
+            if (!GPIOMap_EthCam1Det()) {
+            //if (System_GetEnableSensor() == SENSOR_1) {
+                Ux_CloseWindow(&MenuCommonOptionCtrl, 0);
+                return NVTEVT_CONSUME;
+            }
+        }
+
+        uiSelOption = UxMenu_GetData(&MenuCommonOption_MenuCtrl, MNU_CURITM); // selected option
+
+        //if parking mode on, turn off motion det & timelapse rec
+        if ((pItem->SysFlag == FL_PARKING_MODE) && (uiSelOption != PARKING_MODE_OFF)) {
+            SysSetFlag(FL_MOVIE_MOTION_DET, MOVIE_MOTIONDET_OFF);
+            SysSetFlag(FL_MOVIE_TIMELAPSE_REC_MENU, MOVIE_TIMELAPSEREC_OFF);
+        }
+        //if motion det on, turn off parking mode
+        if ((pItem->SysFlag == FL_MOVIE_MOTION_DET) && (uiSelOption != MOVIE_MOTIONDET_OFF)) {
+            SysSetFlag(FL_PARKING_MODE, PARKING_MODE_OFF);
+            SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_OFF);
+        }
+        //if timelapse rec on, turn off parking mode
+        if ((pItem->SysFlag == FL_MOVIE_TIMELAPSE_REC_MENU) && (uiSelOption != MOVIE_TIMELAPSEREC_OFF)) {
+            SysSetFlag(FL_PARKING_MODE, PARKING_MODE_OFF);
+            SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_OFF);
+        }
+
+        // set system flag by selected Option
+        SysSetFlag(pItem->SysFlag, uiSelOption);
+
+        switch (pItem->ItemId) {
+        //case IDM_CAR_SAFE:
+        //    Ux_OpenWindow(&UIMenuWndCustomerComfirmCtrl, 2, pItem->ItemId, uiSelOption);
+       //     TM_MENU_CALLBACK(pMenu, TMM_CONFIRM_OPTION, MAKE_LONG(pItem->ItemId, uiSelOption));
+       //      break;
+
+        /*
+        case IDM_MOVIE_IMPRINT:
+            if (uiSelOption == MOVIE_IMPRINT_GPS) {
+                Get_GpsSpeedString();
+                Get_GpsSpeedString();
+                Get_GpsSpeedString();
+                Delay_DelayMs(1000);
+
+                gpsstatus = GetGPSSignalStatus();
+                //debug_msg("*** gpsstatus = %d ***\r\n", gpsstatus);
+                if (gpsstatus == -1) {
+                    Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_GPS_ERR, FLOWWRNMSG_TIMER_3SEC);
+                    return NVTEVT_CONSUME;
+                } else {
+                    Ux_OpenWindow(&UIMenuWndCustomerComfirmCtrl, 2,pItem->ItemId,uiSelOption);
+                    TM_MENU_CALLBACK(pMenu, TMM_CONFIRM_OPTION, MAKE_LONG(pItem->ItemId, uiSelOption)); 
+                }
+            } else {
+                Ux_OpenWindow(&UIMenuWndCustomerComfirmCtrl, 2, pItem->ItemId, uiSelOption);
+                TM_MENU_CALLBACK(pMenu, TMM_CONFIRM_OPTION, MAKE_LONG(pItem->ItemId, uiSelOption));
+            }
+            break;*/
+
+        case IDM_MOVIE_HDR_DET:
+            if (uiSelOption == MOVIE_HDR_DET_AUTO) {
+                Ux_OpenWindow(&UIMenuWndSetupHDRTimeCtrl, 0);
+            } else {
+                // Close current UI Window now
+                Ux_CloseWindow(&MenuCommonOptionCtrl, 2,pItem->ItemId,uiSelOption);
+            }
+            TM_MENU_CALLBACK(pMenu, TMM_CONFIRM_OPTION, MAKE_LONG(pItem->ItemId, uiSelOption));
+            break;
+		case IDM_MOVIE_HDR:
+			Ux_CloseWindow(&MenuCommonOptionCtrl, 2,pItem->ItemId,uiSelOption);
+			TM_MENU_CALLBACK(pMenu, TMM_CONFIRM_OPTION, MAKE_LONG(pItem->ItemId, uiSelOption));
+			if ((SysGetFlag(FL_MOVIE_SIZE_MENU) == MOVIE_SIZE_FRONT_2560x1440P60) && \
+				(uiSelOption == MOVIE_HDR_ON)) {
+				SysSetFlag(pItem->SysFlag, MOVIE_HDR_OFF);
+				Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_CANT_BE_SET, FLOWWRNMSG_TIMER_4SEC);
+			}
+			break;
+		case IDM_MOVIE_SIZE:
+			Ux_CloseWindow(&MenuCommonOptionCtrl, 2,pItem->ItemId,uiSelOption);
+			TM_MENU_CALLBACK(pMenu, TMM_CONFIRM_OPTION, MAKE_LONG(pItem->ItemId, uiSelOption));
+			if(uiSelOption == MOVIE_SIZE_FRONT_2560x1440P60){
+				UI_SetData(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+				UI_SetData(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+			}
+			break;
+        default:
+            Ux_CloseWindow(&MenuCommonOptionCtrl, 2,pItem->ItemId,uiSelOption);
+
+            /*
+            if (UI_GetData(FL_VIDEO_FORMAT_MENU) != UI_GetData(FL_VIDEO_FORMAT))
+            {
+                UI_SetData(FL_VIDEO_FORMAT, UI_GetData(FL_VIDEO_FORMAT_MENU));
+                Save_MenuInfo();
+                Delay_DelayMs(100);
+                GxSystem_SWResetNOW();
+            }*/
+
+            // notify upper layer the Option had been confirmed
+            TM_MENU_CALLBACK(pMenu, TMM_CONFIRM_OPTION, MAKE_LONG(pItem->ItemId, uiSelOption));
+            break;
+        }
+        break;
+    }
+
+    return NVTEVT_CONSUME;
+}
+//----------------------MenuCommonOption_PageNumCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonOption_PageNum)
 EVENT_END
 

@@ -14,6 +14,72 @@
 #include <kwrap/debug.h>
 ///////////////////////////////////////////////////////////////////////////////
 
+
+#if 0//(DUALCAM_PIP_BEHIND_FLIP == ENABLE)
+typedef struct {
+    UINT32                   pool_va;
+    UINT32                   pool_pa;
+} ADDR_INFO;
+
+static ADDR_INFO g_PipViewBflip_Pool={0};
+
+static UINT32 g_PipViewBflip_PoolAddr = 0, g_PipViewBflip_PoolSize = 0;
+UINT32 PipView_BFLIP_GetBufAddr(UINT32 blk_size)
+{
+	void                 *va;
+	UINT32               pa;
+	ER                   ret;
+	HD_COMMON_MEM_DDR_ID ddr_id = DDR_ID0;
+	CHAR pool_name[20] ={0};
+	if(g_PipViewBflip_Pool.pool_va == 0)  {
+
+		sprintf(pool_name,"PipviewBFLIP");
+
+		ret = hd_common_mem_alloc(pool_name, &pa, (void **)&va, blk_size, ddr_id);
+		if (ret != HD_OK) {
+			DBG_ERR("alloc fail size 0x%x, ddr %d\r\n", blk_size, ddr_id);
+			return 0;
+		}
+		DBG_IND("pa = 0x%x, va = 0x%x\r\n", (unsigned int)(pa), (unsigned int)(va));
+		g_PipViewBflip_Pool.pool_va=(UINT32)va;
+		g_PipViewBflip_Pool.pool_pa=(UINT32)pa;
+		memset(va, 0, blk_size);
+	}
+
+	if(g_PipViewBflip_Pool.pool_va == 0)
+		DBG_ERR("get buf addr err\r\n");
+	return g_PipViewBflip_Pool.pool_va;
+
+}
+
+void PipView_BFLIP_DestroyBuff(void)
+{
+	UINT32 ret;
+//return;
+	if (g_PipViewBflip_Pool.pool_va != 0) {
+		ret = hd_common_mem_free((UINT32)g_PipViewBflip_Pool.pool_pa, (void *)g_PipViewBflip_Pool.pool_va);
+		if (ret != HD_OK) {
+			DBG_ERR("FileIn release blk failed! (%d)\r\n", ret);
+		}
+		g_PipViewBflip_Pool.pool_va = 0;
+		g_PipViewBflip_Pool.pool_pa = 0;
+		g_PipViewBflip_PoolAddr=0;
+		g_PipViewBflip_PoolSize=0;
+	}
+}
+
+void PipView_BFLIP_SetBuffer(UINT32 uiAddr, UINT32 uiSize)
+{
+    if(!uiAddr || !uiSize) {
+        DBG_ERR("Buf invalid!\r\n");
+    } else {
+        g_PipViewBflip_PoolAddr = uiAddr;
+        g_PipViewBflip_PoolSize = uiSize;
+    }
+}
+#endif
+
+
 void PipView_SetStyle(UINT32 uiStyle)
 {
 	if (uiStyle >= DUALCAM_SETTING_MAX) {
@@ -273,10 +339,29 @@ INT32 PipView_OnDraw_2sensor(APPDISP_VIEW_DRAW *pDraw)
 				//GxImg_FillData(pDraw->p_dst_img, NULL, COLOR_YUV_BLACK); //mark for latency
 
 				#if (DUALCAM_PIP_BEHIND_FLIP == DISABLE)
-					PipView_ScaleData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, REGION_MATCH_IMG);
+				PipView_ScaleData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, REGION_MATCH_IMG);
 				#else
-					// flip rear image to destination buffer
-					PipView_RotateData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, &dstLocation, HD_VIDEO_DIR_MIRRORX);
+				// flip rear image to destination buffer
+				//PipView_RotateData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, &dstLocation, HD_VIDEO_DIR_MIRRORX);
+                if(UI_GetData(FL_REAR_SENSOR_MIRROR) == REAR_SENSOR_MIRROR_OFF)
+				{
+					PipView_ScaleData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, REGION_MATCH_IMG);
+				}
+				else
+				{
+					if (pDraw->p_src_img[1]->dim.w != pDraw->p_dst_img->dim.w){
+							dst_region.x = 0;
+							dst_region.y = 0;
+							dst_region.w = ALIGN_CEIL_4(pDraw->p_dst_img->dim.w);
+							dst_region.h = ALIGN_CEIL_4(pDraw->p_dst_img->dim.h);
+
+							PipView_ScaleData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_src_img[0], &dst_region);
+							PipView_RotateData( pDraw->p_src_img[0], &dst_region, pDraw->p_dst_img, &dstLocation, HD_VIDEO_DIR_MIRRORX);
+
+					}else{
+						PipView_RotateData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, &dstLocation, HD_VIDEO_DIR_MIRRORX);
+					}
+				}
 				#endif
 			}
 		}
@@ -289,8 +374,15 @@ INT32 PipView_OnDraw_2sensor(APPDISP_VIEW_DRAW *pDraw)
 				#if (DUALCAM_PIP_BEHIND_FLIP == DISABLE)
 					PipView_ScaleData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, REGION_MATCH_IMG);
 				#else
+				 if(UI_GetData(FL_REAR_SENSOR_MIRROR) == REAR_SENSOR_MIRROR_OFF)
+				 {
+					PipView_ScaleData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, REGION_MATCH_IMG);
+				 }
+				 else
+				 {
 					// flip rear image to destination buffer
 					PipView_RotateData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, &dstLocation, HD_VIDEO_DIR_MIRRORX);
+				 }
 				#endif
 			}
 
@@ -322,6 +414,12 @@ INT32 PipView_OnDraw_2sensor(APPDISP_VIEW_DRAW *pDraw)
 				#if (DUALCAM_PIP_BEHIND_FLIP == DISABLE)
 					PipView_ScaleData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, &dst_region);
 				#else
+				if(UI_GetData(FL_REAR_SENSOR_MIRROR) == REAR_SENSOR_MIRROR_OFF)
+				{
+					PipView_ScaleData(pDraw->p_src_img[1], REGION_MATCH_IMG, pDraw->p_dst_img, &dst_region);
+				}
+				else
+				{
 					// flip rear image to destination buffer
 					IRECT		dstRegion;
 
@@ -339,13 +437,15 @@ INT32 PipView_OnDraw_2sensor(APPDISP_VIEW_DRAW *pDraw)
 
 					// paste top-right of front image to destination buffer
 					if (pDraw->p_src_img[0]) {
-						IRECT        srcRegion;
-                        srcRegion.x = pDraw->p_src_img[0]->dim.w / 2;
-                        srcRegion.y = 0;
-                        srcRegion.w = ALIGN_CEIL_4(pDraw->p_src_img[0]->dim.w / 2);
-                        srcRegion.h = ALIGN_CEIL_4(pDraw->p_src_img[0]->dim.h / 2);
-                        PipView_ScaleData(pDraw->p_src_img[0], &srcRegion, pDraw->p_dst_img, &dstRegion);
+						//PipView_ScaleData(pDraw->p_src_img[0], &dstRegion, pDraw->p_dst_img, &dstRegion);
+						IRECT        dstRegion_src;
+                        dstRegion_src.x = pDraw->p_src_img[0]->dim.w / 2;
+                        dstRegion_src.y = 0;
+                        dstRegion_src.w = ALIGN_CEIL_4(pDraw->p_src_img[0]->dim.w / 2);
+                        dstRegion_src.h = ALIGN_CEIL_4(pDraw->p_src_img[0]->dim.h / 2);
+                        PipView_ScaleData(pDraw->p_src_img[0], &dstRegion_src, pDraw->p_dst_img, &dstRegion);
 					}
+				}
 				#endif
 			}
 		}

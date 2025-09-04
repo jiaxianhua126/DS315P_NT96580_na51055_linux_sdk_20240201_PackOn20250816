@@ -34,6 +34,8 @@ IMAGEAPP_PLAY_CFG_DISP_INFO gPlay_Disp_Info;
 static HD_COMMON_MEM_INIT_CONFIG g_play_mem_cfg = {0};
 static UINT32 g_PlayExifBufPa = 0, g_PlayExifBufVa = 0;
 
+extern UINT32 UIMenuWndPlayFileType_GetFileType(void);
+
 static ER PlayExe_InitExif(void)
 {
 	ER ret = E_SYS;
@@ -793,14 +795,24 @@ INT32 PlayExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 #endif
 	useFileDB = UI_GetData(FL_IsUseFileDB);
 	if (useFileDB) {
-		CHAR      *rootPath = "A:\\";
+		#define NMC_OTHERS_MAX_LEN  30
+		//CHAR      *rootPath = "A:\\";
 		//CHAR*      defaultfolder="A:\\CarDV\\";
-
+        char rootPath[NMC_OTHERS_MAX_LEN]={0};
 		PPBX_FLIST_OBJ  pFlist = PBXFList_FDB_getObject();
 		pFlist->Config(PBX_FLIST_CONFIG_MEM, uiPoolAddr, POOL_SIZE_FILEDB);
 		pFlist->Config(PBX_FLIST_CONFIG_MAX_FILENUM, 5000, 0);
 		pFlist->Config(PBX_FLIST_CONFIG_MAX_FILEPATH_LEN, 60, 0);
-		pFlist->Config(PBX_FLIST_CONFIG_VALID_FILETYPE, PBX_FLIST_FILE_TYPE_JPG | PBX_FLIST_FILE_TYPE_AVI | PBX_FLIST_FILE_TYPE_MOV | PBX_FLIST_FILE_TYPE_MP4 | PBX_FLIST_FILE_TYPE_TS, 0);
+        if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
+            pFlist->Config(PBX_FLIST_CONFIG_VALID_FILETYPE, PBX_FLIST_FILE_TYPE_JPG | PBX_FLIST_FILE_TYPE_AVI | PBX_FLIST_FILE_TYPE_MOV | PBX_FLIST_FILE_TYPE_MP4 | PBX_FLIST_FILE_TYPE_TS, 0);
+        } else {
+            if (UIMenuWndPlayFileType_GetFileType() == 0) {
+                pFlist->Config(PBX_FLIST_CONFIG_VALID_FILETYPE, PBX_FLIST_FILE_TYPE_AVI | PBX_FLIST_FILE_TYPE_MOV | PBX_FLIST_FILE_TYPE_MP4 | PBX_FLIST_FILE_TYPE_TS, 0);
+            } else {
+                pFlist->Config(PBX_FLIST_CONFIG_VALID_FILETYPE, PBX_FLIST_FILE_TYPE_JPG, 0);
+            }
+        }
+        snprintf(rootPath,NMC_OTHERS_MAX_LEN,"A:\\%s\\",FILEDB_CARDV_ROOT);
 		pFlist->Config(PBX_FLIST_CONFIG_DCF_ONLY, FALSE, 0);
 		pFlist->Config(PBX_FLIST_CONFIG_SORT_BYSN_DELIMSTR, (UINT32)"_", 0);
 		pFlist->Config(PBX_FLIST_CONFIG_SORT_BYSN_DELIMNUM, 1, 0);

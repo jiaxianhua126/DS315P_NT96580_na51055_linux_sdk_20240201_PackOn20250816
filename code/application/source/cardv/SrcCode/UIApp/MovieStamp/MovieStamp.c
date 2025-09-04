@@ -9,6 +9,16 @@
 
 #include <kflow_common/nvtmpp.h>
 #include "FontConv/FontConv.h"
+
+#include "DateStampFontTbl36x60.h"
+#include "DateStampFontTbl10x16.h"
+#include "DateStampFontTbl12x20.h"
+#include "DateStampFontTbl18x30.h"
+#include "DateStampFontTbl20x44.h"
+#include "DateStampFontTbl26x44.h"
+#include "DateStampFontTbl8x12.h"
+#include "DateStampFontTbl22x40.h"
+
 #include "ImageApp/ImageApp_MovieMulti.h"
 #include "ImageApp/ImageApp_Photo.h"
 
@@ -249,13 +259,35 @@ static ISIZE MovieStamp_GetStampDataWidth_LVGL(PSTAMP_INFO pStampInfo, const lv_
 	return FontSize;//uiDataWidth;
 }
 #else
-
+/*
 #include "DateStampFontTbl36x60.h"
 #include "DateStampFontTbl10x16.h"
 #include "DateStampFontTbl12x20.h"
 #include "DateStampFontTbl18x30.h"
 #include "DateStampFontTbl20x44.h"
 #include "DateStampFontTbl26x44.h"
+*/
+extern char CarNo_Buf[13];
+extern char Customize_Buf[13];
+char gUICarNo_StrBuf[13] = {""};
+char gUICustomize_StrBuf[13] = {""};
+
+char gUIDateTime_NullStrBuf[20] = {"                   "};
+#if ((MACHINE_TYPE==MACHINE_TYPE_T221)||(MACHINE_TYPE==MACHINE_TYPE_T222))
+char gUICustomer_Model[20]  = {"PERNIS T221"};
+#elif (MACHINE_TYPE==MACHINE_TYPE_DS202WGS)
+char gUICustomer_Model[20]  = {"PERNIS DS202WGS"};
+#elif (MACHINE_TYPE==MACHINE_TYPE_DS205WGS)
+char gUICustomer_Model[20]  = {"PERNIS DS202WGS"};
+#else
+char gUICustomer_Model[20]  = {"PERNIS S2P"};
+#endif
+
+char gUICustomer_Null[20]   = {"  "}; //sizeof must >= gUICustomer_Model
+char gUICustomer_StrBuf[20] = {"  "};
+
+//static 
+char g_GPSstamp_buffer[128] = {0}; //add for movie stamp gps msg
 
 static ISIZE MovieStamp_GetStampDataWidth(PSTAMP_INFO pStampInfo, const IMAGE_TABLE *pTable);
 
@@ -278,7 +310,6 @@ ISIZE MovieStamp_GetStampDataWidth(PSTAMP_INFO pStampInfo, const IMAGE_TABLE *pT
 	FontSize.w=uiDataWidth;
 	return FontSize;//uiDataWidth;
 }
-
 #endif
 
 #if MOVIE_ISP_LOG
@@ -288,7 +319,7 @@ static void MovieStamp_get_isp_status(UINT32 id, char* Buf, UINT32 BufLen)
 	AWBT_STATUS awb_status = {0};
 	IQT_WDR_PARAM wdr = {0};
 	IQT_DEFOG_PARAM defog = {0};
-
+	IQT_SHDR_PARAM  shdr = {0};
 	ae_status.id = id;
 	vendor_isp_get_ae(AET_ITEM_STATUS, &ae_status);
 	awb_status.id = id;
@@ -297,15 +328,20 @@ static void MovieStamp_get_isp_status(UINT32 id, char* Buf, UINT32 BufLen)
 	vendor_isp_get_iq(IQT_ITEM_WDR_PARAM, &wdr);
 	defog.id = id;
 	vendor_isp_get_iq(IQT_ITEM_DEFOG_PARAM, &defog);
-	snprintf(Buf, BufLen, "%3d %4d %4d %6d %6d %4d %4d %d %d %4d %4d %4d\0",
+	shdr.id = id;
+	vendor_isp_get_iq(IQT_ITEM_SHDR_PARAM,&shdr);
+	snprintf(Buf, BufLen, "%3d %4d %4d %6d %6d %6d %6d %4d %4d %d  %d %d %4d %4d %4d\0",
 												ae_status.status_info.lv/100000,
 												ae_status.status_info.lum,
 												ae_status.status_info.expect_lum,
 												ae_status.status_info.expotime[0],
 												ae_status.status_info.iso_gain[0],
+												ae_status.status_info.expotime[1],
+												ae_status.status_info.iso_gain[1],
 												ae_status.status_info.overexp_adj,
 												ae_status.status_info.overexp_cnt,
 												wdr.wdr.enable,
+												shdr.shdr.nrs_enable,
 												defog.defog.enable,
 												awb_status.status.cur_r_gain,
 												awb_status.status.cur_b_gain,
@@ -446,6 +482,58 @@ void MovieStamp_Setup(UINT32 uiVEncOutPortId, UINT32 uiFlag, UINT32 uiImageWidth
     PSTAMP_INFO     pStampInfo;
     UINT32          uiIconID;
     ISIZE 	FontSize;
+ 
+    if (((CarNo_Buf[0] >= 48)&&(CarNo_Buf[0] <= 57))
+        || ((CarNo_Buf[0] >= 65)&&(CarNo_Buf[0] <= 90))
+        || (CarNo_Buf[0] == 32)
+        || (CarNo_Buf[0] == 45)
+        || (CarNo_Buf[0] == 46))
+    {
+        memcpy(&gUICarNo_StrBuf, &CarNo_Buf, sizeof(char)*13);
+    }
+    else
+    {
+        memcpy(&gUICarNo_StrBuf, "           ", sizeof(char)*13);
+    }
+
+    if (((Customize_Buf[0] >= 48)&&(Customize_Buf[0] <= 57))
+        || ((Customize_Buf[0] >= 65)&&(Customize_Buf[0] <= 90))
+        || (Customize_Buf[0] == 32)
+        || (Customize_Buf[0] == 45)
+        || (Customize_Buf[0] == 46))
+    {
+        memcpy(&gUICustomize_StrBuf, &Customize_Buf, sizeof(char)*13);
+    }
+    else
+    {
+        memcpy(&gUICustomize_StrBuf, "           ", sizeof(char)*13);
+    }
+
+#if 0
+    if ((UI_GetData(FL_GPS) == GPS_ON)&&(UI_GetData(FL_GPS_STAMP) != GPS_STAMP_OFF)) {
+        if (UI_GetData(FL_GPS_STAMP) == GPS_STAMP_BOTH) {
+            strncpy(g_GPSstamp_buffer, GPS_GetMovieData(), sizeof(g_GPSstamp_buffer)-1);
+        } else if (UI_GetData(FL_GPS_STAMP) == GPS_STAMP_SPEED) {
+            strncpy(g_GPSstamp_buffer, GPS_GetMovieData_Speed(), sizeof(g_GPSstamp_buffer)-1);
+        } else { //if (UI_GetData(FL_GPS_STAMP) == GPS_STAMP_COORDINATES)
+            strncpy(g_GPSstamp_buffer, GPS_GetMovieData_Coordinates(), sizeof(g_GPSstamp_buffer)-1);
+        }
+    } else {
+        memset(g_GPSstamp_buffer, 0, 128);
+	sprintf(g_GPSstamp_buffer, "%s", "                               ");
+    }
+#else 
+	memset(g_GPSstamp_buffer, 0, 128);
+	sprintf(g_GPSstamp_buffer, "%s", "                               ");
+#endif
+
+    if (UI_GetData(FL_MODEL_STAMP) == MODEL_STAMP_ON) {
+        strncpy(gUICustomer_StrBuf, gUICustomer_Model, strlen(gUICustomer_Model));
+    } else {
+        strncpy(gUICustomer_StrBuf, gUICustomer_Null, strlen(gUICustomer_Null));
+    }
+
+	
 #if MOVIE_ISP_LOG
 	UINT16 i=0;
 	for(i=0;i<SENSOR_CAPS_COUNT;i++){
@@ -558,8 +646,7 @@ void MovieStamp_Setup(UINT32 uiVEncOutPortId, UINT32 uiFlag, UINT32 uiImageWidth
 		red_id = LV_USER_CFG_STAMP_FONT_ID_SMALL;
 	}
 	else {
-		DBG_WRN("image_width(%lu) is too small!\n", uiImageWidth);
-		red_id = LV_USER_CFG_STAMP_FONT_ID_SMALL;
+		red_id = LV_USER_CFG_STAMP_FONT_ID_XXL;
 	}
 
     g_VsFontIn[uiVEncOutPortId].pFont=(FONT *) lv_plugin_get_font(red_id)->font;
@@ -572,12 +659,15 @@ void MovieStamp_Setup(UINT32 uiVEncOutPortId, UINT32 uiFlag, UINT32 uiImageWidth
         break;
     case 2592:  // 2592x1944
     case 2560:  // 2560x1440
-    case 2304:  // 2304x1296
-    case 1920:  // 1920x1080
     case 1536:  // 1536x1536
         g_VsFontIn[uiVEncOutPortId].pFont=(FONT *)gDateStampFontTbl26x44;
         break;
-
+    case 2304:	// 2304x1296
+		g_VsFontIn[uiVEncOutPortId].pFont=(FONT *)gDateStampFontTbl22x40;
+		break;
+    case 1920:  // 1920x1080
+		g_VsFontIn[uiVEncOutPortId].pFont=(FONT *)gDateStampFontTbl18x30;
+		break;
     case 2880:  // 2880x2160 (DAR 16:9)
     case 1728:  // 1728x1296 (DAR 16:9)
     case 1440:  // 1440x1080 (DAR 16:9)
@@ -585,12 +675,12 @@ void MovieStamp_Setup(UINT32 uiVEncOutPortId, UINT32 uiFlag, UINT32 uiImageWidth
         break;
 
     case 1280:  // 1280x720
-        g_VsFontIn[uiVEncOutPortId].pFont=(FONT *)gDateStampFontTbl18x30;
+        g_VsFontIn[uiVEncOutPortId].pFont=(FONT *)gDateStampFontTbl12x20;
         break;
 
     case 848:    //848*480 wifi
     case 640:    // VGA & others
-        g_VsFontIn[uiVEncOutPortId].pFont=(FONT *)gDateStampFontTbl12x20;
+        g_VsFontIn[uiVEncOutPortId].pFont=(FONT *)gDateStampFontTbl8x12;
         break;
 
     case 320:   // QVGA
@@ -632,11 +722,14 @@ void MovieStamp_Setup(UINT32 uiVEncOutPortId, UINT32 uiFlag, UINT32 uiImageWidth
 
     case STAMP_DATE_TIME:
     default:
-            snprintf(pStampInfo->pi8Str, MOVIE_STAMP_MAX_LEN, "0000/00/00 00:00:00");
+    	snprintf(pStampInfo->pi8Str, MOVIE_STAMP_MAX_LEN, "0000/00/00 00:00:00");
+		//snprintf(pStampInfo->pi8Str, MOVIE_STAMP_MAX_LEN, "%s     %s      %s       %s        0000/00/00 00:00:00",g_GPSstamp_buffer,gUICustomize_StrBuf,gUICustomer_StrBuf, gUICarNo_StrBuf);
         break;
     }
 #if MOVIE_ISP_LOG
 	UINT16 Ipl_id=0;
+	#if 0
+	UINT16 log_id=0;
 
 	HD_RESULT hd_ret;
 	UINT32 isp_ver = 0;
@@ -645,11 +738,23 @@ void MovieStamp_Setup(UINT32 uiVEncOutPortId, UINT32 uiFlag, UINT32 uiImageWidth
 			DBG_ERR("vendor_isp_init fail(%d)\n", hd_ret);
 		}
 	}
-
+	#else
+	vendor_isp_init();
+	#endif
 	Ipl_id=ImageApp_MovieMulti_VePort2Imglink(uiVEncOutPortId);
 	//DBG_DUMP("setup Ipl_id=%d\r\n",Ipl_id);
-
-    MovieStamp_get_isp_status(Ipl_id, &g_cMovieStampStr[uiVEncOutPortId][0], 256);
+	#if 0
+	if(Ipl_id<0xff){
+		if(Ipl_id==1){
+			log_id=0;
+		}else{
+			log_id=1;
+		}
+	    MovieStamp_get_isp_status(log_id, &g_cMovieStampStr[uiVEncOutPortId][0], 256);
+	}
+	#else
+	MovieStamp_get_isp_status(Ipl_id, &g_cMovieStampStr[uiVEncOutPortId][0], 256);
+	#endif
 #endif
 
 
@@ -674,7 +779,7 @@ void MovieStamp_Setup(UINT32 uiVEncOutPortId, UINT32 uiFlag, UINT32 uiImageWidth
     RESULT ret;
 
     if((ret=IMAGE_GetSizeFromTable((const IMAGE_TABLE *)g_VsFontIn[uiVEncOutPortId].pFont, uiIconID, &FontSize))==0){
-	    pStampInfo->ui32FontWidth = FontSize.w;
+	    pStampInfo->ui32FontWidth = FontSize.w+4;
 	    pStampInfo->ui32FontHeight = FontSize.h;
     }else{
             DBG_ERR("IMAGE_GetSizeFromTable ,ret=%d\n",ret);
@@ -969,6 +1074,37 @@ UINT32 MovieStamp_CalcBufSize(UINT32 Width, UINT32 Height, WATERLOGO_BUFFER *pWa
 void MovieStamp_UpdateData(void)
 {
 	UINT32          i;
+
+#if (!defined(_NVT_ETHREARCAM_TX_))
+    INT8 gpsstatus = -1;
+
+    if ((UI_GetData(FL_GPS) == GPS_ON)&&(UI_GetData(FL_GPS_STAMP) != GPS_STAMP_OFF)) {
+        gpsstatus = GetGPSSignalStatus();
+        //debug_msg("*** gpsstatus = %d ***\r\n", gpsstatus);
+        if (gpsstatus != 1) {
+            memset(g_GPSstamp_buffer, 0, 128);
+            sprintf(g_GPSstamp_buffer, "%s", "                                  ");
+        }else{
+            if (UI_GetData(FL_GPS_STAMP) == GPS_STAMP_BOTH) {
+                strncpy(g_GPSstamp_buffer, GPS_GetMovieData(), sizeof(g_GPSstamp_buffer)-1);
+            } else if (UI_GetData(FL_GPS_STAMP) == GPS_STAMP_SPEED) {
+                strncpy(g_GPSstamp_buffer, GPS_GetMovieData_Speed(), sizeof(g_GPSstamp_buffer)-1);
+            } else { //if (UI_GetData(FL_GPS_STAMP) == GPS_STAMP_COORDINATES)
+                strncpy(g_GPSstamp_buffer, GPS_GetMovieData_Coordinates(), sizeof(g_GPSstamp_buffer)-1);
+            }
+        }
+    } else {
+        memset(g_GPSstamp_buffer, 0, 128);
+        sprintf(g_GPSstamp_buffer, "%s", "                                  ");
+    }
+
+    if (UI_GetData(FL_MODEL_STAMP) == MODEL_STAMP_ON) {
+        strncpy(gUICustomer_StrBuf, gUICustomer_Model, strlen(gUICustomer_Model));
+    } else {
+        strncpy(gUICustomer_StrBuf, gUICustomer_Null, strlen(gUICustomer_Null));
+    }
+#endif
+
 #if (MOVIE_ISP_LOG == 0)
 	struct tm       CurDateTime;
 
@@ -985,15 +1121,30 @@ void MovieStamp_UpdateData(void)
 				switch (g_uiMovieStampSetup[i] & STAMP_DATE_FORMAT_MASK) {
 				case STAMP_DD_MM_YY:
 					//sprintf(&g_cMovieStampStr[i][0], "%02d/%02d/%04d %02d:%02d:%02d", CurDateTime.tm_mday, CurDateTime.tm_mon, CurDateTime.tm_year, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec);
-					snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, "%02d/%02d/%04d %02d:%02d:%02d", CurDateTime.tm_mday, CurDateTime.tm_mon, CurDateTime.tm_year, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec);
+					//snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, "%02d/%02d/%04d %02d:%02d:%02d", CurDateTime.tm_mday, CurDateTime.tm_mon, CurDateTime.tm_year, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec);
+					if (UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) {
+                        snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, " %02d/%02d/%04d %02d:%02d:%02d   %s   %s", CurDateTime.tm_mday, CurDateTime.tm_mon, CurDateTime.tm_year, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec, gUICustomer_StrBuf, g_GPSstamp_buffer);
+					} else {
+                        snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, " %s   %s", gUICustomer_StrBuf, g_GPSstamp_buffer);
+                    }					
 					break;
 				case STAMP_MM_DD_YY:
 					//sprintf(&g_cMovieStampStr[i][0], "%02d/%02d/%04d %02d:%02d:%02d", CurDateTime.tm_mon, CurDateTime.tm_mday, CurDateTime.tm_year, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec);
-					snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, "%02d/%02d/%04d %02d:%02d:%02d", CurDateTime.tm_mon, CurDateTime.tm_mday, CurDateTime.tm_year, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec);
+					//snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, "%02d/%02d/%04d %02d:%02d:%02d", CurDateTime.tm_mon, CurDateTime.tm_mday, CurDateTime.tm_year, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec);
+					if (UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) {
+                        snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, " %02d/%02d/%04d %02d:%02d:%02d   %s   %s", CurDateTime.tm_mon, CurDateTime.tm_mday, CurDateTime.tm_year, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec, gUICustomer_StrBuf, g_GPSstamp_buffer);
+					} else {
+                        snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, " %s   %s", gUICustomer_StrBuf, g_GPSstamp_buffer);
+					}
 					break;
 				default:
 					//sprintf(&g_cMovieStampStr[i][0], "%04d/%02d/%02d %02d:%02d:%02d", CurDateTime.tm_year, CurDateTime.tm_mon, CurDateTime.tm_mday, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec);
-					snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, "%04d/%02d/%02d %02d:%02d:%02d", CurDateTime.tm_year, CurDateTime.tm_mon, CurDateTime.tm_mday, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec);
+					//snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, "%04d/%02d/%02d %02d:%02d:%02d", CurDateTime.tm_year, CurDateTime.tm_mon, CurDateTime.tm_mday, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec);
+					if (UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) {
+                        snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, " %04d/%02d/%02d %02d:%02d:%02d   %s   %s", CurDateTime.tm_year, CurDateTime.tm_mon, CurDateTime.tm_mday, CurDateTime.tm_hour, CurDateTime.tm_min, CurDateTime.tm_sec, gUICustomer_StrBuf, g_GPSstamp_buffer);
+					} else {
+                        snprintf(&g_cMovieStampStr[i][0], MOVIE_STAMP_MAX_LEN, " %s   %s", gUICustomer_StrBuf, g_GPSstamp_buffer);
+					}
 					break;
 				}
 			} else if ((g_uiMovieStampSetup[i] & STAMP_DATE_TIME_MASK) == STAMP_DATE_TIME_AMPM) {
@@ -1040,9 +1191,22 @@ void MovieStamp_UpdateData(void)
 
 			#if MOVIE_ISP_LOG
 			UINT16 Ipl_id=0;
+			#if 0
+			UINT16 log_id=0;
 			Ipl_id=ImageApp_MovieMulti_VePort2Imglink(i);
 			//DBG_DUMP("update Ipl_id=%d\r\n",Ipl_id);
+			if(Ipl_id<0xff){
+				if(Ipl_id==1){
+					log_id=0;
+				}else{
+					log_id=1;
+				}
+				MovieStamp_get_isp_status(log_id, &g_cMovieStampStr[i][0], 256);
+			}
+			#else
+			Ipl_id=ImageApp_MovieMulti_VePort2Imglink(i);
 			MovieStamp_get_isp_status(Ipl_id, &g_cMovieStampStr[i][0], 256);
+			#endif
 			#endif
 
 			g_VsFontIn[i].pStr=g_MovieStampInfo[i].pi8Str;

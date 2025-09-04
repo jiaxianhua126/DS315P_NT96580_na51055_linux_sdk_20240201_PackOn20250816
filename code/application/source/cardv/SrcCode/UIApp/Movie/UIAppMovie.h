@@ -8,7 +8,7 @@
 #endif
 
 
-#define _LINUX_MOVIE_TODO_		0
+#define _LINUX_MOVIE_TODO_		1
 
 #define MOVOBJ_REC_JPEG_FORMAT444      0
 #define MOVOBJ_REC_JPEG_FORMAT422      1
@@ -97,7 +97,8 @@ typedef enum {
 } RECMOVIE_GET_DATATYPE;
 
 #if (GPS_FUNCTION==ENABLE)
-#include "GPS.h"
+//#include "GPS.h"
+#include "DxGPS.h"
 #endif
 // APP event class
 
@@ -120,6 +121,7 @@ typedef enum {
     NVTEVT_EXE_MOVIE_STRM_STOP	= 0x14001013,
 	NVTEVT_EXE_MOVIE_UVAC_START = 0x14001014,
 	NVTEVT_EXE_MOVIE_UVAC_STOP	= 0x14001015,
+	NVTEVT_EXE_MOVIE_VOICE      = 0x14001016,
 	/* INSERT NEW EVENT HRER */
 	//Preview AE,AWB,AF,Color,IQ,Stable,Distortion
 	NVTEVT_EXE_MOVIE_EV         = 0x14001100,
@@ -192,6 +194,9 @@ typedef enum {
 	NVTEVT_EXE_MOVIE_ETHCAMHOTPLUG = 0x14001216,
     NVTEVT_EXE_MOVIE_QRCODE_START = 0x14001217,
 	NVTEVT_EXE_MOVIE_QRCODE_STOP = 0x14001218,
+	NVTEVT_EXE_MOVIE_BITRATE,
+	NVTEVT_EXE_PARKING_GSENSOR,
+	NVTEVT_EXE_PARKING_MOTION_DET,
 
 	//#NT#2016/03/25#KCHong -begin
 	//#NT#New ADAS
@@ -315,6 +320,7 @@ extern MOVIEMULTI_AUDIO_INFO   gMovie_Audio_Info;
 extern MOVIEMULTI_CFG_DISP_INFO gMovie_Disp_Info;
 extern MOVIE_RECODE_FILE_OPTION gMovie_Rec_Option;
 extern MOVIEMULTI_RECODE_FOLDER_NAMING gMovie_Folder_Naming[];
+extern MOVIEMULTI_RECODE_FOLDER_NAMING gMovie_Folder_Naming2[];
 extern MOVIEMULTI_RECODE_FOLDER_NAMING gMovie_Clone_Folder_Naming[];
 #if defined(_NVT_ETHREARCAM_RX_)
 extern MOVIEMULTI_RECODE_FOLDER_NAMING gMovie_EthCam_Folder_Naming[];
@@ -355,7 +361,7 @@ extern ER MovieRunrtmpclient_InstallID(void);
 extern ER MovieRunrtmpclient_UninstallID(void);
 extern void MovieScanQRCodeAction(BOOL bQRCodeScan);
 
-#if 0
+#if 1
 //Movie Config
 extern ISIZE Movie_GetBufferSize(void);
 
@@ -365,6 +371,11 @@ extern INT32 MovieExe_OnMetering(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 extern INT32 MovieExe_OnDis(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray);
 extern INT32 MovieExe_OnGdc(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray);
 extern INT32 MovieExe_OnSmear(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray);
+extern void MovieExe_ResetFileSN(void);
+extern UINT32 MovieExe_GetFileSN(void);
+extern BOOL MovieExe_CheckSNFull(void);
+
+//extern void Movie_SetUserData(void);
 
 extern UINT32 MovieExe_GetMaxRecSec(void);
 extern UINT32 MovieExe_GetFreeRecSec(void);
@@ -378,7 +389,7 @@ extern void UIMovie_IRCutCtrl(BOOL isON);
 extern VControl CustomMovieObjCtrl;
 
 extern void Movie_SetSDSlow(BOOL IsSlow);
-
+extern UINT32 Movie_GetCyclicRecTime(void);
 extern void MovieExe_SetMovieD2DModeEn(BOOL Enable);
 
 extern UINT32 Movie_GetSensorRecMask(void);
@@ -387,6 +398,8 @@ extern UINT32 Movie_GetMovieRecMask(void);
 extern UINT32 Movie_GetCloneRecMask(void);
 extern void Movie_SetResvSize(void);
 extern UINT32 Movie_GetFreeSec(void);
+extern void MovieExe_GetRecSize(UINT32 rec_id, ISIZE *rec_size);
+
 // For UCTRL use
 extern UINT32 Movie_GetAudChannel(void);
 extern void   Movie_SetAudChannel(UINT32 uiAudChannel);
@@ -456,6 +469,9 @@ extern UINT32 MovieExe_GetEmrRollbackSec(void);
 extern UINT32 MovieExe_GetWidth(MOVIE_CFG_REC_ID  rec_id);
 extern UINT32 MovieExe_GetHeight(MOVIE_CFG_REC_ID  rec_id);
 extern MOVIE_RECODE_INFO MovieExe_GetRecInfo(MOVIE_CFG_REC_ID  rec_id);
+extern void MovieExe_LowBitrateRec(void);
+extern void MovieExe_PM_MD_LowBitrateRec(void);
+
 //extern UINT32 MovieExe_GetCommonMemInitFinish(void);
 extern void MovieExe_EthCamTxDateStampConfig(void);
 extern void MovieExe_EthCamRecId1_SendFrm(void);

@@ -31,6 +31,9 @@
 #include "io/gpio.h"
 //#include "EthCam/EthsockCliIpcAPI.h"
 #include "Utility/SwTimer.h"
+#if (defined(_NVT_ETHREARCAM_RX_))
+#include "DxInput.h"
+#endif
 
 #define THIS_DBGLVL         2 // 0=FATAL, 1=ERR, 2=WRN, 3=UNIT, 4=FUNC, 5=IND, 6=MSG, 7=VALUE, 8=USER
 ///////////////////////////////////////////////////////////////////////////////
@@ -206,6 +209,31 @@ int udpsocket_recv(char *addr, int size)
 			gEthCamDhcpSrvConnIpAddr=CliIPAddr;
 		}
 		#endif
+		
+		if (System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_UPDFW && System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_UPDFW) {
+			DBG_WRN("fw update return\r\n");
+			SxTimer_SetFuncActive(SX_TIMER_ETHCAM_ETHERNETLINKDET_LINKDET_ID, FALSE);
+			#if (defined(_NVT_ETHREARCAM_RX_))//RX+TX,fw update fw inform.
+			Ux_CloseWindow(&UIFlowWndWaitMomentCtrl, 0);
+			Ux_OpenWindow(&UIFlowWndWaitMomentCtrl, 1, UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_FINISH);
+			Delay_DelayMs(3000);
+			Ux_CloseWindow(&UIFlowWndWaitMomentCtrl, 0);
+			Ux_Redraw();
+			Delay_DelayMs(1000);
+			if(SysInit_GetEthTxFW_Update_getstd()){
+				//extern BOOL g_bIsNeedReboot;
+				
+				extern void GxSystem_SWResetNOW(void);
+				//g_bIsNeedReboot = TRUE;
+				//System_PowerOff(SYS_POWEROFF_NORMAL);
+				GxSystem_SWResetNOW();
+			}else{
+				System_ChangeSubMode(SYS_SUBMODE_NORMAL);
+				Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
+			}
+			#endif
+			return 1;
+		}
 	}
 #endif
 #if (defined(_NVT_ETHREARCAM_TX_))
@@ -510,8 +538,27 @@ void EthCamNet_EthLinkStatusNotify(char *cmd)
 	DBG_DUMP("Get = %s ,status=%d, TxIPAddr=0x%x, %s\r\n", cmdname, status,TxIPAddr,chTxIPAddr);
 
 	if (System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_UPDFW && System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_UPDFW) {
-		//DBG_WRN("fw update return\r\n");
+		DBG_WRN("fw update return\r\n");
 		SxTimer_SetFuncActive(SX_TIMER_ETHCAM_ETHERNETLINKDET_LINKDET_ID, FALSE);
+		#if (defined(_NVT_ETHREARCAM_RX_))//RX+TX,fw update fw inform.
+		Ux_CloseWindow(&UIFlowWndWaitMomentCtrl, 0);
+		Ux_OpenWindow(&UIFlowWndWaitMomentCtrl, 1, UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_FINISH);
+		Delay_DelayMs(3000);
+		Ux_CloseWindow(&UIFlowWndWaitMomentCtrl, 0);
+		Ux_Redraw();
+		Delay_DelayMs(1000);
+		if(SysInit_GetEthTxFW_Update_getstd()){
+			//extern BOOL g_bIsNeedReboot;
+			
+			extern void GxSystem_SWResetNOW(void);
+			//g_bIsNeedReboot = TRUE;
+			//System_PowerOff(SYS_POWEROFF_NORMAL);
+			GxSystem_SWResetNOW();
+		}else{
+			System_ChangeSubMode(SYS_SUBMODE_NORMAL);
+			Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
+		}
+		#endif
 		return;
 	}
 
@@ -524,7 +571,7 @@ void EthCamNet_EthLinkStatusNotify(char *cmd)
 #endif
 
 	if(TxIPAddr==0){
-		//DBG_ERR("Tx No IP!!\r\n");
+		DBG_ERR("Tx No IP!!\r\n");
 		return;
 	}
 
@@ -773,7 +820,11 @@ void EthCamNet_DataRecvDet(void)
 #endif
 			if(g_bEthCamEthLinkStatus[j]==ETHCAM_LINK_UP){
 				DBG_WRN("EthCamHBActive HB1[%d]=%d, HB2=%d\r\n", j,EthCamHB1[j],EthCamHB2);
+				#if (REBOOT_ETHCAM_FUNC==ENABLE)
+				BKG_PostEvent(NVTEVT_BKW_STOPREC_PROCESS);
+				#else
 				EthCamNet_LinkDetStreamRestart(j);
+				#endif
 				//EthCamNet_EthLinkStatusNotify("EthRestart 201369792 1");
 				//EthCamNet_EthLinkStatusNotify("EthRestart 201369792 2");
 			}
@@ -924,6 +975,11 @@ void EthCamNet_EthHubChkPortReady(void)
 #endif
 #endif
 }
+#if (defined(_NVT_ETHREARCAM_RX_)) //TX+TX,fw update fw inform.
+//#NT#2023/04/13#HTK ADD -begin=================================
+static UINT8 tx_fw_update_cnt = 0;
+//#NT#2023/04/13#HTK ADD -end=================================
+#endif
 void EthCamNet_SrvCliConnIPAddrNofity(char *cmd)
 {
 	char cmdname[50]={0};
@@ -936,12 +992,43 @@ void EthCamNet_SrvCliConnIPAddrNofity(char *cmd)
 	#endif
 	CHAR chCliIPAddr[ETHCAM_SOCKETCLI_IP_MAX_LEN]={0};
 	CHAR chCliMacAddr[ETHCAM_SOCKETCLI_MAC_MAX_LEN]={0};
-
+	
 	sscanf_s(cmd, "%s %s %d %d %d", cmdname, sizeof(cmdname)-1, cmdname2, sizeof(cmdname2)-1, &CliIPAddr, &CliMacAddr[0], &CliMacAddr[1]);
 	snprintf(chCliIPAddr, ETHCAM_SOCKETCLI_IP_MAX_LEN, "%d.%d.%d.%d", (CliIPAddr & 0xFF), (CliIPAddr >> 8) & 0xFF, (CliIPAddr >> 16) & 0xFF, (CliIPAddr >> 24) & 0xFF);
 	snprintf(chCliMacAddr, ETHCAM_SOCKETCLI_MAC_MAX_LEN, "%02x:%02x:%02x:%02x:%02x:%02x", (CliMacAddr[0] & 0xFF), (CliMacAddr[0] >> 8) & 0xFF, (CliMacAddr[0] >> 16) & 0xFF, (CliMacAddr[0] >> 24) & 0xFF , (CliMacAddr[1]) & 0xFF ,(CliMacAddr[1] >> 8) & 0xFF);
 	DBG_DUMP("Srv Get=%s ,cmd2=%s, CliIPAddr=0x%x, IP=%s, CliMac=%s\r\n", cmdname, cmdname2, CliIPAddr,chCliIPAddr, chCliMacAddr);
-
+	//#NT#2023/04/13#HTK ADD -begin=================================
+	#if (defined(_NVT_ETHREARCAM_RX_))
+	if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_UPDFW) 
+	{
+		SxTimer_SetFuncActive(SX_TIMER_ETHCAM_ETHERNETLINKDET_LINKDET_ID, FALSE);
+		tx_fw_update_cnt++;
+		if((GPIOMap_EthCam1Det()&&GPIOMap_EthCam2Det()&&tx_fw_update_cnt>=2)
+			||(!(GPIOMap_EthCam1Det()&&GPIOMap_EthCam2Det())&&tx_fw_update_cnt>=1))
+		{
+			#if 1
+		    Ux_CloseWindow(&UIFlowWndWaitMomentCtrl, 0);
+			Ux_OpenWindow(&UIFlowWndWaitMomentCtrl, 1, UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_FINISH);
+			Delay_DelayMs(3000);
+			Ux_CloseWindow(&UIFlowWndWaitMomentCtrl, 0);
+		    Ux_Redraw();
+			Delay_DelayMs(1000);
+			if(SysInit_GetEthTxFW_Update_getstd()){
+				//extern BOOL g_bIsNeedReboot;
+				
+				extern void GxSystem_SWResetNOW(void);
+				//g_bIsNeedReboot = TRUE;
+				//System_PowerOff(SYS_POWEROFF_NORMAL);
+				GxSystem_SWResetNOW();
+			}else{
+				System_ChangeSubMode(SYS_SUBMODE_NORMAL);
+				Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
+			}
+			#endif
+		}
+	}
+	#endif
+	//#NT#2023/04/13#HTK ADD -end=================================
 	#if (ETH_REARCAM_CAPS_COUNT>=2)
 	if((g_PrevSrvCliConnCliMacAddr[0]!= CliMacAddr[0]) || (g_PrevSrvCliConnCliMacAddr[1]!= CliMacAddr[1])){
 		g_SrvCliConnCliMacAddrCnt++;

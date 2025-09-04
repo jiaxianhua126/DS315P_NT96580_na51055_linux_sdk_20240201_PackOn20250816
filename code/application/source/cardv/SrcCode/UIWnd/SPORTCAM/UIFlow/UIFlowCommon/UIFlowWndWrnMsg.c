@@ -13,6 +13,7 @@ static UINT32 g_uiWrnMsgIssue       = 0;
 static UINT32 g_uiWrnMsgExpTime     = 0;
 static UINT32 g_uiExpTimerID        = NULL_TIMER;
 static UINT32 g_uiWrnMsgPseudoTimerID = NULL_TIMER;
+
 //---------------------UIFlowWndWrnMsgCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndWrnMsg)
 CTRL_LIST_ITEM(UIFlowWndWrnMsg_StaticTXT_Msg)
@@ -77,6 +78,7 @@ INT32 UIFlowWndWrnMsg_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 	debug_ind(("UIFlowWndWrnMsg_OnOpen g_uiWrnMsgIssue = %d\n\r", g_uiWrnMsgIssue));
 	UxStatic_SetData(&UIFlowWndWrnMsg_StaticTXT_MsgCtrl, STATIC_VALUE, g_uiWrnMsgIssue);
 	UxCtrl_SetShow(&UIFlowWndWrnMsg_StaticTXT_MsgCtrl, TRUE);
+
 	/* Start window expiration timer */
 	if (g_uiWrnMsgExpTime) {
 		if (g_uiExpTimerID != NULL_TIMER) {
@@ -88,6 +90,7 @@ INT32 UIFlowWndWrnMsg_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 		g_uiExpTimerID = GxTimer_StartTimer((1000 * g_uiWrnMsgExpTime), NVTEVT_WARNING_TIMER, ONE_SHOT);
 		g_uiWrnMsgPseudoTimerID = GxTimer_StartTimer(1000, NVTEVT_1SEC_TIMER, CONTINUE);
 	}
+
 	Ux_DefaultEvent(pCtrl, NVTEVT_OPEN_WINDOW, paramNum, paramArray);
 	return NVTEVT_CONSUME;
 }
@@ -100,6 +103,7 @@ INT32 UIFlowWndWrnMsg_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 	if (g_uiWrnMsgPseudoTimerID != NULL_TIMER) {
 		GxTimer_StopTimer(&g_uiWrnMsgPseudoTimerID);
 	}
+
 	Ux_DefaultEvent(pCtrl, NVTEVT_CLOSE_WINDOW, paramNum, paramArray);
 	return NVTEVT_CONSUME;
 }
@@ -114,7 +118,7 @@ INT32 UIFlowWndWrnMsg_OnKeyMode(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 }
 INT32 UIFlowWndWrnMsg_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	Ux_CloseWindow(pCtrl, 1, NVTRET_ENTER_MENU);
+    //Ux_CloseWindow(pCtrl,1,NVTRET_ENTER_MENU);
 	return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndWrnMsg_OnKeyPlayback(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -126,17 +130,15 @@ INT32 UIFlowWndWrnMsg_OnKeyPlayback(VControl *pCtrl, UINT32 paramNum, UINT32 *pa
 //#NT#Add PictureError warning message
 INT32 UIFlowWndWrnMsg_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	if (g_uiWrnMsgIssue == FLOWWRNMSG_ISSUE_PICTURE_ERR) {
-		Ux_CloseWindow(pCtrl, 2, NVTRET_WARNING, NVTEVT_KEY_LEFT);
-	}
-	return NVTEVT_CONSUME;
+    //if(g_uiWrnMsgIssue == FLOWWRNMSG_ISSUE_PICTURE_ERR)
+    //    Ux_CloseWindow(pCtrl,2,NVTRET_WARNING,NVTEVT_KEY_LEFT);
+    return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndWrnMsg_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	if (g_uiWrnMsgIssue == FLOWWRNMSG_ISSUE_PICTURE_ERR) {
-		Ux_CloseWindow(pCtrl, 2, NVTRET_WARNING, NVTEVT_KEY_RIGHT);
-	}
-	return NVTEVT_CONSUME;
+    //if(g_uiWrnMsgIssue == FLOWWRNMSG_ISSUE_PICTURE_ERR)
+    //    Ux_CloseWindow(pCtrl,2,NVTRET_WARNING,NVTEVT_KEY_RIGHT);
+    return NVTEVT_CONSUME;
 }
 //#NT#2012/09/04#Ben Wang -end
 INT32 UIFlowWndWrnMsg_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -162,6 +164,31 @@ INT32 UIFlowWndWrnMsg_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 		Ux_CloseWindow(pCtrl, 0);
 		if (g_uiWrnMsgIssue == FLOWWRNMSG_ISSUE_BATTERY_LOW) {
 			System_PowerOff(SYS_POWEROFF_NORMAL);
+		}
+		if ((g_uiWrnMsgIssue == UIFlowWndWrnMsg_StatusTXT_Msg_STRID_FORMAT_WARNING) ||\
+		    (g_uiWrnMsgIssue == UIFlowWndWrnMsg_StatusTXT_Msg_STRID_CARD_FULL) ||\
+		    (g_uiWrnMsgIssue == UIFlowWndWrnMsg_StatusTXT_Msg_STRID_CARDERROR))
+		{
+			DBG_DUMP("call g_uiWrnMsgIssue = %X\r\n",g_uiWrnMsgIssue);
+			if (FlowMovie_Specail_Flag_Get() == TRUE) {
+				FlowMovie_Specail_Flag_Set(FALSE);
+			} else {
+				FlowMovie_SaveBaseDay();
+			}
+			if(g_uiWrnMsgIssue == UIFlowWndWrnMsg_StatusTXT_Msg_STRID_FORMAT_WARNING)
+			{
+				Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_CHANGEDSCMODE, 1, DSCMODE_CHGTO_CURR);
+			}
+			else
+			{
+				UIVoice_Play(DEMOSOUND_SOUND_MCARDERRORFORMAT_TONE);
+				Ux_OpenWindow((VControl *)(&UIMenuWndSetupFormatQuickConfirmCtrl), 0);
+			}
+		}
+		if ((g_uiWrnMsgIssue == UIFlowWndWrnMsg_StatusTXT_Msg_STRID_NO_IMAGE)||(g_uiWrnMsgIssue == UIFlowWndWrnMsg_StatusTXT_Msg_STRID_NO_VIDEO)) {
+			//Ux_SendEvent(&UISetupObjCtrl, NVTEVT_FORCETO_MOVIE_MODE, 0);
+			//UIMenuWndPlayFileType_SetFileType(0);
+			Ux_OpenWindow((VControl *)(&UIMenuWndPlayFileTypeCtrl), 0);
 		}
 		break;
 	case NVTEVT_1SEC_TIMER:

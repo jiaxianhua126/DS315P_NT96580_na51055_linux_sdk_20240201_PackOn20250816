@@ -28,7 +28,7 @@ static THREAD_RETTYPE MovieAlgFunc_MD_Tsk(void)
 	is_movie_alg_md_tsk_running = TRUE;
 
 	while (movie_alg_md_tsk_run) {
-		if (UI_GetData(FL_MOVIE_MOTION_DET)) {
+		if (UI_GetData(FL_MOVIE_MOTION_DET)|| (UI_GetData(FL_PARKING_MODE) != PARKING_MODE_OFF)) {
 			if ((hd_ret = hd_videoproc_pull_out_buf(img_path, &video_frame, -1)) == HD_OK) {
 				// process data
 				movie_alg_md_result = MD_Process(0, &video_frame);
@@ -78,6 +78,7 @@ ER MovieAlgFunc_MD_InstallID(void)
 		DBG_ERR("MovieAlgMDTsk create failed.\r\n");
         ret = E_SYS;
 	} else {
+		DBG_DUMP("MovieAlgMDTsk create successful.\r\n");
 		movie_alg_md_tsk_run = TRUE;
 	    vos_task_resume(movie_alg_md_tsk_id);
 	}

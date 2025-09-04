@@ -16,6 +16,7 @@ typedef enum {
 	UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_SENDFW,
 	UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_START,
 	UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_FINISH,
+	UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_SENDFW_FAIL,
 	UIFlowWndWaitMoment_StatusTXT_Msg_MAX
 } UIFlowWndWaitMoment_StatusTXT_Msg_Setting;
 

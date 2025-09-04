@@ -106,5 +106,6 @@ extern void FlowPB_ResumeVideoPlaying(void);
 extern void FlowPB_StopVideoPlaying(void);
 extern void FlowPB_SetMovPlayTime(UINT32 u32PlayTime);
 extern UINT32 FlowPB_GetMovPlayTime(void); 
+extern void UIFlowPlayShowFileTypeEnable(BOOL En);
 
 #endif //_UIFLOWPLAYFUNCS_H

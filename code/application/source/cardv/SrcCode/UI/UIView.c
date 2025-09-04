@@ -132,10 +132,10 @@ void UIDisplay_Init(UINT8 iDD, BOOL bClear, ISIZE *pDeviceSize)
 				pLayerInit->pBufAddr[2] = 0;
 			} else { //one rotate display
 				DBG_IND("case 1-2\r\n");  //use single buffer,avoid rotate twice
-				pLayerInit->uiBufCount = 0;
-				pLayerInit->uiSwapEffect = SWAPEFFECT_DISCARD; //use single buffer(for show DC only)
+				pLayerInit->uiBufCount = 1; //0;
+				pLayerInit->uiSwapEffect = SWAPEFFECT_COPY; //SWAPEFFECT_DISCARD; //use single buffer(for show DC only)
 				pLayerInit->pBufAddr[0] = uiBufAddr;    //1st buffer
-				pLayerInit->pBufAddr[1] = 0;
+				pLayerInit->pBufAddr[1] = uiBufAddr + pLayerInit->uiBufSize; //2nd buffer //0;
 				pLayerInit->pBufAddr[2] = 0;
 				pLayerInit->uiSwapEffect |= SWAPEFFECT_XY;
 			}

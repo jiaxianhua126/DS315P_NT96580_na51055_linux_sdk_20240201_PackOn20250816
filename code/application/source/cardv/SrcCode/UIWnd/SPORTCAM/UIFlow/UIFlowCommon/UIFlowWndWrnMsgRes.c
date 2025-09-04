@@ -3,39 +3,42 @@
 #ifndef UIFLOWWNDWRNMSGRES_H
 #define UIFLOWWNDWRNMSGRES_H
 
-#include "UIWnd/UIFlow.h"
+#include "UIFramework.h"
+#include "UIFrameworkExt.h"
+#include "UI/UIGraphics.h"
+#include "NVTToolCommand.h"
 #include "UIDisplayUtil.h"
 //------------------------------------------------------------
 
-SHOW_ITEM_RECT(CMD_Rectangle, Skin1Rect, 0, 0, 319, 239, 0, 0, 0, 0, 0, 0, 0)
+SHOW_ITEM_RECT(CMD_Rectangle,Skin1Rect,0,0,319,239,0,0,0,0,0,0,0)
 SHOW_MAP_BEGIN(Skin1)
 SHOW_MAP_BODY(Skin1Rect)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group, Skin1, 0, 0, 319, 239)
+SHOW_ITEM_GROUP(CMD_Group,Skin1,0,0,319,239)
 
-SHOW_ITEM_RECT(CMD_Rectangle, Rect5, -1, -1, 218, 138, 16, 2, 0, 14, 0, 0, 0)
+SHOW_ITEM_ROUNDRECT(CMD_RoundRect,RoundRect5,0,0,219,139,16,2,14,14,0,0,0,26,26)
 SHOW_MAP_BEGIN(Skin3)
-SHOW_MAP_BODY(Rect5)
+SHOW_MAP_BODY(RoundRect5)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group, Skin3, 0, 0, 217, 139)
+SHOW_ITEM_GROUP(CMD_Group,Skin3,0,0,219,139)
 
-SHOW_ITEM_TEXT(CMD_Text | CMD_ITEM, Text7, -1, -1, 218, 138, STRID_NULL, 0, 0, 0, 0, 2, 2, 1, 0, 0, 17, 0, 0, 0, 0)
+SHOW_ITEM_TEXT(CMD_Text|CMD_ITEM,Text7,0,0,219,139,STRID_NULL,0,0,0,0,2,2,1,256,0,17,0,0,0,0)
 SHOW_MAP_BEGIN(Normal2)
 SHOW_MAP_BODY(Skin3)
 SHOW_MAP_BODY(Text7)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group, Normal2, 51, 51, 268, 190)
+SHOW_ITEM_GROUP(CMD_Group,Normal2,50,50,269,189)
 
 SHOW_MAP_BEGIN(UIFlowWndWrnMsg_StaticTXT_Msg)
 SHOW_MAP_BODY(Normal2)
 SHOW_MAP_END
 
 DECLARE_EVENT(UIFlowWndWrnMsg_StaticTXT_Msg)
-CREATE_STATIC_DATA(UIFlowWndWrnMsg_StaticTXT_Msg, STRID_FILE_ERROR)
-CREATE_STATIC_CTRL(UIFlowWndWrnMsg_StaticTXT_Msg, 0, 51, 51, 268, 190)
+CREATE_STATIC_DATA(UIFlowWndWrnMsg_StaticTXT_Msg,STRID_FILE_ERROR)
+CREATE_STATIC_CTRL(UIFlowWndWrnMsg_StaticTXT_Msg,0,50,50,269,189)
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -45,5 +48,5 @@ SHOW_MAP_END
 
 DECLARE_EVENT(UIFlowWndWrnMsg)
 DECLARE_CTRL_LIST(UIFlowWndWrnMsg)
-CREATE_CTRL(UIFlowWndWrnMsg, UIFlowWndWrnMsg, CTRL_WND, NULL, 0, 0, 0, 319, 239)
+CREATE_CTRL(UIFlowWndWrnMsg,UIFlowWndWrnMsg,CTRL_WND,NULL,0 ,0,0,319,239)
 #endif

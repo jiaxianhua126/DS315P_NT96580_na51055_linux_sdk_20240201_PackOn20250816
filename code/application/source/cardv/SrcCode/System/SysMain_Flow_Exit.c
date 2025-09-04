@@ -32,15 +32,60 @@
 /////////////////////////////////////////////////////////////////////////////
 //#include "DevMan.h"
 //#include "NvtSystem.h"
+#include "GxUSB.h"
+#include <sys/wait.h>
 #if(WIFI_FUNC==ENABLE)
 #include "UIApp/Network/WifiAppCmd.h"
 #include "Mode/UIModeWifi.h"
 #endif
+extern void GxSystem_SWResetNOW(void);
 
 /////////////////////////////////////////////////////////////////////////////
 
 //INT32 g_iSysPowerOffMode = SYS_POWEROFF_NORMAL;
 INT32 g_iSysPowerOffMode = SYS_POWEROFF_SAFE;
+
+static int nor_system(const char* pCommand)
+{
+    pid_t pid;
+    int status;
+    int i = 0;
+
+    if(pCommand == NULL)
+    {
+        return (1);
+    }
+
+    if((pid = fork())<0)
+    {
+        status = -1;
+    }
+    else if(pid == 0)
+    {
+        /* close all descriptors in child sysconf(_SC_OPEN_MAX) */
+        for (i = 3; i < sysconf(_SC_OPEN_MAX); i++)
+        {
+            close(i);
+        }
+
+        execl("/bin/sh", "sh", "-c", pCommand, (char *)0);
+        _exit(127);
+    }
+    else
+    {
+        while(waitpid(pid, &status, 0) < 0)
+        {
+            if(errno != EINTR)
+            {
+                status = -1;
+                break;
+            }
+        }
+    }
+
+    return status;
+}
+
 
 void System_PowerOff(UINT32 pwrOffType)
 {
@@ -72,6 +117,18 @@ void System_ShutDownStart(void)
 // ShutDown End
 void System_ShutDownEnd(void)
 {
+	BOOL bUSBCntStd = FALSE;
+	//extern BOOL Manual_PowerOff;
+	extern BOOL bUSBPreStd;
+	Delay_DelayMs(500);
+	bUSBCntStd = GxUSB_GetIsUSBPlug();
+	DBG_DUMP("call System_ShutDownEnd  111111111\r\n");
+	if (bUSBCntStd && (!bUSBPreStd)) {
+		DBG_DUMP("call System_ShutDownEnd GxSystem_SWResetNOW\r\n");
+		GxSystem_SWResetNOW();
+	} else {
+		nor_system("poweroff -f");
+	}
 	DBG_DUMP("^MSystem Shutdown end\r\n");
 	DBG_DUMP("\r\n");
 }

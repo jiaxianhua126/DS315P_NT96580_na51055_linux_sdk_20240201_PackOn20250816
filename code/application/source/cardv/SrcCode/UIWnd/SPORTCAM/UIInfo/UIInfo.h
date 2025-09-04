@@ -71,10 +71,14 @@ typedef struct _UIMenuUIMenuStoreInfo {
 	//wifi
 	CHAR   strSSID[NVT_WSC_MAX_SSID_LEN];
 	CHAR   strPASSPHRASE[NVT_MAX_WEP_KEY_LEN];
+	CHAR   strSSID_5G[NVT_WSC_MAX_SSID_LEN];
 
 	CHAR   strSSID_hotspot_1[NVT_WSC_MAX_SSID_LEN];
 	CHAR   strPASSPHRASE_hotspot_1[NVT_MAX_WEP_KEY_LEN];
 #endif
+
+	CHAR   strCarNo[VER_STR_MAX];
+	CHAR   strCustomize[VER_STR_MAX];
 } UIMenuStoreInfo;
 
 
@@ -90,6 +94,7 @@ typedef enum {
 	FL_COLOR_EFFECT,            // Photo color
 	FL_SCENE,                   // Scene mode
 	FL_EV,                      // Exposure value
+    FL_EV2,                     // Rear Cam Exposure value
 	FL_ISO,                     // ISO value
 	FL_WB,                      // White balance mode
 	FL_METERING,                // Exposure metering
@@ -123,6 +128,8 @@ typedef enum {
 	//FL_MOVIE_EV,                // Movie EV
 	FL_MOVIE_HDR,               // Movie HDR
 	FL_MOVIE_HDR_MENU,
+	FL_MOVIE_HDR_CHANGE_BEFSIZE,
+	FL_MOVIE_HDR_STATECHANGE,
 	FL_MOVIE_WDR,               // Movie WDR
 	FL_MOVIE_WDR_MENU,
 	//FL_MOVIE_FRAMERATE,         // Movie frame rate  15fps, 30fps
@@ -182,6 +189,9 @@ typedef enum {
 	FL_AUTO_POWER_OFF,          // Auto power off time
 	FL_BEEP,                    // Beep sound on/off
 	FL_LANGUAGE,                // Language
+	FL_MOVIE_VOICE,             // Movie voice enable
+	FL_ASR,             // Movie voice enable
+	FL_ASR_CONTENT,             // Movie voice enable
 	FL_FREQUENCY,               // Frequency (50Hz/60Hz)
 	FL_TV_MODE,                 // TV mode (NTSC/PAL)
 	FL_HDMI_MODE,               // HDMI mode
@@ -192,6 +202,10 @@ typedef enum {
 	FL_HOUR_FORMAT,             // Hour format (12 Hours/24 Hours)
 	FL_DATE_TIME_SETUP,
 	FL_OPENING_LOGO,            // Opening logo display (on/off)
+    FL_SENSOR_ROTATE,           // Sensor Roate on/off
+	FL_SENSOR_ROTATE_MENU,
+    FL_SENSOR2_ROTATE, // Sensor2 Roate on/off
+    FL_SENSOR2_ROTATE_MENU,
 	FL_SETUP,                   // Setup menu
 	FL_GSENSOR,                 // G-sensor
 	FL_EDGE,                    // edge
@@ -270,9 +284,11 @@ typedef enum {
 	// Wifi
 	FL_NetWorkMode,
 	FL_WIFI,                    // Wi-Fi on/off  for menu flag
+    FL_WIFI_AUTO,               // Wi-Fi auto start on/off
 	FL_WIFI_MOVIE_MAXRECTIME,   // Maximum record time of Wi-Fi App setting
 	FL_WIFI_PHOTO_FREEPICNUM,   // Free picture number
 	FL_WIFI_LINK,
+    FL_WIFI_MOVIE_FMT,
 	FL_WIFI_MOVIE_APP_PREVIEW_SIZE,  // Preview video resolution for Wi-Fi APP.
 	FL_WIFI_AUTO_RECORDING,          // CarDV mode or Sport DV mode.
 	//#NT#2016/07/12#KCHong#[0104994] -begin
@@ -290,17 +306,57 @@ typedef enum {
 	FL_SHDR_MENU,
 	FL_RSC_MENU,
 	//#NT#2016/08/19#Lincy Lin -end
-    	FL_DEFOG,
-    	FL_DEFOG_MENU,
- 	FL_MOVIE_DEFOG,
-    	FL_MOVIE_DEFOG_MENU,
+    FL_DEFOG,
+    FL_DEFOG_MENU,
+    FL_MOVIE_DEFOG,
+    FL_MOVIE_DEFOG_MENU,
 
 	FL_ETHCAM_TX_IP_ADDR,
 	FL_MOVIE_CODEC_MENU,
 	FL_MOVIE_SENSOR_ROTATE_MENU,
 	FL_CHG_DISP,
     FL_CURR_DISP,
-
+    FL_LED,
+    FL_SYS_SOFT_RESET,
+    FL_GPS,
+    FL_TIME_ZONE,
+    FL_SPEED_UNIT,
+    FL_GPS_STAMP,
+    FL_MOVIE_TIMERLAPS,
+    FL_FORMAT_WARNING,
+    FL_FORMAT_WARNING_DATE,
+    FL_FIRSTPOWERON, // for first power on
+    FL_BOOT_DELAY,   // Boot Delay time
+    FL_MODEL_STAMP,
+    FL_PARKING_MODE, // Parking Mode
+    FL_PARKING_MODE_TIMELAPSE_REC,
+    FL_PARKING_GSENSOR,    // Parking Mode G-sensor
+    FL_PARKING_MOTION_DET, // Parking Mode motion detect
+    FL_MOVIE_BITRATE,
+    FL_VIDEO_FORMAT,
+    FL_VIDEO_FORMAT_MENU,
+    FL_IR_REAR_COLOR,
+    FL_REAR_SENSOR_MIRROR,
+    FL_REAR_MIRROR_DISPLAY,
+    FL_SHUTDOWN_TIMER,
+    FL_WIFI_BAND,
+    FL_VOLUME, //add for PAPAGO Volume Set
+    FL_LAST_DATETIME,
+    FL_ENTER_PARKING_TIMER,
+    FL_MOVIE_DECODE,
+    FL_FW_UI_RESET,			//fw_ui_reset
+    FL_MOVIE_HDR_DET,
+    FL_TIME_START,
+    FL_TIME_STOP,
+    FL_PARKING_OFF_GPS,
+     //TPMS_START
+    FL_PERPHERAL,//no useless (gps or tmps ,select one,but this project need both of them )
+    FL_TPMS,//no useless
+    FL_TEMP_UNIT ,
+    FL_PRSR_UNIT,
+    //TPMS_END
+    FL_AMBIANCE_LIGHT,
+    FL_EDOG_OVERSPEED_ALARM,
 	FL_IndexInfoMAX
 } UI_IndexInfo;
 
@@ -436,9 +492,13 @@ typedef enum {
 	LCDOFF_ON = 0,
 	LCDOFF_1MIN,
 	LCDOFF_3MIN,
+	LCDOFF_SETTING_MAX,
+	LCDOFF_1SEC,
+	LCDOFF_3SEC,
+	LCDOFF_15SEC,
+	LCDOFF_30SEC,
 	LCDOFF_5MIN,
 	LCDOFF_10MIN,
-	LCDOFF_SETTING_MAX
 } LCDOFF_SETTING;
 
 //UI_WallpaperMenuIndex,
@@ -542,11 +602,6 @@ typedef enum {
 // Photo Size
 //-----------------------------------------------------------------------------
 enum _PHOTO_SIZE {
-
-#if PHOTO_PREVIEW_SLICE_ENC_FUNC
-	PHOTO_SIZE_40M,
-#endif
-
 	PHOTO_SIZE_12M,
 	PHOTO_SIZE_10M,
 	PHOTO_SIZE_8M,
@@ -601,20 +656,20 @@ enum _SCENE_MODE {
 // Exposure Value
 //-----------------------------------------------------------------------------
 enum _EXPOSURE {
+	EV_N10,
+	EV_N06,
+	EV_N03,
+	EV_00,
+	EV_P03,
+	EV_P06,
+	EV_P10,
+	EV_SETTING_MAX,
 	EV_P20,
 	EV_P16,
 	EV_P13,
-	EV_P10,
-	EV_P06,
-	EV_P03,
-	EV_00,
-	EV_N03,
-	EV_N06,
-	EV_N10,
 	EV_N13,
 	EV_N16,
 	EV_N20,
-	EV_SETTING_MAX,
 
 	EV_P30,
 	EV_P15,
@@ -815,6 +870,7 @@ enum _DUALCAM_SETTING {
 	DUALCAM_BEHIND,
 	DUALCAM_BOTH,    //FRONT is major
 	DUALCAM_BOTH2,   //BEHIND is major
+	DUALCAM_SETTING_MAX,
 //#NT#2016/06/17#Brain Yen -begin
 //#NT#add for Pipview LR
 	DUALCAM_LR_16_9,   //left and right is 16:9 size, half screen respectively
@@ -822,7 +878,6 @@ enum _DUALCAM_SETTING {
 	DUALCAM_LR_FRONT_FULL,   //front is full screen and crop
 	DUALCAM_LR_BEHIND_FULL, //behind is full screen and crop
 //#NT#2016/06/17#Brain Yen -end
-	DUALCAM_SETTING_MAX
 };
 
 //-----------------------------------------------------------------------------
@@ -830,18 +885,15 @@ enum _DUALCAM_SETTING {
 //-----------------------------------------------------------------------------
 //MOVIE_SIZE_TAG
 enum _MOVIE_MENU_SIZE {
-	MOVIE_SIZE_FRONT_2880x2160P50,                  /// UHD P50 (DAR)
-	MOVIE_SIZE_FRONT_3840x2160P30,                  /// UHD P30
-	MOVIE_SIZE_FRONT_2880x2160P24,                  /// UHD P24 (DAR)
-	MOVIE_SIZE_FRONT_2704x2032P60,                  /// 2.7K P60
-	MOVIE_SIZE_FRONT_2560x1440P80,                  /// QHD P80
 	MOVIE_SIZE_FRONT_2560x1440P60,                  /// QHD P60
 	MOVIE_SIZE_FRONT_2560x1440P30,                  /// QHD P30
+	MOVIE_SIZE_FRONT_2304x1296P60,                  /// 3MHD P60
 	MOVIE_SIZE_FRONT_2304x1296P30,                  /// 3MHD P30
-	MOVIE_SIZE_FRONT_1920x1080P120,                 /// FHD P120
-	MOVIE_SIZE_FRONT_1920x1080P96,                  /// FHD P96
 	MOVIE_SIZE_FRONT_1920x1080P60,                  /// FHD P60
 	MOVIE_SIZE_FRONT_1920x1080P30,                  /// FHD P30
+	MOVIE_SIZE_FRONT_3840x2160P30,                  /// UHD P30
+	MOVIE_SIZE_DUAL_2560x1440P30_1920x1080P30,		/// QHD FHD
+	MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30,      /// FHD FHD
 	MOVIE_SIZE_FRONT_1280x720P240,                  /// HD P240
 	MOVIE_SIZE_FRONT_1280x720P120,                  /// HD P120
 	MOVIE_SIZE_FRONT_1280x720P60,                   /// HD P60
@@ -852,9 +904,7 @@ enum _MOVIE_MENU_SIZE {
 	MOVIE_SIZE_FRONT_320x240P30,                    /// QVGA P30
 	MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30,		/// UHD FHD
 	MOVIE_SIZE_DUAL_2560x1440P30_1280x720P30,		/// QHD HD
-	MOVIE_SIZE_DUAL_2560x1440P30_1920x1080P30,		/// QHD FHD
 	MOVIE_SIZE_DUAL_2304x1296P30_1280x720P30,		/// 3MHD HD
-	MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30,      /// FHD FHD
 	MOVIE_SIZE_DUAL_1920x1080P30_1280x720P30,       /// FHD HD
 	MOVIE_SIZE_DUAL_1920x1080P30_848x480P30,        /// FHD WVGA
 	MOVIE_SIZE_TRI_1920x1080P30,					/// FHD x 3
@@ -880,6 +930,12 @@ enum _MOVIE_MENU_SIZE {
 	MOVIE_SIZE_CLONE_848x480P30_848x480P30,         /// WVGA WVGA
 	MOVIE_SIZE_CLONE_640x480P30_640x480P30,         /// VGA VGA
 	MOVIE_SIZE_CLONE_320x240P30_320x240P30,         /// QVGA QVGA
+	MOVIE_SIZE_FRONT_2880x2160P50,                  /// UHD P50 (DAR)
+	MOVIE_SIZE_FRONT_2880x2160P24,                  /// UHD P24 (DAR)
+	MOVIE_SIZE_FRONT_2704x2032P60,                  /// 2.7K P60
+	MOVIE_SIZE_FRONT_2560x1440P80,                  /// QHD P80
+	MOVIE_SIZE_FRONT_1920x1080P120,                 /// FHD P120
+	MOVIE_SIZE_FRONT_1920x1080P96,                  /// FHD P96
 	MOVIE_SIZE_ID_MAX,
 };
 
@@ -888,9 +944,14 @@ enum _MOVIE_SIZE {
 	MOVIE_SIZE_3840x2160P30,					/// UHD P30
 	MOVIE_SIZE_2880x2160P24,					/// UHD P24 (DAR)
 	MOVIE_SIZE_2704x2032P60,					/// 2.7K P60
+	MOVIE_SIZE_2592x1944P30,                    /// 1944 P30
+	MOVIE_SIZE_2560x1600P30,                    /// 1600 P30
 	MOVIE_SIZE_2560x1440P80,					/// QHD P80
 	MOVIE_SIZE_2560x1440P60,					/// QHD P60
 	MOVIE_SIZE_2560x1440P30,					/// QHD P30
+	MOVIE_SIZE_2560x1080P60,					/// QHD P60 21:9
+	MOVIE_SIZE_2560x1080P30,					/// QHD P30 21:9
+	MOVIE_SIZE_2304x1296P60,					/// 3MHD P60
 	MOVIE_SIZE_2304x1296P30,					/// 3MHD P30
 	MOVIE_SIZE_1920x1080P120,					/// FHD P120
 	MOVIE_SIZE_1920x1080P96,					/// FHD P96
@@ -945,12 +1006,13 @@ enum _MOVIE_SELFTIMER {
 // Movie cyclic record
 //-----------------------------------------------------------------------------
 enum _MOVIE_CYCLICREC {
-	MOVIE_CYCLICREC_OFF,
 	MOVIE_CYCLICREC_1MIN,
 	MOVIE_CYCLICREC_3MIN,
 	MOVIE_CYCLICREC_5MIN,
+	MOVIE_CYCLICREC_ID_MAX,
+	MOVIE_CYCLICREC_OFF,
+	MOVIE_CYCLICREC_2MIN,
 	MOVIE_CYCLICREC_10MIN,
-	MOVIE_CYCLICREC_ID_MAX
 };
 
 
@@ -962,6 +1024,23 @@ enum {
 	MOVIE_HDR_ON,
 	MOVIE_HDR_ID_MAX
 };
+
+//-----------------------------------------------------------------------------
+// Movie HDR Det State
+//-----------------------------------------------------------------------------
+enum {
+	MOVIE_HDR_DET_OFF = 0,
+	MOVIE_HDR_DET_ON,
+	MOVIE_HDR_DET_ID_MAX,
+	MOVIE_HDR_DET_AUTO,
+};
+
+enum {
+	MOVIE_HDR_STATE_DISCHANGE = 0,
+	MOVIE_HDR_STATE_ENCHANGE,
+	MOVIE_HDR_STATE_ID_MAX
+};
+
 
 //-----------------------------------------------------------------------------
 // Movie WDR State
@@ -979,6 +1058,7 @@ enum {
 	MOVIE_DEFOG_ON,
 	MOVIE_DEFOG_ID_MAX
 };
+
 //-----------------------------------------------------------------------------
 // Movie Motion Detect State
 //-----------------------------------------------------------------------------
@@ -996,6 +1076,50 @@ enum {
 	MOVIE_AUDIO_ON,
 	MOVIE_AUDIO_ID_MAX
 };
+
+//-----------------------------------------------------------------------------
+// Movie Voice enable State
+//-----------------------------------------------------------------------------
+enum {
+	MOVIE_VOICE_OFF = 0,
+	MOVIE_VOICE_ON,
+	MOVIE_VOICE_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// ASR enable State
+//-----------------------------------------------------------------------------
+enum {
+	ASR_OFF = 0,
+	ASR_STANDARD,
+	ASR_ID_MAX,
+	ASR_LOW,	
+};
+
+//-----------------------------------------------------------------------------
+// ASR content State
+//-----------------------------------------------------------------------------
+enum {
+	ASR_TAKEPHOTO = 0,
+	ASR_TURNONAUDIO,
+	ASR_TURNOFFAUDIO,
+	ASR_TURNONSCREEN,
+	ASR_TURNOFFSCREEN,
+	ASR_TURNONWIFI,
+	ASR_TURNOFFWIFI,
+	ASR_CONTENT_ID_MAX,
+	ASR_VIDEOSTART,	
+	ASR_VIDEOSTOP,
+	ASR_TURNONHOTSPOT,
+	ASR_TURNOFFHOTSPOT,
+	ASR_SHOW_FRONT_CAMERA,
+	ASR_SHOW_REAR_CAMERA,
+	ASR_SHOW_BOTH_CAMERAS,
+	ASR_INSIDE_VIDEO_ON,
+	ASR_BACK_TO_HOMEPAGE,
+	ASR_LOCKVIDEO,
+};
+
 
 //-----------------------------------------------------------------------------
 // Movie Audio volume State
@@ -1040,19 +1164,29 @@ enum _GSENSOR {
 //-----------------------------------------------------------------------------
 enum _MOVIE_TIMELAPSEREC {
 	MOVIE_TIMELAPSEREC_OFF,
+    MOVIE_TIMELAPSEREC_100MS,
+    MOVIE_TIMELAPSEREC_200MS,
+    MOVIE_TIMELAPSEREC_500MS,
 	MOVIE_TIMELAPSEREC_1SEC,
+	MOVIE_TIMELAPSEREC_2SEC,
 	MOVIE_TIMELAPSEREC_5SEC,
 	MOVIE_TIMELAPSEREC_10SEC,
 	MOVIE_TIMELAPSEREC_30SEC,
 	MOVIE_TIMELAPSEREC_1MIN,
 	MOVIE_TIMELAPSEREC_5MIN,
 	MOVIE_TIMELAPSEREC_10MIN,
+	MOVIE_TIMELAPSEREC_ID_MAX,
 	MOVIE_TIMELAPSEREC_30MIN,
 	MOVIE_TIMELAPSEREC_1HOUR,
 	MOVIE_TIMELAPSEREC_2HOUR,
 	MOVIE_TIMELAPSEREC_3HOUR,
 	MOVIE_TIMELAPSEREC_1DAY,
-	MOVIE_TIMELAPSEREC_ID_MAX
+};
+
+enum _MOVIE_TIMER_LAPS {
+    MOVIE_TIMER_LAPS_OFF,
+    MOVIE_TIMER_LAPS_ON,
+    MOVIE_TIMER_LAPS_ID_MAX
 };
 
 //-----------------------------------------------------------------------------
@@ -1157,6 +1291,16 @@ enum {
 };
 
 //-----------------------------------------------------------------------------
+// Movie decode key press 
+//-----------------------------------------------------------------------------
+enum {
+	MOVIE_DECODE_H264 = 0,
+	MOVIE_DECODE_H265,
+	MOVIE_DECODE_ID_MAX,
+};
+
+
+//-----------------------------------------------------------------------------
 // Date Format
 //-----------------------------------------------------------------------------
 enum _DATE_FORMAT {
@@ -1207,31 +1351,50 @@ typedef enum {
 enum _BEEP {
 	BEEP_OFF,
 	BEEP_ON,
-	BEEP_ID_MAX
+	BEEP_ID_MAX,
+    BUTTON_BEEP,
+    START_SOUND,
 };
 
 //-----------------------------------------------------------------------------
 // Language Setting
 //-----------------------------------------------------------------------------
 enum _LANGUAGE {
-	LANG_EN,
-	LANG_FR,
-	LANG_ES,
-	LANG_PO,
-	LANG_DE,
-	LANG_IT,
-	LANG_SC,
+#if (!defined(COUNTRY_JP))
 	LANG_TC,
-	LANG_RU,
-	LANG_JP,
+	LANG_SC,
+	LANG_EN,
 	LANG_ID_MAX,
+	LANG_JP,
+#else
+	LANG_JP,	
+	LANG_SC,
+	LANG_EN,
+	LANG_ID_MAX,
+	LANG_TC,
+#endif
+	LANG_DE,
+	LANG_FR,
+	LANG_IT,
+	LANG_ES,
+
+	LANG_PO,
+	LANG_RU,
+	LANG_TR,
+	LANG_RO,
+	LANG_PL,
+	LANG_CZ,
+	LANG_SK,
+	LANG_AZ,
+	LANG_NL,
+	LANG_NO,
 
 	LANG_DU,
 	LANG_TU,
 	LANG_PB,
 	LANG_YI,
-	LANG_PL,
-	LANG_DE_JAY
+	LANG_DE_JAY,
+	LANG_TH,
 };
 
 //-----------------------------------------------------------------------------
@@ -1344,12 +1507,318 @@ enum _USB_MODE {
 };
 
 //-----------------------------------------------------------------------------
+// LED Status
+//-----------------------------------------------------------------------------
+enum _LED {
+    LED_OFF,
+    LED_ON,
+    LED_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+//parking off gps
+//-----------------------------------------------------------------------------
+enum _PGPS {
+	PGPS_FALSE,
+	PGPS_TRUE,
+	PGPS_ID_MAX,
+};
+
+//-----------------------------------------------------------------------------
+// Soft reset
+//-----------------------------------------------------------------------------
+enum _SOFT_RESET {
+    SOFT_RESET_OFF = 0,
+    SOFT_RESET_ON,
+    SOFT_RESET_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// GPSSignal Status
+//-----------------------------------------------------------------------------
+typedef enum {
+    GPSSignal_UNFINDABLE = 0,
+    GPSSignal_FINDABLE,
+    GPSSignal_SETTINGMAX
+} GPS_STATUS;
+
+//-----------------------------------------------------------------------------
+// GPS
+//-----------------------------------------------------------------------------
+enum _GPS {
+    GPS_OFF = 0,
+    GPS_ON,
+    GPS_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// PARKINGMODE_DISABLE_GPS
+//-----------------------------------------------------------------------------
+enum _PARKINGMODE_DISABLE_GPS {
+    PARKINGMODE_DISABLE_GPS_OFF = 0,
+    PARKINGMODE_DISABLE_GPS_ON,
+    PARKINGMODE_DISABLE_GPS_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// Time Zone
+//-----------------------------------------------------------------------------
+enum _TIME_ZONE {
+    GMT_0,
+    GMT_P1,
+    GMT_P2,
+    GMT_P3,
+    GMT_P3_30,
+    GMT_P4,
+    GMT_P4_30,
+    GMT_P5,
+    GMT_P5_30,
+    GMT_P6,
+    GMT_P7,
+    GMT_P8,
+    GMT_P9,
+    GMT_P9_30,
+    GMT_P10,
+    GMT_P10_30,
+    GMT_P11,
+    GMT_P12,
+    GMT_P13,
+    GMT_M1,
+    GMT_M2,
+    GMT_M3,
+    GMT_M3_30,
+    GMT_M4,
+    GMT_M5,
+    GMT_M6,
+    GMT_M7,
+    GMT_M8,
+    GMT_M9,
+    GMT_M10,
+    GMT_M11,
+    GMT_M12,
+    GMT_SETTING_MAX,
+    GMT_P6_30,
+    GMT_M2_30,
+};
+
+//-----------------------------------------------------------------------------
+// Speed Unit
+//-----------------------------------------------------------------------------
+enum _SPEED_UNIT {
+	SPEED_UNIT_MPH = 0,
+    SPEED_UNIT_KPH,
+    SPEED_UNIT_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// GPS Stamp
+//-----------------------------------------------------------------------------
+enum _GPS_STAMP {
+    GPS_STAMP_OFF = 0,
+    GPS_STAMP_BOTH,
+    GPS_STAMP_COORDINATES,
+    GPS_STAMP_ID_MAX,
+    GPS_STAMP_SPEED,
+};
+
+//-----------------------------------------------------------------------------
+// Format Warning
+//-----------------------------------------------------------------------------
+enum _FORMAT_WARNING {
+    FORMAT_WARNING_OFF,
+    FORMAT_WARNING_15_DAY,
+    FORMAT_WARNING_30_DAY,
+    FORMAT_WARNING_60_DAY,
+    FORMAT_WARNING_MAX
+};
+
+//-----------------------------------------------------------------------------
+// First Power on
+//-----------------------------------------------------------------------------
+enum _FIRSTPOWERON {
+    FIRSTPOWERON_FALSE,
+    FIRSTPOWERON_TRUE,
+    FIRSTPOWERON_MAX
+};
+
+//-----------------------------------------------------------------------------
+// Boot Delay Time
+//-----------------------------------------------------------------------------
+typedef enum {
+    BOOT_DELAY_5SEC = 0,
+    BOOT_DELAY_10SEC,
+    BOOT_DELAY_15SEC,
+    BOOT_DELAY_SETTING_MAX,
+    BOOT_DELAY_30SEC
+} BOOT_DELAY_SETTING;
+
+//-----------------------------------------------------------------------------
+// Model Stamp
+//-----------------------------------------------------------------------------
+enum _MODEL_STAMP {
+    MODEL_STAMP_OFF = 0,
+    MODEL_STAMP_ON,
+    MODEL_STAMP_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// Parking Mode
+//-----------------------------------------------------------------------------
+enum _PARKING_MODE {
+    PARKING_MODE_OFF = 0,
+    PARKING_MODE_ON_1FPS,
+    PARKING_MODE_ID_MAX,
+    PARKING_MODE_MOTION_DET,
+    PARKING_MODE_LOW_BITRATE,
+    PARKING_MODE_ON_2FPS,
+    PARKING_MODE_ON_5FPS,
+    PARKING_MODE_ON_10FPS,
+    PARKING_MODE_ON_3FPS,
+    PARKING_MODE_ON_15FPS,
+};
+
+//-----------------------------------------------------------------------------
+// Parking Mode Movie time lapse record
+//-----------------------------------------------------------------------------
+enum _PARKING_MODE_TIMELAPSEREC {
+    PARKING_MODE_TIMELAPSEREC_OFF = 0,
+    PARKING_MODE_TIMELAPSEREC_1SEC,
+    PARKING_MODE_TIMELAPSEREC_500MS,
+    PARKING_MODE_TIMELAPSEREC_333MS,
+    PARKING_MODE_TIMELAPSEREC_200MS,
+    PARKING_MODE_TIMELAPSEREC_100MS,
+    PARKING_MODE_TIMELAPSEREC_ID_MAX,
+    PARKING_MODE_TIMELAPSEREC_66MS
+};
+
+//-----------------------------------------------------------------------------
+// Parking Mode G-Sensor
+//-----------------------------------------------------------------------------
+enum _PARKING_GSENSOR {
+    PARKING_GSENSOR_LOW = 0,
+    PARKING_GSENSOR_MED,
+    PARKING_GSENSOR_HIGH,
+    PARKING_GSENSOR_ID_MAX,
+    PARKING_GSENSOR_OFF
+};
+
+//-----------------------------------------------------------------------------
+// Parking Mode Motion Detect
+//-----------------------------------------------------------------------------
+enum _PARKING_MOTIONDET {
+    PARKING_MOTIONDET_LOW = 0,
+    PARKING_MOTIONDET_MED,
+    PARKING_MOTIONDET_HIGH,
+    PARKING_MOTIONDET_ID_MAX,
+    PARKING_MOTIONDET_OFF
+};
+
+//-----------------------------------------------------------------------------
+// Movie Bitrate
+//-----------------------------------------------------------------------------
+enum _MOVIE_BITRATE {
+    MOVIE_BITRATE_HIGH = 0,
+    MOVIE_BITRATE_MED,
+    MOVIE_BITRATE_LOW,
+    MOVIE_BITRATE_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// Video Format
+//-----------------------------------------------------------------------------
+typedef enum {
+    VIDEO_FORMAT_TS = 0,
+    VIDEO_FORMAT_MP4,
+    VIDEO_FORMAT_ID_MAX
+} VIDEO_FORMAT_SETTING;
+
+//-----------------------------------------------------------------------------
+// IR Rear Color
+//-----------------------------------------------------------------------------
+enum _IR_REAR_COLOR {
+    IR_REAR_COLOR_BW = 0,
+    IR_REAR_COLOR_AUTO,
+    IR_REAR_COLOR_NORMAL,
+    IR_REAR_COLOR_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// Rear Sensor Mirror
+//-----------------------------------------------------------------------------
+enum _REAR_SENSOR_MIRROR {
+    REAR_SENSOR_MIRROR_OFF = 0,
+    REAR_SENSOR_MIRROR_ON,
+    REAR_SENSOR_MIRROR_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// Rear Mirror Display
+//-----------------------------------------------------------------------------
+enum _REAR_MIRROR_DISPLAY {
+    REAR_MIRROR_DISPLAY_OFF = 0,
+    REAR_MIRROR_DISPLAY_ON,
+    REAR_MIRROR_DISPLAY_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// Shutdown Timer
+//-----------------------------------------------------------------------------
+enum _SHUTDOWN_TIMER {
+    SHUTDOWN_TIMER_OFF = 0,
+    SHUTDOWN_TIMER_30MIN,
+    SHUTDOWN_TIMER_1HOUR,
+    SHUTDOWN_TIMER_2HOUR,
+    SHUTDOWN_TIMER_3HOUR,
+    SHUTDOWN_TIMER_4HOUR,
+    SHUTDOWN_TIMER_6HOUR,
+    SHUTDOWN_TIMER_8HOUR,
+    SHUTDOWN_TIMER_12HOUR,
+    SHUTDOWN_TIMER_24HOUR,
+    SHUTDOWN_TIMER_48HOUR,
+    SHUTDOWN_TIMER_ID_MAX,
+    SHUTDOWN_TIMER_5MIN,
+    SHUTDOWN_TIMER_10MIN,
+    SHUTDOWN_TIMER_18HOUR
+};
+
+//-----------------------------------------------------------------------------
+// Enter Parking Timer
+//-----------------------------------------------------------------------------
+enum _ENTER_PARKING_TIMER {
+    ENTER_PARKING_TIMER_OFF = 0,
+    ENTER_PARKING_TIMER_90SEC,
+    ENTER_PARKING_TIMER_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
 // Wi-Fi on/off
 //-----------------------------------------------------------------------------
 enum _WIFI {
 	WIFI_OFF,
+	WIFI_ON_24G,
+	WIFI_ON_58G,
+	WIFI_ID_MAX,
 	WIFI_ON,
-	WIFI_ID_MAX
+	WIFI_ON_52G,
+};
+
+//-----------------------------------------------------------------------------
+// Wi-Fi Auto Start
+//-----------------------------------------------------------------------------
+enum _WIFI_AUTO {
+	WIFI_AUTO_OFF,
+	WIFI_AUTO_ON,
+	WIFI_AUTO_ID_MAX
+};
+
+//-----------------------------------------------------------------------------
+// Wi-Fi Band
+//-----------------------------------------------------------------------------
+enum _WIFI_BAND {
+    WIFI_BAND_24G,
+    WIFI_BAND_58G,
+    WIFI_BAND_ID_MAX,
+    WIFI_BAND_52G,
 };
 
 //-----------------------------------------------------------------------------
@@ -1529,6 +1998,33 @@ typedef enum {
 	PHOTO_USR_DISPMODE
 } PHOTO_USR_ITEM_T;
 
+//fw_ui_reset
+enum _FW_UI_RESET {
+	FW_UI_RESET_OFF,
+	FW_UI_RESET_ON,
+	FW_UI_RESET_MAX
+};
+
+//-----------------------------------------------------------------------------
+// Volume
+//-----------------------------------------------------------------------------
+enum _Volume {
+    VOLUME20,
+    VOLUME40,
+    VOLUME60,
+    VOLUME80,
+    VOLUME100,
+    VOLUME_MUTE,
+    VOLUME_ID_MAX
+};
+enum _EDOG_OVERSPEED_ALARM
+{
+    EDOG_OVERSPEED_ALARM_OFF,
+    EDOG_OVERSPEED_ALARM_ON,
+    EDOG_OVERSPEED_ALARM_ID_MAX,
+};
+
+
 extern void     Load_SysInfo(void);
 extern void     Save_SysInfo(void);
 extern void     Init_SysInfo(void);
@@ -1574,4 +2070,10 @@ extern void FlowDCF_UpdateName(void);
 extern void UI_SetInitVolume(UINT32 volumeIndex);
 extern void UI_SaveRTCDate(void);
 extern void UI_SetFileDBFileID(void);
+extern INT8 GetGPSSignalStatus(void);
+extern void UI_ResetSSIDPASSPHRASE(void);
+extern char* Prj_GetCarNoString(void);
+extern char *Prj_GetHdrTimeString(void);
+extern char* Prj_GetCustomizeString(void);
+extern UINT32 UI_WriteCarNoToFile(void);
 #endif //_UIINFO_H_

@@ -245,6 +245,7 @@ void _GxSound_Play(SOUND_DATA *pSoundData)
 
 	// set hd_audioout volume
 	audio_out_vol.volume = gSndVol;
+	//DBG_DUMP("audio_out_vol.volume =  %d, gSndVol = %d\r\n",audio_out_vol.volume,gSndVol);
 	ret = hd_audioout_set(gxsound_ctrl_id, HD_AUDIOOUT_PARAM_VOLUME, &audio_out_vol);
 	if (ret != HD_OK) {
 		return;
@@ -293,6 +294,7 @@ THREAD_RETTYPE PlaySoundTsk(void)
 			clr_flg(FLG_ID_SOUND, FLGSOUND_STOP);
 		} else if (uiFlag & FLGSOUND_PLAY) {
 			DBG_IND("PlayTsk play\r\n");
+			//DBG_DUMP("PlayTsk play\r\n");
 			_GxSound_Play(gPlaySoundData);
 			clr_flg(FLG_ID_SOUND, FLGSOUND_PLAY);
 		}

@@ -14,6 +14,7 @@
 #include "PrjInc.h"
 #include "GxUSB.h"
 #include "UsbDevDef.h"
+#include "DxInput.h"
 
 #define THIS_DBGLVL         2 // 0=FATAL, 1=ERR, 2=WRN, 3=UNIT, 4=FUNC, 5=IND, 6=MSG, 7=VALUE, 8=USER
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,6 +41,11 @@ UINT32 gUsbSrc = USB_SRC_NONE;
 
 void USB_CB(UINT32 event, UINT32 param1, UINT32 param2);
 void UI_DetUSB(void);
+
+BOOL g_bUsbRemovePowerOff = FALSE;
+extern void GPIOMap_TurnOnLCDBacklight(void);
+extern void GPIOMap_TurnOffLCDBacklight(void);
+extern BOOL SysInit_getintopcc_mode_getstd(void);
 
 #if (USBINSERT_FUNCTION == ENABLE)
 SX_TIMER_ITEM(USB_Det, UI_DetUSB, 5, FALSE)
@@ -147,7 +153,7 @@ static BOOL m_bACPlug = FALSE;
 INT32 System_OnUsbInsert(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	//usb plug in
-	DBG_IND("USB plug - begin\r\n");
+	DBG_DUMP("USB plug - begin\r\n");
 	USB_UpdateSource();
 	Ux_PostEvent(NVTEVT_BATTERY, 0, 0);
 #if (USB_MODE == ENABLE)
@@ -158,20 +164,35 @@ INT32 System_OnUsbInsert(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			// temporarily do nothing for Movie + UVC
 #else
 
-#if 0 //temporally support MSDC only
-			Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_USBMSDC);
+#if 1 //temporally support MSDC only
+			//Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_USBMSDC);
+			#if 1//(TEST_PCC == ENABLE)
+            if (SysInit_getintopcc_mode_getstd()) {
+                Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_USBPCC);
+            } else
+			#endif
+            {
+				//#NT#2023/04/13#HTK ADD -begin=================================
+				//when mount sd card ,cam1 and cam2 power off.
+				GPIOMap_SensorPowerOn(FALSE);
+				GPIOMap_Sensor2PowerOn(FALSE);
+				//#NT#2023/04/13#HTK ADD -begin=================================
+                Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_USBMSDC);
+            }
 #else
 			Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_USBMENU);
 #endif
 			USB_PlugInSetFunc();
 #endif
 		} else if (GxUSB_GetConnectType() == USB_CONNECT_CHARGER) {
-			if (System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE) {
+			//if (System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)
+			{
 				m_bACPlug = TRUE;
 				Ux_PostEvent(NVTEVT_AC_Plug, 0, 0);
 			}
 		}
 		m_bVendorConnected = FALSE;
+		g_bUsbRemovePowerOff = FALSE;
 	} else {
 #if (MSDCVENDOR_NVT == ENABLE)
 		MSDCNVTCB_OPEN Open = {0};
@@ -206,7 +227,13 @@ INT32 System_OnUsbRemove(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		if (System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE) {
 			if (m_bACPlug == TRUE) {
 				m_bACPlug = FALSE;
+				DBG_DUMP("call System_OnUsbRemove\r\n");
+				
+				GPIOMap_TurnOffLCDBacklight();
+                g_bUsbRemovePowerOff = TRUE;
+                System_PowerOff(SYS_POWEROFF_NORMAL);
 				Ux_PostEvent(NVTEVT_AC_UnPlug, 0, 0);
+				return NVTEVT_CONSUME;
 			}
 		}
 		FlowMode_OnUsbUnplug();

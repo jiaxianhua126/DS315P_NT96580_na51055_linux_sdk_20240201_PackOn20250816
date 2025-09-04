@@ -30,19 +30,19 @@
 static UINT32 m_uiPhotoQuality = 0;
 static BOOL   m_bCertified = FALSE;
 static const INT32 EV_NUMERATOR[(EV_SETTING_MAX)] = {
-	20,
-	17,
-	13,//
-	10,//
-	7,//
-	3,//
-	0,//
-	-3,//
-	-7,//
+	//-20,
+	//-17,
+	//-13,//
 	-10,//
-	-13,//
-	-17,//
-	-20//
+	-7,//
+	-3,//
+	0,//
+	3,//
+	7,//
+	10,//
+	//13,//
+	//17,//
+	//20//
 };
 
 typedef  struct {

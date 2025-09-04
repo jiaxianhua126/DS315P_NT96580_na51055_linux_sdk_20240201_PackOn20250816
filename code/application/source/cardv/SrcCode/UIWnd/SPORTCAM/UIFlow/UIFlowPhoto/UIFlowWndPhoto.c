@@ -15,9 +15,6 @@
 #include "EngineerMode.h"
 #endif
 #include "UIApp/Photo/UIAppPhoto.h"
-#if (USE_DCF == ENABLE)
-#include "DCF.h"
-#endif
 
 #define IDE_FD_MAX_NUM               8
 

@@ -126,6 +126,8 @@ static FST_FS_TYPE m_GxStrgType = FST_FS_TYPE_UITRON;
 #if (FWS_FUNC == ENABLE)
 static void *mp_fwsrv_work_buf = NULL;
 #endif
+extern BOOL g_bIsNeedReboot;
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  EMBMEM
@@ -825,6 +827,7 @@ INT32 System_OnStrgInsert(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 INT32 System_OnStrgRemove(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32 stg_id = paramArray[0];
+	 g_bIsNeedReboot = FALSE;
 	if (m_BootState_Drive[stg_id] != BOOT_CARD_STATE_UNKNOWN) {
 		if (stg_id == 0) {
 #if (LOGFILE_FUNC==ENABLE)

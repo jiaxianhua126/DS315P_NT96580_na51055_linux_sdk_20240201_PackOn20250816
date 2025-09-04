@@ -62,6 +62,7 @@ int SX_TIMER_DET_MODE_ID = -1;
 int SX_TIMER_AUTO_INPUT_ID = -1;
 int SX_TIMER_DET_GSENSOR_ID = -1;
 int SX_TIMER_DET_MOVIESTAMP_ID = -1;
+extern BOOL g_bIsNeedReboot;
 
 void UI_DetPwrKey(void);
 void UI_DetNormalKey(void);
@@ -124,24 +125,30 @@ static KEY_OBJ g_KeyTable[] = {
 	{FLGKEY_CUSTOM1,      KEY_RELEASE,     NVTEVT_KEY_CUSTOM1,      NVTEVT_KEY_RELEASE,     0},
 #else// _UI_STYLE_SPORTCAM_
 	//POWER KEY
-	{FLGKEY_KEY_POWER,    KEY_RELEASE,     NVTEVT_KEY_POWER_REL,        0,                0},
+	//{FLGKEY_KEY_POWER,    KEY_RELEASE,     NVTEVT_KEY_POWER_REL,    0,                	  0},
+	{FLGKEY_KEY_POWER,    KEY_PRESS,       NVTEVT_KEY_POWER,        0,                    0},
+	{FLGKEY_KEY_POWER_ACC,KEY_PRESS,       NVTEVT_KEY_POWER_ACC,    0,                    0},
+	{FLGKEY_MODE,         KEY_PRESS,       NVTEVT_KEY_ACC_MODE,     NVTEVT_KEY_PRESS,     0},
 	//NORMAL KEY
-	{FLGKEY_UP,           KEY_PRESS,       NVTEVT_KEY_PREV,           NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_KEY_TONE},
-	{FLGKEY_UP,           KEY_CONTINUE,    NVTEVT_KEY_PREV,           NVTEVT_KEY_CONTINUE,     0},
-	{FLGKEY_UP,           KEY_RELEASE,     NVTEVT_KEY_PREV,           NVTEVT_KEY_RELEASE,     0},
-	{FLGKEY_DOWN,         KEY_PRESS,       NVTEVT_KEY_NEXT,         NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_KEY_TONE},
-	{FLGKEY_DOWN,         KEY_CONTINUE,    NVTEVT_KEY_NEXT,         NVTEVT_KEY_CONTINUE,     0},
-	{FLGKEY_DOWN,         KEY_RELEASE,     NVTEVT_KEY_NEXT,         NVTEVT_KEY_RELEASE,     0},
-	{FLGKEY_LEFT,         KEY_PRESS,       NVTEVT_KEY_MOVIE,         NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_KEY_TONE},
-	//{FLGKEY_LEFT,         KEY_CONTINUE,    NVTEVT_KEY_PREV,         NVTEVT_KEY_CONTINUE,     0},
-	//{FLGKEY_LEFT,         KEY_RELEASE,     NVTEVT_KEY_PREV,         NVTEVT_KEY_RELEASE,     0},
+	{FLGKEY_UP,           KEY_PRESS,       NVTEVT_KEY_UP,           NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_KEY_TONE},
+	{FLGKEY_UP,           KEY_CONTINUE,    NVTEVT_KEY_UP,           NVTEVT_KEY_CONTINUE,  0},
+	{FLGKEY_UP,           KEY_RELEASE,     NVTEVT_KEY_UP,           NVTEVT_KEY_RELEASE,   0},
+	{FLGKEY_DOWN,         KEY_PRESS,       NVTEVT_KEY_DOWN,         NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_KEY_TONE},
+	{FLGKEY_DOWN,         KEY_CONTINUE,    NVTEVT_KEY_DOWN,         NVTEVT_KEY_CONTINUE,  0},
+	{FLGKEY_DOWN,         KEY_RELEASE,     NVTEVT_KEY_DOWN,         NVTEVT_KEY_RELEASE,   0},
+	{FLGKEY_LEFT,         KEY_PRESS,       NVTEVT_KEY_LEFT,         NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_KEY_TONE},
+	{FLGKEY_LEFT,         KEY_CONTINUE,    NVTEVT_KEY_LEFT,         NVTEVT_KEY_CONTINUE,  0},
+	{FLGKEY_LEFT,         KEY_RELEASE,     NVTEVT_KEY_LEFT,         NVTEVT_KEY_RELEASE,   0},
+	{FLGKEY_RIGHT,        KEY_PRESS,       NVTEVT_KEY_RIGHT,     	NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_KEY_TONE},
+	{FLGKEY_RIGHT,        KEY_CONTINUE,    NVTEVT_KEY_RIGHT,     	NVTEVT_KEY_CONTINUE,  0},
+	{FLGKEY_RIGHT,        KEY_RELEASE,     NVTEVT_KEY_RIGHT,     	NVTEVT_KEY_RELEASE,   0},
+	{FLGKEY_ENTER,        KEY_PRESS,       NVTEVT_KEY_ENTER,        NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_KEY_TONE},
+    {FLGKEY_ENTER,        KEY_CONTINUE,    NVTEVT_KEY_ENTER,        NVTEVT_KEY_CONTINUE,  0},
+    {FLGKEY_ENTER,        KEY_RELEASE,     NVTEVT_KEY_ENTER,        NVTEVT_KEY_RELEASE,   0},
 	{FLGKEY_SHUTTER2,     KEY_PRESS,       NVTEVT_KEY_SHUTTER2,     NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_KEY_TONE},
-	{FLGKEY_SHUTTER2,     KEY_RELEASE,     NVTEVT_KEY_SHUTTER2,     NVTEVT_KEY_RELEASE,     0},
-	{FLGKEY_RIGHT,        KEY_PRESS,       NVTEVT_KEY_SELECT,        NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_KEY_TONE},
-	{FLGKEY_RIGHT,        KEY_CONTINUE,    NVTEVT_KEY_SELECT,        NVTEVT_KEY_CONTINUE,     0},
-	{FLGKEY_RIGHT,        KEY_RELEASE,     NVTEVT_KEY_SELECT,        NVTEVT_KEY_RELEASE,     0},
-	{FLGKEY_CUSTOM1,      KEY_PRESS,       NVTEVT_KEY_CUSTOM1,      NVTEVT_KEY_PRESS,       DEMOSOUND_SOUND_NONE},
-	{FLGKEY_CUSTOM1,      KEY_RELEASE,     NVTEVT_KEY_CUSTOM1,      NVTEVT_KEY_RELEASE,     0},
+	{FLGKEY_SHUTTER2,     KEY_RELEASE,     NVTEVT_KEY_SHUTTER2,     NVTEVT_KEY_RELEASE,   0},
+	{FLGKEY_CUSTOM1,      KEY_PRESS,       NVTEVT_KEY_CUSTOM1,      NVTEVT_KEY_PRESS,     DEMOSOUND_SOUND_NONE},
+	{FLGKEY_CUSTOM1,      KEY_RELEASE,     NVTEVT_KEY_CUSTOM1,      NVTEVT_KEY_RELEASE,   0},
 
 #endif
 };
@@ -186,11 +193,13 @@ static KEY_OBJ g_KeyTable[] = {
 #endif
 void KeySoundCB(UINT32 uiSoundID)
 {
-	if (uiSoundID) {
-#if(UI_FUNC==ENABLE)
-		UISound_Play(uiSoundID);
-#endif
-	}
+    if ((UI_GetData(FL_BEEP) == BEEP_ON) || (UI_GetData(FL_BEEP) == BUTTON_BEEP)) {
+    	if (uiSoundID) {
+            #if(UI_FUNC==ENABLE)
+    		UISound_Play(uiSoundID);
+            #endif
+    	}
+    }
 }
 
 UINT32 Input_GroupStatus2Event(UINT32 status)
@@ -287,18 +296,21 @@ UINT32 Input_GetKeySoundMask(KEY_STATUS uiMode)
 /**
     reset all mask,usually in new winodw onOpen
 */
+void System_ResetLongKeyCount(void);
 void Input_ResetMask(void)
 {
 	// Set key mask as default
+	//DBG_DUMP("call Input_ResetMask\n");
 	SysMan_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
 	SysMan_SetKeyMask(KEY_RELEASE, FLGKEY_KEY_MASK_DEFAULT);
-	SysMan_SetKeyMask(KEY_CONTINUE, FLGKEY_KEY_MASK_NULL);
+	SysMan_SetKeyMask(KEY_CONTINUE, FLGKEY_KEY_MASK_DEFAULT);//FLGKEY_KEY_MASK_NULL
 #if defined(_TOUCH_ON_) || defined(_UI_STYLE_LVGL_)
 	SysMan_SetTouchMask(TOUCH_MASK_DEFAULT);
 #endif
 	SysMan_SetKeySoundMask(KEY_PRESS, FLGKEY_SOUND_MASK_DEFAULT);
 	SysMan_SetKeySoundMask(KEY_RELEASE, FLGKEY_KEY_MASK_NULL);
 	SysMan_SetKeySoundMask(KEY_CONTINUE, FLGKEY_SOUND_MASK_DEFAULT);
+    System_ResetLongKeyCount();
 }
 /**
     for some case,press any key unlock all,and post NVTEVT_KEY_PRESS
@@ -509,9 +521,13 @@ void UI_DetStatusKey(void)
 void UI_DetCustom1Key(void)
 {
 	BOOL   bGSensorStatus = FALSE;
-	Gsensor_Data GS_Data = {0};
+	//Gsensor_Data GS_Data = {0};
+	da380_data_t GS_Data = {0};
+	//printf("call UI_DetCustom1Key\n");
 
-	bGSensorStatus = GSensor_GetStatus(&GS_Data);
+	//bGSensorStatus = GSensor_GetStatus(&GS_Data);
+	bGSensorStatus = GSensor_DA380_GetStatus(&GS_Data);
+	//printf("call GSensor_DA380_GetStatus = %d\n\r", bGSensorStatus);
 	if (bGSensorStatus == TRUE) {
 		Ux_PostEvent(NVTEVT_KEY_CUSTOM1, 1, NVTEVT_KEY_PRESS);
 	}
@@ -523,10 +539,21 @@ void UI_DetCustom1Key(void)
 extern void System_ResetDetCloseLenCount(void);
 extern void System_ResetPowerSaveCount(void);
 BOOL g_bConsumeStatus = FALSE;
+static UINT32 key_in = 0;
+static UINT32 key_hold = 0;
+static UINT32 key_state = NVTEVT_KEY_RELEASE;
+void System_ResetLongKeyCount(void)
+{
+    key_in = 0;
+    key_hold = 0;
+    key_state = NVTEVT_KEY_RELEASE;
+}
 
+//static UINT32 n_last_time = 0,n_current_time = 0,short_cnt = 0;
 INT32 System_UserKeyFilter(NVTEVT evt, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32 key = evt;
+	//DBG_DUMP("call System_UserKeyFilter  key = %X\r\n",key);
 	if (IN_RANGE_EVENT(key, NVTEVT_KEY_STATUS_START, NVTEVT_KEY_STATUS_END)) { //Status class
 #if (LENS_FUNCTION == ENABLE)
 		System_ResetDetCloseLenCount();
@@ -547,9 +574,102 @@ INT32 System_UserKeyFilter(NVTEVT evt, UINT32 paramNum, UINT32 *paramArray)
 		return NVTEVT_CONSUME;
 	} else if (IN_RANGE_EVENT(key, NVTEVT_KEY_BUTTON_START, NVTEVT_KEY_BUTTON_END)) { //Button class
 		if (IN_RANGE_EVENT(key, NVTEVT_KEY_PRESS_START, NVTEVT_KEY_PRESS_END)) { //Press key
-			if (key == NVTEVT_KEY_POWER) {
+			if ((key == NVTEVT_KEY_POWER) || (key == NVTEVT_KEY_POWER_ACC)) {
+				DBG_DUMP("acc power sysinput\n");
+                //#NT#2016/03/07#KCHong -begin
+                //#NT#Low power timelapse function
+				#if (TIMELAPSE_LPR_FUNCTION == ENABLE)
+                MovieTLLPR_Process(TIMELAPSE_FROM_PWRKEY);
+				#endif
+                //#NT#2016/03/07#KCHong -end
+
+                g_bIsNeedReboot = FALSE;
+                if (key == NVTEVT_KEY_POWER_ACC) {
+                    Ux_SendEvent(0, NVTEVT_ACC_SHUTDOWN, 1, 0); //ACC power off
+                } else {
+                    System_PowerOff(SYS_POWEROFF_NORMAL);
+                }
 				return NVTEVT_CONSUME;
+			} else if (key == NVTEVT_KEY_ACC_MODE) {
+                Ux_SendEvent(0, NVTEVT_ACC_POWERON, 1, 0); //ACC power on
+                return NVTEVT_CONSUME;
+            }
+			#if 0
+			if(key == NVTEVT_KEY_LEFT)
+			{
+				if(short_cnt>=2)
+				{
+					short_cnt = 0;
+					n_last_time = 0;
+					n_current_time = 0;
+				}
+				if(paramArray[0] == NVTEVT_KEY_RELEASE)
+				{
+					n_current_time = Perf_GetCurrent(0)/1000;
+					//debug_msg("%dms %d\r\n",n_last_time,n_current_time);
+					if((n_current_time - n_last_time)<=600)
+					{
+						short_cnt++;
+						//debug_msg("short press %d\r\n",short_cnt);
+						if(short_cnt>=2)
+						{
+							short_cnt = 0;
+							n_last_time = 0;
+							n_current_time = 0;
+							paramArray[0] = NVTEVT_KEY_SHORT_PRESS_REACH_CNT;
+						}
+					}
+					n_last_time = n_current_time;
+				}
+				
 			}
+			else
+			{
+				short_cnt = 0;
+				n_last_time = 0;
+				n_current_time = 0;
+			}
+			#endif
+            #if 1//(LONG_KEY_SUPPORT == ENABLE)
+            {
+                //static UINT32 key_in = 0;
+                //static UINT32 key_hold = 0;
+                //static UINT32 key_state = NVTEVT_KEY_RELEASE;
+                //for long key detect
+                if ((paramArray[0] == NVTEVT_KEY_PRESS) && (key_state == NVTEVT_KEY_RELEASE)) {
+                    key_in = 1;
+                    key_hold = 0;
+                }
+
+                //DBG_DUMP("key_in:%d key_hold:%d\r\n",key_in,key_hold);
+                //for long key
+                if (paramArray[0] == NVTEVT_KEY_CONTINUE) {
+                    key_state = NVTEVT_KEY_CONTINUE;
+                    if (key_in == 1) {
+                        key_hold ++;
+                        if (key_hold >= 2) { //6
+                            //hold
+                            key_in = 0;
+                            paramArray[0] = NVTEVT_KEY_LONG_PRESS;
+                            DBG_DUMP("NVTEVT_KEY_LONG_PRESS:%x\r\n",NVTEVT_KEY_LONG_PRESS);
+                        }
+                    }
+                }
+
+                if (paramArray[0] == NVTEVT_KEY_RELEASE) {
+                    //debug_msg("NVTEVT_KEY_RELEASE key_in:%d key_hold:%d\r\n",key_in,key_hold);
+                    if (key_in == 1) {
+                        //release key
+                    } else {
+                        // long key release
+                        paramArray[0] = NVTEVT_KEY_LONG_RELEASE;
+                    }
+                    key_in = 0;
+                    key_hold = 0;
+                    key_state = NVTEVT_KEY_RELEASE;
+                }
+            }
+            #endif
 
 #if (LENS_FUNCTION == ENABLE)
 			System_ResetDetCloseLenCount();
@@ -594,7 +714,8 @@ INT32 System_UserKeyFilter(NVTEVT evt, UINT32 paramNum, UINT32 *paramArray)
 					MovieTLLPR_Process(TIMELAPSE_FROM_PWRKEY);
 #endif
 					//#NT#2016/03/07#KCHong -end
-					System_PowerOff(SYS_POWEROFF_NORMAL);
+					//g_bIsNeedReboot = FALSE;
+					//System_PowerOff(SYS_POWEROFF_NORMAL);
 				}
 				return NVTEVT_CONSUME;
 			}

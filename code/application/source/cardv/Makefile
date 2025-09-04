@@ -39,7 +39,8 @@ EXTRA_INCLUDE += \
 	-I$(KDRV_DIR)/source/kdrv_gfx2d/kdrv_affine/include \
 	-I$(NVT_HDAL_DIR)/vendor/media/include \
 	-I$(NVT_HDAL_DIR)/vendor/common/include \
-    -I$(NVT_HDAL_DIR)/ext_devices/gyro/gyro_comm/include \
+    	-I$(NVT_HDAL_DIR)/ext_devices/gyro/gyro_comm/include \
+    	-I$(NVT_DRIVER_DIR)/source/gsensor/gsensor_da380 \
 # application local includes
 EXTRA_INCLUDE += \
 	-I./SrcCode \
@@ -105,6 +106,7 @@ SRC = \
 	./SrcCode/UIApp/Movie/UIAppMovie_LiveStream.c \
 	./SrcCode/UIApp/Movie/UIAppMovie_cmd.c \
 	./SrcCode/UIApp/Movie/UIAppMovie_SetUserData.c \
+	./SrcCode/UIApp/Movie/UIAppMovie_GetFreeRecSec.c \
 	./SrcCode/UIApp/MovieStamp/MovieStamp.c \
 	./SrcCode/UIApp/MovieStamp/MovieStampTsk.c \
 	./SrcCode/UIApp/MovieStamp/MovieStampID.c \
@@ -162,8 +164,9 @@ SRC = \
 	./SrcCode/Mode/UIModeUsbMenu.c \
 	./SrcCode/Mode/UIModeUsbPTP.c \
 	./SrcCode/Mode/UIMode_cmd.c \
-	./SrcCode/Mode/UIModeWifi.c
-	
+	./SrcCode/Mode/UIModeWifi.c \
+	./SrcCode/ProjectInfo.c \
+	./SrcCode/UIApp/MD5/MD5.c 
 ifeq ($(PACKAGE_HEIC),1)
 
 SRC += \
@@ -264,6 +267,7 @@ SRC += \
 	./SrcCode/UIWnd/SPORTCAM/UIInfo/UIPhotoMapping.c \
 	./SrcCode/UIWnd/SPORTCAM/UIInfo/DateTimeInfo.c \
 	./SrcCode/UIWnd/SPORTCAM/Resource/BG_Opening.c \
+	./SrcCode/UIWnd/SPORTCAM/Resource/BG_Images.c \
 	./SrcCode/UIWnd/SPORTCAM/Resource/UIResource.c \
 	./SrcCode/UIWnd/SPORTCAM/Resource/DemoKit_Font.c \
 	./SrcCode/UIWnd/SPORTCAM/Resource/DemoKit_Image.c \
@@ -283,6 +287,7 @@ SRC += \
 	./SrcCode/UIWnd/SPORTCAM/Resource/SoundData.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowWndMovie.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowMovieFuncs.c \
+	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowWndMovieAddFunc.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowMovieIcons.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowCommon/UIFlowWndUSB.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowCommon/UIFlowWndWaitMoment.c \
@@ -297,6 +302,10 @@ SRC += \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowPlay/UIFlowWndPlay.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowPlay/UIFlowWndPlayMagnify.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowPlay/UIFlowWndPlayThumb.c \
+	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowWiFi/UIFlowWndWiFiMovie.c \
+	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowWiFi/UIFlowWndWiFiMovieIcons.c \
+	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowEdog/UIFlowWndEdogMsg_UiqueSky.c \
+	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowEdog/UIFlowWndEdogMsg.c  \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuCommon/TabMenu.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuCommon/MenuMode.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuCommon/MenuCommon.c \
@@ -306,8 +315,21 @@ SRC += \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuMovie/MenuMovie.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuPhoto/MenuPhoto.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/MenuSetup.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupGPS.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupFormatQuickConfirm.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupCarNo.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupDateTime.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupCustomize.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupDefaultSetting.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupFormat.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupFormatConfirm.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupVersion.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndPreSetLanguage.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndPreSetDateTime.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupHDRTime.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuPlay/MenuPlayback.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuPlay/UIMenuWndPlayFileType.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuPlay/UIMenuWndPlayQuickConfirmDel.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuUSB/UIMenuWndUSB.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuWiFi/UIMenuWndWiFiMobileLinkOK.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuWiFi/UIMenuWndWiFiModuleLink.c \
@@ -319,9 +341,11 @@ SRC += \
 	./SrcCode/UIApp/MovieStamp/DateStampFontTbl36x60.c \
 	./SrcCode/UIApp/MovieStamp/DateStampFontTbl26x44.c \
 	./SrcCode/UIApp/MovieStamp/DateStampFontTbl20x44.c \
+	./SrcCode/UIApp/MovieStamp/DateStampFontTbl22x40.c \
 	./SrcCode/UIApp/MovieStamp/DateStampFontTbl18x30.c \
 	./SrcCode/UIApp/MovieStamp/DateStampFontTbl12x20.c \
 	./SrcCode/UIApp/MovieStamp/DateStampFontTbl10x16.c \
+	./SrcCode/UIApp/MovieStamp/DateStampFontTbl8x12.c \
 	./SrcCode/UIApp/MovieStamp/DateStampFont26x44.c \
 	./SrcCode/UIApp/MovieStamp/DateStampFont20x44.c \
 	./SrcCode/UIApp/MovieStamp/DateStampFont18x30.c \

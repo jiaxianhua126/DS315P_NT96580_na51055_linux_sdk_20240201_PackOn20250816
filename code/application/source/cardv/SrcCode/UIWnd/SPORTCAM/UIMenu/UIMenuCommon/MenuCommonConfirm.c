@@ -73,7 +73,7 @@ INT32 MenuCommonConfirm_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 			gExeEvt = NVTEVT_EXE_SYSRESET_NO_WIN;
 			break;
 		case IDM_FW_UPDATE:
-			strID = STRID_FW_UPDATE;
+			strID = STRID_OK;//STRID_FW_UPDATE;
 			gBKGEvt = NVTEVT_BKW_FW_UPDATE;
 			break;
 		case IDM_DELETE_ALL:
@@ -107,13 +107,13 @@ INT32 MenuCommonConfirm_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 
 	if (gItemID == IDM_PROTECT) {
         DBG_FUNC("IDM_PROTECT>>\r\n");
-		UxList_SetItemData(&MenuCommonConfirm_ListCtrl, 0, LSTITM_ICONID, ICON_LOCK_M);
-		UxList_SetItemData(&MenuCommonConfirm_ListCtrl, 1, LSTITM_ICONID, ICON_LOCK_UNLOCK_M);
+		UxList_SetItemData(&MenuCommonConfirm_ListCtrl, 0, LSTITM_ICONID, ICON_OK);
+		UxList_SetItemData(&MenuCommonConfirm_ListCtrl, 1, LSTITM_ICONID, ICON_OK);
         DBG_FUNC("IDM_PROTECT<<\r\n");
 	} else {
 	    DBG_FUNC("IDM_OKNO>>\r\n");
-		UxList_SetItemData(&MenuCommonConfirm_ListCtrl, 0, LSTITM_ICONID, ICON_OK_M);
-		UxList_SetItemData(&MenuCommonConfirm_ListCtrl, 1, LSTITM_ICONID, ICON_NO_M);
+		UxList_SetItemData(&MenuCommonConfirm_ListCtrl, 0, LSTITM_ICONID, ICON_OK);
+		UxList_SetItemData(&MenuCommonConfirm_ListCtrl, 1, LSTITM_ICONID, ICON_OK);
         DBG_FUNC("IDM_OKNO<<\r\n");
 	}
 	UxStatic_SetData(&MenuCommonConfirm_TitleCtrl, STATIC_VALUE, strID);

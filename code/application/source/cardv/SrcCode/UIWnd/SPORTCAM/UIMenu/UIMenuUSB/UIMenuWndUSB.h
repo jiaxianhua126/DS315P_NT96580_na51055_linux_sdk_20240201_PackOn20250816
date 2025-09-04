@@ -5,36 +5,38 @@
 
 #include "UIFramework.h"
 
-extern VControl UIMenuWndUSBCtrl;//Panel type
+extern VControl UIMenuWndUSBCtrl;//Panel type 
 
-extern VControl UIMenuWndUSB_BackgroundCtrl;//Panel type
+extern VControl UIMenuWndUSB_BackgroundCtrl;//Panel type 
 
-extern VControl UIMenuWndUSB_TitleBarCtrl;//Panel type
+extern VControl UIMenuWndUSB_TitleBarCtrl;//Panel type 
 
-extern VControl UIMenuWndUSB_TitleNameCtrl;//Status type
+extern VControl UIMenuWndUSB_TitleNameCtrl;//Status type 
 
-typedef enum {
-	UIMenuWndUSB_TitleName_STRID_USB,
-	UIMenuWndUSB_TitleName_MAX
-} UIMenuWndUSB_TitleName_Setting;
+typedef enum
+{
+UIMenuWndUSB_TitleName_STRID_USB,
+UIMenuWndUSB_TitleName_MAX
+}UIMenuWndUSB_TitleName_Setting;
 
-extern VControl UIMenuWndUSB_ItemCtrl;//Menu type
+extern VControl UIMenuWndUSB_ItemCtrl;//Menu type 
 
-typedef enum {
-	UIMenuWndUSB_Item_STRID_MSDC,
-	UIMenuWndUSB_Item_STRID_PCC,
-	UIMenuWndUSB_Item_MAX
-} UIMenuWndUSB_Item_Setting;
+typedef enum
+{
+UIMenuWndUSB_Item_STRID_MSDC,
+UIMenuWndUSB_Item_STRID_PCC,
+UIMenuWndUSB_Item_MAX
+}UIMenuWndUSB_Item_Setting;
 
-extern VControl MenuCommItem_PanelUSBCtrl;//Panel type
+extern VControl MenuCommItem_PanelUSBCtrl;//Panel type 
 
-extern VControl MenuCommonItem_LeftUSBCtrl;//Static type
+extern VControl MenuCommonItem_LeftUSBCtrl;//Static type 
 
-extern VControl MenuCommonItem_RightUSBCtrl;//Static type
+extern VControl MenuCommonItem_RightUSBCtrl;//Static type 
 
-extern VControl MenuCommonItem_LeftIconUSBCtrl;//Static type
+extern VControl MenuCommonItem_LeftIconUSBCtrl;//Static type 
 
-extern VControl MenuCommonItem_RightIconUSBCtrl;//Static type
+extern VControl MenuCommonItem_RightIconUSBCtrl;//Static type 
 
 //---------------------UIMenuWndUSBCtrl User Export---------------------------
 #endif

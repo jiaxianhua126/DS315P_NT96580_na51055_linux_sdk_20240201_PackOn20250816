@@ -6,6 +6,7 @@
 #include "WifiCmdParserInt.h"
 #include <string.h>
 #include <kwrap/debug.h>
+#include "PrjInc.h"
 
 
 //NVTVER_VERSION_ENTRY(WiFiCmdParser, 1, 00, 000, 00)
@@ -183,6 +184,7 @@ static UINT32 WifiCmd_DispatchCmd(UINT32 cmd, WIFICMD_PAR_TYPE parType, UINT32 p
 							char  *parStr;//post event,data in stack would release
 							parStr = WifiCmd_LockString();
 							memset(parStr, '\0', WIFI_PAR_STR_LEN);
+							//DBG_DUMP("call par = %s\r\n",(char *)par);
 							sscanf_s((char *)par, "%s", parStr, WIFI_PAR_STR_LEN);
 							gEventHandle(g_pCmdTab[i].event, 1, parStr);
 						} else {
@@ -199,6 +201,8 @@ static UINT32 WifiCmd_DispatchCmd(UINT32 cmd, WIFICMD_PAR_TYPE parType, UINT32 p
 					//DBG_ERR("time %d ms\r\n",t2-t1);
 					//DBG_IND("ret %d\r\n", ret);
 					WIFICMDPARSER_DBG("wificmd ret %d\r\n", ret);
+					//DBG_DUMP("call WifiCmd_DispatchCmd\r\n");
+					//FlowWiFiMovie_UpdateIcons(TRUE);
 					g_curWifiCmd = 0;
 					return ret;
 				}
@@ -237,12 +241,19 @@ INT32 WifiCmd_GetData(char *path, char *argument, UINT32 bufAddr, UINT32 *bufSiz
 		}
 		sscanf_s(argument + strlen(CMD_STR), "%d", &cmd);
 		pch = strchr(argument + strlen(CMD_STR), '&');
+
+        if(*bufSize<512) {  //reserved for HFS lib
+            DBG_ERR("buf %d < 512\r\n",*bufSize);
+            WifiCmd_Unlock();
+            return WIFI_CMD_GETDATA_RETURN_ERROR;
+        }
+
 		if (pch) {
 			if (strncmp(pch, PAR_STR, strlen(PAR_STR)) == 0) {
 				sscanf_s(pch + strlen(PAR_STR), "%d", &par);
 				ret = WifiCmd_DispatchCmd(cmd, WIFICMD_PAR_NUM, par, &UserCB);
 			} else if (strncmp(pch, PARS_STR, strlen(PARS_STR)) == 0) {
-				//DBG_ERR("%s\r\n",pch+strlen(PARS_STR));
+				DBG_ERR("%s\r\n",pch+strlen(PARS_STR));
 				ret = WifiCmd_DispatchCmd(cmd, WIFICMD_PAR_STR, (UINT32)pch + strlen(PARS_STR), &UserCB);
 			}
 		} else {

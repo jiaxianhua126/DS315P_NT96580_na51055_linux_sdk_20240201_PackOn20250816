@@ -21,7 +21,8 @@
 #include <vf_gfx.h>
 #include "vendor_videocapture.h"
 #if (GPS_FUNCTION == ENABLE)
-#include <GPS.h>
+//#include <GPS.h>
+#include "DxGPS.h"
 #endif
 #include "UIApp/MovieStamp/MovieStampAPI.h"
 
@@ -68,7 +69,7 @@
 
 #define FILE_SN_MAX		999999
 //#define MOVIE_ROOT_PATH         "A:\\MOVIE\\"
-#define MOVIE_ROOT_PATH         "A:\\Novatek\\"
+//#define MOVIE_ROOT_PATH         "A:\\DCIM\\" //"A:\\Novatek\\"
 #define MOVIE_THUMB_WIDTH	640
 
 static UINT32 g_FileSerialNum = 0;
@@ -123,6 +124,14 @@ static UINT32 g_EthCamTxIsVEncTskSend=0;
 static UINT32 gMovie_InitCommonMemFinish=0;
 static INT g_i32AdFakeFd = -1;
 static UINT32  bManualPushRawFrame[SENSOR_CAPS_COUNT] = {0};
+//
+extern BOOL isACCTrigParkMode;
+extern BOOL g_bSensorNumChanged;
+extern void LCD_Rotate_180(void);
+extern void LCD_Rotate_None(void);
+extern BOOL Gsensor_Sensitivity_Parking;
+//static UINT32 g_HDR_BefRecSize = 0;
+
 
 #if (MOVIE_UVAC_FUNC == ENABLE)
 #include "UVAC.h"
@@ -1234,6 +1243,8 @@ void MovieExe_PipCB(void)
 	}
 }
 #endif
+
+extern BOOL g_bSensorNumChanged;
 void MovieExe_EthCam_ChgDispCB(UINT32 DualCam)
 {
 #if defined(_NVT_ETHREARCAM_RX_)
@@ -1250,6 +1261,7 @@ void MovieExe_EthCam_ChgDispCB(UINT32 DualCam)
 	if((socketCliEthData1_IsRecv(ETHCAM_PATH_ID_1) || socketCliEthData1_IsRecv(ETHCAM_PATH_ID_2))&& (DualCam==DualCamChk))
 #endif
 	{
+		g_bSensorNumChanged = TRUE;
 		#if(ETH_REARCAM_CLONE_FOR_DISPLAY == ENABLE)
 		if(socketCliEthData1_IsRecv(ETHCAM_PATH_ID_1)==0){
 			BKG_PostEvent(NVTEVT_BKW_ETHCAM_SYNC_TIME);
@@ -1258,16 +1270,51 @@ void MovieExe_EthCam_ChgDispCB(UINT32 DualCam)
 		#endif
 
 #if((ETH_REARCAM_CAPS_COUNT+SENSOR_CAPS_COUNT)  == 2)
-		UI_SetData(FL_DUAL_CAM, DUALCAM_BOTH);
-		UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_BOTH);
+        #if (defined(_NVT_ETHREARCAM_RX_))
+        if(GPIOMap_EthCam1Det()){
+			if(UI_GetData(FL_DUAL_CAM_MENU) <= DUALCAM_BOTH2){
+		    	UI_SetData(FL_DUAL_CAM, UI_GetData(FL_DUAL_CAM_MENU));
+		    	UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM_MENU));
+			}
+        }else {
+            UI_SetData(FL_DUAL_CAM, DUALCAM_BOTH);
+		    UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_BOTH);
+        }
+
+		if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
+			WifiApp_SendCmd(WIFIAPP_CMD_NOTIFY_STATUS, WIFIAPP_RET_SENSOR2_INSERT);
+		}
+        g_bSensorNumChanged = TRUE;
+		DBG_DUMP("^G---connected--UI_SetData(FL_DUAL_CAM)=%d\r\n",UI_GetData(FL_DUAL_CAM));
+		#endif
+		
 #else//#elif(ETH_REARCAM_CAPS_COUNT >= 2)
 		UI_SetData(FL_DUAL_CAM, DUALCAM_BOTH);
 		UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_BOTH);
 #endif
 	}else{
+		g_bSensorNumChanged = TRUE;
 #if((ETH_REARCAM_CAPS_COUNT+SENSOR_CAPS_COUNT)  == 2)//#if(ETH_REARCAM_CAPS_COUNT == 1)
-		UI_SetData(FL_DUAL_CAM, DUALCAM_FRONT);//default front sensor
-		UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_FRONT);
+		#if(defined(_NVT_ETHREARCAM_RX_))
+		if(!System_GetShutdownBegin()){
+			if(GPIOMap_EthCam1Det()/*&&(EthCamNet_GetEthLinkStatus(0)==ETHCAM_LINK_UP)*/){
+				if(UI_GetData(FL_DUAL_CAM_MENU) <= DUALCAM_BOTH2){
+					UI_SetData(FL_DUAL_CAM, UI_GetData(FL_DUAL_CAM_MENU));//default four division
+					UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM_MENU));
+				}
+			}else {
+				UI_SetData(FL_DUAL_CAM, DUALCAM_FRONT);
+				UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_FRONT);
+			}
+		}
+        g_bSensorNumChanged = TRUE;
+
+		if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
+			WifiApp_SendCmd(WIFIAPP_CMD_NOTIFY_STATUS, WIFIAPP_RET_SENSOR2_REMOVE); 
+		}
+		DBG_DUMP("^G---disconnected--UI_SetData(FL_DUAL_CAM)=%d\r\n",UI_GetData(FL_DUAL_CAM));
+		#endif
+
 #else//#elif(ETH_REARCAM_CAPS_COUNT >= 2)
 		UI_SetData(FL_DUAL_CAM, DUALCAM_BOTH);//default four division
 		UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_BOTH);
@@ -1698,7 +1745,9 @@ void MovieExe_EthCamCloneId1_CB(MOVIE_CFG_REC_ID id, HD_VIDEOENC_BS *pvenc_data)
 
 void MovieExe_EthCamTxDateStampConfig(void)
 {
-	if (UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) {
+
+	if (1) //(UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) 
+	{
 		UINT32 Width, Height;
 		UINT32 uiStampMemSize;
 		UINT32		uiStampAddr;
@@ -1758,9 +1807,9 @@ void MovieExe_EthCamTxDateStampConfig(void)
 			STAMP_ON |
 			STAMP_AUTO |
 			STAMP_DATE_TIME |
-			STAMP_BOTTOM_RIGHT |
+			STAMP_BOTTOM_LEFT |
 			STAMP_POS_NORMAL |
-			STAMP_YY_MM_DD,
+			uiDateFormat,//STAMP_YY_MM_DD,
 			Width,
 			Height,
 #if defined (WATERLOGO_FUNCTION) && (WATERLOGO_FUNCTION == ENABLE)
@@ -1793,9 +1842,9 @@ void MovieExe_EthCamTxDateStampConfig(void)
 			STAMP_ON |
 			STAMP_AUTO |
 			STAMP_DATE_TIME |
-			STAMP_BOTTOM_RIGHT |
+			STAMP_BOTTOM_LEFT |
 			STAMP_POS_NORMAL |
-			STAMP_YY_MM_DD,
+			uiDateFormat,//STAMP_YY_MM_DD,
 	            Width,
 	            Height,
 #if defined (WATERLOGO_FUNCTION) && (WATERLOGO_FUNCTION == ENABLE)
@@ -1821,9 +1870,9 @@ void MovieExe_EthCamTxDateStampConfig(void)
 			STAMP_ON |
 			STAMP_AUTO |
 			STAMP_DATE_TIME |
-			STAMP_BOTTOM_RIGHT |
+			STAMP_BOTTOM_LEFT |
 			STAMP_POS_NORMAL |
-			STAMP_YY_MM_DD |
+			uiDateFormat |
 			gMovie_Clone_Info[_CFG_REC_ID_1].size.w,
 			gMovie_Clone_Info[_CFG_REC_ID_1].size.h,
 #if defined (WATERLOGO_FUNCTION) && (WATERLOGO_FUNCTION == ENABLE)
@@ -1842,28 +1891,53 @@ void MovieExe_EthCamTxDateStampConfig(void)
 }
 void MovieExe_EthCamTxStart(MOVIE_CFG_REC_ID rec_id)
 {
-
-	if (SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF) {
-		if (rec_id == _CFG_REC_ID_1) {
-			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
-			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
-			//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 3);
+    if (SysGetFlag(FL_PARKING_MODE) == PARKING_MODE_OFF) {
+		if (SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF) {
+			if (rec_id == _CFG_REC_ID_1) {
+				ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
+				ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
+				//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 3);
+			}
+			if (rec_id == _CFG_CLONE_ID_1) {
+				ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
+				ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
+				//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 3);
+			}
+		} else {
+			if (rec_id == _CFG_REC_ID_1) {
+				ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_TIMELAPSE);
+				ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, Get_MovieTimeLapseValue(SysGetFlag(FL_MOVIE_TIMELAPSE_REC)));
+				//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 0);
+			}
+			if (rec_id == _CFG_CLONE_ID_1) {
+				ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
+				ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
+				//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 3);
+			}
 		}
-		if (rec_id == _CFG_CLONE_ID_1) {
-			ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
-			ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
-			//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 3);
-		}
-	} else {
-		if (rec_id == _CFG_REC_ID_1) {
-			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_TIMELAPSE);
-			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, Get_MovieTimeLapseValue(SysGetFlag(FL_MOVIE_TIMELAPSE_REC)));
-			//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 0);
-		}
-		if (rec_id == _CFG_CLONE_ID_1) {
-			ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
-			ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
-			//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 3);
+    }else{
+		if (SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC) == PARKING_MODE_TIMELAPSEREC_OFF) {
+			if (rec_id == _CFG_REC_ID_1) {
+				ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
+				ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
+				//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 3);
+			}
+			if (rec_id == _CFG_CLONE_ID_1) {
+				ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
+				ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
+				//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 3);
+			}
+		} else {
+			if (rec_id == _CFG_REC_ID_1) {
+				ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_TIMELAPSE);
+				ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, Get_ParkingModeTimeLapseValue(SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC)));
+				//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 0);
+			}
+			if (rec_id == _CFG_CLONE_ID_1) {
+				ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
+				ImageApp_MovieMulti_SetParam(_CFG_CLONE_ID_1, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
+				//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_SKIP_FRAME, 3);
+			}
 		}
 	}
 
@@ -1953,12 +2027,14 @@ void MovieExe_EthCamTxStop(MOVIE_CFG_REC_ID rec_id)
 	}
 #endif
 
-	if (UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) {
+	if (1) //(UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) 
+	{
 		MovieStamp_Disable();
 	}
 
 }
 #endif
+
 #if (USE_EXIF == ENABLE)
 static UINT32 exifbuf_pa = 0, exifbuf_va = 0;
 
@@ -2081,7 +2157,11 @@ MOVIE_RECODE_INFO MovieExe_GetRecInfo(MOVIE_CFG_REC_ID  rec_id)
 }
 UINT32 MovieExe_GetEmrRollbackSec(void)
 {
+#if(PRE_RECORD_DET_FUNC==ENABLE)
+	return gMovie_Rec_Option.emr_sec+15;//add buf
+#else
 	return gMovie_Rec_Option.emr_sec;
+#endif
 }
 #if(defined(_NVT_ETHREARCAM_RX_))
 UINT32 MovieExe_GetEthcamEncBufSec(ETHCAM_PATH_ID  path_id)
@@ -2180,14 +2260,15 @@ static void MovieExe_FileNamingCB(MOVIE_CFG_REC_ID id, char *pFileName)
 	}
 
     GxTime_GetTime(&CurDateTime);
-#if(SENSOR_CAPS_COUNT>=2 || ((defined(_NVT_ETHREARCAM_RX_)) && (ETH_REARCAM_CAPS_COUNT >= 2)))
+#if(SENSOR_CAPS_COUNT>=2 || ((defined(_NVT_ETHREARCAM_RX_)) && (ETH_REARCAM_CAPS_COUNT >= 1)))
     char    NH_endChar='A';
 	if(id < _CFG_REC_ID_MAX){
 	    NH_endChar+=id;
 	}else if(id <_CFG_CLONE_ID_MAX){
 	    NH_endChar+=(id-_CFG_CLONE_ID_1);
 	}else if(id <_CFG_ETHCAM_ID_MAX){
-	    NH_endChar+=(id-_CFG_ETHCAM_ID_1);
+	    //NH_endChar+=(id-_CFG_ETHCAM_ID_1);
+	    NH_endChar='B';
 	}
 
     snprintf(pFileName, NMC_TOTALFILEPATH_MAX_LEN, "%04d%02d%02d%02d%02d%02d_%06d%c",
@@ -2231,13 +2312,16 @@ static void MovieExe_RawEncodeFileNamingCB(MOVIE_CFG_REC_ID id, char *pFileName)
 	}
 
     GxTime_GetTime(&CurDateTime);
-#if(SENSOR_CAPS_COUNT>=2)
+#if(SENSOR_CAPS_COUNT>=2 || ((defined(_NVT_ETHREARCAM_RX_)) && (ETH_REARCAM_CAPS_COUNT >= 1)))
     char    NH_endChar='A';
     if(id < _CFG_REC_ID_MAX){
         NH_endChar+=id;
     }else if(id <_CFG_CLONE_ID_MAX){
         NH_endChar+=(id-_CFG_CLONE_ID_1);
-    }
+    }else if(id <_CFG_ETHCAM_ID_MAX){
+	    //NH_endChar+=(id-_CFG_ETHCAM_ID_1);
+	    NH_endChar='B';
+	}
 
     snprintf(pFileName, NMC_TOTALFILEPATH_MAX_LEN, "%04d%02d%02d%02d%02d%02d_%06d%c",
             CurDateTime.tm_year, CurDateTime.tm_mon, CurDateTime.tm_mday,
@@ -2282,7 +2366,9 @@ static void MovieExe_UserEventCb(UINT32 id, MOVIE_USER_CB_EVENT event_id, UINT32
 
 			gps_data.addr = (UINT32)&(RMCInfo);
 			gps_data.size = sizeof(RMCInfo);
-			ImageApp_MovieMulti_SetParam(_CFG_CTRL_ID, MOVIEMULTI_PARAM_FILE_GPS_DATA, (UINT32)&gps_data);
+			if (UI_GetData(FL_GPS) == GPS_ON) {
+				ImageApp_MovieMulti_SetParam(_CFG_CTRL_ID, MOVIEMULTI_PARAM_FILE_GPS_DATA, (UINT32)&gps_data);
+			}
 #endif
 			Ux_PostEvent(NVTEVT_CB_MOVIE_REC_ONE_SEC, 1, value);
 		}
@@ -2560,6 +2646,43 @@ void MovieExe_TriggerPIMResultManual(UINT32 value)
 	MovieExe_UserEventCb(0, MOVIE_USER_CB_EVENT_SNAPSHOT_OK, 0);
 }
 
+#if 1
+void MovieExe_InitHDR(void)
+{
+	struct tm Curr_DateTime = {0};
+	UINT32 time_start = 0;
+	UINT32 time_stop = 0;
+	UINT32 temp = 0;
+
+	time_start = SysGetFlag(FL_TIME_START);
+	time_stop = SysGetFlag(FL_TIME_STOP);
+
+	if (time_start >= time_stop) {
+		return;
+	}
+	Curr_DateTime = hwclock_get_time(TIME_ID_CURRENT);
+	temp = Curr_DateTime.tm_hour*100 + Curr_DateTime.tm_min;
+	//debug_msg("*** InitHDR temp= %d, time_start= %d, time_stop= %d, SysGetFlag(FL_MOVIE_HDR)= %d ***\r\n", temp, time_start, time_stop, SysGetFlag(FL_MOVIE_HDR));
+
+	if ((((temp >= 0) && (temp < time_start)) || ((temp >= time_stop) && (temp <= 2359)))
+		&& (SysGetFlag(FL_MOVIE_HDR) == MOVIE_HDR_OFF))
+	{
+		SysSetFlag(FL_MOVIE_HDR, MOVIE_HDR_ON);
+		SysSetFlag(FL_MOVIE_HDR_MENU, MOVIE_HDR_ON);
+		SysSetFlag(FL_MOVIE_WDR, MOVIE_WDR_ON);
+		SysSetFlag(FL_MOVIE_WDR_MENU, MOVIE_WDR_ON);
+	}
+	else if ((temp >= time_start) && (temp < time_stop) && (SysGetFlag(FL_MOVIE_HDR) == MOVIE_HDR_ON))
+	{
+		SysSetFlag(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+		SysSetFlag(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+		SysSetFlag(FL_MOVIE_WDR, MOVIE_WDR_OFF);
+		SysSetFlag(FL_MOVIE_WDR_MENU, MOVIE_WDR_OFF);
+	}
+}
+#endif
+
+
 static void MovieExe_SetRecInfoByUISetting(void)
 {
 	UINT32 movie_size_idx, size_idx = 0;
@@ -2567,7 +2690,13 @@ static void MovieExe_SetRecInfoByUISetting(void)
 	UINT32 i, rec_type;
 	UINT32 mask, ipl_id = 0, setting_count = 0;
 	UINT32 movie_rec_mask;//, clone_rec_mask;
-
+	//check HDR 
+#if 1
+	if ((SysGetFlag(FL_MOVIE_HDR_DET) == MOVIE_HDR_DET_AUTO) ) {
+		MovieExe_InitHDR();
+		FlowMovie_CheckReOpenItem();
+	}
+#endif
 	movie_size_idx = UI_GetData(FL_MOVIE_SIZE);
 	rec_type = MovieMapping_GetRecType(movie_size_idx);
 
@@ -2626,6 +2755,11 @@ static void MovieExe_SetRecInfoByUISetting(void)
 		//#NT#support sensor rotate setting
 		gMovie_Rec_Info[i].sensor_rotate = (UI_GetData(FL_MOVIE_SENSOR_ROTATE) == SEN_ROTATE_ON) ? TRUE : FALSE;
 		//#NT#2018/02/14#KCHong -end
+		if (UI_GetData(FL_VIDEO_FORMAT) == VIDEO_FORMAT_TS) {
+            gMovie_Rec_Info[i].file_format = _CFG_FILE_FORMAT_TS;
+        } else {
+            gMovie_Rec_Info[i].file_format = _CFG_FILE_FORMAT_MP4;
+        }
 		MovieMapping_GetAqInfo(size_idx, ipl_id, (UINT32)&gMovie_Rec_Info[i].aq_info);
 		MovieMapping_GetCbrInfo(size_idx, ipl_id, (UINT32)&gMovie_Rec_Info[i].cbr_info);
 		movie_aspect_ratio_idx = MovieMapping_GetImageRatio(size_idx, ipl_id);
@@ -2635,6 +2769,18 @@ static void MovieExe_SetRecInfoByUISetting(void)
 			gMovie_Rec_Info[i].ratio.w = 16;
 			gMovie_Rec_Info[i].ratio.h = 9;
 			gMovie_Rec_Info[i].disp_ratio.w = 16;
+			gMovie_Rec_Info[i].disp_ratio.h = 9;
+			break;
+		case IMAGERATIO_16_10:
+			gMovie_Rec_Info[i].ratio.w = 16;
+			gMovie_Rec_Info[i].ratio.h = 10;
+			gMovie_Rec_Info[i].disp_ratio.w = 16;
+			gMovie_Rec_Info[i].disp_ratio.h = 10;
+			break;
+		case IMAGERATIO_21_9:
+			gMovie_Rec_Info[i].ratio.w = 21;
+			gMovie_Rec_Info[i].ratio.h = 9;
+			gMovie_Rec_Info[i].disp_ratio.w = 21;
 			gMovie_Rec_Info[i].disp_ratio.h = 9;
 			break;
 		default:
@@ -2655,6 +2801,11 @@ static void MovieExe_SetRecInfoByUISetting(void)
 			gMovie_Clone_Info[i].target_bitrate = MovieMapping_GetCloneTargetBitrate(size_idx, ipl_id);
 			gMovie_Clone_Info[i].dar = MovieMapping_GetCloneDispAspectRatio(size_idx, ipl_id);
 			gMovie_Clone_Info[i].codec = (UI_GetData(FL_MOVIE_CODEC) == MOVIE_CODEC_H265) ? _CFG_CODEC_H265 : _CFG_CODEC_H264;
+			if (UI_GetData(FL_VIDEO_FORMAT) == VIDEO_FORMAT_TS) {
+				gMovie_Clone_Info[i].file_format = _CFG_FILE_FORMAT_TS;
+			} else {
+				gMovie_Clone_Info[i].file_format = _CFG_FILE_FORMAT_MP4;
+			}
 			MovieMapping_GetCloneAqInfo(size_idx, ipl_id, (UINT32)&gMovie_Clone_Info[i].aq_info);
 			MovieMapping_GetCloneCbrInfo(size_idx, ipl_id, (UINT32)&gMovie_Clone_Info[i].cbr_info);
 			movie_aspect_ratio_idx = MovieMapping_GetCloneImageRatio(size_idx, ipl_id);
@@ -2664,6 +2815,18 @@ static void MovieExe_SetRecInfoByUISetting(void)
 				gMovie_Clone_Info[i].ratio.w = 16;
 				gMovie_Clone_Info[i].ratio.h = 9;
 				gMovie_Clone_Info[i].disp_ratio.w = 16;
+				gMovie_Clone_Info[i].disp_ratio.h = 9;
+				break;
+			case IMAGERATIO_16_10:
+				gMovie_Clone_Info[i].ratio.w = 16;
+				gMovie_Clone_Info[i].ratio.h = 10;
+				gMovie_Clone_Info[i].disp_ratio.w = 16;
+				gMovie_Clone_Info[i].disp_ratio.h = 10;
+				break;
+			case IMAGERATIO_21_9:
+				gMovie_Clone_Info[i].ratio.w = 21;
+				gMovie_Clone_Info[i].ratio.h = 9;
+				gMovie_Clone_Info[i].disp_ratio.w = 21;
 				gMovie_Clone_Info[i].disp_ratio.h = 9;
 				break;
 			default:
@@ -2694,7 +2857,7 @@ static void MovieExe_InitAlgFunc(void)
 	}
 
 	// install alg functions here
-#if ((!defined(_MODEL_580_SDV_SJ10_)) && (!defined(_MODEL_580_SDV_SJ10_FAST_BT_)))
+#if 1//((!defined(_MODEL_580_SDV_SJ10_)) && (!defined(_MODEL_580_SDV_SJ10_FAST_BT_)))
 	MovieAlgFunc_MD_InstallID();
 #endif
 }
@@ -2704,7 +2867,7 @@ static void MovieExe_UninitAlgFunc(void)
 	UINT32 i;
 
 	// uninstall alg functions here
-#if ((!defined(_MODEL_580_SDV_SJ10_)) && (!defined(_MODEL_580_SDV_SJ10_FAST_BT_)))
+#if 1//((!defined(_MODEL_580_SDV_SJ10_)) && (!defined(_MODEL_580_SDV_SJ10_FAST_BT_)))
 	MovieAlgFunc_MD_UninstallID();
 #endif
 
@@ -2797,6 +2960,7 @@ void MovieExe_PipCBTimerClose(void)
 	}
 }
 #endif
+
 void MovieExe_ManualPushRawFrame(MOVIE_CFG_REC_ID RedId, UINT32 value)
 {
 #if (MANUAL_PUSH_RAW_FRAME == ENABLE)
@@ -4251,6 +4415,7 @@ BOOL MovieExe_GetMovieTMNREn(void)
     return TRUE;
 #endif
 }
+UINT32	uiDateFormat = 0;
 INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32 i;
@@ -4274,6 +4439,41 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	MOVIE_SENSOR_INFO sen_cfg = {0};
 
     DBG_FUNC("\r\n");
+	//#NT#2023/03/27#HTK ADD -begin
+	if (UI_GetData(FL_VIDEO_FORMAT) == VIDEO_FORMAT_TS){
+	#if 0//for raw 
+		for (i = 0; i < (SENSOR_CAPS_COUNT & SENSOR_ON_MASK); i++) {
+			gMovie_Rec_Info[i].file_format=_CFG_FILE_FORMAT_TS;//just for RX
+			gMovie_Rec_Info[i].aud_codec=_CFG_AUD_CODEC_AAC;//just for rx
+		}
+	#endif
+		gEthcamRecInfoRecFormat=_CFG_FILE_FORMAT_TS;
+	}else{
+	#if 0 //for raw
+		for (i = 0; i < (SENSOR_CAPS_COUNT & SENSOR_ON_MASK); i++) {
+			gMovie_Rec_Info[i].file_format=_CFG_FILE_FORMAT_MP4;
+			gMovie_Rec_Info[i].aud_codec=_CFG_AUD_CODEC_AAC;
+		}
+	#endif
+		gEthcamRecInfoRecFormat=_CFG_FILE_FORMAT_MP4;
+	}
+	DBG_DUMP("==gEthcamRecInfoAudCodec =====%d======\r\n",gEthcamRecInfoRecFormat);
+
+	switch (SysGetFlag(FL_DATE_FORMAT)) {
+    case DATE_FORMAT_DMY:
+        uiDateFormat = STAMP_DD_MM_YY;
+        break;
+
+    case DATE_FORMAT_MDY:
+        uiDateFormat = STAMP_MM_DD_YY;
+        break;
+
+    case DATE_FORMAT_YMD:
+    default:
+        uiDateFormat = STAMP_YY_MM_DD;
+        break;
+   }
+	//#NT#2023/03/27#HTK ADD -end
 
 	Movie_CommPoolInit();
 	gMovie_InitCommonMemFinish=1;
@@ -4475,13 +4675,12 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_USER_IMG_SIZE, (UINT32)&ipl_size1);
 		//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_FORCED_IMG_SIZE, MOVIE_IPL_SIZE_USER);
 		break;
+	#endif
 	case MOVIE_SIZE_FRONT_2304x1296P60:
 		ipl_size2.size.w = 2560;
         ipl_size2.size.h = 1440;
         ipl_size2.fps = 60;
 		break;
-	
-	#endif
 	case MOVIE_SIZE_FRONT_2560x1440P60:
 	case MOVIE_SIZE_FRONT_1920x1080P60:
 		ipl_size2.size.w = 2560;
@@ -4531,13 +4730,11 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
         ipl_size2.size.h = 1440;
         ipl_size2.fps = 30;
 		break;
-	#if 0
 	case MOVIE_SIZE_FRONT_2304x1296P60:
 		ipl_size2.size.w = 2304;
         ipl_size2.size.h = 1296;
         ipl_size2.fps = 60;
 		break;
-	#endif
 	case MOVIE_SIZE_FRONT_2304x1296P30:
 		ipl_size2.size.w = 2304;
         ipl_size2.size.h = 1296;
@@ -5000,6 +5197,29 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_USER_IMG_SIZE, (UINT32)&ipl_size);
 		ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_FORCED_IMG_SIZE, MOVIE_IPL_SIZE_USER);
 	}
+
+	//#NT#2023/06/03#HTK ADD -begin
+	//add rec audio volume
+	//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1,MOVIEMULTI_PARAM_AUD_ACAP_ALC_EN,FALSE);
+	//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1,MOVIEMULTI_PARAM_AUD_ACAP_VOL,120);
+	//#NT#2023/06/03#HTK ADD -end
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_AUD_MUTE_ENC_FUNC_EN, TRUE);//always get pcm data ,when video is recording.
+	if (SysGetFlag(FL_PARKING_MODE) == PARKING_MODE_OFF) {	
+		if (SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF) {
+			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_CODEC_TRIGGER_MODE, MOVIE_CODEC_TRIGGER_DIRECT);//1440p60 have same frame.
+		} 	
+	} else {
+		//add for parking mode
+		if (SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC) == PARKING_MODE_TIMELAPSEREC_OFF) {
+			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_CODEC_TRIGGER_MODE, MOVIE_CODEC_TRIGGER_DIRECT);//1440p60 have same frame.
+		}
+	}
+	#if(PRE_RECORD_DET_FUNC==ENABLE)
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_AUD_ENCBUF_MS,25000);//EMR+BUF SECONDS
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_ENCBUF_MS,15000);
+	#endif
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_VDO_ENC_MAX_FRAME_SIZE, 190*1024);
+
 	ImageApp_MovieMulti_Open();
 
 	MovieExe_EthCamVprc_Open();
@@ -5143,6 +5363,7 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_WDR,           1,  SysGetFlag(FL_MOVIE_WDR));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_SHDR,                1,  UI_GetData(FL_MOVIE_HDR));
+	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_PARKING_GSENSOR,     1,  SysGetFlag(FL_PARKING_GSENSOR));
 
 #if(defined(_NVT_ETHREARCAM_RX_))
 	EthCamNet_EthHubChkPortReady();
@@ -5242,6 +5463,10 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	// wait fs mount ready
 	System_WaitFS();
 #endif
+	//#NT#2023/03/27#HTK ADD -begin
+	// reserve 1GB.
+	ImageApp_MovieMulti_SetReservedSize('A', 1000*1024*1024, TRUE);
+	//#NT#2023/03/27#HTK ADD -end
 
 #if USE_FILEDB
 	// FileManage Config
@@ -5256,8 +5481,17 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	ImageApp_MovieMulti_FMSetSortBySN("_", 1, 6);
 
 	for (i = 0; i < SENSOR_CAPS_COUNT; i++)	{
-		ImageApp_MovieMulti_Root_Path(MOVIE_ROOT_PATH, gMovie_Folder_Naming[i].rec_id);
-		ImageApp_MovieMulti_Folder_Naming((MOVIEMULTI_RECODE_FOLDER_NAMING*)&gMovie_Folder_Naming[i]);
+        //if ((isACCTrigParkMode) && (isACCTrigPreRecordDet)) { //parking motion det
+        if (0)//(isACCTrigParkMode) 
+		{ //parking motion det
+        	//DBG_DUMP("call gMovie_Folder_Naming2!\n");
+            ImageApp_MovieMulti_Root_Path(MOVIE_ROOT_PATH, gMovie_Folder_Naming2[i].rec_id);
+            ImageApp_MovieMulti_Folder_Naming((MOVIEMULTI_RECODE_FOLDER_NAMING*)&gMovie_Folder_Naming2[i]);
+        } else {
+			//DBG_DUMP("call gMovie_Folder_Naming!\n");
+            ImageApp_MovieMulti_Root_Path(MOVIE_ROOT_PATH, gMovie_Folder_Naming[i].rec_id);
+            ImageApp_MovieMulti_Folder_Naming((MOVIEMULTI_RECODE_FOLDER_NAMING*)&gMovie_Folder_Naming[i]);
+        }
 
 		ImageApp_MovieMulti_Root_Path(MOVIE_ROOT_PATH, gMovie_Clone_Folder_Naming[i].rec_id);
 		ImageApp_MovieMulti_Folder_Naming((MOVIEMULTI_RECODE_FOLDER_NAMING*)&gMovie_Clone_Folder_Naming[i]);
@@ -5585,6 +5819,7 @@ INT32 MovieExe_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		return -1;
 	}
 #endif
+
 	//call default
 	Ux_DefaultEvent(pCtrl, NVTEVT_EXE_CLOSE, paramNum, paramArray);
 	return NVTEVT_CONSUME;
@@ -5627,6 +5862,24 @@ INT32 MovieExe_OnMovieAudio(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 	return NVTEVT_CONSUME;
 }
 
+INT32 MovieExe_OnMovieVoice(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 uiSelect = 0;
+
+	if (paramNum) {
+		uiSelect = paramArray[0];
+	}
+
+	UI_SetData(FL_MOVIE_VOICE, uiSelect);
+
+	if (uiSelect == MOVIE_VOICE_OFF) {
+		DBG_DUMP("call MovieExe_OnMovieVoice MOVIE_VOICE_OFF\r\n");
+	} else {
+		DBG_DUMP("call MovieExe_OnMovieVoice MOVIE_VOICE_ON\r\n");	
+	}
+	return NVTEVT_CONSUME;
+}
+
 INT32 MovieExe_OnDateImprint(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32 uiSelect = 0;
@@ -5639,6 +5892,119 @@ INT32 MovieExe_OnDateImprint(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 
 	return NVTEVT_CONSUME;
 }
+
+//-------------------------------------------------------------------------------------------------
+INT32 MovieExe_OnGSENSOR(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 uiSelect = 0;
+
+	if (paramNum) {
+		uiSelect = paramArray[0];
+	}
+
+	UI_SetData(FL_GSENSOR, uiSelect);
+
+#if 1//!defined(_GSensor_None_)
+	if (!isACCTrigParkMode) { //normal mode
+		switch (UI_GetData(FL_GSENSOR)) {
+		case GSENSOR_OFF:
+			GSensor_DA380_SetSensitivity(GSENSOR_SENSITIVITY_OFF);
+			break;
+		case GSENSOR_LOW:
+			GSensor_DA380_SetSensitivity(GSENSOR_SENSITIVITY_LOW);
+			break;
+		case GSENSOR_MED:
+			GSensor_DA380_SetSensitivity(GSENSOR_SENSITIVITY_MED);
+			break;
+		case GSENSOR_HIGH:
+			GSensor_DA380_SetSensitivity(GSENSOR_SENSITIVITY_HIGH);
+			break;
+		default:
+			GSensor_DA380_SetSensitivity(GSENSOR_SENSITIVITY_OFF);
+			break;
+		}
+	}
+#endif
+
+	//DBG_ERR(("MovieExe_OnGSENSOR =%d\r\n ",FL_GSENSOR));
+	return NVTEVT_CONSUME;
+}
+
+INT32 MovieExe_OnParkingGSensor(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 uiSelect = 0;
+
+	if (paramNum) {
+		uiSelect = paramArray[0];
+	}
+
+	UI_SetData(FL_PARKING_GSENSOR, uiSelect);
+	//DBG_DUMP("call MovieExe_OnParkingGSensor\r\n");
+#if 1//!defined(_GSensor_None_)
+	if (isACCTrigParkMode) { //parking mode
+		Gsensor_Sensitivity_Parking = FALSE;
+		switch (UI_GetData(FL_PARKING_GSENSOR)) {
+		//case PARKING_GSENSOR_OFF:
+		//	GSensor_DA380_SetSensitivity(GSENSOR_SENSITIVITY_OFF);
+		//	break;
+		case PARKING_GSENSOR_LOW:
+			GSensor_DA380_SetSensitivity(GSENSOR_SENSITIVITY_LOW);
+			GSensor_DA380_Sensitivity_Parking(GSENSOR_SENSITIVITY_LOW);
+			break;
+		case PARKING_GSENSOR_MED:
+			GSensor_DA380_SetSensitivity(GSENSOR_SENSITIVITY_MED);
+			GSensor_DA380_Sensitivity_Parking(GSENSOR_SENSITIVITY_MED);
+			break;
+		case PARKING_GSENSOR_HIGH:
+			GSensor_DA380_SetSensitivity(GSENSOR_SENSITIVITY_HIGH);
+			GSensor_DA380_Sensitivity_Parking(GSENSOR_SENSITIVITY_HIGH);
+			break;
+		default:
+			GSensor_DA380_SetSensitivity(GSENSOR_SENSITIVITY_OFF);
+			break;
+		}
+	}
+#endif
+
+	//DBG_ERR(("MovieExe_OnGSENSOR =%d\r\n ",FL_PARKING_GSENSOR));
+	return NVTEVT_CONSUME;
+}
+
+//-------------------------------------------------------------------------------------------------
+UINT32 Movie_GetCyclicRecTime(void)
+{
+	UINT32 uiCyclicRecTime = 0;
+
+	switch (UI_GetData(FL_MOVIE_CYCLIC_REC)) {
+	case MOVIE_CYCLICREC_1MIN:
+		uiCyclicRecTime = 60;
+		break;
+	case MOVIE_CYCLICREC_2MIN:
+		uiCyclicRecTime = 120;
+		break;
+	case MOVIE_CYCLICREC_3MIN:
+		//DBG_DUMP("call Movie_GetCyclicRecTime MOVIE_CYCLICREC_3MIN \r\n");
+		uiCyclicRecTime = 180;
+		break;
+	case MOVIE_CYCLICREC_5MIN:
+		//DBG_DUMP("call Movie_GetCyclicRecTime MOVIE_CYCLICREC_5MIN \r\n");
+		uiCyclicRecTime = 300;
+		break;
+	case MOVIE_CYCLICREC_10MIN:
+		//DBG_DUMP("call Movie_GetCyclicRecTime MOVIE_CYCLICREC_10MIN \r\n");
+		uiCyclicRecTime = 600;
+		break;
+	case MOVIE_CYCLICREC_OFF:
+		uiCyclicRecTime = 900;
+		break;
+	default:
+		uiCyclicRecTime = 300;
+		break;
+	}
+
+	return uiCyclicRecTime;
+}
+
 
 INT32 MovieExe_OnCyclicRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -5654,22 +6020,32 @@ INT32 MovieExe_OnCyclicRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
 	switch (uiSelect) {
 	case MOVIE_CYCLICREC_1MIN:
+		//DBG_DUMP("call MovieExe_OnCyclicRec MOVIE_CYCLICREC_1MIN\r\n");
 		gMovie_Rec_Option.seamless_sec = 60;
 		break;
 
+	case MOVIE_CYCLICREC_2MIN:
+		//DBG_DUMP("call MovieExe_OnCyclicRec MOVIE_CYCLICREC_3MIN\r\n");
+		gMovie_Rec_Option.seamless_sec = 120;
+		break;
+
 	case MOVIE_CYCLICREC_3MIN:
+		//DBG_DUMP("call MovieExe_OnCyclicRec MOVIE_CYCLICREC_3MIN\r\n");
 		gMovie_Rec_Option.seamless_sec = 180;
 		break;
 
 	case MOVIE_CYCLICREC_5MIN:
+		//DBG_DUMP("call MovieExe_OnCyclicRec MOVIE_CYCLICREC_5MIN\r\n");
 		gMovie_Rec_Option.seamless_sec = 300;
 		break;
 
 	case MOVIE_CYCLICREC_10MIN:
+		//DBG_DUMP("call MovieExe_OnCyclicRec MOVIE_CYCLICREC_10MIN\r\n");
 		gMovie_Rec_Option.seamless_sec = 600;
 		break;
 
 	case MOVIE_CYCLICREC_OFF:
+		//DBG_DUMP("call MovieExe_OnCyclicRec MOVIE_CYCLICREC_10MIN\r\n");
 		gMovie_Rec_Option.seamless_sec = 900;
 		break;
 
@@ -5709,19 +6085,37 @@ INT32 MovieExe_OnCyclicRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 static void MovieExe_SetRecParamByRecID(MOVIE_CFG_REC_ID rec_id)
 {
 	// set record type (video only, video and audio, time-lapse, ...)
-	if (SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF) {
-		if (SysGetFlag(FL_MovieAudioRec) == MOVIE_AUD_REC_OFF) {
-			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_VID);
+	if (SysGetFlag(FL_PARKING_MODE) == PARKING_MODE_OFF) {	
+		if (SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF) {
+			if (SysGetFlag(FL_MovieAudioRec) == MOVIE_AUD_REC_OFF) {
+				ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_VID);
+			} else {
+				ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
+			}
+			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
+			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_FILE_ENDTYPE, (SysGetFlag(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_OFF) ? MOVREC_ENDTYPE_CUT_TILLCARDFULL : MOVREC_ENDTYPE_CUTOVERLAP);
 		} else {
-			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
-		}
-		ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
-		ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_FILE_ENDTYPE, (SysGetFlag(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_OFF) ? MOVREC_ENDTYPE_CUT_TILLCARDFULL : MOVREC_ENDTYPE_CUTOVERLAP);
+			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_TIMELAPSE);
+			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_TIMELAPSE_TIME, Get_MovieTimeLapseValue(SysGetFlag(FL_MOVIE_TIMELAPSE_REC)));
+			////ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_FILE_PLAYFRAMERATE, MOVIE_TIMELAPSE_PLAYFRAMERATE);
+			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_FILE_ENDTYPE, (SysGetFlag(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_OFF) ? MOVREC_ENDTYPE_CUT_TILLCARDFULL : MOVREC_ENDTYPE_CUTOVERLAP);
+		} 	
 	} else {
-		ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_TIMELAPSE);
-		ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_TIMELAPSE_TIME, Get_MovieTimeLapseValue(SysGetFlag(FL_MOVIE_TIMELAPSE_REC)));
-		////ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_FILE_PLAYFRAMERATE, MOVIE_TIMELAPSE_PLAYFRAMERATE);
-		ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_FILE_ENDTYPE, (SysGetFlag(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_OFF) ? MOVREC_ENDTYPE_CUT_TILLCARDFULL : MOVREC_ENDTYPE_CUTOVERLAP);
+		//add for parking mode
+		if (SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC) == PARKING_MODE_TIMELAPSEREC_OFF) {
+			if (SysGetFlag(FL_MovieAudioRec) == MOVIE_AUD_REC_OFF) {
+				ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_VID);
+			} else {
+				ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_AV);
+			}
+			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_TIMELAPSE_TIME, 0);
+			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_FILE_ENDTYPE, (SysGetFlag(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_OFF) ? MOVREC_ENDTYPE_CUT_TILLCARDFULL : MOVREC_ENDTYPE_CUTOVERLAP);
+		} else {
+			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_REC_FORMAT, _CFG_REC_TYPE_TIMELAPSE);
+			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_TIMELAPSE_TIME, Get_ParkingModeTimeLapseValue(SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC)));
+			//ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_FILE_PLAYFRAMERATE, MOVIE_TIMELAPSE_PLAYFRAMERATE);
+			ImageApp_MovieMulti_SetParam(rec_id, MOVIEMULTI_PARAM_FILE_ENDTYPE, (SysGetFlag(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_OFF) ? MOVREC_ENDTYPE_CUT_TILLCARDFULL : MOVREC_ENDTYPE_CUTOVERLAP);
+		}
 	}
 }
 static void MovieExe_RecMovieStamp(void)
@@ -5792,11 +6186,11 @@ static void MovieExe_RecMovieStamp(void)
 			STAMP_ON |
 			STAMP_AUTO |
 			STAMP_DATE_TIME |
-			STAMP_BOTTOM_RIGHT |
+			STAMP_BOTTOM_LEFT |
 			STAMP_POS_NORMAL |
-			STAMP_YY_MM_DD,
-	            Width,
-	            Height,
+			uiDateFormat,
+            Width,
+            Height,
 #if defined (WATERLOGO_FUNCTION) && (WATERLOGO_FUNCTION == ENABLE)
 	            (WATERLOGO_BUFFER *)&waterLogoSrc);
 #else
@@ -5822,11 +6216,11 @@ static void MovieExe_RecMovieStamp(void)
 			STAMP_ON |
 			STAMP_AUTO |
 			STAMP_DATE_TIME |
-			STAMP_BOTTOM_RIGHT |
+			STAMP_BOTTOM_LEFT |
 			STAMP_POS_NORMAL |
-			STAMP_YY_MM_DD,
-	            Width,
-	            Height,
+			uiDateFormat,
+            Width,
+            Height,
 #if defined (WATERLOGO_FUNCTION) && (WATERLOGO_FUNCTION == ENABLE)
 	            (WATERLOGO_BUFFER *)&waterLogoSrc);
 #else
@@ -5857,11 +6251,11 @@ static void MovieExe_RecMovieStamp(void)
 			STAMP_ON |
 			STAMP_AUTO |
 			STAMP_DATE_TIME |
-			STAMP_BOTTOM_RIGHT |
+			STAMP_BOTTOM_LEFT|
 			STAMP_POS_NORMAL |
-			STAMP_YY_MM_DD,
-	            Width,
-	            Height,
+			uiDateFormat,
+            Width,
+            Height,
 #if defined (WATERLOGO_FUNCTION) && (WATERLOGO_FUNCTION == ENABLE)
 	            (WATERLOGO_BUFFER *)&waterLogoSrc);
 #else
@@ -5893,9 +6287,9 @@ static void MovieExe_RecMovieStamp(void)
 				STAMP_ON |
 				STAMP_AUTO |
 				STAMP_DATE_TIME |
-				STAMP_BOTTOM_RIGHT |
+				STAMP_BOTTOM_LEFT |
 				STAMP_POS_NORMAL |
-				STAMP_YY_MM_DD,
+				uiDateFormat,//STAMP_YY_MM_DD,
 		            Width,
 		            Height,
 			#if defined (WATERLOGO_FUNCTION) && (WATERLOGO_FUNCTION == ENABLE)
@@ -5957,7 +6351,8 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		mask <<= 1;
 	}
 
-	if (UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) {
+	if (1) //(UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) 
+	{
 		MovieExe_RecMovieStamp();
 	}else{
 	 	MovieStamp_Disable();
@@ -6101,7 +6496,6 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 				 }
 			 }
 #else
-			if(ImageApp_MovieMulti_IsStreamRunning(_CFG_ETHCAM_ID_1 + j)==0){
 	#if (ETH_REARCAM_CAPS_COUNT == 1)
 			EthCam_SendXMLCmd(j, ETHCAM_PORT_DATA1 ,ETHCAM_CMD_TX_STREAM_STOP, 0);
 	#endif
@@ -6117,12 +6511,15 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 				DBG_DUMP("===========REAR MOOV FUNC CLOSE.=====================\r\n");
 			}
 			#endif
-			//#NT#2023/03/27#HTK ADD -end			
+			//#NT#2023/03/27#HTK ADD -end
+			
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_UTC_AUTO_EN,TRUE);//add by haotek.
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_FLUSH_SEC, 10);
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_WRITE_BLKSIZE, 0x200000);
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_BUFRESSEC, uifile_buffer_reserved_sec);
+			#if(PRE_RECORD_DET_FUNC==ENABLE)
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_BUFRESSEC_EMR, uifile_buffer_reserved_sec + gMovie_Rec_Option.emr_sec);
+			#endif
 	#if (ETH_REARCAM_CAPS_COUNT >= 2)
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_MAX_POP_SIZE, (16*1024*1024));
 	#endif
@@ -6131,7 +6528,6 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			socketCliEthData1_RecvResetParam(j);
 			EthCam_SendXMLCmd(j, ETHCAM_PORT_DATA1 ,ETHCAM_CMD_TX_STREAM_START, 0);
 	#endif
-			}
 #endif
 		}
 	}
@@ -6222,7 +6618,7 @@ INT32 MovieExe_OnRecStop(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
 	// Enable auto power off/USB detect timer
 	KeyScan_EnableMisc(TRUE);
-	if (UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON && ImageApp_MovieMulti_IsStreamRunning(_CFG_STRM_ID_1)==0) {
+	if (/*UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON &&*/ ImageApp_MovieMulti_IsStreamRunning(_CFG_STRM_ID_1)==0) {
 		MovieStamp_Disable();
 	}
 
@@ -6292,15 +6688,15 @@ static void MovieExe_WifiMovieStamp(void)
 
 		MovieStamp_SetColor(uiVEncOutPortId, &StampColorBg, &StampColorFr, &StampColorFg);
 		DBG_DUMP("wifi VEncOutPortId=%d, GetVdoEncPort(_CFG_STRM_ID_1)=0x%x\r\n",uiVEncOutPortId,ImageApp_MovieMulti_GetVdoEncPort(_CFG_STRM_ID_1));
-
+		DBG_DUMP("wifi Width = %d, Height = %d\r\n",Width,Height);
 		MovieStamp_Setup(
 			uiVEncOutPortId,
 			STAMP_ON |
 			STAMP_AUTO |
 			STAMP_DATE_TIME |
-			STAMP_BOTTOM_RIGHT |
+			STAMP_BOTTOM_LEFT |
 			STAMP_POS_NORMAL |
-			STAMP_YY_MM_DD,
+			uiDateFormat, //STAMP_YY_MM_DD,
 			Width,
 			Height,
 #if defined (WATERLOGO_FUNCTION) && (WATERLOGO_FUNCTION == ENABLE)
@@ -6355,7 +6751,8 @@ INT32 MovieExe_OnStrmStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
 
 //#NT#2018/06/15#KCHong -end
-	if (UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) {
+	if (1) //(UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) 
+	{
 		MovieExe_WifiMovieStamp();
 	}
 	return NVTEVT_CONSUME;
@@ -6466,10 +6863,10 @@ INT32 MovieExe_OnUvacStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		STAMP_ON |
 		STAMP_AUTO |
 		STAMP_DATE_TIME |
-		STAMP_BOTTOM_RIGHT |
+		STAMP_BOTTOM_LEFT |
 		STAMP_POS_NORMAL |
 		STAMP_BG_TRANSPARENT |
-		STAMP_YY_MM_DD |
+		uiDateFormat |
 		STAMP_IMG_420UV,
 		gUIUvacVidReso[0].width,
 		gUIUvacVidReso[0].height,
@@ -6571,15 +6968,27 @@ INT32 MovieExe_OnProtectAuto(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 
 	if (UI_GetData(FL_MOVIE_URGENT_PROTECT_AUTO) == MOVIE_URGENT_PROTECT_AUTO_ON ||
 		UI_GetData(FL_MOVIE_URGENT_PROTECT_MANUAL) == MOVIE_URGENT_PROTECT_MANUAL_ON) {
-		if (gMovie_Rec_Option.emr_on == _CFG_EMR_OFF) {
+		if (1)//(gMovie_Rec_Option.emr_on == _CFG_EMR_OFF) 
+		{
 			if (GetMovieRecType_2p(UI_GetData(FL_MOVIE_SIZE)) == MOVIE_REC_TYPE_FRONT) {
-#if (_BOARD_DRAM_SIZE_ == 0x04000000)
-				gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;  // set crash
+#if 1//(_BOARD_DRAM_SIZE_ == 0x04000000)
+				//gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;  // set crash
+				#if (PRE_RECORD_DET_FUNC)	
+				if ((isACCTrigParkMode) && (isACCTrigPreRecordDet)) {
+					//DBG_DUMP("call MovieExe_OnProtectAuto _CFG_MAIN_EMR_ONLY!!\n");
+					gMovie_Rec_Option.emr_on = _CFG_MAIN_EMR_ONLY;	// emr only
+				} else {
+					//DBG_DUMP("call MovieExe_OnProtectAuto _CFG_EMR_SET_CRASH!!\n");
+					gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;	// set crash
+				}
+				#else
+				gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;	// set crash
+				#endif
 #else
 				gMovie_Rec_Option.emr_on = _CFG_MAIN_EMR_BOTH;  // main + emr
 #endif
 #if(defined(_NVT_ETHREARCAM_RX_))
-				gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;//_CFG_MAIN_EMR_PAUSE;  // set crash
+				//gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;//_CFG_MAIN_EMR_PAUSE;  // set crash
 #endif
 			} else {
 				gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;  // set crash
@@ -6603,8 +7012,9 @@ INT32 MovieExe_OnProtectAuto(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 
 		}
 	} else {
-		if (gMovie_Rec_Option.emr_on != _CFG_EMR_OFF) {
-			gMovie_Rec_Option.emr_on = _CFG_EMR_OFF;
+		if (1)//(gMovie_Rec_Option.emr_on != _CFG_EMR_OFF) 
+		{
+			gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;//_CFG_EMR_OFF;
 			for (i = 0; i < SENSOR_CAPS_COUNT; i++) {
 				ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_EMRON, gMovie_Rec_Option.emr_on);
 			}
@@ -6633,15 +7043,26 @@ INT32 MovieExe_OnProtectManual(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 
 	if (UI_GetData(FL_MOVIE_URGENT_PROTECT_AUTO) == MOVIE_URGENT_PROTECT_AUTO_ON ||
 		UI_GetData(FL_MOVIE_URGENT_PROTECT_MANUAL) == MOVIE_URGENT_PROTECT_MANUAL_ON) {
-		if (gMovie_Rec_Option.emr_on == _CFG_EMR_OFF) {
+		if (1){//(gMovie_Rec_Option.emr_on == _CFG_EMR_OFF) 
 			if (GetMovieRecType_2p(UI_GetData(FL_MOVIE_SIZE)) == MOVIE_REC_TYPE_FRONT) {
-#if (_BOARD_DRAM_SIZE_ == 0x04000000)
-				gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;  // set crash
+#if 1//(_BOARD_DRAM_SIZE_ == 0x04000000)
+				//gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;  // set crash
+				#if (PRE_RECORD_DET_FUNC)	
+				if ((isACCTrigParkMode) && (isACCTrigPreRecordDet)) {
+					gMovie_Rec_Option.emr_on = _CFG_MAIN_EMR_ONLY;  // emr only
+					//DBG_DUMP("call MovieExe_OnProtectManual _CFG_MAIN_EMR_ONLY!!\n");
+				} else {
+					gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;  // set crash
+					//DBG_DUMP("call MovieExe_OnProtectManual _CFG_EMR_SET_CRASH!!\n");
+				}
+				#else 
+				gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;	// set crash
+				#endif
 #else
 				gMovie_Rec_Option.emr_on = _CFG_MAIN_EMR_BOTH;  // main + emr
 #endif
 #if(defined(_NVT_ETHREARCAM_RX_))
-				gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;//_CFG_MAIN_EMR_PAUSE;  // set crash
+				//gMovie_Rec_Option.emr_on = _CFG_EMR_SET_CRASH;//_CFG_MAIN_EMR_PAUSE;  // set crash
 #endif
 
 			} else {
@@ -6791,17 +7212,55 @@ INT32 MovieExe_OnEV(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	if (paramNum) {
 		uiSelect = paramArray[0];
 	}
-
+	//DBG_DUMP("call MovieExe_OnEV\r\n");
 	UI_SetData(FL_EV, uiSelect);
 	//photo and movie use the same EV value,should syncronize photo EV setting
 	Photo_SetUserIndex(PHOTO_USR_EV, uiSelect);
-	MovieExe_AE_SetUIInfo(AE_UI_EV, Get_EVValue(uiSelect));
+	//MovieExe_AE_SetUIInfo(AE_UI_EV, Get_EVValue(uiSelect));
+	MovieExe_AE_SetUIInfo(AET_ITEM_EV, Get_EVValue(uiSelect));
 
 	return NVTEVT_CONSUME;
 }
 
 INT32 MovieExe_OnSensorRotate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
+#if 0
+	UINT32 uiSelect = 0;
+	//DBG_DUMP("call MovieExe_OnSensorRotate!\n");
+	if (paramNum) {
+		uiSelect = paramArray[0];
+	}
+
+	if (uiSelect == SEN_ROTATE_ON) {
+		UI_SetData(FL_MOVIE_SENSOR_ROTATE, SEN_ROTATE_ON);
+		gMovie_Rec_Info[0].sensor_rotate = TRUE;
+		LCD_Rotate_180();
+	} else {
+		UI_SetData(FL_MOVIE_SENSOR_ROTATE, SEN_ROTATE_OFF);
+		gMovie_Rec_Info[0].sensor_rotate = FALSE;
+		LCD_Rotate_None();
+	}
+
+	if (UI_GetData(FL_MOVIE_SENSOR_ROTATE) == SEN_ROTATE_ON) {	
+		if ((UI_GetData(FL_REAR_SENSOR_MIRROR) == SEN_ROTATE_ON)) {
+			if (System_GetEnableSensor() & SENSOR_1) {
+				ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[0].rec_id, MOVIEMULTI_PARAM_IPL_MIRROR, HD_VIDEO_DIR_MIRRORY);
+			}
+		} else {
+			if (System_GetEnableSensor() & SENSOR_1) {
+				ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[0].rec_id, MOVIEMULTI_PARAM_IPL_MIRROR, HD_VIDEO_DIR_MIRRORXY);
+			}
+		}  
+	} else {
+		if (UI_GetData(FL_REAR_SENSOR_MIRROR) == REAR_SENSOR_MIRROR_ON) {
+			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[0].rec_id, MOVIEMULTI_PARAM_IPL_MIRROR, HD_VIDEO_DIR_MIRRORX);
+		} else {
+			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[0].rec_id, MOVIEMULTI_PARAM_IPL_MIRROR, HD_VIDEO_DIR_NONE);
+		}
+	}	
+	return NVTEVT_CONSUME;
+
+#else
 	UINT32 uiSelect = 0;
 
 	if (paramNum) {
@@ -6821,6 +7280,7 @@ INT32 MovieExe_OnSensorRotate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 		ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[1].rec_id, MOVIEMULTI_PARAM_IPL_MIRROR, ((UI_GetData(FL_MOVIE_SENSOR_ROTATE) == SEN_ROTATE_ON) ? HD_VIDEO_DIR_MIRRORXY : HD_VIDEO_DIR_NONE));
 	}
 	return NVTEVT_CONSUME;
+#endif
 }
 
 INT32 MovieExe_OnMotionDet(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -6832,49 +7292,56 @@ INT32 MovieExe_OnMotionDet(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	}
 
 	UI_SetData(FL_MOVIE_MOTION_DET, uiSelect);
+	
+    if (UI_GetData(FL_MOVIE_MOTION_DET) == MOVIE_MOTIONDET_ON) {
+        UI_SetData(FL_PARKING_MODE, PARKING_MODE_OFF);
+        UI_SetData(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_OFF);
+    }
+
+    if (!isACCTrigParkMode) { //normal mode
+        MD_SetLevel(0, 12);
+    }
 
 	return NVTEVT_CONSUME;
 }
 
+INT32 MovieExe_OnParkingMotionDet(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 uiSelect = 0;
+
+	if (paramNum) {
+		uiSelect = paramArray[0];
+	}
+
+	UI_SetData(FL_PARKING_MOTION_DET, uiSelect);
+
+    if (isACCTrigParkMode) { //parking mode
+        switch (UI_GetData(FL_PARKING_MOTION_DET)) {
+        case PARKING_MOTIONDET_LOW:
+            MD_SetLevel(0, 6);
+            break;
+        case PARKING_MOTIONDET_MED:
+            MD_SetLevel(0, 12);
+            break;
+        case PARKING_MOTIONDET_HIGH:
+            MD_SetLevel(0, 18);
+            break;
+        default:
+            MD_SetLevel(0, 12);
+            break;
+        }
+    }
+
+	return NVTEVT_CONSUME;
+}
+
+BOOL gEthCamMotionDet = FALSE;
 INT32 MovieExe_OnMotionDetRun(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	if (paramNum >= 1) {
-		*(UINT32 *)(paramArray[0]) = MovieAlgFunc_MD_GetResult();
+		*(UINT32 *)(paramArray[0]) = (MovieAlgFunc_MD_GetResult()||((gEthCamMotionDet)&&FlowMovie_IsEthCamConnectOK()));
 	}
 	return NVTEVT_CONSUME;
-}
-void FlowMovie_SyncEthCamMneu(UINT8 id,BOOL bReOpen)
-{
-	#if 1
-	ETHCAM_MENU_SETTING sEthCamMenuSetting[ETH_REARCAM_CAPS_COUNT]={0};
-	EthCam_SendXMLCmd(id, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_MENU_SETTING, bReOpen);
-	#if (ETH_REARCAM_CAPS_COUNT>=2)
-	sEthCamMenuSetting[id].Size=MOVIE_SIZE_FRONT_1920x1080P30;//MOVIE_SIZE_CLONE_1920x1080P30_1280x720P60;//UI_GetData(FL_MOVIE_SIZE);
-	#else
-	sEthCamMenuSetting[id].Size= 40;//MOVIE_SIZE_CLONE_1920x1080P30_1280x720P30;//UI_GetData(FL_MOVIE_SIZE);
-	#endif
-	sEthCamMenuSetting[id].WDR=MOVIE_WDR_OFF;//tx_671_always close,if you open wdr ,hdr will close .
-	sEthCamMenuSetting[id].EV=UI_GetData(FL_EV);
-	sEthCamMenuSetting[id].DateImprint=UI_GetData(FL_MOVIE_DATEIMPRINT);
-	sEthCamMenuSetting[id].SensorRotate=UI_GetData(FL_MOVIE_SENSOR_ROTATE);
-	sEthCamMenuSetting[id].Codec=MOVIE_CODEC_H265;//UI_GetData(FL_MOVIE_CODEC);
-	//sEthCamMenuSetting[id].Codec=UI_GetData(FL_MOVIE_CODEC);
-	#if (ETH_REARCAM_CAPS_COUNT == 1)
-	sEthCamMenuSetting[id].TimeLapse=UI_GetData(FL_MOVIE_TIMELAPSE_REC);
-	#else
-	sEthCamMenuSetting[id].TimeLapse=MOVIE_TIMELAPSEREC_OFF;
-	#endif
-	DBG_DUMP("Size=%d\r\n", sEthCamMenuSetting[id].Size);
-	sEthCamMenuSetting[id].ParkingMode=MOVIE_TIMELAPSEREC_OFF;//TBD
-	sEthCamMenuSetting[id].ParkingTimeLapse=MOVIE_TIMELAPSEREC_OFF;//TBD
-	sEthCamMenuSetting[id].ACCTrigParkMode=MOVIE_TIMELAPSEREC_OFF;//TBD
-	sEthCamMenuSetting[id].HDR=MOVIE_HDR_ON;// UI_GetData(FL_MOVIE_HDR);
-	EthCam_SendXMLData(id, (UINT8 *)&sEthCamMenuSetting[id], sizeof(ETHCAM_MENU_SETTING));
-	//if(memcmp(&g_sEthCamMenuSetting, &sEthCamMenuSetting, sizeof(ETHCAM_MENU_SETTING))){
-	//	bReOpenMovie=1;
-	//}
-	//memcpy(&g_sEthCamMenuSetting[id], &sEthCamMenuSetting[id], sizeof(ETHCAM_MENU_SETTING));	
-	#endif
 }
 
 BOOL FlowMovie_CheckReOpenItem(void)
@@ -6889,6 +7356,24 @@ BOOL FlowMovie_CheckReOpenItem(void)
 		UI_SetData(FL_MOVIE_SIZE, UI_GetData(FL_MOVIE_SIZE_MENU));
 		bReOpen = TRUE;
 		bMovieSizeMenu = TRUE;
+		#if (!defined(COUNTRY_JP))	
+        if ((UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_2560x1440P60) 
+			/*||(UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_1920x1080P60)*/){
+			UI_SetData(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+			UI_SetData(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+			UI_SetData(FL_MOVIE_WDR, MOVIE_WDR_OFF);
+			UI_SetData(FL_MOVIE_WDR_MENU, MOVIE_WDR_OFF);
+		}
+		#else//jp
+		if ((UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_2560x1440P60) 
+			||(UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_2304x1296P60)
+			||(UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_1920x1080P60)){
+			UI_SetData(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+			UI_SetData(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+			UI_SetData(FL_MOVIE_WDR, MOVIE_WDR_OFF);
+			UI_SetData(FL_MOVIE_WDR_MENU, MOVIE_WDR_OFF);
+		}
+		#endif
 
         g_i32AdFakeFd = open(AD_FAKE_DEV, O_RDWR);
         if (g_i32AdFakeFd < 0)
@@ -6909,20 +7394,48 @@ BOOL FlowMovie_CheckReOpenItem(void)
 
 	if (UI_GetData(FL_MOVIE_HDR_MENU) != UI_GetData(FL_MOVIE_HDR)) {
 		if (UI_GetData(FL_MOVIE_HDR_MENU) == MOVIE_HDR_ON) {
-			UI_SetData(FL_MOVIE_WDR, MOVIE_WDR_OFF);
-			UI_SetData(FL_MOVIE_WDR_MENU, MOVIE_WDR_OFF);
+			UI_SetData(FL_MOVIE_WDR, MOVIE_WDR_ON);
+			UI_SetData(FL_MOVIE_WDR_MENU, MOVIE_WDR_ON);
 			UI_SetData(FL_MovieRSCIndex, MOVIE_RSC_OFF);
 			UI_SetData(FL_MovieRSCIndex_MENU, MOVIE_RSC_OFF);
 		}
 		UI_SetData(FL_MOVIE_HDR, UI_GetData(FL_MOVIE_HDR_MENU));
 		bReOpen = TRUE;
 	}
+#if (!defined(COUNTRY_JP))	
+	if ((UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_2560x1440P60)
+		/*||(UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_1920x1080P60)*/)
+	{
+		UI_SetData(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+		UI_SetData(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+		UI_SetData(FL_MOVIE_WDR, MOVIE_WDR_OFF);
+		UI_SetData(FL_MOVIE_WDR_MENU, MOVIE_WDR_OFF);
+		bReOpen = TRUE;
+	} 
+#else
+	if ((UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_2560x1440P60)
+		||(UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_2304x1296P60)
+		||(UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_1920x1080P60))
+	{
+		UI_SetData(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+		UI_SetData(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+		UI_SetData(FL_MOVIE_WDR, MOVIE_WDR_OFF);
+		UI_SetData(FL_MOVIE_WDR_MENU, MOVIE_WDR_OFF);
+		bReOpen = TRUE;
+	} 
+#endif
+    if (UI_GetData(FL_MOVIE_HDR) == MOVIE_HDR_OFF) {
+		
+		UI_SetData(FL_MOVIE_WDR, MOVIE_WDR_ON);
+		UI_SetData(FL_MOVIE_WDR_MENU, MOVIE_WDR_ON);	
+     }
 
+	
 	if (UI_GetData(FL_MOVIE_WDR_MENU) != UI_GetData(FL_MOVIE_WDR)) {
 
 		if (UI_GetData(FL_MOVIE_WDR_MENU) == MOVIE_WDR_ON) {
-			UI_SetData(FL_MOVIE_HDR, MOVIE_HDR_OFF);
-			UI_SetData(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+			//UI_SetData(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+			//UI_SetData(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
 		}
 		UI_SetData(FL_MOVIE_WDR, UI_GetData(FL_MOVIE_WDR_MENU));
 		bReOpen = TRUE;
@@ -6996,7 +7509,7 @@ BOOL FlowMovie_CheckReOpenItem(void)
 #endif
 
 	if (UI_GetData(FL_DUAL_CAM_MENU) != UI_GetData(FL_DUAL_CAM)) {
-		if (bMovieSizeMenu == FALSE) {
+		/*if (bMovieSizeMenu == FALSE) {
 			switch (UI_GetData(FL_MOVIE_SIZE_MENU)) {
 			case MOVIE_SIZE_FRONT_2880x2160P24:
 			case MOVIE_SIZE_FRONT_2560x1440P30:
@@ -7010,7 +7523,7 @@ BOOL FlowMovie_CheckReOpenItem(void)
 				Ux_PostEvent(NVTEVT_EXE_DUALCAM, 1, UI_GetData(FL_DUAL_CAM_MENU));
 				break;
 			}
-		} else {
+		} else */{
 			UI_SetData(FL_DUAL_CAM, UI_GetData(FL_DUAL_CAM_MENU));
 			#if (PIP_VIEW_FUNC == ENABLE)
 			PipView_SetStyle(UI_GetData(FL_DUAL_CAM));
@@ -7059,6 +7572,10 @@ BOOL FlowMovie_CheckReOpenItem(void)
 		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_SENSOR_ROTATE, 1, UI_GetData(FL_MOVIE_SENSOR_ROTATE_MENU));
 	}
 
+    if (UI_GetData(FL_VIDEO_FORMAT_MENU) != UI_GetData(FL_VIDEO_FORMAT)) {
+        UI_SetData(FL_VIDEO_FORMAT, UI_GetData(FL_VIDEO_FORMAT_MENU));
+        bReOpen = TRUE;
+    }
 
 #if(defined(_NVT_ETHREARCAM_RX_))
 	UINT16 j;
@@ -7100,7 +7617,6 @@ BOOL FlowMovie_CheckReOpenItem(void)
 			}
 		}
 	}
-	
 	//ETHCAM_MENU_SETTING sEthCamMenuSetting[ETH_REARCAM_CAPS_COUNT]={0};
 	for(j=0;j<ETH_REARCAM_CAPS_COUNT;j++){
 		if(socketCliEthCmd_IsConn(j) && EthCamNet_GetEthLinkStatus(j)==ETHCAM_LINK_UP){
@@ -7368,6 +7884,233 @@ INT32 MovieExe_OnQRCodeStop(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 	return NVTEVT_CONSUME;
 }
 
+INT32 MovieExe_OnMovieBitrate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 uiSelect = 0;
+
+	if (paramNum > 0) {
+		uiSelect = paramArray[0];
+	}
+
+	DBG_IND("uiSelect %d\r\n", uiSelect);
+	UI_SetData(FL_MOVIE_BITRATE, uiSelect);
+
+	if ((isACCTrigParkMode) && ((isACCTrigLowBitrate) || (isACCTrigPreRecordDet))) {
+		//when ACC TrigLowBitrate, use MovieExe_LowBitrateRec() or MovieExe_PM_MD_LowBitrateRec()
+		return NVTEVT_CONSUME;
+	}
+
+	switch (UI_GetData(FL_MOVIE_BITRATE)) {
+	case MOVIE_BITRATE_LOW:
+		if (UI_GetData(FL_MOVIE_CODEC) == MOVIE_CODEC_H265) {
+			//SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3150*1024);
+			//DBG_DUMP("call MOVIE_BITRATE_LOW MOVIE_CODEC_H265\r\n");
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 1750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 1750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 1750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P60, 1750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P30, 1750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P60, 1750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P30, 1750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2304x1296P30, 1500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P60, 1500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P30, 1250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P120, 1250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P60,  1024*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P30,  500*1024);
+		} else {
+			//DBG_DUMP("call MOVIE_BITRATE_LOW\r\n");
+			// SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3150*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P60, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P30, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P60, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P30, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2304x1296P30, 2000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P60, 2000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P30, 2000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P120, 2000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P60,  1500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P30,  1024*1024);
+		}
+		break;
+
+	case MOVIE_BITRATE_MED:
+	default:
+		if (0)//(UI_GetData(FL_MOVIE_CODEC) == MOVIE_CODEC_H265) 
+		{
+			//SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3450*1024);
+			//DBG_DUMP("call MOVIE_BITRATE_MED MOVIE_CODEC_H265\r\n");
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 2350*1024);	
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P60, 2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P30, 2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P60, 2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P30, 2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2304x1296P30, 2000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P60, 2000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P30, 1750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P120, 1750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P60,  1500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P30,  1024*1024);
+		} else {
+			//DBG_DUMP("call MOVIE_BITRATE_MED\r\n");
+			//SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3450*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 3150*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 3150*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 3150*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P60, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P30, 3150*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P60, 3150*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P30, 3150*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2304x1296P30, 2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P60, 2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P30, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P120, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P60,  2000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P30,  1500*1024);
+		}
+		break;
+
+	case MOVIE_BITRATE_HIGH:
+		if (UI_GetData(FL_MOVIE_CODEC) == MOVIE_CODEC_H265) {
+			//SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3900*1024);
+			//DBG_DUMP("call MOVIE_BITRATE_HIGH MOVIE_CODEC_H265\r\n");
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P60, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P30, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P60, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P30, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2304x1296P30, 2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P60, 2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P30, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P120, 2250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P60,  2000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P30,  1500*1024);
+		} else {
+			//DBG_DUMP("call MOVIE_BITRATE_HIGH\r\n");
+			//SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3900*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 3600*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 3600*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P60, 3250*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P30, 3700*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P60, 3700*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P30, 3700*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2304x1296P30, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P60, 3000*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P30, 2750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P120, 2750*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P60,  2500*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P30,  2000*1024);
+		}
+		break;
+    }
+
+#if 0
+	if(UI_GetData(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_10MIN) {
+		//DBG_DUMP("call FL_MOVIE_CYCLIC_REC = MOVIE_CYCLICREC_10MIN\r\n");
+		switch(UI_GetData(FL_MOVIE_SIZE)) {
+		case MOVIE_SIZE_FRONT_2592x1944P30:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 2250*1024);
+			break;
+		case MOVIE_SIZE_FRONT_2560x1600P30:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 2500*1024);
+			break;
+		case MOVIE_SIZE_FRONT_2560x1440P60:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P60, 2500*1024);
+			break;
+		case MOVIE_SIZE_FRONT_2560x1440P30:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P30, 2500*1024);
+			break;
+		case MOVIE_SIZE_FRONT_2560x1080P60:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P60, 2500*1024);
+			break;
+		case MOVIE_SIZE_FRONT_2560x1080P30:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P30, 2500*1024);
+			break;
+		default:
+			break;
+		}
+	}
+
+	if(UI_GetData(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_OFF) {
+		//DBG_DUMP("call FL_MOVIE_CYCLIC_REC = MOVIE_CYCLICREC_OFF\r\n");
+		switch(UI_GetData(FL_MOVIE_SIZE)) {
+		case MOVIE_SIZE_FRONT_2560x1440P30:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P30, 2000*1024);
+			break;
+		case MOVIE_SIZE_FRONT_2560x1440P60:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P60, 2000*1024);
+			break;
+		case MOVIE_SIZE_FRONT_2560x1600P30:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 2000*1024);
+			break;
+		case MOVIE_SIZE_FRONT_2592x1944P30:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 1500*1024);
+			break;
+		case MOVIE_SIZE_FRONT_2560x1080P60:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P60, 2000*1024);
+			break;
+		case MOVIE_SIZE_FRONT_2560x1080P30:
+			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P30, 2000*1024);
+			break;		
+		default:
+			break;
+		}
+	}
+#endif
+	return NVTEVT_CONSUME;
+}
+
+void MovieExe_LowBitrateRec(void)
+{
+	//DBG_DUMP("call MovieExe_LowBitrateRec\r\n");
+	//SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 460*1024);
+#if 1
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P60, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P60, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2304x1296P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P60, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P120, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P60,  1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P30,  1024*1024);
+#endif
+}
+
+void MovieExe_PM_MD_LowBitrateRec(void)
+{
+#if 1
+	//SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P60, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1440P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P60, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1080P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_2304x1296P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P60, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_1920x1080P30, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P120, 1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P60,  1024*1024);
+	SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P30,  1024*1024);
+#endif
+}
+
+
+
 ////////////////////////////////////////////////////////////
 
 EVENT_ENTRY CustomMovieObjCmdMap[] = {
@@ -7375,7 +8118,10 @@ EVENT_ENTRY CustomMovieObjCmdMap[] = {
 	{NVTEVT_EXE_CLOSE,					MovieExe_OnClose					},
 	{NVTEVT_EXE_MOVIESIZE,				MovieExe_OnMovieSize				},
 	{NVTEVT_EXE_MOVIE_AUDIO,			MovieExe_OnMovieAudio				},
+	{NVTEVT_EXE_MOVIE_VOICE,			MovieExe_OnMovieVoice				},
 	{NVTEVT_EXE_MOVIE_DATE_IMPRINT,		MovieExe_OnDateImprint				},
+	{NVTEVT_EXE_GSENSOR,              	MovieExe_OnGSENSOR                  },
+	{NVTEVT_EXE_PARKING_GSENSOR,      	MovieExe_OnParkingGSensor           },
 	{NVTEVT_EXE_CYCLIC_REC,				MovieExe_OnCyclicRec				},
 	{NVTEVT_EXE_MOVIE_REC_START,		MovieExe_OnRecStart					},
 	{NVTEVT_EXE_MOVIE_REC_STOP,			MovieExe_OnRecStop					},
@@ -7391,11 +8137,13 @@ EVENT_ENTRY CustomMovieObjCmdMap[] = {
 	{NVTEVT_EXE_MOVIE_UVAC_START,		MovieExe_OnUvacStart				},
 	{NVTEVT_EXE_MOVIE_UVAC_STOP,		MovieExe_OnUvacStop					},
 	{NVTEVT_EXE_MOTION_DET,				MovieExe_OnMotionDet				},
+	{NVTEVT_EXE_PARKING_MOTION_DET,   	MovieExe_OnParkingMotionDet         },
 	{NVTEVT_EXE_MOTION_DET_RUN,			MovieExe_OnMotionDetRun				},
   	{NVTEVT_EXE_MOVIE_SENSORHOTPLUG,	MovieExe_OnSensorHotPlug			},
-	{NVTEVT_EXE_MOVIE_ETHCAMHOTPLUG,  MovieExe_OnEthcamHotPlug            },
-	{NVTEVT_EXE_MOVIE_QRCODE_START,   MovieExe_OnQRCodeStart              },
-	{NVTEVT_EXE_MOVIE_QRCODE_STOP,    MovieExe_OnQRCodeStop               },
+	//{NVTEVT_EXE_MOVIE_ETHCAMHOTPLUG,  	MovieExe_OnEthcamHotPlug            },//when connect ,don't auto start rec
+	{NVTEVT_EXE_MOVIE_QRCODE_START,   	MovieExe_OnQRCodeStart              },
+	{NVTEVT_EXE_MOVIE_QRCODE_STOP,    	MovieExe_OnQRCodeStop               },
+	{NVTEVT_EXE_MOVIE_BITRATE,		  	MovieExe_OnMovieBitrate		 		},
 
 	{NVTEVT_NULL,						0},  //End of Command Map
 };

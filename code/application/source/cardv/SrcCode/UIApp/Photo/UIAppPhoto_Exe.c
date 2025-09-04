@@ -65,7 +65,7 @@ static PHOTO_CAP_FOLDER_NAMING gPhoto_Folder_Naming = {
 #endif
 
 
-#define PHOTO_ROOT_PATH         "A:\\Novatek\\"
+//#define PHOTO_ROOT_PATH         "A:\\Novatek\\"
 #define FILE_SN_MAX		999999
 
 

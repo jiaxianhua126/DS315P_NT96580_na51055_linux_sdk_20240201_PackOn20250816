@@ -20,7 +20,7 @@
 //#define ENABLE      1
 //#define DISABLE     0
 
-#if defined(_MODEL_580_CARDV_ETHCAM_RX_EVB_) || defined(_MODEL_CARDV_D160_) || defined(_sen_imx415_) || defined(_sen_imx317_) || defined(_sen_imx376_)
+#if defined(_MODEL_580_CARDV_ETHCAM_RX_EVB_) || defined(_MODEL_CARDV_D160_) || defined(_sen_imx415_) || defined(_sen_imx317_)
 #define VDO_SIZE_W                  3840 //raw buffer for D2D mode
 #define VDO_SIZE_H                  2160 //raw buffer for D2D mode
 
@@ -43,11 +43,11 @@
 
 #define VDO2_CLONE_SIZE_W            848
 #else
-    #define VDO_SIZE_W                  3840
-    #define VDO_SIZE_H                  2160
+    #define VDO_SIZE_W                  2592
+    #define VDO_SIZE_H                  1944
 
-    #define VDO_MAIN_SIZE_W             3840
-    #define VDO_MAIN_SIZE_H             2160
+    #define VDO_MAIN_SIZE_W             2592
+    #define VDO_MAIN_SIZE_H             1944
 
 #define VDO_CLONE_SIZE_W            848
 #define VDO_CLONE_SIZE_H            480
@@ -62,8 +62,8 @@
 #endif
 
 
-#define VDO_DISP_SIZE_W             960
-#define VDO_DISP_SIZE_H             180
+//#define VDO_DISP_SIZE_W             960
+//#define VDO_DISP_SIZE_H             180
 
 #define DBGINFO_BUFSIZE()	(0x200)
 #define CA_WIN_NUM_W        32
@@ -123,6 +123,7 @@ void Movie_CommPoolInit(void)
 #if (MOVIE_EIS == DISABLE)
         DspDevSize.w = p_video_out_syscaps->output_dim.w;
         DspDevSize.h = p_video_out_syscaps->output_dim.h;
+		DBG_DUMP("=============lcd width=%d height = %d============\r\n",DspDevSize.w,DspDevSize.h);
 #else
         if (SysGetFlag(FL_MOVIE_EIS) == EIS_ON) {
 #if defined(_MODEL_580_CARDV_EVB_)
@@ -196,7 +197,7 @@ void Movie_CommPoolInit(void)
 		    mem_cfg.pool_info[id].blk_size += GYRO_DATA_SIZE;
         }
 #endif
-		mem_cfg.pool_info[id].blk_cnt = 3;
+		mem_cfg.pool_info[id].blk_cnt = 6;
 		mem_cfg.pool_info[id].ddr_id = DDR_ID0;
 	}
 #endif
@@ -246,7 +247,7 @@ void Movie_CommPoolInit(void)
 	id ++;
 	mem_cfg.pool_info[id].type = HD_COMMON_MEM_COMMON_POOL;
 	mem_cfg.pool_info[id].blk_size = DBGINFO_BUFSIZE()+VDO_YUV_BUFSIZE(DspDevSize.w, DspDevSize.h, HD_VIDEO_PXLFMT_YUV420);
-	mem_cfg.pool_info[id].blk_cnt = 10;
+	mem_cfg.pool_info[id].blk_cnt = 8;
 	mem_cfg.pool_info[id].ddr_id = DDR_ID0;
     #else
 	mem_cfg.pool_info[id].type = HD_COMMON_MEM_COMMON_POOL;
@@ -289,7 +290,7 @@ void Movie_CommPoolInit(void)
 	//id ++;
 	mem_cfg.pool_info[id].type = HD_COMMON_MEM_COMMON_POOL;
 	mem_cfg.pool_info[id].blk_size = DBGINFO_BUFSIZE() + VDO_YUV_BUFSIZE(VDO_MAIN_SIZE_W, VDO_MAIN_SIZE_H, HD_VIDEO_PXLFMT_YUV420);
-	mem_cfg.pool_info[id].blk_cnt = 4; //3 for 3dnr-off, 4 for 3dnr-on
+	mem_cfg.pool_info[id].blk_cnt = 8; //3 for 3dnr-off, 4 for 3dnr-on //4
 	mem_cfg.pool_info[id].ddr_id = DDR_ID0;
 
 	// config common pool (clone)

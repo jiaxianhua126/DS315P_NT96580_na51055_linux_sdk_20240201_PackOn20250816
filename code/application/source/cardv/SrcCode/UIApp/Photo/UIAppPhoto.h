@@ -183,6 +183,7 @@ typedef enum {
 	NVTEVT_EXE_GDC              = 0x14002116,
 	NVTEVT_EXE_DEFOG              = 0x14002117,
 	NVTEVT_EXE_SENSORHOTPLUG    = 0x14002118,
+    NVTEVT_EXE_EV2              = 0x14002119,
 
 	/* INSERT NEW EVENT HRER */
 	//Capture Drive and Effect

@@ -7,8 +7,11 @@
 #include "NVTToolCommand.h"
 #include "UIWnd/SPORTCAM/UIFlow/UIFlowPlay/UIFlowWndPlayThumbRes.c"
 #include "PlaybackTsk.h"
+#include "FileDB.h"
 #include "exif/Exif.h"
 #include "UIApp/Play/UIPlayComm.h"
+#include "SysCommon.h"
+
 #define __MODULE__          UIPlayThumb
 #define __DBGLVL__          2 // 0=FATAL, 1=ERR, 2=WRN, 3=UNIT, 4=FUNC, 5=IND, 6=MSG, 7=VALUE, 8=USER
 #define __DBGFLT__          "*" //*=All, [mark]=CustomClass
@@ -46,11 +49,15 @@ CTRL_LIST_ITEM(UIFlowWndPlayThumb_StaticICN_FileFilm6)
 CTRL_LIST_ITEM(UIFlowWndPlayThumb_StaticICN_FileFilm7)
 CTRL_LIST_ITEM(UIFlowWndPlayThumb_StaticICN_FileFilm8)
 CTRL_LIST_ITEM(UIFlowWndPlayThumb_ThumbID)
+CTRL_LIST_ITEM(UIFlowWndPlayThumb_StaticFileList)
+CTRL_LIST_ITEM(UIFlowWndPlayThumb_ThumbFileDateTime)
+CTRL_LIST_ITEM(UIFlowWndPlayThumb_TipsBar)
 CTRL_LIST_END
 
 //----------------------UIFlowWndPlayThumbCtrl Event---------------------------
 INT32 UIFlowWndPlayThumb_OnOpen(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndPlayThumb_OnClose(VControl *, UINT32, UINT32 *);
+INT32 UIFlowWndPlayThumb_OnChildClose(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndPlayThumb_OnKeyUp(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndPlayThumb_OnKeyDown(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndPlayThumb_OnKeyLeft(VControl *, UINT32, UINT32 *);
@@ -69,10 +76,11 @@ INT32 UIFlowWndPlayThumb_OnMovieFinish(VControl *, UINT32, UINT32 *);
 EVENT_BEGIN(UIFlowWndPlayThumb)
 EVENT_ITEM(NVTEVT_OPEN_WINDOW, UIFlowWndPlayThumb_OnOpen)
 EVENT_ITEM(NVTEVT_CLOSE_WINDOW, UIFlowWndPlayThumb_OnClose)
+EVENT_ITEM(NVTEVT_CHILD_CLOSE,UIFlowWndPlayThumb_OnChildClose)
 EVENT_ITEM(NVTEVT_KEY_UP, UIFlowWndPlayThumb_OnKeyUp)
 EVENT_ITEM(NVTEVT_KEY_DOWN, UIFlowWndPlayThumb_OnKeyDown)
 EVENT_ITEM(NVTEVT_KEY_LEFT, UIFlowWndPlayThumb_OnKeyLeft)
-EVENT_ITEM(NVTEVT_KEY_RIGHT, UIFlowWndPlayThumb_OnKeyRight)
+//EVENT_ITEM(NVTEVT_KEY_RIGHT, UIFlowWndPlayThumb_OnKeyRight)
 EVENT_ITEM(NVTEVT_KEY_ENTER, UIFlowWndPlayThumb_OnKeyEnter)
 EVENT_ITEM(NVTEVT_KEY_MENU, UIFlowWndPlayThumb_OnKeyMenu)
 EVENT_ITEM(NVTEVT_KEY_MODE, UIFlowWndPlayThumb_OnKeyMode)
@@ -86,10 +94,11 @@ EVENT_ITEM(NVTEVT_CB_MOVIE_FINISH, UIFlowWndPlayThumb_OnMovieFinish)
 #endif
 EVENT_END
 
+static void UIFlowWndPlayThumb_IconDrawDCFFileID(BOOL bShow);
+
 extern PURECT FlowPB_ThumbDisplay(void);
 static void UIFlowWndPlayThumb_NaviKey(UINT32 key)
 {
-
 	BROWSE_NAVI_INFO BrowseNavi;
 	FlowPB_ClearAllThumbIcon();
 	SxTimer_SetFuncActive(SX_TIMER_DET_KEY_ID, FALSE);
@@ -99,9 +108,103 @@ static void UIFlowWndPlayThumb_NaviKey(UINT32 key)
 
 	BrowseThumbNaviKey(&BrowseNavi);
 
+    UIFlowWndPlayThumb_IconDrawDCFFileID(TRUE);
 	FlowPB_ShowAllThumbIcon();
 	SxTimer_SetFuncActive(SX_TIMER_DET_KEY_ID, TRUE);
+
+    //@Ken b-begin
+    Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
+    Input_SetKeyMask(KEY_RELEASE, FLGKEY_KEY_MASK_DEFAULT);
+    Input_SetKeyMask(KEY_CONTINUE, FLGKEY_KEY_CONT_MASK_DEFAULT);
+    //@Ken b-end
 }
+
+CHAR  g_chaFullName[60] = { 0 };
+int   g_FileNumIndex = 0;
+int   g_FileTotalNum = 0;
+static void UIFlowWndPlayThumb_IconDrawDCFFileID(BOOL bShow)
+{
+    FILEDB_HANDLE fileDbHandle = 0;
+    //UINT32  CurrIndex;
+    PFILEDB_FILE_ATTR  pFileAttr;
+    static char item1_Buf[32] = {0};
+    static char DateTime[32] = {0};
+    UINT32 i, j, full_path_len, file_name_len;
+    char *file_name_pos;
+
+    //hide icon
+    if (bShow == FALSE) {
+        UxCtrl_SetShow(&UIFlowWndPlayThumb_ThumbFileDateTimeCtrl, FALSE);
+        return;
+    }
+
+    //CurrIndex = FileDB_GetCurrFileIndex(fileDbHandle);
+
+    pFileAttr = FileDB_SearhFile(fileDbHandle, g_FileNumIndex);
+    // A:\DCIM\Movie\RO\20190302152637_000001.MP4
+
+    sprintf(g_chaFullName,"%s", pFileAttr->filePath);
+    //debug_msg("*** g_chaFullName = %s ***\r\n",g_chaFullName);
+
+    memset(item1_Buf, 0, 32);
+    memset(DateTime, 0, 32);
+
+	// search last '\' in full file path
+	full_path_len = strlen(g_chaFullName);
+	for (i = 0; i < full_path_len; i++) {
+		if (g_chaFullName[full_path_len - i] == '\\') {
+			break;
+		}
+	}
+
+	// search last '.' in full file path
+	for (j = 0; j < full_path_len; j++) {
+		if (g_chaFullName[full_path_len - j] == '.') {
+			break;
+		}
+	}
+
+	file_name_pos = &g_chaFullName[full_path_len - i + 1]; // string behind last '\'
+	file_name_len = strlen(file_name_pos);
+	if (file_name_len > j) {
+		file_name_len -= j; // exclude extension name
+	}
+	if (file_name_len > 31) { // buffer limitation
+		file_name_len = 31;
+	}
+	strncpy(item1_Buf, file_name_pos, file_name_len);
+	item1_Buf[file_name_len] = '\0';
+    //debug_msg("*** item1_Buf= %s ***\r\n",item1_Buf);
+
+    DateTime[0] = item1_Buf[4];
+    DateTime[1] = item1_Buf[5];
+    DateTime[2] = '/';
+    DateTime[3] = item1_Buf[6];
+    DateTime[4] = item1_Buf[7];
+    DateTime[5] = ' ';
+    DateTime[6] = ' ';
+    DateTime[7] = ' ';
+    DateTime[8] = item1_Buf[8];
+    DateTime[9] = item1_Buf[9];
+    DateTime[10] = ' ';
+    DateTime[11] = ':';
+    DateTime[12] = ' ';
+    DateTime[13] = item1_Buf[10];
+    DateTime[14] = item1_Buf[11];
+    DateTime[15] = '\0';
+
+    UxStatic_SetData(&UIFlowWndPlayThumb_ThumbFileDateTimeCtrl, STATIC_VALUE, Txt_Pointer(DateTime));
+    UxCtrl_SetShow(&UIFlowWndPlayThumb_ThumbFileDateTimeCtrl, TRUE);
+}
+
+static void UIFlowWndPlayThumb_ThumOpenGetFileIndex(void)
+{
+    FILEDB_HANDLE fileDbHandle = 0;
+
+    g_FileNumIndex = FileDB_GetCurrFileIndex(fileDbHandle);
+    g_FileTotalNum = FileDB_GetTotalFileNum(fileDbHandle);
+}
+
 INT32 UIFlowWndPlayThumb_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 
@@ -111,12 +214,29 @@ INT32 UIFlowWndPlayThumb_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 	UINT8  HorNums, VerNums;
 	UINT32 uiStatus = E_OK;
 
+    uiStatus = PB_WaitCommandFinish(PB_WAIT_INFINITE);
+    if (uiStatus & PB_STA_NOIMAGE) {
+        if (UIMenuWndPlayFileType_GetFileType()) {
+            Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_3SEC);
+        } else {
+            Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_VIDEO, FLOWWRNMSG_TIMER_3SEC);
+        }
+        return NVTEVT_CONSUME;
+    }
+
+    UIFlowWndPlayThumb_ThumOpenGetFileIndex();
+
 	FlowPB_ClearAllThumbIcon();
 	pThumbRect = FlowPB_ThumbDisplay();
 	HorNums = FLOWPB_THUMB_H_NUM2;
 	VerNums = FLOWPB_THUMB_V_NUM2;
 	PB_SetParam(PBPRMID_THUMB_LAYOUT_ARRAY, (UINT32)pThumbRect);
-
+//#NT#2012/11/27#Scottie -begin
+//#NT#Support Dual Display for PB
+	//if (System_GetEnableDispCount() == 2) {
+	//	PB_SetParam(PBPRMID_THUMB_LAYOUT_ARRAY2, (UINT32)pThumbRect);
+	//}
+//#NT#2012/11/27#Scottie -end
 	NumsPerPage = VerNums * VerNums;
 	PB_GetParam(PBPRMID_TOTAL_FILE_COUNT, &FileNumsInDir);
 	FlowPBBrowserObj.BrowserCommand = PB_BROWSER_CURR;
@@ -141,6 +261,7 @@ INT32 UIFlowWndPlayThumb_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 	PBView_DrawThumbFrame(idx-1, THUMB_DRAW_TMP_BUFFER);
 	#endif
 
+    UIFlowWndPlayThumb_IconDrawDCFFileID(TRUE);
 	FlowPB_ShowAllThumbIcon();
 	Ux_DefaultEvent(pCtrl, NVTEVT_OPEN_WINDOW, paramNum, paramArray);
 	return NVTEVT_CONSUME;
@@ -150,6 +271,11 @@ INT32 UIFlowWndPlayThumb_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 	Ux_DefaultEvent(pCtrl, NVTEVT_CLOSE_WINDOW, paramNum, paramArray);
 	return NVTEVT_CONSUME;
 }
+INT32 UIFlowWndPlayThumb_OnChildClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    Ux_DefaultEvent(pCtrl,NVTEVT_CHILD_CLOSE,paramNum,paramArray);
+    return NVTEVT_CONSUME;
+}
 INT32 UIFlowWndPlayThumb_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	INT32 uiActKey;
@@ -158,7 +284,11 @@ INT32 UIFlowWndPlayThumb_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 	switch (uiActKey) {
 
 	case NVTEVT_KEY_PRESS:
-		UIFlowWndPlayThumb_NaviKey(NVTEVT_KEY_UP);
+        g_FileNumIndex--;
+        if (g_FileNumIndex < 0) {
+            g_FileNumIndex = g_FileTotalNum - 1;
+        }
+		UIFlowWndPlayThumb_NaviKey(NVTEVT_KEY_LEFT);
 		break;
 
 	}
@@ -173,7 +303,11 @@ INT32 UIFlowWndPlayThumb_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 	switch (uiActKey) {
 
 	case NVTEVT_KEY_PRESS:
-		UIFlowWndPlayThumb_NaviKey(NVTEVT_KEY_DOWN);
+        g_FileNumIndex++;
+        if (g_FileNumIndex >= g_FileTotalNum) {
+            g_FileNumIndex = 0;
+        }
+		UIFlowWndPlayThumb_NaviKey(NVTEVT_KEY_RIGHT);
 		break;
 
 	}
@@ -187,8 +321,18 @@ INT32 UIFlowWndPlayThumb_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 	uiActKey = paramArray[0];
 	switch (uiActKey) {
 
-	case NVTEVT_KEY_PRESS:
-		UIFlowWndPlayThumb_NaviKey(NVTEVT_KEY_LEFT);
+    case NVTEVT_KEY_RELEASE:
+		DBG_DUMP("call UIFlowWndPlayThumb_OnKeyLeft1\n");
+        FlowPB_ClearAllThumbIcon();
+        //Ux_Redraw();
+        Ux_CloseWindowClear((VControl *)(&UIFlowWndPlayThumbCtrl), 1, 0);
+        UIFlowPlayShowFileTypeEnable(TRUE);
+        #if 1
+        Ux_SendEvent(&UISetupObjCtrl, NVTEVT_FORCETO_PLAYBACK_MODE, 0);
+		DBG_DUMP("call UIFlowWndPlayThumb_OnKeyLeft2\n");
+        #else
+        Ux_SendEvent(&UISetupObjCtrl, NVTEVT_FORCETO_MOVIE_MODE, 0);
+        #endif
 		break;
 
 	}
@@ -212,9 +356,15 @@ INT32 UIFlowWndPlayThumb_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *pa
 }
 INT32 UIFlowWndPlayThumb_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
+    INT32 uiActKey;
+    uiActKey = paramArray[0];
+    switch (uiActKey) {
+    case NVTEVT_KEY_PRESS:
 	FlowPB_ClearAllThumbIcon();
 	Ux_Redraw();
 	Ux_CloseWindow((VControl *)(&UIFlowWndPlayThumbCtrl), 1, NVTRET_THUMBNAIL);
+        break;
+    }
 	return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndPlayThumb_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -591,5 +741,41 @@ EVENT_END
 
 //----------------------UIFlowWndPlayThumb_ThumbIDCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndPlayThumb_ThumbID)
+EVENT_END
+
+//----------------------UIFlowWndPlayThumb_StaticFileListCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlayThumb_StaticFileList)
+EVENT_END
+
+//----------------------UIFlowWndPlayThumb_ThumbFileDateTimeCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlayThumb_ThumbFileDateTime)
+EVENT_END
+
+//---------------------UIFlowWndPlayThumb_TipsBarCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndPlayThumb_TipsBar)
+CTRL_LIST_ITEM(UIFlowWndPlayThumb_TipsIconReturn)
+CTRL_LIST_ITEM(UIFlowWndPlayThumb_TipsIconUp)
+CTRL_LIST_ITEM(UIFlowWndPlayThumb_TipsIconDown)
+CTRL_LIST_ITEM(UIFlowWndPlayThumb_TipsIconOK)
+CTRL_LIST_END
+
+//----------------------UIFlowWndPlayThumb_TipsBarCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlayThumb_TipsBar)
+EVENT_END
+
+//----------------------UIFlowWndPlayThumb_TipsIconReturnCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlayThumb_TipsIconReturn)
+EVENT_END
+
+//----------------------UIFlowWndPlayThumb_TipsIconUpCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlayThumb_TipsIconUp)
+EVENT_END
+
+//----------------------UIFlowWndPlayThumb_TipsIconDownCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlayThumb_TipsIconDown)
+EVENT_END
+
+//----------------------UIFlowWndPlayThumb_TipsIconOKCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlayThumb_TipsIconOK)
 EVENT_END
 
