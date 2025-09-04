@@ -229,7 +229,8 @@ typedef struct {
 } ETHCAM_FWUD;
 
 typedef struct {
-	UINT32 Size;
+	UINT32 Size;	
+	UINT32 HDR;
 	UINT32 WDR;
 	UINT32 EV;
 	UINT32 DateImprint;
@@ -241,7 +242,6 @@ typedef struct {
 	UINT32 ParkingMode;
 	UINT32 ParkingTimeLapse;
 	UINT32 ACCTrigParkMode;
-	UINT32 HDR;
 } ETHCAM_MENU_SETTING;
 
 typedef struct {
