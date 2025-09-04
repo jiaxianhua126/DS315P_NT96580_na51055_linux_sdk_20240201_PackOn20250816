@@ -8,6 +8,7 @@
 // --------------------------------------------------------------------------
 // OPTIONS
 // --------------------------------------------------------------------------
+/*
 // Power Saving Options
 TMDEF_BEGIN_OPTIONS(AUTO_POWER_OFF)
 TMDEF_OPTION_TEXT_S(OFF, TM_OPTION_ENABLE)
@@ -93,7 +94,7 @@ int MenuCustom_Version(UINT32 uiMessage, UINT32 uiParam)
 	//Ux_OpenWindow(&UIMenuWndSetupVersionCtrl, 0);
 	DBG_FUNC_END("\r\n");
 	return TMF_PROCESSED;
-}
+}*/
 int MenuCustom_FwUpdate(UINT32 uiMessage, UINT32 uiParam)
 {
     DBG_FUNC_BEGIN("uiParam=%d\r\n",uiParam);
@@ -136,18 +137,18 @@ int MenuCustom_UnProtectAll(UINT32 uiMessage, UINT32 uiParam)
 }
 // Setup Menu Items
 TMDEF_BEGIN_ITEMS(SETUP)
-TMDEF_ITEM_CUSTOM(DATE_TIME, MenuCustom_DateTime)
-TMDEF_ITEM_TEXTID(AUTO_POWER_OFF)
-TMDEF_ITEM_TEXTID(BEEP)
-TMDEF_ITEM_TEXTID(LANGUAGE)
-TMDEF_ITEM_TEXTID(FREQUENCY)
+//TMDEF_ITEM_CUSTOM(DATE_TIME, MenuCustom_DateTime)
+//TMDEF_ITEM_TEXTID(AUTO_POWER_OFF)
+//TMDEF_ITEM_TEXTID(BEEP)
+//TMDEF_ITEM_TEXTID(LANGUAGE)
+//TMDEF_ITEM_TEXTID(FREQUENCY)
 #if TV_FUNC
-TMDEF_ITEM_TEXTID(TV_MODE)
+//TMDEF_ITEM_TEXTID(TV_MODE)
 #endif
-TMDEF_ITEM_CUSTOM(FORMAT, MenuCustom_Format)
-TMDEF_ITEM_CUSTOM(DEFAULT, MenuCustom_Default)
-TMDEF_ITEM_CUSTOM(VERSION, MenuCustom_Version)
-TMDEF_ITEM_TEXTID(SCREEN_SAVE)
+//TMDEF_ITEM_CUSTOM(FORMAT, MenuCustom_Format)
+//TMDEF_ITEM_CUSTOM(DEFAULT, MenuCustom_Default)
+//TMDEF_ITEM_CUSTOM(VERSION, MenuCustom_Version)
+//TMDEF_ITEM_TEXTID(SCREEN_SAVE)
 TMDEF_ITEM_CUSTOM(FW_UPDATE, MenuCustom_FwUpdate)
 TMDEF_ITEM_CUSTOM(DELETE_ALL, MenuCustom_DeleteAll)
 TMDEF_ITEM_CUSTOM(PROTECT_ALL, MenuCustom_ProtectAll)

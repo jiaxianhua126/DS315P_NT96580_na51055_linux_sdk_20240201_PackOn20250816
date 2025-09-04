@@ -43,5 +43,7 @@ extern void		PipView_BFLIP_SetBuffer(UINT32 uiAddr, UINT32 uiSize);
 #endif
 extern INT32 PipView_CopyData(HD_VIDEO_FRAME *pSrcImg, IRECT *pSrcRegion, HD_VIDEO_FRAME *pDstImg, IRECT *pDstRegion, UINT32 bFlush);
 extern INT32 PipView_ScaleData(HD_VIDEO_FRAME *pSrcImg, IRECT *pSrcRegion, HD_VIDEO_FRAME *pDstImg, IRECT *pDstRegion);
+extern UINT32 PipView_BFLIP_GetBufAddr(UINT32 blk_size);
+extern void PipView_BFLIP_DestroyBuff(void);
 
 #endif

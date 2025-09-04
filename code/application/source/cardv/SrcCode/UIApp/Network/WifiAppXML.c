@@ -49,6 +49,9 @@
 
 #include "avfile/AVFile_ParserTs.h"
 #include "GxVideoFile.h"
+#include "DxInput.h"
+#include "UIAppWiFiCmd.h"
+
 
 #define TRANS_JPG_FROM_H264IDR  1
 #define CREATE_PHOTO_FILEDB     0
@@ -120,7 +123,7 @@ typedef struct _XML_THUMB_INFO{
 	HD_VIDEOENC_BS  hd_out_video_bs;  //re-encode scaled YUV to JPG
 }XML_THUMB_INFO, *PXML_THUMB_INFO;
 
-#if CREATE_PHOTO_FILEDB
+#if 1//CREATE_PHOTO_FILEDB
 static FILEDB_INIT_OBJ gWifiFDBInitObj = {
 	"A:\\",  //rootPath
 	NULL,  //defaultfolder
@@ -137,13 +140,38 @@ static FILEDB_INIT_OBJ gWifiFDBInitObj = {
 	FALSE, //bIsChkHasFile
 	60,    //u32MaxFilePathLen
 	10000,  //u32MaxFileNum
-	(FILEDB_FMT_JPG | FILEDB_FMT_AVI | FILEDB_FMT_MOV | FILEDB_FMT_MP4 | FILEDB_FMT_TS),
+	//(FILEDB_FMT_JPG | FILEDB_FMT_AVI | FILEDB_FMT_MOV | FILEDB_FMT_MP4 | FILEDB_FMT_TS),
+	(FILEDB_FMT_JPG),
 	0,     //u32MemAddr
 	0,     //u32MemSize
 	NULL   //fpChkAbort
 
 };
 #endif
+
+FILEDB_INIT_OBJ gMovieFDBInitObj = {
+
+	"A:\\"FILEDB_CARDV_ROOT"\\",  //rootPath
+	NULL,  //defaultfolder
+	NULL,  //filterfolder
+	TRUE,  //bIsRecursive
+	TRUE,  //bIsCyclic
+	TRUE,  //bIsMoveToLastFile
+	TRUE, //bIsSupportLongName
+	FALSE, //bIsDCFFileOnly
+	TRUE,  //bIsFilterOutSameDCFNumFolder
+	{'N', 'V', 'T', 'I', 'M'}, //OurDCFDirName[5]
+	{'I', 'M', 'A', 'G'}, //OurDCFFileName[4]
+	FALSE,  //bIsFilterOutSameDCFNumFile
+	FALSE, //bIsChkHasFile
+	60,    //u32MaxFilePathLen
+	10000,  //u32MaxFileNum
+	(FILEDB_FMT_MOV | FILEDB_FMT_MP4 | FILEDB_FMT_TS), //fileFilter
+	0,     //u32MemAddr
+	0,     //u32MemSize
+	NULL   //fpChkAbort
+};
+
 static MEM_RANGE XMLTmpPool;
 //static NVTMPP_VB_BLK blk_xml =0;
 static UINT32                          g_xml_pool_main_phy_adr = 0;
@@ -596,7 +624,7 @@ ER XML_VdoReadCB(UINT32 pos, UINT32 size, UINT32 addr)
 #define WIFI_RESERVE_SIZE   ALIGN_CEIL_32(1*1024*1024)
 #endif
 #define XML_THUMB_W         320
-#define XML_THUMB_H         180
+#define XML_THUMB_H         240
 
 typedef struct {
 	UINT32  uiJpgWidth;     ///< JPEG width
@@ -1398,7 +1426,7 @@ int XML_GetThumbnail(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSi
 						}
 						//hwmem_close();
 						*bufSize = ThumbSize;
-						//debug_msg("photo thumb trans %d\r\n",*bufSize);
+						//DBG_DUMP("photo thumb trans %d\r\n",*bufSize);
 
 					} else {
 						result = WIFIAPP_RET_NOBUF;
@@ -1439,7 +1467,7 @@ int XML_GetThumbnail(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSi
 			*bufSize = remain;
 			remain = 0;
 			ThumbBuf = 0;
-			//debug_msg("last trans ok\r\n");
+			//DBG_DUMP("last trans ok\r\n");
 		}
 	}
 //GET_THUMBNAIL_RET:
@@ -1517,7 +1545,7 @@ int XML_GetMovieFileInfo(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *b
 	if (result != 0) {
 		XML_DefaultFormat(WIFIAPP_CMD_MOVIE_FILE_INFO, result, bufAddr, bufSize, mimeType);
 	} else {
-		snprintf(szFileInfo, sizeof(szFileInfo), "Width:%d, Height:%d, Length:%d sec", VideoInfo.uiVidWidth, VideoInfo.uiVidHeight, VideoInfo.uiToltalSecs);
+		snprintf(szFileInfo, sizeof(szFileInfo), "Width:%d, Height:%d, FrameRate:%d, Length:%d sec", VideoInfo.uiVidWidth, VideoInfo.uiVidHeight, VideoInfo.uiVidRate, VideoInfo.uiToltalSecs);
 		XML_StringResult(WIFIAPP_CMD_MOVIE_FILE_INFO, szFileInfo, bufAddr, bufSize, mimeType);
 	}
 
@@ -1570,7 +1598,7 @@ int XML_GetRawEncJpg(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSi
 			*bufSize = remain;
 			remain = 0;
 			uiJpgAddr = 0;
-			//debug_msg("last trans ok\r\n");
+			//DBG_DUMP("last trans ok\r\n");
 		}
 	}
 
@@ -1583,7 +1611,14 @@ int XML_GetRawEncJpg(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSi
 
 int XML_GetVersion(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
 {
-	XML_StringResult(WIFIAPP_CMD_VERSION, Prj_GetVersionString(), bufAddr, bufSize, mimeType);
+    char buf[128] = {0};
+#if (defined(_NVT_ETHREARCAM_RX_))
+    snprintf(buf,sizeof(buf),"%s %s",Prj_GetVersionString(),Prj_GetEthCam1VersionString());
+    //snprintf(buf,sizeof(buf),"%s %s","S2P.V0.70.20220101","Rear:V1.00_20220101");
+#elif (defined(_NVT_ETHERNET_NONE_))
+	snprintf(buf,sizeof(buf),"%s",Prj_GetVersionString());
+#endif
+	XML_StringResult(WIFIAPP_CMD_VERSION,buf, bufAddr, bufSize, mimeType);
 	return CYG_HFS_CB_GETDATA_RETURN_OK;
 }
 
@@ -1681,7 +1716,7 @@ int XML_FileList(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, 
 		if (pFileAttr) {
 			//#NT#2016/03/30#Nestor Yang -begin
 			//#NT# Support fileSize larger than 4GB
-			//debug_msg("file %d %s %d\r\n",i,pFileAttr->filePath,pFileAttr->fileSize);
+			//DBG_DUMP("file %d %s %d\r\n",i,pFileAttr->filePath,pFileAttr->fileSize);
 			DBG_IND("file %d %s %lld\r\n", i, pFileAttr->filePath, pFileAttr->fileSize64);
 			//#NT#2016/03/30#Nestor Yang -end
 
@@ -1689,7 +1724,9 @@ int XML_FileList(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, 
 			//#NT#2016/03/30#Nestor Yang -begin
 			//#NT# Support fileSize larger than 4GB
 			//XML_snprintf(&buf,&xmlBufSize,"<SIZE>%d</SIZE>\n<TIMECODE>%ld</TIMECODE>\n<TIME>%04d/%02d/%02d %02d:%02d:%02d</TIME>\n<ATTR>%d</ATTR></File>\n</ALLFile>\n",pFileAttr->fileSize,(pFileAttr->lastWriteDate <<16) + pFileAttr->lastWriteTime,
-			XML_snprintf(&buf, &xmlBufSize, "<SIZE>%lld</SIZE>\n<TIMECODE>%ld</TIMECODE>\n<TIME>%04d/%02d/%02d %02d:%02d:%02d</TIME>\n<ATTR>%d</ATTR></File>\n</ALLFile>\n", pFileAttr->fileSize64, (pFileAttr->lastWriteDate << 16) + pFileAttr->lastWriteTime,
+			XML_snprintf(&buf, &xmlBufSize, "<SIZE>%lld</SIZE>\n<TIMECODE>%ld</TIMECODE>\n<TIME_START>%04d/%02d/%02d %02d:%02d:%02d</TIME_START>\n<TIME_STOP>%04d/%02d/%02d %02d:%02d:%02d</TIME_STOP>\n<ATTR>%d</ATTR></File>\n</ALLFile>\n", pFileAttr->fileSize64, (pFileAttr->lastWriteDate << 16) + pFileAttr->lastWriteTime,
+                         FAT_GET_YEAR_FROM_DATE(pFileAttr->creDate), FAT_GET_MONTH_FROM_DATE(pFileAttr->creDate), FAT_GET_DAY_FROM_DATE(pFileAttr->creDate),
+                         FAT_GET_HOUR_FROM_TIME(pFileAttr->creTime), FAT_GET_MIN_FROM_TIME(pFileAttr->creTime), FAT_GET_SEC_FROM_TIME(pFileAttr->creTime),
 						 FAT_GET_YEAR_FROM_DATE(pFileAttr->lastWriteDate), FAT_GET_MONTH_FROM_DATE(pFileAttr->lastWriteDate), FAT_GET_DAY_FROM_DATE(pFileAttr->lastWriteDate),
 						 FAT_GET_HOUR_FROM_TIME(pFileAttr->lastWriteTime), FAT_GET_MIN_FROM_TIME(pFileAttr->lastWriteTime), FAT_GET_SEC_FROM_TIME(pFileAttr->lastWriteTime),
 						 pFileAttr->attrib);
@@ -1703,6 +1740,342 @@ int XML_FileList(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, 
 		FileDB_Release(FileDBHandle);
 	}
 #endif
+	return CYG_HFS_CB_GETDATA_RETURN_OK;
+
+}
+
+//Photo FileDB
+int XML_PhotoFileList(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+#if 1//CREATE_PHOTO_FILEDB
+	PFILEDB_INIT_OBJ		pFDBInitObj = &gWifiFDBInitObj;
+#endif
+	static FILEDB_HANDLE	FileDBHandle = 0;
+	static UINT32			gIndex, gIndex2;
+	UINT32					fileCount, i, bufflen = *bufSize;
+	char				   *buf = (char *)bufAddr;
+	UINT32					xmlBufSize = *bufSize;
+	char					tmpString[32];
+	UINT32					par = 0;
+
+	//DBG_IND("path = %s, argument -> %s, mimeType= %s, bufsize= %d, segmentCount= %d\r\n", path, argument, mimeType, *bufSize, segmentCount);
+	DBG_IND("path = %s, argument -> %s, mimeType= %s, bufsize= %d, segmentCount= %d\r\n", path, argument, mimeType, *bufSize, segmentCount);
+
+	// set the data mimetype
+	XML_STRCPY(mimeType, "text/xml", CYG_HFS_MIMETYPE_MAXLEN);
+
+	snprintf(tmpString, sizeof(tmpString), "custom=1&cmd=%d&par=", WIFIAPP_CMD_PHOTO_FILELIST);
+	if (strncmp(argument, tmpString, strlen(tmpString)) == 0) {
+		sscanf_s(argument + strlen(tmpString), "%d", &par);
+	} else {
+		//*bufSize = 0;
+		//DBG_ERR("error par\r\n");
+		//return CYG_HFS_CB_GETDATA_RETURN_OK;
+	}
+
+	Perf_Mark();
+#if 1//CREATE_PHOTO_FILEDB
+	if (segmentCount == 0) {
+		pFDBInitObj->u32MemAddr = XML_GetTempMem(POOL_SIZE_FILEDB);
+
+		if (!pFDBInitObj->u32MemAddr) {
+			XML_DefaultFormat(WIFIAPP_CMD_FILELIST, WIFIAPP_RET_NOBUF, bufAddr, bufSize, mimeType);
+			return CYG_HFS_CB_GETDATA_RETURN_OK;
+		}
+
+		pFDBInitObj->u32MemSize = POOL_SIZE_FILEDB;
+		FileDBHandle = FileDB_Create(pFDBInitObj);
+		DBG_IND("createTime = %04d ms \r\n", Perf_GetDuration() / 1000);
+		Perf_Mark();
+		//FileDB_SortBy(FileDBHandle, FILEDB_SORT_BY_MODDATE, FALSE);
+		FileDB_SortBy(FileDBHandle, FILEDB_SORT_BY_MODDATE, FALSE); //FALSE
+		DBG_IND("sortTime = %04d ms \r\n", Perf_GetDuration() / 1000);
+	} else //PRIMARY_MODE_PLAYBACK,PRIMARY_MODE_MOVIE use default FileDB 0
+#endif
+	{
+		FileDBHandle = 0;
+		FileDB_Refresh(0);
+	}
+	//FileDB_DumpInfo(FileDBHandle);
+
+	if (segmentCount == 0) {
+		XML_snprintf(&buf, &xmlBufSize, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<LIST>\n");
+	}
+
+	fileCount = FileDB_GetTotalFileNum(FileDBHandle);
+	DBG_DUMP("fileCount  %d\r\n", fileCount);
+
+	if (segmentCount == 0) {
+		// reset some global variables
+		gIndex = 0;
+	}
+	gIndex	= par*60;
+	gIndex2 = (par+1)*60;
+	if (gIndex2 > fileCount) 
+	{
+		gIndex2 = fileCount;
+	}
+	DBG_IND("gIndex = %d %d \r\n", gIndex, fileCount);
+
+	for (i = gIndex; i < gIndex2; i++) {
+		PFILEDB_FILE_ATTR		 pFileAttr;
+		// check buffer length , reserved 512 bytes
+		// should not write data over buffer length
+		if ((HFS_U32)buf - bufAddr > bufflen - 512) {
+			DBG_IND("totallen=%d >	bufflen(%d)-512\r\n", (HFS_U32)buf - bufAddr, bufflen);
+			*bufSize = (HFS_U32)(buf) - bufAddr;
+			gIndex = i;
+			return CYG_HFS_CB_GETDATA_RETURN_CONTINUE;
+		}
+		// get dcf file
+		pFileAttr = FileDB_SearhFile(FileDBHandle, i);
+		if (pFileAttr) {
+			//#NT#2016/03/30#Nestor Yang -begin
+			//#NT# Support fileSize larger than 4GB
+			//DBG_DUMP("file %d %s %d\r\n",i,pFileAttr->filePath,pFileAttr->fileSize);
+			DBG_IND("file %d %s %lld\r\n", i, pFileAttr->filePath, pFileAttr->fileSize64);
+			//#NT#2016/03/30#Nestor Yang -end
+
+			XML_snprintf(&buf, &xmlBufSize, "<ALLFile><File>\n<NAME>%s</NAME>\n<FPATH>%s</FPATH>\n", pFileAttr->filename, pFileAttr->filePath);
+			//#NT#2016/03/30#Nestor Yang -begin
+			//#NT# Support fileSize larger than 4GB
+			//XML_snprintf(&buf,&xmlBufSize,"<SIZE>%d</SIZE>\n<TIMECODE>%ld</TIMECODE>\n<TIME>%04d/%02d/%02d %02d:%02d:%02d</TIME>\n<ATTR>%d</ATTR></File>\n</ALLFile>\n",pFileAttr->fileSize,(pFileAttr->lastWriteDate <<16) + pFileAttr->lastWriteTime,
+			XML_snprintf(&buf, &xmlBufSize, "<SIZE>%lld</SIZE>\n<TIMECODE>%ld</TIMECODE>\n<TIME_START>%04d/%02d/%02d %02d:%02d:%02d</TIME_START>\n<TIME_STOP>%04d/%02d/%02d %02d:%02d:%02d</TIME_STOP>\n<ATTR>%d</ATTR></File>\n</ALLFile>\n", pFileAttr->fileSize64, (pFileAttr->lastWriteDate << 16) + pFileAttr->lastWriteTime,
+						 FAT_GET_YEAR_FROM_DATE(pFileAttr->creDate), FAT_GET_MONTH_FROM_DATE(pFileAttr->creDate), FAT_GET_DAY_FROM_DATE(pFileAttr->creDate),
+						 FAT_GET_HOUR_FROM_TIME(pFileAttr->creTime), FAT_GET_MIN_FROM_TIME(pFileAttr->creTime), FAT_GET_SEC_FROM_TIME(pFileAttr->creTime),
+						 FAT_GET_YEAR_FROM_DATE(pFileAttr->lastWriteDate), FAT_GET_MONTH_FROM_DATE(pFileAttr->lastWriteDate), FAT_GET_DAY_FROM_DATE(pFileAttr->lastWriteDate),
+						 FAT_GET_HOUR_FROM_TIME(pFileAttr->lastWriteTime), FAT_GET_MIN_FROM_TIME(pFileAttr->lastWriteTime), FAT_GET_SEC_FROM_TIME(pFileAttr->lastWriteTime),
+						 pFileAttr->attrib);
+			//#NT#2016/03/30#Nestor Yang -end
+		}
+	}
+	XML_snprintf(&buf, &xmlBufSize, "</LIST>\n");
+	*bufSize = (HFS_U32)(buf) - bufAddr;
+	
+	FileDB_Release(FileDBHandle);
+	return CYG_HFS_CB_GETDATA_RETURN_OK;
+
+}
+//Normal Movie FileDB
+int XML_MovieFileList(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+#if 1//CREATE_PHOTO_FILEDB
+	PFILEDB_INIT_OBJ		pFDBInitObj = &gMovieFDBInitObj;
+#endif
+	static FILEDB_HANDLE	FileDBHandle = 0;
+	static UINT32			gIndex, gIndex2;
+	UINT32					fileCount, i, bufflen = *bufSize;
+	char				   *buf = (char *)bufAddr;
+	UINT32					xmlBufSize = *bufSize;
+	char					tmpString[32];
+	UINT32					par = 0;
+
+	//DBG_IND("path = %s, argument -> %s, mimeType= %s, bufsize= %d, segmentCount= %d\r\n", path, argument, mimeType, *bufSize, segmentCount);
+	DBG_IND("path = %s, argument -> %s, mimeType= %s, bufsize= %d, segmentCount= %d\r\n", path, argument, mimeType, *bufSize, segmentCount);
+
+	// set the data mimetype
+	XML_STRCPY(mimeType, "text/xml", CYG_HFS_MIMETYPE_MAXLEN);
+
+	snprintf(tmpString, sizeof(tmpString), "custom=1&cmd=%d&par=", WIFIAPP_CMD_FILELIST);
+	if (strncmp(argument, tmpString, strlen(tmpString)) == 0) {
+		sscanf_s(argument + strlen(tmpString), "%d", &par);
+	} else {
+		//*bufSize = 0;
+		//DBG_ERR("error par\r\n");
+		//return CYG_HFS_CB_GETDATA_RETURN_OK;
+	}
+	Perf_Mark();
+#if 1//CREATE_PHOTO_FILEDB
+	if (segmentCount == 0) {
+		pFDBInitObj->u32MemAddr = XML_GetTempMem(POOL_SIZE_FILEDB);
+
+		if (!pFDBInitObj->u32MemAddr) {
+			XML_DefaultFormat(WIFIAPP_CMD_FILELIST, WIFIAPP_RET_NOBUF, bufAddr, bufSize, mimeType);
+			return CYG_HFS_CB_GETDATA_RETURN_OK;
+		}
+
+		pFDBInitObj->u32MemSize = POOL_SIZE_FILEDB;
+		FileDBHandle = FileDB_Create(pFDBInitObj);
+		DBG_IND("createTime = %04d ms \r\n", Perf_GetDuration() / 1000);
+		Perf_Mark();
+		//FileDB_SortBy(FileDBHandle, FILEDB_SORT_BY_MODDATE, FALSE);
+		FileDB_SortBy(FileDBHandle, FILEDB_SORT_BY_MODDATE, FALSE); //FALSE
+		DBG_IND("sortTime = %04d ms \r\n", Perf_GetDuration() / 1000);
+	} else //PRIMARY_MODE_PLAYBACK,PRIMARY_MODE_MOVIE use default FileDB 0
+#endif
+	{
+		FileDBHandle = 0;
+		FileDB_Refresh(0);
+	}
+	//FileDB_DumpInfo(FileDBHandle);
+
+	if (segmentCount == 0) {
+		XML_snprintf(&buf, &xmlBufSize, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<LIST>\n");
+	}
+
+	fileCount = FileDB_GetTotalFileNum(FileDBHandle);
+	DBG_DUMP("fileCount  %d\r\n", fileCount);
+
+	if (segmentCount == 0) {
+		// reset some global variables
+		gIndex = 0;
+	}
+	gIndex	= par*60;
+	gIndex2 = (par+1)*60;
+	if (gIndex2 > fileCount) 
+	{
+		gIndex2 = fileCount;
+	}
+	DBG_IND("gIndex = %d %d \r\n", gIndex, fileCount);
+
+	for (i = gIndex; i < gIndex2; i++) {
+		PFILEDB_FILE_ATTR		 pFileAttr;
+		// check buffer length , reserved 512 bytes
+		// should not write data over buffer length
+		if ((HFS_U32)buf - bufAddr > bufflen - 512) {
+			DBG_IND("totallen=%d >	bufflen(%d)-512\r\n", (HFS_U32)buf - bufAddr, bufflen);
+			*bufSize = (HFS_U32)(buf) - bufAddr;
+			gIndex = i;
+			return CYG_HFS_CB_GETDATA_RETURN_CONTINUE;
+		}
+		// get dcf file
+		pFileAttr = FileDB_SearhFile(FileDBHandle, i);
+		if (pFileAttr) {
+			//#NT#2016/03/30#Nestor Yang -begin
+			//#NT# Support fileSize larger than 4GB
+			//DBG_DUMP("file %d %s %d\r\n",i,pFileAttr->filePath,pFileAttr->fileSize);
+			DBG_IND("file %d %s %lld\r\n", i, pFileAttr->filePath, pFileAttr->fileSize64);
+			//#NT#2016/03/30#Nestor Yang -end
+
+			XML_snprintf(&buf, &xmlBufSize, "<ALLFile><File>\n<NAME>%s</NAME>\n<FPATH>%s</FPATH>\n", pFileAttr->filename, pFileAttr->filePath);
+			//#NT#2016/03/30#Nestor Yang -begin
+			//#NT# Support fileSize larger than 4GB
+			//XML_snprintf(&buf,&xmlBufSize,"<SIZE>%d</SIZE>\n<TIMECODE>%ld</TIMECODE>\n<TIME>%04d/%02d/%02d %02d:%02d:%02d</TIME>\n<ATTR>%d</ATTR></File>\n</ALLFile>\n",pFileAttr->fileSize,(pFileAttr->lastWriteDate <<16) + pFileAttr->lastWriteTime,
+			XML_snprintf(&buf, &xmlBufSize, "<SIZE>%lld</SIZE>\n<TIMECODE>%ld</TIMECODE>\n<TIME_START>%04d/%02d/%02d %02d:%02d:%02d</TIME_START>\n<TIME_STOP>%04d/%02d/%02d %02d:%02d:%02d</TIME_STOP>\n<ATTR>%d</ATTR></File>\n</ALLFile>\n", pFileAttr->fileSize64, (pFileAttr->lastWriteDate << 16) + pFileAttr->lastWriteTime,
+						 FAT_GET_YEAR_FROM_DATE(pFileAttr->creDate), FAT_GET_MONTH_FROM_DATE(pFileAttr->creDate), FAT_GET_DAY_FROM_DATE(pFileAttr->creDate),
+						 FAT_GET_HOUR_FROM_TIME(pFileAttr->creTime), FAT_GET_MIN_FROM_TIME(pFileAttr->creTime), FAT_GET_SEC_FROM_TIME(pFileAttr->creTime),
+						 FAT_GET_YEAR_FROM_DATE(pFileAttr->lastWriteDate), FAT_GET_MONTH_FROM_DATE(pFileAttr->lastWriteDate), FAT_GET_DAY_FROM_DATE(pFileAttr->lastWriteDate),
+						 FAT_GET_HOUR_FROM_TIME(pFileAttr->lastWriteTime), FAT_GET_MIN_FROM_TIME(pFileAttr->lastWriteTime), FAT_GET_SEC_FROM_TIME(pFileAttr->lastWriteTime),
+						 pFileAttr->attrib);
+			//#NT#2016/03/30#Nestor Yang -end
+		}
+	}
+
+	XML_snprintf(&buf, &xmlBufSize, "</LIST>\n");
+	*bufSize = (HFS_U32)(buf) - bufAddr;
+	FileDB_Release(FileDBHandle);
+	return CYG_HFS_CB_GETDATA_RETURN_OK;
+
+}
+
+//RO Movie File SortFirst
+int XML_ROFileList(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+#if 1//CREATE_PHOTO_FILEDB
+	PFILEDB_INIT_OBJ		pFDBInitObj = &gMovieFDBInitObj;
+#endif
+	static FILEDB_HANDLE	FileDBHandle = 0;
+	static UINT32			gIndex, gIndex2;
+	UINT32					fileCount, i, bufflen = *bufSize;
+	char				   *buf = (char *)bufAddr;
+	UINT32					xmlBufSize = *bufSize;
+	char					tmpString[32];
+	UINT32					par = 0;
+
+	//DBG_IND("path = %s, argument -> %s, mimeType= %s, bufsize= %d, segmentCount= %d\r\n", path, argument, mimeType, *bufSize, segmentCount);
+	DBG_IND("path = %s, argument -> %s, mimeType= %s, bufsize= %d, segmentCount= %d\r\n", path, argument, mimeType, *bufSize, segmentCount);
+
+	// set the data mimetype
+	XML_STRCPY(mimeType, "text/xml", CYG_HFS_MIMETYPE_MAXLEN);
+
+	snprintf(tmpString, sizeof(tmpString), "custom=1&cmd=%d&par=", WIFIAPP_CMD_RO_FILELIST);
+	if (strncmp(argument, tmpString, strlen(tmpString)) == 0) {
+		sscanf_s(argument + strlen(tmpString), "%d", &par);
+	} else {
+		//*bufSize = 0;
+		//DBG_ERR("error par\r\n");
+		//return CYG_HFS_CB_GETDATA_RETURN_OK;
+	}
+	Perf_Mark();
+#if 1//CREATE_PHOTO_FILEDB
+	if (segmentCount == 0) {
+		pFDBInitObj->u32MemAddr = XML_GetTempMem(POOL_SIZE_FILEDB);
+
+		if (!pFDBInitObj->u32MemAddr) {
+			XML_DefaultFormat(WIFIAPP_CMD_RO_FILELIST, WIFIAPP_RET_NOBUF, bufAddr, bufSize, mimeType);
+			return CYG_HFS_CB_GETDATA_RETURN_OK;
+		}
+
+		pFDBInitObj->u32MemSize = POOL_SIZE_FILEDB;
+		FileDBHandle = FileDB_Create(pFDBInitObj);
+		DBG_IND("createTime = %04d ms \r\n", Perf_GetDuration() / 1000);
+		Perf_Mark();
+		FileDB_SortBy(FileDBHandle, FILEDB_SORT_BY_MODDATE, FALSE);
+		//FileDB_SortBy(FileDBHandle, FILEDB_SORT_BY_FILEPATH, FALSE); //FALSE
+		DBG_IND("sortTime = %04d ms \r\n", Perf_GetDuration() / 1000);
+	} else //PRIMARY_MODE_PLAYBACK,PRIMARY_MODE_MOVIE use default FileDB 0
+#endif
+	{
+		FileDBHandle = 0;
+		FileDB_Refresh(0);
+	}
+	//FileDB_DumpInfo(FileDBHandle);
+
+	if (segmentCount == 0) {
+		XML_snprintf(&buf, &xmlBufSize, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<LIST>\n");
+	}
+
+	fileCount = FileDB_GetTotalFileNum(FileDBHandle);
+	DBG_DUMP("fileCount  %d\r\n", fileCount);
+
+	if (segmentCount == 0) {
+		// reset some global variables
+		gIndex = 0;
+	}
+	gIndex	= par*60;
+	gIndex2 = (par+1)*60;
+	if (gIndex2 > fileCount) 
+	{
+		gIndex2 = fileCount;
+	}
+	DBG_IND("gIndex = %d %d \r\n", gIndex, fileCount);
+
+	for (i = gIndex; i < gIndex2; i++) {
+		PFILEDB_FILE_ATTR		 pFileAttr;
+		// check buffer length , reserved 512 bytes
+		// should not write data over buffer length
+		if ((HFS_U32)buf - bufAddr > bufflen - 512) {
+			DBG_IND("totallen=%d >	bufflen(%d)-512\r\n", (HFS_U32)buf - bufAddr, bufflen);
+			*bufSize = (HFS_U32)(buf) - bufAddr;
+			gIndex = i;
+			return CYG_HFS_CB_GETDATA_RETURN_CONTINUE;
+		}
+		// get dcf file
+		pFileAttr = FileDB_SearhFile(FileDBHandle, i);
+		if (pFileAttr) {
+			//#NT#2016/03/30#Nestor Yang -begin
+			//#NT# Support fileSize larger than 4GB
+			//DBG_DUMP("file %d %s %d\r\n",i,pFileAttr->filePath,pFileAttr->fileSize);
+			DBG_IND("file %d %s %lld\r\n", i, pFileAttr->filePath, pFileAttr->fileSize64);
+			//#NT#2016/03/30#Nestor Yang -end
+
+			XML_snprintf(&buf, &xmlBufSize, "<ALLFile><File>\n<NAME>%s</NAME>\n<FPATH>%s</FPATH>\n", pFileAttr->filename, pFileAttr->filePath);
+			//#NT#2016/03/30#Nestor Yang -begin
+			//#NT# Support fileSize larger than 4GB
+			//XML_snprintf(&buf,&xmlBufSize,"<SIZE>%d</SIZE>\n<TIMECODE>%ld</TIMECODE>\n<TIME>%04d/%02d/%02d %02d:%02d:%02d</TIME>\n<ATTR>%d</ATTR></File>\n</ALLFile>\n",pFileAttr->fileSize,(pFileAttr->lastWriteDate <<16) + pFileAttr->lastWriteTime,
+			XML_snprintf(&buf, &xmlBufSize, "<SIZE>%lld</SIZE>\n<TIMECODE>%ld</TIMECODE>\n<TIME_START>%04d/%02d/%02d %02d:%02d:%02d</TIME_START>\n<TIME_STOP>%04d/%02d/%02d %02d:%02d:%02d</TIME_STOP>\n<ATTR>%d</ATTR></File>\n</ALLFile>\n", pFileAttr->fileSize64, (pFileAttr->lastWriteDate << 16) + pFileAttr->lastWriteTime,
+						 FAT_GET_YEAR_FROM_DATE(pFileAttr->creDate), FAT_GET_MONTH_FROM_DATE(pFileAttr->creDate), FAT_GET_DAY_FROM_DATE(pFileAttr->creDate),
+						 FAT_GET_HOUR_FROM_TIME(pFileAttr->creTime), FAT_GET_MIN_FROM_TIME(pFileAttr->creTime), FAT_GET_SEC_FROM_TIME(pFileAttr->creTime),
+						 FAT_GET_YEAR_FROM_DATE(pFileAttr->lastWriteDate), FAT_GET_MONTH_FROM_DATE(pFileAttr->lastWriteDate), FAT_GET_DAY_FROM_DATE(pFileAttr->lastWriteDate),
+						 FAT_GET_HOUR_FROM_TIME(pFileAttr->lastWriteTime), FAT_GET_MIN_FROM_TIME(pFileAttr->lastWriteTime), FAT_GET_SEC_FROM_TIME(pFileAttr->lastWriteTime),
+						 pFileAttr->attrib);
+			//#NT#2016/03/30#Nestor Yang -end
+		}
+	}
+
+	XML_snprintf(&buf, &xmlBufSize, "</LIST>\n");
+	*bufSize = (HFS_U32)(buf) - bufAddr;
+	FileDB_Release(FileDBHandle);
 	return CYG_HFS_CB_GETDATA_RETURN_OK;
 
 }
@@ -1770,7 +2143,10 @@ int XML_QueryCmd_CurSts(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bu
 	UINT32            bufflen = *bufSize - 512;
 	WIFI_CMD_ENTRY   *appCmd = 0;
 	UINT32            xmlBufSize = *bufSize;
+	UINT32 cardStatus = System_GetState(SYS_STATE_CARD);
 	INT32             iret;
+	
+	g_NotRecordWrn = FALSE;
 
 	// set the data mimetype
 	XML_STRCPY(mimeType, "text/xml", CYG_HFS_MIMETYPE_MAXLEN);
@@ -1797,7 +2173,12 @@ int XML_QueryCmd_CurSts(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bu
 		while (appCmd[uiCmdIndex].cmd != 0) {
 			if (appCmd[uiCmdIndex].UIflag != FL_NULL) {
 #if (WIFI_FINALCAM_APP_STYLE == DISABLE)
-				XML_snprintf(&buf, &xmlBufSize, DEF_XML_CMD_CUR_STS, appCmd[uiCmdIndex].cmd, UI_GetData(appCmd[uiCmdIndex].UIflag));
+				
+				if ((cardStatus	== CARD_REMOVED)&&(appCmd[uiCmdIndex].UIflag == FL_MOVIE_REC)) {
+					XML_snprintf(&buf, &xmlBufSize, DEF_XML_CMD_CUR_STS, appCmd[uiCmdIndex].cmd, 0);
+				}else{
+					XML_snprintf(&buf, &xmlBufSize, DEF_XML_CMD_CUR_STS, appCmd[uiCmdIndex].cmd, UI_GetData(appCmd[uiCmdIndex].UIflag));
+				}
 #else
 				UINT32 uiRecSizeIdx = 0;
 
@@ -1828,7 +2209,7 @@ int XML_QueryCmd_CurSts(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bu
 				}
 #endif
 
-				//debug_msg(DEF_XML_CMD_CUR_STS, appCmd[uiCmdIndex].cmd, UI_GetData(appCmd[uiCmdIndex].UIflag));
+				//DBG_DUMP(DEF_XML_CMD_CUR_STS, appCmd[uiCmdIndex].cmd, UI_GetData(appCmd[uiCmdIndex].UIflag));
 			}
 			uiCmdIndex++;
 
@@ -1889,7 +2270,7 @@ int XML_DeleteOnePicture(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *b
 	int     ret;
 	char   *pch = 0;
 	UINT8   attrib = 0;
-
+	printf("call wdj XML_DeleteOnePicture\r\n");
 	pch = strrchr(argument, '&');
 	if (pch) {
 		if (strncmp(pch, PARS_STR, strlen(PARS_STR)) == 0) {
@@ -1903,7 +2284,14 @@ int XML_DeleteOnePicture(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *b
 	ret = FileSys_GetAttrib(fullPath, &attrib);
 	if ((ret == E_OK) && (M_IsReadOnly(attrib) == TRUE)) {
 		DBG_IND("File Locked\r\n");
-		XML_DefaultFormat(WIFIAPP_CMD_DELETE_ONE, WIFIAPP_RET_FILE_LOCKED, bufAddr, bufSize, mimeType);
+		//XML_DefaultFormat(WIFIAPP_CMD_DELETE_ONE, WIFIAPP_RET_FILE_LOCKED, bufAddr, bufSize, mimeType);
+		FileSys_SetAttrib(fullPath,FST_ATTRIB_READONLY,FALSE);
+		ret = FileSys_DeleteFile(fullPath);
+		if (ret != FST_STA_OK) {
+			XML_DefaultFormat(WIFIAPP_CMD_DELETE_ONE, WIFIAPP_RET_FILE_ERROR, bufAddr, bufSize, mimeType);
+		} else {
+			XML_DefaultFormat(WIFIAPP_CMD_DELETE_ONE, WIFIAPP_RET_OK, bufAddr, bufSize, mimeType);
+		}
 	} else if (ret == FST_STA_FILE_NOT_EXIST) {
 		DBG_IND("File not existed\r\n");
 		XML_DefaultFormat(WIFIAPP_CMD_DELETE_ONE, WIFIAPP_RET_NOFILE, bufAddr, bufSize, mimeType);
@@ -1979,6 +2367,13 @@ int XML_DeleteAllPicture(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *b
 			if (M_IsReadOnly(FileAttr->attrib)) {
 				//DBG_IND("File Locked\r\n");
 				DBG_IND("File %s is locked\r\n", FileAttr->filePath);
+				FileSys_SetAttrib(FileAttr->filePath,FST_ATTRIB_READONLY,FALSE);
+				ret = FileSys_DeleteFile(FileAttr->filePath);
+				if (ret != FST_STA_OK) {
+					XML_DefaultFormat(WIFIAPP_CMD_DELETE_ONE, WIFIAPP_RET_FILE_ERROR, bufAddr, bufSize, mimeType);
+				} else {
+					XML_DefaultFormat(WIFIAPP_CMD_DELETE_ONE, WIFIAPP_RET_OK, bufAddr, bufSize, mimeType);
+				}
 				continue;
 			}
 			ret = FileSys_DeleteFile(FileAttr->filePath);
@@ -2131,7 +2526,7 @@ int XML_GetMovieRecStatus(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *
 	}
 
 	if (iStatus == WIFI_MOV_ST_RECORD) {
-		XML_ValueResult(WIFIAPP_CMD_MOVIE_RECORDING_TIME, FlowMovie_GetRecCurrTime(), bufAddr, bufSize, mimeType);
+		XML_ValueResult(WIFIAPP_CMD_MOVIE_RECORDING_TIME, FlowWiFiMovie_GetRecCurrTime(), bufAddr, bufSize, mimeType);
 	} else {
 		XML_ValueResult(WIFIAPP_CMD_MOVIE_RECORDING_TIME, 0, bufAddr, bufSize, mimeType);
 	}
@@ -2351,10 +2746,32 @@ int XML_GetSSID_passphrase(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 
 {
 	char *buf = (char *)bufAddr;
 	UINT32 xmlBufSize = *bufSize;
+	char *pMacAddr;
+	UIMenuStoreInfo *ptMenuStoreInfo = UI_GetMenuInfo();
 
 	XML_snprintf(&buf, &xmlBufSize, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<LIST>\n");
+	
+	pMacAddr = (char *)UINet_GetMAC();
 
-	XML_snprintf(&buf, &xmlBufSize, "<SSID>%s</SSID>\n", UINet_GetSSID());
+	if ((SysGetFlag(FL_WIFI_BAND) == WIFI_BAND_52G) ||(SysGetFlag(FL_WIFI_BAND) == WIFI_BAND_58G)) {
+		DBG_DUMP("call XML_GetSSID_passphrase WIFI_BAND_5G\r\n");
+        if (ptMenuStoreInfo->strSSID_5G[0] == 0) {
+            XML_snprintf(&buf, &xmlBufSize, "<SSID>%s%02x%02x%02x%02x%02x%02x</SSID>\n", UINet_GetSSID_5G(), pMacAddr[0], pMacAddr[1], pMacAddr[2]
+                                                                     ,pMacAddr[3], pMacAddr[4], pMacAddr[5]);
+            //XML_snprintf(&buf, &xmlBufSize, "<SSID>%s%02x%02x%02x</SSID>\n", UINet_GetSSID_5G(), pMacAddr[3], pMacAddr[4], pMacAddr[5]);
+        } else {
+            XML_snprintf(&buf, &xmlBufSize, "<SSID>%s</SSID>\n", UINet_GetSSID_5G());
+        }
+    } else {
+    	DBG_DUMP("call XML_GetSSID_passphrase WIFI_BAND_24G\r\n");
+        if (ptMenuStoreInfo->strSSID[0] == 0) {
+            XML_snprintf(&buf, &xmlBufSize, "<SSID>%s%02x%02x%02x%02x%02x%02x</SSID>\n", UINet_GetSSID(), pMacAddr[0], pMacAddr[1], pMacAddr[2]
+                                                                     ,pMacAddr[3], pMacAddr[4], pMacAddr[5]);
+            //XML_snprintf(&buf, &xmlBufSize, "<SSID>%s%02x%02x%02x</SSID>\n", UINet_GetSSID(), pMacAddr[3], pMacAddr[4], pMacAddr[5]);
+        } else {
+            XML_snprintf(&buf, &xmlBufSize, "<SSID>%s</SSID>\n", UINet_GetSSID());
+        }
+    }
 
 	XML_snprintf(&buf, &xmlBufSize, "<PASSPHRASE>%s</PASSPHRASE>\n", UINet_GetPASSPHRASE());
 
@@ -2756,7 +3173,7 @@ int XML_UploadFile(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 bufSize,
 				#endif
 
 				uiCopiedBytes += bufSize;
-				//debug_msg("^BCopying...%d\r\n", uiCopiedBytes);
+				//DBG_DUMP("^BCopying...%d\r\n", uiCopiedBytes);
 			} else {
 				DBG_ERR("Out of bound of buffer!\r\n");
 				return CYG_HFS_UPLOAD_FAIL_RECEIVE_ERROR;
@@ -2805,7 +3222,7 @@ int XML_UploadFile(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 bufSize,
 				}
 #endif
 			} else {
-				//debug_msg("File saved in DRAM.\r\n");
+				//DBG_DUMP("File saved in DRAM.\r\n");
 			}
 		}
 	}
@@ -2858,5 +3275,240 @@ int XML_UploadAudio(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 bufSize
 	return CYG_HFS_UPLOAD_OK;
 }
 #endif
+
+int XML_GetModelName(char* path, char* argument, HFS_U32 bufAddr, HFS_U32* bufSize, char* mimeType, HFS_U32 segmentCount)
+{
+#if (defined(_NVT_ETHREARCAM_RX_)||defined(_NVT_ETHERNET_NONE_))
+	char buf[32] = {0};
+	snprintf(buf,sizeof(buf),"%s",FW_CUSTOMER_MODEL);
+    XML_StringResult(WIFIAPP_CMD_GET_MODEL_NAME, buf, bufAddr, bufSize, mimeType);
+#else
+
+    char buf[32] = {0};
+    char *pMacAddr;
+
+    pMacAddr = (char*)UINet_GetMAC();
+
+    snprintf(buf, sizeof(buf), "ID%02x%02x%02x%02x%02x%02x", pMacAddr[0], pMacAddr[1], pMacAddr[2]
+                            ,pMacAddr[3], pMacAddr[4], pMacAddr[5]);
+    //DBG_DUMP("^G *** buf= %s ***\r\n", buf);
+    XML_StringResult(WIFIAPP_CMD_GET_MODEL_NAME, buf, bufAddr, bufSize, mimeType);
+#endif
+
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+int XML_GetCurrMode(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+    INT32 curMode = System_GetState(SYS_STATE_CURRMODE);
+
+    XML_ValueResult(WIFIAPP_CMD_GET_CURRENT_MODE, (UINT64)curMode, bufAddr, bufSize, mimeType);
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+int XML_GetCarNo(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+	char *buf = (char *)bufAddr;
+    UINT32 xmlBufSize = *bufSize;
+
+    XML_snprintf(&buf, &xmlBufSize, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<LIST>\n");
+
+    XML_snprintf(&buf, &xmlBufSize, "<CarNO.>%s</CarNO.>\n", Prj_GetCarNoString());
+
+    XML_snprintf(&buf, &xmlBufSize, "</LIST>\n");
+    *bufSize = (HFS_U32)(buf) - bufAddr;
+
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+int XML_GetHdrTime(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+    char *buf = (char *)bufAddr;
+    UINT32 xmlBufSize = *bufSize;
+    char Hdr_Buf[20] = {0};
+    char *hdr_Startime = NULL;
+    char *hdr_Endtime = NULL;
+    char *Hdrctr = "-";
+    memcpy(Hdr_Buf,Prj_GetHdrTimeString(),sizeof(Hdr_Buf));
+    hdr_Startime  = strtok(Hdr_Buf,Hdrctr);
+    hdr_Endtime  = strtok(NULL,Hdrctr);
+    XML_snprintf(&buf, &xmlBufSize, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<LIST>\n");
+
+    XML_snprintf(&buf, &xmlBufSize, "<Start>%s</Start>\n", hdr_Startime);
+    XML_snprintf(&buf, &xmlBufSize, "<End>%s</End>\n", hdr_Endtime);
+
+    XML_snprintf(&buf, &xmlBufSize, "</LIST>\n");
+    *bufSize = (HFS_U32)(buf) - bufAddr;
+
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+
+int XML_GetCustomStamp(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+	char *buf = (char *)bufAddr;
+    UINT32 xmlBufSize = *bufSize;
+
+    XML_snprintf(&buf, &xmlBufSize, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<LIST>\n");
+
+    XML_snprintf(&buf, &xmlBufSize, "<CustomStamp>%s</CustomStamp>\n", Prj_GetCustomizeString());
+
+    XML_snprintf(&buf, &xmlBufSize, "</LIST>\n");
+    *bufSize = (HFS_U32)(buf) - bufAddr;
+
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+extern INT8 uigpsstatus;
+int XML_GetGPSStatus(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+    UINT32 gpsStatus = 0;
+
+    if (uigpsstatus < 0) {
+        gpsStatus = 0;
+    } else if (uigpsstatus == 0) {
+        gpsStatus = 1;
+    } else {
+        gpsStatus = 2;
+    }
+
+    XML_ValueResult(WIFIAPP_CMD_GET_GPS_STATUS, gpsStatus, bufAddr, bufSize, mimeType);
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+int XML_GetSOSStatus(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+    UINT32 SOSStatus = 0;
+
+    if (FlowMovie_GetSOSStatusNow()) {
+        SOSStatus = 1;
+    } else {
+        SOSStatus = 0;
+    }
+
+    XML_ValueResult(WIFIAPP_CMD_GET_SOS_STATUS, SOSStatus, bufAddr, bufSize, mimeType);
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+int XML_GetSensorStatus(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+    UINT32 SensorStatus = 0;
+
+#if (defined(_NVT_ETHREARCAM_RX_))
+    if (GPIOMap_EthCam1Det())
+#else
+    if (System_GetEnableSensor() == (SENSOR_1 | SENSOR_2))
+#endif
+	{
+        SensorStatus = 1;
+    } else {
+        SensorStatus = 0;
+    }
+
+    XML_ValueResult(WIFIAPP_CMD_GET_SENSOR_STATUS, SensorStatus, bufAddr, bufSize, mimeType);
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+int XML_GetGPS_DB(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+    char buf[64] = {0};
+
+    snprintf(buf, sizeof(buf), "%c,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d", RMCInfo.Status, g_Edog_satellie_DB.satellie_DB_GSM_1, 
+        g_Edog_satellie_DB.satellie_DB_GSM_2, g_Edog_satellie_DB.satellie_DB_GSM_3, g_Edog_satellie_DB.satellie_DB_GSM_4, g_Edog_satellie_DB.satellie_DB_GSM_5,
+        g_Edog_satellie_DB.satellie_DB_GSM_6, g_Edog_satellie_DB.satellie_DB_GSM_7, g_Edog_satellie_DB.satellie_DB_GSM_8, g_Edog_satellie_DB.satellie_DB_GSM_9,
+        g_Edog_satellie_DB.satellie_DB_GSM_10, g_Edog_satellie_DB.satellie_DB_GSM_11, g_Edog_satellie_DB.satellie_DB_GSM_12);
+    DBG_DUMP("^G *** buf= %s ***\r\n", buf);
+    XML_StringResult(WIFIAPP_CMD_GET_GPS_DB, buf, bufAddr, bufSize, mimeType);
+
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+extern void GxSystem_SWResetNOW(void);
+extern void FlowWiFiMovie_StopRec(void);
+
+int XML_SysReboot(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+	if (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD) {
+		if (FlowWiFiMovie_GetRecCurrTime() <= 1) {
+			Delay_DelayMs(1000);
+		}
+		FlowWiFiMovie_StopRec();
+		Delay_DelayMs(300);
+	 }
+	 SysSetFlag(FL_FIRSTPOWERON, FIRSTPOWERON_FALSE);
+	 SysSetFlag(FL_WIFI_AUTO, WIFI_AUTO_ON);
+	 Save_MenuInfo();
+	 Delay_DelayMs(100);
+	 GxSystem_SWResetNOW();
+
+	return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+int XML_ChangeMode(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+	UINT32 cmd = 0,par = 0,custom = 0;
+	INT32 curMode = System_GetState(SYS_STATE_CURRMODE);
+	DBG_DUMP("path=%s argument=%s len=%d\r\n",path,argument,strlen(argument));
+	sscanf_s(argument, "custom=%d&cmd=%d&par=%d",&custom, &cmd, &par);
+	DBG_DUMP("custom=%d&cmd=%d&par=%d\n",custom, cmd, par);
+	
+	if (curMode != PRIMARY_MODE_MOVIE) 
+	{
+		if(par==1)
+		{
+			WifiCmd_ClrFlg(WIFIFLAG_RECORD_DONE);
+			Ux_PostEvent(NVTEVT_WIFI_EXE_MODE,1,par);
+			WifiCmd_WaitFinish(WIFIFLAG_RECORD_DONE);
+		}
+		else
+		{
+			WifiCmd_ClrFlg(WIFIFLAG_MODE_DONE);
+			Ux_PostEvent(NVTEVT_WIFI_EXE_MODE,1,par);
+			WifiCmd_WaitFinish(WIFIFLAG_MODE_DONE);
+		}
+	}
+	else
+	{
+		WifiCmd_ClrFlg(WIFIFLAG_MODE_DONE);
+		Ux_PostEvent(NVTEVT_WIFI_EXE_MODE,1,par);
+		WifiCmd_WaitFinish(WIFIFLAG_MODE_DONE);
+	}
+	XML_DefaultFormat(WIFIAPP_CMD_MODECHANGE, WIFIAPP_RET_OK, bufAddr, bufSize, mimeType);
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+
+int XML_SensorRotate(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+	UINT32 cmd = 0,par = 0,custom = 0;
+	DBG_DUMP("path=%s argument=%s len=%d\r\n",path,argument,strlen(argument));
+	sscanf_s(argument, "custom=%d&cmd=%d&par=%d",&custom, &cmd, &par);
+	DBG_DUMP("custom=%d&cmd=%d&par=%d\n",custom, cmd, par);
+
+	SysSetFlag(FL_SENSOR_ROTATE, par);
+	//SysSetFlag(FL_SENSOR_ROTATE_MENU, par);
+	WifiCmd_ClrFlg(WIFIFLAG_MODE_DONE);
+	Ux_SendEvent(0,NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
+	
+	Delay_DelayMs(2000);
+	WifiCmd_WaitFinish(WIFIFLAG_MODE_DONE);
+	XML_DefaultFormat(WIFIAPP_CMD_SENSOR_ROTATE, WIFIAPP_RET_OK, bufAddr, bufSize, mimeType);
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+int XML_SensorRotate2(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+	UINT32 cmd = 0,par = 0,custom = 0;
+	DBG_DUMP("path=%s argument=%s len=%d\r\n",path,argument,strlen(argument));
+	sscanf_s(argument, "custom=%d&cmd=%d&par=%d",&custom, &cmd, &par);
+	DBG_DUMP("custom=%d&cmd=%d&par=%d\n",custom, cmd, par);
+
+	SysSetFlag(FL_SENSOR2_ROTATE, par);
+	//SysSetFlag(FL_SENSOR2_ROTATE_MENU, par);
+	WifiCmd_ClrFlg(WIFIFLAG_MODE_DONE);
+	Ux_SendEvent(0,NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
+	Delay_DelayMs(2000);
+	WifiCmd_WaitFinish(WIFIFLAG_MODE_DONE);
+	XML_DefaultFormat(WIFIAPP_CMD_SENSOR2_ROTATE, WIFIAPP_RET_OK, bufAddr, bufSize, mimeType);
+    return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
 #endif
 

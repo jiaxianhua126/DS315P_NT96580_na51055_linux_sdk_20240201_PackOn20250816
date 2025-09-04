@@ -3,6 +3,10 @@
 #include "PrjCfg.h"
 #include "WiFiIpc/nvtwifi.h"
 #include <kwrap/error_no.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+
 #if(WIFI_FUNC==ENABLE)
 
 #include "UIWnd/UIFlow.h"
@@ -16,6 +20,7 @@
 #include "UIApp/Network/WifiAppCmd.h"
 #include "UIApp/WifiCmdParser/WifiCmdParser.h"
 #include "UIApp/Network/WifiAppXML.h"
+#include "UIApp/Network/UIAppWiFiCmd.h"
 #endif
 
 #if defined(_CPU1_ECOS_)
@@ -70,6 +75,47 @@ BOOL  gHFS_enable = TRUE;
 //#NT#2016/05/18#David Tsai -end
 INT32 gHFS_http_port = PORT_NUM;
 INT32 gHFS_https_port = HTTPS_PORT_NUM;
+static int nvt_system(const char* pCommand)
+{
+    pid_t pid;
+    int status;
+    int i = 0;
+
+    if(pCommand == NULL)
+    {
+        return (1);
+    }
+
+    if((pid = fork())<0)
+    {
+        status = -1;
+    }
+    else if(pid == 0)
+    {
+        /* close all descriptors in child sysconf(_SC_OPEN_MAX) */
+        for (i = 3; i < sysconf(_SC_OPEN_MAX); i++)
+        {
+            close(i);
+        }
+
+        execl("/bin/sh", "sh", "-c", pCommand, (char *)0);
+        _exit(127);
+    }
+    else
+    {
+        while(waitpid(pid, &status, 0) < 0)
+        {
+            if(errno != EINTR)
+            {
+                status = -1;
+                break;
+            }
+        }
+    }
+
+    return status;
+}
+
 
 BOOL UINet_FsIpc_Init(void)
 {
@@ -159,10 +205,24 @@ static void UINet_HFSNotifyStatus(int status)
 }
 #endif
 
+extern BOOL isEdogData_OK(void);
 INT32 UINet_HFSUploadResultCb(int result, UINT32 bufAddr, UINT32 *bufSize, CHAR *mimeType)
 {
+	int len;
+
 #if _TODO
 	XML_DefaultFormat(WIFIAPP_CMD_UPLOAD_FILE, result, bufAddr, (HFS_U32 *)bufSize, (char *)mimeType);
+#else
+	len = snprintf((char *)bufAddr, *bufSize, "Upload ok end\r\n");
+	*bufSize = len;
+	if(isEdogData_OK())//update edog
+	{
+		Ux_PostEvent(NVTEVT_WIFI_EXE_EDOGDATA_UPDATE, 0);
+	}
+	else //update FW
+	{
+		Ux_PostEvent(NVTEVT_WIFI_EXE_CUSTOM_FWUPDATE, 0);
+	}
 #endif
 	return CYG_HFS_CB_GETDATA_RETURN_OK;
 }
@@ -347,8 +407,7 @@ INT32 UINet_HFSUnInit(void)
 }
 
 #if 1
-#include "UIWnd/UIFlow.h"
-//#include "UIWnd/SPORTCAM/UIInfo/UIInfo.h"
+#include "UIWnd/SPORTCAM/UIInfo/UIInfo.h"
 //#include "SysCfg.h"
 #include "HfsNvt/HfsNvtAPI.h"
 //#include "FsIpcAPI.h"
@@ -394,7 +453,7 @@ INT32 UINet_HFSUnInit(void)
 //#NT#2016/08/05#Niven Cho -begin
 #if (MSDCVENDOR_NVT == ENABLE)
 //#NT#MSDC-NET
-#include "MsdcNvtCb.h"
+#include "UIApp/UsbMsdcCb/MsdcNvtCb.h"
 //#NT#2016/08/05#Niven Cho -end
 #endif
 //tmp define for compile
@@ -411,8 +470,17 @@ typedef struct _DHCP_ASSIGN_IP_INFO {
 char gMacAddr[6] = {0, 0, 0, 0x81, 0x89, 0xe5};
 UINT32 gAuthType = NET_AUTH_WPA2;
 UINT32 gMode = NET_AP_MODE;
-char gSSID[NVT_WSC_MAX_SSID_LEN] = "NVT_CARDV";
-char gSSID_AP_default[NVT_WSC_MAX_SSID_LEN] = "NVT_CARDV";
+#if (MACHINE_TYPE==MACHINE_TYPE_S2P)
+char gSSID[NVT_WSC_MAX_SSID_LEN] = "Haotek-";
+char gSSID_AP_default[NVT_WSC_MAX_SSID_LEN] = "Haotek-";
+char gSSID_5G[NVT_WSC_MAX_SSID_LEN] = "5G-Haotek-";
+char gSSID_AP_default_5G[NVT_WSC_MAX_SSID_LEN] = "5G-Haotek-";
+#else
+char gSSID[NVT_WSC_MAX_SSID_LEN] = "PERNIS-";
+char gSSID_AP_default[NVT_WSC_MAX_SSID_LEN] = "PERNIS-";
+char gSSID_5G[NVT_WSC_MAX_SSID_LEN] = "5G-PERNIS-";
+char gSSID_AP_default_5G[NVT_WSC_MAX_SSID_LEN] = "5G-PERNIS-";
+#endif
 char gPASSPHRASE[NVT_MAX_WEP_KEY_LEN] = "12345678";
 char gPASSPHRASE_AP_default[NVT_MAX_WEP_KEY_LEN] = "12345678";
 char gCurrIP[NVT_WIFIIPC_IP_MAX_LEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -456,7 +524,7 @@ UINT32 gSendPeerIP = 0;
 nvt_wifi_settings wifiConfig = {0};
 BOOL _g_bFirstWifi = TRUE;
 
-#if _TODO //!defined(_NVT_SDIO_WIFI_NONE_) || !defined(_NVT_USB_WIFI_NONE_)
+#if 1//_TODO //!defined(_NVT_SDIO_WIFI_NONE_) || !defined(_NVT_USB_WIFI_NONE_)
 static BOOL g_CliConnected = FALSE;
 static SWTIMER_ID sta_reconnect_timer;
 int SX_TIMER_NET_CONNECT_ID = -1;
@@ -520,12 +588,25 @@ UINT32 UINet_GetAuthType(void)
 }
 char *UINet_GetSSID(void)
 {
+	DBG_DUMP("%s:%d, gSSID = %s\r\n", __FUNCTION__, __LINE__, gSSID);
 	return gSSID;
 }
 char *UINet_GetDefaultAPSSID(void)
 {
 	return gSSID_AP_default;
 }
+
+char *UINet_GetSSID_5G(void)
+{
+	DBG_DUMP("%s:%d, gSSID_5G = %s\r\n", __FUNCTION__, __LINE__, gSSID_5G);
+	return gSSID_5G;
+}
+char *UINet_GetDefaultAPSSID_5G(void)
+{
+	return gSSID_AP_default_5G;
+}
+
+
 char *UINet_GetPASSPHRASE(void)
 {
 	return gPASSPHRASE;
@@ -550,8 +631,21 @@ void UINet_SetSSID(char *ssid, UINT32 len)
 	}
 	memset(gSSID, '\0', NVT_WSC_MAX_SSID_LEN);
 	snprintf(gSSID, NVT_WSC_MAX_SSID_LEN, ssid, len);
-	DBG_IND("%s\r\n", gSSID);
+	//DBG_IND("%s\r\n", gSSID);
+	DBG_IND("%s:%d, gSSID = %s\r\n", __FUNCTION__, __LINE__, gSSID);
 }
+
+void UINet_SetSSID_5G(char *ssid, UINT32 len)
+{
+	if (len > NVT_WSC_MAX_SSID_LEN) {
+		DBG_ERR("max len %d\r\n", NVT_WSC_MAX_SSID_LEN);
+		len = NVT_WSC_MAX_SSID_LEN;
+	}
+	memset(gSSID_5G, '\0', NVT_WSC_MAX_SSID_LEN);
+	snprintf(gSSID_5G, NVT_WSC_MAX_SSID_LEN, ssid, len);
+	DBG_IND("%s:%d, gSSID_5G = %s\r\n", __FUNCTION__, __LINE__, gSSID_5G);
+}
+
 void UINet_SetPASSPHRASE(char *pwd, UINT32 len)
 {
 
@@ -611,7 +705,7 @@ BOOL UINet_AppIpc_Init(void)
     if (UI_GetData(FL_NetWorkMode) == NET_STATION_MODE) {
 	    DBG_DUMP("^RSTA start\r\n");
     } else {
-	DBG_DUMP("^RAP start\r\n");
+		DBG_DUMP("^RAP start\r\n");
     }
 
 	UINT32 result = 0;
@@ -821,7 +915,7 @@ void UINet_StationStatus_CB(char *pIntfName, char *pMacAddr, int status)
 		#if 1 // Temporarily solution. Need to remove.
 		Ux_PostEvent(NVTEVT_WIFI_AUTHORIZED_OK, 1, 0);
 		#endif
-		CHKPNT;
+		//CHKPNT;
 	} else if (status == NVT_WIFI_STA_STATUS_REASSOCIATED) {
 		DBG_DUMP("%s: A client(%02X:%02X:%02X:%02X:%02X:%02X) is reassociated\r\n",
 				pIntfName, *pMacAddr, *(pMacAddr + 1), *(pMacAddr + 2), *(pMacAddr + 3), *(pMacAddr + 4), *(pMacAddr + 5));
@@ -832,7 +926,7 @@ void UINet_StationStatus_CB(char *pIntfName, char *pMacAddr, int status)
 		//if (strncmp((char *)CurConnectedIpInfo.macaddr, pMacAddr, strlen((char *)CurConnectedIpInfo.macaddr)) == 0)
 #endif
 		{
-			//Ux_PostEvent(NVTEVT_WIFI_DEAUTHENTICATED, 0);
+			Ux_PostEvent(NVTEVT_WIFI_DEAUTHENTICATED, 0);
 		}
 	} else if (status == NVT_WIFI_STA_STATUS_DEAUTHENTICATED) {
 		DBG_DUMP("%s: A client(%02X:%02X:%02X:%02X:%02X:%02X) is deauthenticated\r\n",
@@ -841,7 +935,7 @@ void UINet_StationStatus_CB(char *pIntfName, char *pMacAddr, int status)
 		//if (strncmp((char *)CurConnectedIpInfo.macaddr, pMacAddr, strlen((char *)CurConnectedIpInfo.macaddr)) == 0)
 #endif
 		{
-			//Ux_PostEvent(NVTEVT_WIFI_DEAUTHENTICATED, 0);
+			Ux_PostEvent(NVTEVT_WIFI_DEAUTHENTICATED, 0);
 		}
 	} else if (status == NVT_WIFI_STA_STATUS_PORT_AUTHORIZED) {
 
@@ -865,7 +959,7 @@ void UINet_StationStatus_CB(char *pIntfName, char *pMacAddr, int status)
 #endif
 			//#NT#2016/03/23#Isiah Chang -end
 			Ux_PostEvent(NVTEVT_WIFI_AUTHORIZED_OK, 1, 0);
-			CHKPNT;
+			//CHKPNT;
 		}
 
 	} else if (status == NVT_WIFI_AP_READY) {
@@ -885,7 +979,7 @@ void UINet_StationStatus_CB(char *pIntfName, char *pMacAddr, int status)
 		//if (strncmp((char *)CurConnectedIpInfo.macaddr, pMacAddr, strlen((char *)CurConnectedIpInfo.macaddr)) == 0)
 #endif
 		{
-			//Ux_PostEvent(NVTEVT_WIFI_DEAUTHENTICATED, 0);
+			Ux_PostEvent(NVTEVT_WIFI_DEAUTHENTICATED, 0);
 		}
 	}
 //#NT#2016/03/23#Isiah Chang -end
@@ -903,6 +997,7 @@ void UINet_Link2APStatus_CB(char *pIntfName, int status)
 {
 	if (status == NVT_WIFI_LINK_STATUS_CONNECTED) {
 		DBG_IND("%s: Connected with AP\r\n", pIntfName);
+		//DBG_DUMP("call UINet_Link2APStatus_CB\r\n");
 		if (strcmp(wifiConfig.mode, "sta") == 0) {
 			//#NT#2016/12/24#YongChang Qui -begin
 			//#NT#Retry timer of station mode connection is separated into two phases
@@ -915,20 +1010,20 @@ void UINet_Link2APStatus_CB(char *pIntfName, int status)
 		//#NT#2016/03/23#Isiah Chang -begin
 		//#NT#add new Wi-Fi UI flow.
 #if(WIFI_UI_FLOW_VER == WIFI_UI_VER_2_0)
-		//WifiCmd_ReceiveCmd(TRUE); // Ready to receive Wi-Fi APP command.
+		WifiCmd_ReceiveCmd(TRUE); // Ready to receive Wi-Fi APP command.
 #endif
 		//#NT#2016/03/23#Isiah Chang -end
-		#if (defined(_MODEL_580_SDV_SJ10_) || defined(_MODEL_580_SDV_SJ10_FAST_BT_))
+		#if 1 //(defined(_MODEL_580_SDV_SJ10_) || defined(_MODEL_580_SDV_SJ10_FAST_BT_))
 		Ux_PostEvent(NVTEVT_WIFI_AUTHORIZED_OK, 0);
         #endif
 	} else if (status == NVT_WIFI_LINK_STATUS_DISCONNECTED) {
 		DBG_IND("%s: Disconnected with AP\r\n", pIntfName);
-		//g_CliConnected = FALSE;
-		//Ux_PostEvent(NVTEVT_WIFI_DEAUTHENTICATED, 0);
+		g_CliConnected = FALSE;
+		Ux_PostEvent(NVTEVT_WIFI_DEAUTHENTICATED, 0);
 	} else if (status == NVT_WIFI_LINK_STATUS_DEAUTHENTICATED) {
 		DBG_IND("%s: Deauthenticated\r\n", pIntfName);
-		//g_CliConnected = FALSE;
-		//Ux_PostEvent(NVTEVT_WIFI_DEAUTHENTICATED, 0);
+		g_CliConnected = FALSE;
+		Ux_PostEvent(NVTEVT_WIFI_DEAUTHENTICATED, 0);
 	} else if (status == NVT_WIFI_LINK_STATUS_SACN_ZREO_RESULT) {
 		DBG_IND("%s: ZREO\r\n", pIntfName);
 	} else if (status == NVT_WIFI_STA_READY) {
@@ -1326,16 +1421,41 @@ void UINet_WifiSettings(nvt_wifi_settings *pwifi, UINT32 mode, UINT32 security)
 			pwifi->is_configured = 1;
 		}
 
-		if (ptMenuStoreInfo->strSSID[0] == 0) {
-#if 0//(MAC_APPEN_SSID==ENABLE)
-			snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s%02x%02x%02x%02x%02x%02x", gSSID, gMacAddr[0], gMacAddr[1], gMacAddr[2],
-					 gMacAddr[3], gMacAddr[4], gMacAddr[5]);
-#else
-			snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s", gSSID);
-#endif
-		} else {
-			snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s", gSSID);
-		}
+        if ((SysGetFlag(FL_WIFI_BAND) == WIFI_BAND_52G) ||(SysGetFlag(FL_WIFI_BAND) == WIFI_BAND_58G)) {
+			DBG_DUMP("call UINet_WifiSettings WIFI_BAND_5G=%d\r\n",SysGetFlag(FL_WIFI_BAND));
+            if (ptMenuStoreInfo->strSSID_5G[0] == 0) {
+		#if (MAC_APPEN_SSID==ENABLE)
+                snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s%02x%02x%02x%02x%02x%02x", gSSID_5G, gMacAddr[0], gMacAddr[1], gMacAddr[2],
+                       gMacAddr[3], gMacAddr[4], gMacAddr[5]);
+                //snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s%02x%02x%02x", gSSID_5G, gMacAddr[3], gMacAddr[4], gMacAddr[5]);
+                DBG_DUMP("%s:%d, pwifi->ssid = %s, gSSID_5G = %s, %02x%02x%02x%02x%02x%02x\r\n",
+							__FUNCTION__, __LINE__, pwifi->ssid, gSSID_5G, gMacAddr[0], gMacAddr[1], gMacAddr[2],gMacAddr[3], gMacAddr[4], gMacAddr[5]);
+		#else
+                snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s", gSSID_5G);
+                DBG_DUMP("%s:%d, pwifi->ssid = %s\r\n", __FUNCTION__, __LINE__, gSSID_5G);
+		#endif
+            } else {
+                snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s", gSSID_5G);
+                DBG_DUMP("%s:%d, pwifi->ssid = %s\r\n", __FUNCTION__, __LINE__, gSSID_5G);
+            }
+        } else {
+        	DBG_DUMP("call UINet_WifiSettings WIFI_BAND_24G=%d\r\n",SysGetFlag(FL_WIFI_BAND));
+            if (ptMenuStoreInfo->strSSID[0] == 0) {
+		#if (MAC_APPEN_SSID==ENABLE)
+                snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s%02x%02x%02x%02x%02x%02x", gSSID, gMacAddr[0], gMacAddr[1], gMacAddr[2],
+                       gMacAddr[3], gMacAddr[4], gMacAddr[5]);
+                //snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s%02x%02x%02x", gSSID, gMacAddr[3], gMacAddr[4], gMacAddr[5]);
+                DBG_DUMP("%s:%d, pwifi->ssid = %s, gSSID_2.4G = %s, %02x%02x%02x%02x%02x%02x\r\n",
+							__FUNCTION__, __LINE__, pwifi->ssid, gSSID, gMacAddr[0], gMacAddr[1], gMacAddr[2], gMacAddr[3], gMacAddr[4], gMacAddr[5]);
+		#else
+                snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s", gSSID);
+                DBG_DUMP("%s:%d, pwifi->ssid = %s\r\n", __FUNCTION__, __LINE__, gSSID);
+		#endif
+            } else {
+                snprintf(pwifi->ssid, NVT_WSC_MAX_SSID_LEN, "%s", gSSID);
+                DBG_DUMP("%s:%d, pwifi->ssid = %s\r\n", __FUNCTION__, __LINE__, gSSID);
+            }
+        }
 
 		strcpy(pwifi->device_name, "Wireless AP");
 	}
@@ -1446,6 +1566,27 @@ void UINet_WifiBack2Dev(void)
 
 extern int Wifi_HAL_Set_Country (const char *c);
 
+void WifiMode_Select(void)
+{
+	char wifi_modecmd[64] = {0};
+	if (SysGetFlag(FL_WIFI_BAND) == WIFI_BAND_24G) {
+		//printf("call 2.4G\r\n");
+		bzero(wifi_modecmd,sizeof(wifi_modecmd));
+		sprintf(wifi_modecmd, "/usr/share/wifiscripts/up.sh %s %s", "ap","2.4G");
+		nvt_system(wifi_modecmd);
+	} else if (SysGetFlag(FL_WIFI_BAND) == WIFI_BAND_52G){
+		//printf("call 5G\r\n");
+		bzero(wifi_modecmd,sizeof(wifi_modecmd));
+		sprintf(wifi_modecmd, "/usr/share/wifiscripts/up.sh %s %s", "ap","5G");
+		nvt_system(wifi_modecmd);
+	} else if (SysGetFlag(FL_WIFI_BAND) == WIFI_BAND_58G) {
+		//printf("call 5G\r\n");
+		bzero(wifi_modecmd,sizeof(wifi_modecmd));
+		sprintf(wifi_modecmd, "/usr/share/wifiscripts/up.sh %s %s", "ap","5.8G");
+		nvt_system(wifi_modecmd);
+	}
+}
+
 INT32 UINet_WifiInit(UINT32 mode, UINT32 security)
 {
 //#NT#2016/04/14#YongChang_Qui -begin
@@ -1504,50 +1645,8 @@ INT32 UINet_WifiInit(UINT32 mode, UINT32 security)
 	WiFiIpc_register_p2p_event_indicate_cb("wlan0", UINet_P2PEvent_CB);
 
 	memset(gMacAddr, 0, sizeof(gMacAddr));
-	UINet_WifiSettings(pwifi, mode, security);
-	WiFiIpc_generate_pin_code(pwifi->wsc_pin);
 
-#if defined(_CPU2_LINUX_)
-	pwifi->channel = 6;//0 for auto-channel scan ; 6 for Linux CarDV_WIFI test
-#endif
-
-#if 0 //5G auto-channel scan in China
-	pwifi->channel = 0;
-	WiFiIpc_set_country("zh-cn");
-	WiFiIpc_set_frequency(NVT_WIFI_5G);
-#endif
-	//Wifi_HAL_Set_Country("zh-tw");
-
-#if 0 //Only 1 connection is allowed
-	WiFiIpc_RunSystemCmd(NULL_FILE, "iwpriv", "wlan0", "set_mib", "stanum=1", NULL_STR);
-#endif
-
-#if (MAC_APPEN_SSID==ENABLE)
-	//auto append mac address to ssid
-	pwifi->auto_ssid_plus_mac = NVT_WIFI_AP_MAC_AUTO;
-    //pwifi->auto_ssid_plus_mac = (NVT_WIFI_AP_MAC3 | NVT_WIFI_AP_MAC4 | NVT_WIFI_AP_MAC5);
-#endif
-
-	WiFiIpc_Config(pwifi);
-
-//#NT#2016/08/25#YongChang_Qui -begin
-//#NT#Default to disable wps function
-#if 0
-#if 0
-	create_wscd();
-	DBG_IND("create_wscd \r\n");
-#else
-	if (WiFiIpc_wscd_is_start()) {
-		WiFiIpc_wsc_reinit(); //trigger wsc to reinit
-		DBG_IND("wsc_reinit\r\n");
-	} else {
-		WiFiIpc_create_wscd();
-		DBG_IND("create_wscd\r\n");
-	}
-#endif
-#endif
-//#NT#2016/08/25#YongChang_Qui -end
-
+	//#NT#2016/08/25#YongChang_Qui -end
 	if (WiFiIpc_get_wlan0_efuse_mac(gMacAddr) < 0) {
 		DBG_IND("wifi_get_wlan0_efuse_mac() fail. Use hardcoded mac.\r\n");
 		WiFiIpc_set_mac_address("wlan0", "\x00\x00\x00\x81\x89\xe5");
@@ -1569,6 +1668,48 @@ INT32 UINet_WifiInit(UINT32 mode, UINT32 security)
 		}
 	}
 
+	UINet_WifiSettings(pwifi, mode, security);
+	WiFiIpc_generate_pin_code(pwifi->wsc_pin);
+
+#if defined(_CPU2_LINUX_)
+	pwifi->channel = 6;//0 for auto-channel scan ; 6 for Linux CarDV_WIFI test
+#endif
+
+#if 0 //5G auto-channel scan in China
+	pwifi->channel = 0;
+	WiFiIpc_set_country("zh-cn");
+	WiFiIpc_set_frequency(NVT_WIFI_5G);
+#endif
+	//Wifi_HAL_Set_Country("zh-tw");
+
+#if 0 //Only 1 connection is allowed
+	WiFiIpc_RunSystemCmd(NULL_FILE, "iwpriv", "wlan0", "set_mib", "stanum=1", NULL_STR);
+#endif
+
+#if (MAC_APPEN_SSID==ENABLE)
+	//auto append mac address to ssid
+	pwifi->auto_ssid_plus_mac = 0; //1
+#endif
+
+	WiFiIpc_Config(pwifi);
+
+//#NT#2016/08/25#YongChang_Qui -begin
+//#NT#Default to disable wps function
+#if 0
+#if 0
+	create_wscd();
+	DBG_IND("create_wscd \r\n");
+#else
+	if (WiFiIpc_wscd_is_start()) {
+		WiFiIpc_wsc_reinit(); //trigger wsc to reinit
+		DBG_IND("wsc_reinit\r\n");
+	} else {
+		WiFiIpc_create_wscd();
+		DBG_IND("create_wscd\r\n");
+	}
+#endif
+#endif
+
 	if ((mode == NET_AP_MODE) || (mode == NET_P2P_GO_MODE) || (mode == NET_WPS_AP_PBC_MODE)) {
 		memset(gCurrIP, 0, NVT_WIFIIPC_IP_MAX_LEN);
 		snprintf(gCurrIP, NVT_WIFIIPC_IP_MAX_LEN, "%s", EXAM_NET_AP_IP);
@@ -1578,7 +1719,9 @@ INT32 UINet_WifiInit(UINT32 mode, UINT32 security)
 #if _TODO
 		WiFiIpc_interface_config("wlan0", gCurrIP, "255.255.255.0");
 #else
-		WiFiIpc_interface_up("wlan0");
+		// WiFiIpc_interface_up("wlan0");
+		WifiMode_Select();
+
 #endif
 		if (_g_bFirstWifi) {
 			TM_BOOT_END("network", "up");
@@ -1659,7 +1802,7 @@ INT32 UINet_WifiInit(UINT32 mode, UINT32 security)
 	//#NT#2016/08/05#Niven Cho -end
 
 	//Ux_PostEvent(NVTEVT_WIFI_STATE, 2, NET_STATE_WIFI_START, result);
-
+ 	//printf("call UINet_WifiInit\r\n");
 	return result;
 }
 
@@ -2071,7 +2214,7 @@ void WIFI_CliReconnect(UINT32 uiEvent)
 
 BOOL UINet_CliReConnect(UINT32 bStart)
 {
-#if _TODO
+#if 1//_TODO
 	static int bInit = 0;
 	nvt_wifi_settings *pwifi = &wifiConfig;
 

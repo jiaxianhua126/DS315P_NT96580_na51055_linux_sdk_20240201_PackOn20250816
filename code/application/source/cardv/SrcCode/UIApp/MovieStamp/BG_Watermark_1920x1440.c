@@ -975,7 +975,6 @@ const WATERLOGO_BUFFER g_WaterLogo_1440 = {
 	WATERLOGO_AUTO_POS,                 // y position
 	160,//288,                                // width (Note: must align to 8)
 	48,//48,                                 // height
-	(UINT32)&g_ucWaterMark_ARGB4444_1440[0],
-	1
+	(UINT32)&g_ucWaterMark_ARGB4444_1440[0]
 };
 

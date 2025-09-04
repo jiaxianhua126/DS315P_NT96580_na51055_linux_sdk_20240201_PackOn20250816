@@ -26,18 +26,16 @@ UINT8 FlowPB_GetPlbDataState(void)
 
 void FlowPB_PlayVideo(void)
 {
-#if _TODO
 	//#NT#2012/7/4#Philex - begin
 	//KeyScan_EnableAutoPoweroff(FALSE); //disable auto poweroff,while playing video
 	//KeyScan_EnableUSBDet(FALSE);       //disable USB detect,while playing video
 	//#NT#2012/7/4#Philex - end
 	g_PlbData.State = PLB_ST_PLAY_MOV;
-	g_PlbData.VolCount = AUDIO_VOL_63;  //AUDIO_VOL_63
+	g_PlbData.VolCount = 63;  //AUDIO_VOL_63
 	//#NT#2012/7/4#Philex - begin
 	//Ux_SendEvent(&UIPlayObjCtrl,NVTEVT_AUD_VOLUME,1,g_PlbData.VolCount);
 	//Ux_SendEvent(&UIPlayObjCtrl,NVTEVT_MOVPLAY,1,UIFlowMoviePlayCBFunc);
 	//#NT#2012/7/4#Philex - end
-#endif	
 }
 
 void FlowPB_PauseVideoPlaying(void)
@@ -162,22 +160,41 @@ PURECT FlowPB_ThumbDisplay(void)
 
 
 	if (KeyScan_GetPlugDev() == PLUG_TV) {
+        #if defined(_disp_if8b_lcd1_ili9342c_) || defined(_disp_if8b_lcd1_lkwy_ili8961_) //for 960x240 LCD
 		//#For LCD panel with 16:9 ratio (but 4:3 pixel resolution)
 		if (SysGetFlag(FL_TV_MODE) == TV_MODE_NTSC) {
-			ThumbCfg.wFirstHGap         = 22 * (640) / (320);
-			ThumbCfg.wHGap              = 22 * (640) / (320);
-			ThumbCfg.wLastHGap          = 24 * (640) / (320);
-			ThumbCfg.wFirstVGap         = 6 * (448) / (240);
-			ThumbCfg.wVGap              = 6 * (448) / (240);
-			ThumbCfg.wLastVGap          = 30 * (448) / (240);
+            ThumbCfg.wFirstHGap         = 18*(640)/(320);//22*(640)/(320);
+            ThumbCfg.wHGap              = 15*(640)/(320);//22*(640)/(320);
+            ThumbCfg.wLastHGap          = 16*(640)/(320);//24*(640)/(320);
+            ThumbCfg.wFirstVGap         = 33*(448)/(240);//6*(448)/(240);
+            ThumbCfg.wVGap              = 2*(448)/(240);
+            ThumbCfg.wLastVGap          = 28*(448)/(240);
 		} else {
-			ThumbCfg.wFirstHGap         = 22 * (640) / (320);
-			ThumbCfg.wHGap              = 22 * (640) / (320);
-			ThumbCfg.wLastHGap          = 22 * (640) / (320);
-			ThumbCfg.wFirstVGap         = 7 * (528) / (240);
-			ThumbCfg.wVGap              = 6 * (528) / (240);
-			ThumbCfg.wLastVGap          = 30 * (528) / (240);
+            ThumbCfg.wFirstHGap         = 18*(640)/(320);//22*(640)/(320);
+            ThumbCfg.wHGap              = 15*(640)/(320);//22*(640)/(320);
+            ThumbCfg.wLastHGap          = 18*(640)/(320);//22*(640)/(320);
+            ThumbCfg.wFirstVGap         = 29*(528)/(240);//7*(528)/(240);
+            ThumbCfg.wVGap              = 2*(528)/(240);
+            ThumbCfg.wLastVGap          = 24*(528)/(240);
 		}
+       #else
+		//#For LCD panel with 16:9 ratio (but 4:3 pixel resolution)
+		if (SysGetFlag(FL_TV_MODE) == TV_MODE_NTSC) {
+            ThumbCfg.wFirstHGap         = 18*(640)/(320);//22*(640)/(320);
+            ThumbCfg.wHGap              = 15*(640)/(320);//22*(640)/(320);
+            ThumbCfg.wLastHGap          = 18*(640)/(320);//24*(640)/(320);
+            ThumbCfg.wFirstVGap         = 30*(448)/(240);//6*(448)/(240);
+            ThumbCfg.wVGap              = 6 * (448) / (240);
+            ThumbCfg.wLastVGap          = 30 * (448) / (240);
+		} else {
+            ThumbCfg.wFirstHGap         = 18*(640)/(320);//22*(640)/(320);
+            ThumbCfg.wHGap              = 15*(640)/(320);//22*(640)/(320);
+            ThumbCfg.wLastHGap          = 18*(640)/(320);//22*(640)/(320);
+            ThumbCfg.wFirstVGap         = 30*(528)/(240);//7*(528)/(240);
+            ThumbCfg.wVGap              = 6 * (528) / (240);
+            ThumbCfg.wLastVGap          = 30 * (528) / (240);
+		}
+        #endif
 	} else {
 		if (KeyScan_GetPlugDev() == PLUG_HDMI) {
 			//HDMI
@@ -190,12 +207,28 @@ PURECT FlowPB_ThumbDisplay(void)
 		} else {
 			//LCD
 #if (FLOWPB_THUMB_MODE == FLOWPB_THUMB_MODE_3_3)
+            #if defined(_disp_if8b_lcd1_ili9342c_) || defined(_disp_if8b_lcd1_lkwy_ili8961_) // for 2.0' gao qing LCD
+            ThumbCfg.wFirstHGap         = 58;//48
+            ThumbCfg.wHGap              = 46;
+            ThumbCfg.wLastHGap          = 60;//54
+            ThumbCfg.wFirstVGap         = 36;//31
+            ThumbCfg.wVGap              = 6; //1
+            ThumbCfg.wLastVGap          = 30;//26
+            #elif (defined(_disp_if8b_lcd1_ili9341_))
+			ThumbCfg.wFirstHGap         = 4;//16;
+			ThumbCfg.wHGap              = 20;//16;
+			ThumbCfg.wLastHGap          = 34;//32;
+			ThumbCfg.wFirstVGap         = 99;
+			ThumbCfg.wVGap              = 6;
+			ThumbCfg.wLastVGap          = 90;
+            #else 
 			ThumbCfg.wFirstHGap         = 18;//16;
 			ThumbCfg.wHGap              = 17;//16;
 			ThumbCfg.wLastHGap          = 18;//32;
-			ThumbCfg.wFirstVGap         = 6;
-			ThumbCfg.wVGap              = 6;
+			ThumbCfg.wFirstVGap         = 36;//6;
+			ThumbCfg.wVGap              = 7;//6;
 			ThumbCfg.wLastVGap          = 30;
+            #endif
 #elif (FLOWPB_THUMB_MODE == FLOWPB_THUMB_MODE_3_2)
 			ThumbCfg.wFirstHGap         = 18;
 			ThumbCfg.wHGap              = 16;

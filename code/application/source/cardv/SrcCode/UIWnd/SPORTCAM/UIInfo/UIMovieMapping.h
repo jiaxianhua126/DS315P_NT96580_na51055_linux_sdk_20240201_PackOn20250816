@@ -18,6 +18,7 @@ extern void     SetMovieTargetBitrate(UINT32 uiType, UINT32 uiSize, UINT32 uiBit
 extern UINT32   GetMovieSizeRatio(UINT32 ubIndex);
 extern UINT32   GetMovieAudioVolumeValue(UINT32 uiIndex);
 extern UINT32   Get_MovieTimeLapseValue(UINT32 uhIndex);
+extern UINT32   Get_ParkingModeTimeLapseValue(UINT32 uiIndex);
 
 extern UINT32   GetMovieSizeWidth_2p(UINT32 uiPath, UINT32 uiIndex);
 extern UINT32   GetMovieSizeHeight_2p(UINT32 uiPath, UINT32 uiIndex);

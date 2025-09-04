@@ -5,18 +5,15 @@
 
 #include "UIFramework.h"
 
-extern VControl UIMenuWndWiFiWaitCtrl;//Panel type
+extern VControl UIMenuWndWiFiWaitCtrl;//Panel type 
 
-extern VControl UIMenuWndWiFiWait_StatusGraphCtrl;//StatusGraph type
+extern VControl UIMenuWndWiFiWait_Connect_Icon_StatusCtrl;//Status type 
 
-typedef enum {
-	UIMenuWndWiFiWait_StatusGraph_State_WiFi_1,
-	UIMenuWndWiFiWait_StatusGraph_State_WiFi_2,
-	UIMenuWndWiFiWait_StatusGraph_State_WiFi_3,
-	UIMenuWndWiFiWait_StatusGraph_State_WiFi_ON,
-	UIMenuWndWiFiWait_StatusGraph_State_WiFi_OFF,
-	UIMenuWndWiFiWait_StatusGraph_MAX
-} UIMenuWndWiFiWait_StatusGraph_Setting;
+typedef enum
+{
+UIMenuWndWiFiWait_Connect_Icon_Status_ICON_WIFI_CONNECT,
+UIMenuWndWiFiWait_Connect_Icon_Status_MAX
+}UIMenuWndWiFiWait_Connect_Icon_Status_Setting;
 
 //---------------------UIMenuWndWiFiWaitCtrl User Export---------------------------
 #endif

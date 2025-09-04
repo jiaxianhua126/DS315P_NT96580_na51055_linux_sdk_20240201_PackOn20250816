@@ -4,11 +4,12 @@
 #include "UIWnd/UIFlow.h"
 #include "PlaybackTsk.h"
 #include "DCF.h"
+#include "UIApp/Play/UIAppMoviePlay.h"
 
 // --------------------------------------------------------------------------
 // OPTIONS
 // --------------------------------------------------------------------------
-
+#if 0
 TMDEF_BEGIN_OPTIONS(VOLUME)
 TMDEF_OPTION_TEXT_S(VOL0, TM_OPTION_ENABLE)
 TMDEF_OPTION_TEXT_S(VOL1, TM_OPTION_ENABLE)
@@ -22,7 +23,7 @@ TMDEF_OPTION_TEXT_S(VOL8, TM_OPTION_ENABLE)
 TMDEF_OPTION_TEXT_S(VOL9, TM_OPTION_ENABLE)
 TMDEF_OPTION_TEXT_S(VOL10, TM_OPTION_ENABLE)
 TMDEF_END_OPTIONS()
-
+#endif
 // --------------------------------------------------------------------------
 // ITEMS
 // --------------------------------------------------------------------------
@@ -55,7 +56,7 @@ static int MenuCustom_Protect(UINT32 uiMessage, UINT32 uiParam)
 // Playback Menu Items
 TMDEF_BEGIN_ITEMS(PLAYBACK)
 TMDEF_ITEM_CUSTOM(PROTECT, MenuCustom_Protect)
-TMDEF_ITEM_TEXTID(VOLUME)
+//TMDEF_ITEM_TEXTID(VOLUME)
 TMDEF_END_ITEMS()
 
 // --------------------------------------------------------------------------

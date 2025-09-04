@@ -9,8 +9,16 @@ DX_SRC = \
 	./SrcCode/Dx/$(MODEL)/DxPower_Battery.c \
 	./SrcCode/Dx/$(MODEL)/DxPower_DC.c \
 	./SrcCode/Dx/$(MODEL)/DxStorage_Card.c \
-	./SrcCode/Dx/$(MODEL)/DxStorage_EmbMem.c
-	
+	./SrcCode/Dx/$(MODEL)/DxStorage_EmbMem.c \
+	./SrcCode/Dx/$(MODEL)/uart.c \
+	./SrcCode/Dx/$(MODEL)/DxGSensor.c \
+	./SrcCode/Dx/$(MODEL)/DxGPS.c \
+	./SrcCode/Dx/$(MODEL)/DxLed.c \
+	./SrcCode/Dx/$(MODEL)/DxGpio.c \
+	./SrcCode/Dx/$(MODEL)/Dxwatchdog.c \
+	./SrcCode/Dx/$(MODEL)/DxASR.c		\
+	./SrcCode/Dx/$(MODEL)/DxEdog.c		\
+#	./SrcCode/Dx/$(MODEL)/ProjectInfo.c \
 #	./SrcCode/Dx/$(MODEL)/DxCamera_Sensor.c \
 #	./SrcCode/Dx/$(MODEL)/DxCfg.c
 #	./SrcCode/Dx/$(MODEL)/DxCmd.c

@@ -210,15 +210,109 @@ void Save_SysInfo(void)
 	*/
 }
 
+//-----------------------------------------------------------------------------
+// GPSSignal Status
+//-----------------------------------------------------------------------------
+extern INT8 uigpsstatus;
+INT8 GetGPSSignalStatus(void)
+{
+    INT8 gpsstatus;
+    //debug_err(("!!!uigpsstatus=%d\n\r",uigpsstatus));
+    switch (uigpsstatus) {
+    case GPSSignal_UNFINDABLE:
+        gpsstatus = 0;
+        break;
+    case GPSSignal_FINDABLE:
+        gpsstatus = 1;
+        break;
+    default:
+        gpsstatus = -1;
+        break;
+    }
+    return gpsstatus;
+}
+
+void UI_ResetSSIDPASSPHRASE(void)
+{
+    memset(currentInfo.strSSID, '\0', NVT_WSC_MAX_SSID_LEN);
+    memset(currentInfo.strPASSPHRASE, '\0', NVT_MAX_WEP_KEY_LEN);
+	//5G
+    memset(currentInfo.strSSID_5G, '\0', NVT_WSC_MAX_SSID_LEN);
+    strcpy(currentInfo.strPASSPHRASE,UINet_GetDefaultAPPASSPHRASE());
+}
+
+extern char CarNo_Buf[13];
+extern char Customize_Buf[13];
+BOOL g_CarNoErr = FALSE;
+
+char gPrjCarNo[32] = {0};
+char gPrjCustomize[32] = {0};
+char gPrjHdrTime[32] = {0};
+static UINT32 gWifi_Hdr_sHour = 0;
+static UINT32  gWifi_Hdr_sMin = 0;
+static UINT32 gWifi_Hdr_eHour = 0;
+static UINT32  gWifi_Hdr_eMin = 0;
+
+char* Prj_GetCarNoString(void)
+{
+    memcpy(&gPrjCarNo, &CarNo_Buf, sizeof(char)*13);
+    return gPrjCarNo;
+}
+
+char* Prj_GetCustomizeString(void)
+{
+    memcpy(&gPrjCustomize, &Customize_Buf, sizeof(char)*13);
+    return gPrjCustomize;
+}
+
+char *Prj_GetHdrTimeString(void)
+{
+
+    gWifi_Hdr_sHour = SysGetFlag(FL_TIME_STOP)/100;
+    gWifi_Hdr_sMin	= SysGetFlag(FL_TIME_STOP)%100;
+    gWifi_Hdr_eHour  = SysGetFlag(FL_TIME_START)/100;
+    gWifi_Hdr_eMin  = SysGetFlag(FL_TIME_START)%100;	
+    sprintf(gPrjHdrTime,"%02d:%02d-%02d:%02d",gWifi_Hdr_sHour,gWifi_Hdr_sMin,gWifi_Hdr_eHour,gWifi_Hdr_eMin);
+    return gPrjHdrTime;
+}
+
+#define CARNO_BACKUP_FILE_NAME  "A:\\CarNo_Backup.txt"
+static char g_scCharTmpBuffer[30] = {0};
+UINT32 UI_WriteCarNoToFile(void)
+{
+    FST_FILE  pFileHdl = NULL;
+    UINT32 ilen = 0;//,pos
+
+    if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
+        return 0;
+    }
+
+    pFileHdl = FileSys_OpenFile(CARNO_BACKUP_FILE_NAME, FST_OPEN_ALWAYS|FST_OPEN_WRITE);
+
+    if (pFileHdl) {
+        memset(&g_scCharTmpBuffer, 0, 30);
+
+        sprintf((char*)g_scCharTmpBuffer, "%s\r\n", CarNo_Buf);
+        ilen = strlen(g_scCharTmpBuffer);
+
+        // 1. append file
+        //FileSys_SeekFile(pFileHdl, 0 , FST_SEEK_END);
+        //pos = FileSys_TellFile(pFileHdl);
+        FileSys_WriteFile(pFileHdl, (UINT8*)g_scCharTmpBuffer, &ilen, 0, NULL);
+        FileSys_CloseFile(pFileHdl);
+        FileSys_SetAttrib(CARNO_BACKUP_FILE_NAME, FST_ATTRIB_HIDDEN, TRUE);
+    }
+    return 0;
+}
 
 //------------------------------------------------------------
 #define PS_SYS_PARAM            "SYSP"
 #define BLOCK_UIINFO    0
 
 CHAR previewEVStr[EV_SETTING_MAX][5] = {
-	"-2.0",
-	"-1.7",
-	"-1.3",
+	//"-2.0",
+	//"-1.7",
+	//"-1.3",
 	"-1.0",
 	"-0.7",
 	"-0.3",
@@ -226,9 +320,9 @@ CHAR previewEVStr[EV_SETTING_MAX][5] = {
 	"+0.3",
 	"+0.7",
 	"+1.0",
-	"+1.3",
-	"+1.7",
-	"+2.0"
+	//"+1.3",
+	//"+1.7",
+	//"+2.0"
 };
 
 void UI_SetInitVolume(UINT32 volumeIndex)
@@ -442,6 +536,37 @@ void Load_MenuInfo(void)
 		} else {
 			PStore_CloseSection(pSection);
 		}
+
+#if 1
+		if (((currentInfo.strCarNo[0] >= 48)&&(currentInfo.strCarNo[0] <= 57))
+            || ((currentInfo.strCarNo[0] >= 65)&&(currentInfo.strCarNo[0] <= 90))
+            || (currentInfo.strCarNo[0] == 32)
+            || (currentInfo.strCarNo[0] == 45)
+            || (currentInfo.strCarNo[0] == 46))
+        {
+            g_CarNoErr = FALSE;
+            memcpy(&CarNo_Buf, &currentInfo.strCarNo, sizeof(char)*13);
+        }
+        else
+        {
+            g_CarNoErr = TRUE;
+            strncpy(currentInfo.strCarNo, "           ", sizeof(char)*13);
+        }
+
+        if (((currentInfo.strCustomize[0] >= 48)&&(currentInfo.strCustomize[0] <= 57))
+            || ((currentInfo.strCustomize[0] >= 65)&&(currentInfo.strCustomize[0] <= 90))
+            || (currentInfo.strCustomize[0] == 32)
+            || (currentInfo.strCustomize[0] == 45)
+            || (currentInfo.strCustomize[0] == 46))
+        {
+            memcpy(&Customize_Buf, &currentInfo.strCustomize, sizeof(char)*13);
+        }
+        else
+        {
+            strncpy(currentInfo.strCustomize, "           ", sizeof(char)*13);
+        }
+#endif
+
 		//#NT#2016/06/23#Niven Cho -end
 		//#NT#2017/03/02#Niven Cho -begin
 		//#NT#EMMC_AS_PSTORE, reduce PStore_CloseSection
@@ -716,6 +841,11 @@ void Save_MenuInfo(void)
 	/*--- General ---*/
 	strncpy(currentInfo.strSoftwareVer, Prj_GetVersionString(), (VER_STR_MAX - 1));
 	currentInfo.strSoftwareVer[strlen(currentInfo.strSoftwareVer)] = '\0';
+
+    strncpy(currentInfo.strCarNo, Prj_GetCarNoString(), (VER_STR_MAX - 1));
+    currentInfo.strCarNo[strlen(currentInfo.strCarNo)] = '\0';
+    strncpy(currentInfo.strCustomize, Prj_GetCustomizeString(), (VER_STR_MAX - 1));
+    currentInfo.strCustomize[strlen(currentInfo.strCustomize)] = '\0';
 	currentInfo.uhInfoSize = sizeof(UIMenuStoreInfo);
 	//#NT#2013/3/15#Philex Lin - end
 
@@ -783,6 +913,12 @@ void Save_MenuInfo(void)
 	/*--- General ---*/
 	strncpy(currentInfo.strSoftwareVer, Prj_GetVersionString(), (VER_STR_MAX - 1));
 	currentInfo.strSoftwareVer[strlen(currentInfo.strSoftwareVer)] = '\0';
+	currentInfo.uhInfoSize = sizeof(UIMenuStoreInfo);
+
+    strncpy(currentInfo.strCarNo, Prj_GetCarNoString(), (VER_STR_MAX - 1));
+    currentInfo.strCarNo[strlen(currentInfo.strCarNo)] = '\0';
+    strncpy(currentInfo.strCustomize, Prj_GetCustomizeString(), (VER_STR_MAX - 1));
+    currentInfo.strCustomize[strlen(currentInfo.strCustomize)] = '\0';
 	currentInfo.uhInfoSize = sizeof(UIMenuStoreInfo);
 	//#NT#2013/3/15#Philex Lin - end
 
@@ -1046,7 +1182,25 @@ EXIT:
 
 void Reset_MenuInfo(void)
 {
+    memcpy(&CarNo_Buf, "           ", sizeof(char)*13);
+    memcpy(&Customize_Buf, "           ", sizeof(char)*13);
+
 	SysResetFlag();             // reset system flags
+
+    {
+        //reset DateTime
+        struct tm Curr_DateTime = {0};
+
+        Curr_DateTime.tm_year = DEF_YEAR;
+        Curr_DateTime.tm_mon = DEF_MONTH;
+        Curr_DateTime.tm_mday = DEF_DAY;
+        Curr_DateTime.tm_hour = 0;
+        Curr_DateTime.tm_min = 0;
+        Curr_DateTime.tm_sec = 0;
+
+        hwclock_set_time(TIME_ID_CURRENT, Curr_DateTime, 0);
+    }
+
 	SysExeMenuSettingFuncs();   // execute menu setting related functions
 
 	/* After reset, save to NAND */
@@ -1134,7 +1288,7 @@ void KeyScan_EnableMisc(BOOL bEn)
 		GxPower_SetControl(GXPWR_CTRL_AUTOPOWEROFF_EN, 0xff); //reset
 		GxPower_SetControl(GXPWR_CTRL_AUTOSLEEP_EN, 0xff); //reset
 		SxTimer_SetFuncActive(SX_TIMER_DET_AUTOPOWEROFF_ID, FALSE);
-#if (USB_MODE==ENABLE)
+#if 0 //(USB_MODE==ENABLE)
 		SxTimer_SetFuncActive(SX_TIMER_DET_USB_ID, FALSE);
 #endif
 		//UISound_EnableKey(FALSE); // 660 is full-duplex for audio
@@ -1145,7 +1299,7 @@ void KeyScan_EnableMisc(BOOL bEn)
 		//#NT#Fix Mantis Issue 0113246
 		SxTimer_SetFuncActive(SX_TIMER_DET_AUTOPOWEROFF_ID, TRUE);
 		//#NT#2016/11/21#Adam Su -end
-#if (USB_MODE==ENABLE)
+#if 1 //(USB_MODE==ENABLE)
 		SxTimer_SetFuncActive(SX_TIMER_DET_USB_ID, TRUE);
 #endif
 		//UISound_EnableKey(TRUE); // 660 is full-duplex for audio
@@ -1157,7 +1311,7 @@ void KeyScan_EnableMisc(BOOL bEn)
 //-----------------------------------------------------------------------------
 UINT32 GetBatteryLevel(void)
 {
-
+#if 0
 	if (KeyScan_IsACIn()) {
 		guiBatteryLevel = BATTERY_CHARGE;
 	} else {
@@ -1184,6 +1338,9 @@ UINT32 GetBatteryLevel(void)
 		guiBatteryLevel = BATTERY_FULL;
 #endif
 	}
+#else
+	guiBatteryLevel = BATTERY_FULL;
+#endif
 
 	return guiBatteryLevel;
 }
@@ -1227,38 +1384,75 @@ void SysCheckFlag(void)
 	SysLimitFlag(FL_CONTINUE_SHOT,      0,  CONTINUE_SHOT_SETTING_MAX,  DEFAULT_CONTINUE_SHOT);
 	SysLimitFlag(FL_SHARPNESS,          0,  SHARPNESS_ID_MAX,           DEFAULT_SHARPNESS);
 	SysLimitFlag(FL_EV,                 0,  EV_SETTING_MAX,             DEFAULT_EV);
+    SysLimitFlag(FL_EV2,                0,  EV_SETTING_MAX,             DEFAULT_EV2);
 	SysLimitFlag(FL_ISO,                0,  ISO_ID_MAX,                 DEFAULT_ISO);
 	SysLimitFlag(FL_METERING,           0,  METERING_ID_MAX,            DEFAULT_METERING);
+    SysLimitFlag(FL_SATURATION,         0,  SATURATION_ID_MAX,          DEFAULT_SATURATION);
+    SysLimitFlag(FL_DATE_STAMP,     	0,  DATE_STAMP_ID_MAX,      	DEFAULT_DATE_STAMP);
+    SysLimitFlag(FL_DUAL_CAM,           0,  DUALCAM_SETTING_MAX,        DEFAULT_DUAL_CAM);
+    SysLimitFlag(FL_DUAL_CAM_MENU,      0,  DUALCAM_SETTING_MAX,        DEFAULT_DUAL_CAM);
+    SysLimitFlag(FL_RSC,                0,  RSC_SETTING_MAX,            DEFAULT_RSC);
+    SysLimitFlag(FL_RSC_MENU,           0,  RSC_SETTING_MAX,            DEFAULT_RSC);
+    SysLimitFlag(FL_WDR,                0,  WDR_SETTING_MAX,            DEFAULT_WDR);
+    SysLimitFlag(FL_WDR_MENU,           0,  WDR_SETTING_MAX,            DEFAULT_WDR);
+    SysLimitFlag(FL_SHDR,               0,  SHDR_SETTING_MAX,           DEFAULT_SHDR);
+    SysLimitFlag(FL_SHDR_MENU,          0,  SHDR_SETTING_MAX,           DEFAULT_SHDR);
 
 	// Movie
 	SysLimitFlag(FL_MOVIE_SIZE,         0,  MOVIE_SIZE_ID_MAX,          DEFAULT_MOVIE_SIZE);
+    SysLimitFlag(FL_MOVIE_SIZE_MENU,    0,  MOVIE_SIZE_ID_MAX,          DEFAULT_MOVIE_SIZE);
 	SysLimitFlag(FL_MOVIE_CYCLIC_REC,   0,  MOVIE_CYCLICREC_ID_MAX,     DEFAULT_MOVIE_CYCLICREC);
 	SysLimitFlag(FL_MOVIE_MOTION_DET,   0,  MOVIE_MOTIONDET_ID_MAX,     DEFAULT_MOVIE_MOTION_DET);
 	SysLimitFlag(FL_MOVIE_AUDIO,        0,  MOVIE_AUDIO_ID_MAX,         DEFAULT_MOVIE_AUDIO);
+	SysLimitFlag(FL_MOVIE_VOICE,        0,  MOVIE_VOICE_ID_MAX,         DEFAULT_MOVIE_VOICE);
+	SysLimitFlag(FL_ASR,        		0,  ASR_ID_MAX,         		DEFAULT_ASR);
+	SysLimitFlag(FL_ASR_CONTENT,        0,  ASR_CONTENT_ID_MAX,         DEFAULT_ASR_CONTENT);
 	SysLimitFlag(FL_MOVIE_DATEIMPRINT,  0,  MOVIE_DATEIMPRINT_ID_MAX,   DEFAULT_MOVIE_DATEIMPRINT);
 	SysLimitFlag(FL_MOVIE_HDR,          0,  MOVIE_HDR_ID_MAX,           DEFAULT_MOVIE_HDR);
+    SysLimitFlag(FL_MOVIE_HDR_MENU,     0,  MOVIE_HDR_ID_MAX,           DEFAULT_MOVIE_HDR);
+	SysLimitFlag(FL_MOVIE_HDR_CHANGE_BEFSIZE,     0,  MOVIE_SIZE_ID_MAX,           DEFAULT_HDR_CHANGE_BEFSIZE);
+	SysLimitFlag(FL_MOVIE_HDR_STATECHANGE,     0,  MOVIE_HDR_STATE_ID_MAX,           DEFAULT_HDR_STATE_CHANGE);
 	SysLimitFlag(FL_MOVIE_WDR,          0,  MOVIE_WDR_ID_MAX,           DEFAULT_MOVIE_WDR);
-	SysLimitFlag(FL_MOVIE_DEFOG,          0,  MOVIE_DEFOG_ID_MAX,           DEFAULT_MOVIE_DEFOG);
-	SysLimitFlag(FL_MOVIE_SENSOR_ROTATE, 0,  SEN_ROTATE_MAX,             DEFAULT_SENSOR_ROTATE);
+	SysLimitFlag(FL_MOVIE_WDR_MENU,     0,  MOVIE_WDR_ID_MAX,           DEFAULT_MOVIE_WDR);
+	SysLimitFlag(FL_MOVIE_DEFOG,        0,  MOVIE_DEFOG_ID_MAX,         DEFAULT_MOVIE_DEFOG);
+	SysLimitFlag(FL_MOVIE_DEFOG_MENU,   0,  MOVIE_DEFOG_ID_MAX,         DEFAULT_MOVIE_DEFOG);
+	SysLimitFlag(FL_MOVIE_SENSOR_ROTATE,0,  SEN_ROTATE_MAX,             DEFAULT_SENSOR_ROTATE);
 	SysLimitFlag(FL_MovieAudioRecIndex, 0,  MOVIE_VOL_MAX,              DEFAULT_MOVIE_REC_VOLUME);
 	SysLimitFlag(FL_MovieAudioRec,      0,  MOVIE_AUD_REC_ID_MAX,       DEFAULT_MOVIE_REC_AUD);
 	//#NT#2016/06/14#Charlie Chang -begin
 	//#NT#support contrast, audio in, audio in sample rate, flip, movie quality set
-	SysLimitFlag(FL_MOVIE_CONTRAST,      0,       MOVIE_CONTRAST_ID_MAX,          DEFAULT_MOVIE_CONTRAST);
-	SysLimitFlag(FL_MOVIE_AUDIOIN,      0,       MOVIE_AUDIOIN_ID_MAX,           DEFAULT_MOVIE_AUDIOIN);
-	SysLimitFlag(FL_MOVIE_AUDIOIN_SR,   0,       MOVIE_AUDIOIN_SR_ID_MAX,        DEFAULT_MOVIE_AUDIOIN_SR);
-	SysLimitFlag(FL_MOVIE_FLIP_MIRROR,   0,      MOVIE_FLIP_MIRROR_ID_MAX,       DEFAULT_MOVIE_FLIP_MIRROR);
-	SysLimitFlag(FL_MOVIE_QUALITY_SET,   0,  MOVIE_QUALITY_SET_ID_MAX,       DEFAULT_MOVIE_QUALITY_SET);
+	SysLimitFlag(FL_MOVIE_CONTRAST,     0,  MOVIE_CONTRAST_ID_MAX,      DEFAULT_MOVIE_CONTRAST);
+	SysLimitFlag(FL_MOVIE_AUDIOIN,      0,  MOVIE_AUDIOIN_ID_MAX,       DEFAULT_MOVIE_AUDIOIN);
+	SysLimitFlag(FL_MOVIE_AUDIOIN_SR,   0,  MOVIE_AUDIOIN_SR_ID_MAX,    DEFAULT_MOVIE_AUDIOIN_SR);
+	SysLimitFlag(FL_MOVIE_FLIP_MIRROR,  0,  MOVIE_FLIP_MIRROR_ID_MAX,   DEFAULT_MOVIE_FLIP_MIRROR);
+	SysLimitFlag(FL_MOVIE_QUALITY_SET,  0,  MOVIE_QUALITY_SET_ID_MAX,   DEFAULT_MOVIE_QUALITY_SET);
 	//#NT#2016/06/14#Charlie Chang -end
 	//#NT#2017/03/03#Jeah Yen -begin
 	//#NT# support sbs mode
-	SysLimitFlag(FL_MOVIE_SBS_MODE,   0,  MOVIE_SBS_ID_MAX,       DEFAULT_MOVIE_SBS_MODE);
+	SysLimitFlag(FL_MOVIE_SBS_MODE,     0,  MOVIE_SBS_ID_MAX,           DEFAULT_MOVIE_SBS_MODE);
 	//#NT#2017/03/03#Jeah Yen -end
-	SysLimitFlag(FL_MOVIE_CODEC,   0,  MOVIE_CODEC_ID_MAX,     DEFAULT_MOVIE_CODEC);
+	SysLimitFlag(FL_MOVIE_CODEC,        0,  MOVIE_CODEC_ID_MAX,         DEFAULT_MOVIE_CODEC);
+	SysLimitFlag(FL_MOVIE_DECODE,       0,  MOVIE_DECODE_ID_MAX,        DEFAULT_MOVIE_DECODE);
+    SysLimitFlag(FL_MOVIE_TIMELAPSE_REC,0,  MOVIE_TIMELAPSEREC_ID_MAX,  DEFAULT_MOVIE_TIMELAPSE_REC);
+    SysLimitFlag(FL_MOVIE_TIMELAPSE_REC_MENU, 0, MOVIE_TIMELAPSEREC_ID_MAX, DEFAULT_MOVIE_TIMELAPSE_REC);
+    SysLimitFlag(FL_MovieRSCIndex,      0,  MOVIE_RSC_SETTING_MAX,      DEFAULT_MOVIE_RSC);
+    SysLimitFlag(FL_MovieRSCIndex_MENU, 0,  MOVIE_RSC_SETTING_MAX,      DEFAULT_MOVIE_RSC);
+    SysLimitFlag(FL_MOVIE_IR_CUT,       0,  MOVIE_IR_CUT_ID_MAX,        DEFAULT_IR_CUT);
+    SysLimitFlag(FL_MOVIE_PTZ,          0,  MOVIE_PTZ_ID_MAX,           DEFAULT_MOVIE_PTZ);
+    SysLimitFlag(FL_MOVIE_PIM,          0,  MOVIE_PIM_ID_MAX,           DEFAULT_MOVIE_PIM);
+    SysLimitFlag(FL_MOVIE_URGENT_PROTECT_AUTO,   0,  MOVIE_URGENT_PROTECT_AUTO_ID_MAX,    DEFAULT_MOVIE_URGENT_PROTECT_AUTO);
+    SysLimitFlag(FL_MOVIE_URGENT_PROTECT_MANUAL, 0,  MOVIE_URGENT_PROTECT_MANUAL_ID_MAX,  DEFAULT_MOVIE_URGENT_PROTECT_MANUAL);
+    SysLimitFlag(FL_MOVIE_LDWS,         0,  MOVIE_LDWS_ID_MAX,          DEFAULT_MOVIE_LDWS);
+    SysLimitFlag(FL_MOVIE_LDWS_MENU,    0,  MOVIE_LDWS_ID_MAX,          DEFAULT_MOVIE_LDWS);
+    SysLimitFlag(FL_MOVIE_FCW,          0,  MOVIE_FCW_ID_MAX,           DEFAULT_MOVIE_FCWS);
+    SysLimitFlag(FL_MOVIE_FCW_MENU,     0,  MOVIE_FCW_ID_MAX,           DEFAULT_MOVIE_FCWS);
+    SysLimitFlag(FL_MOVIE_TIMERLAPS,    0,  MOVIE_TIMER_LAPS_ID_MAX,    DEFAULT_MOVIE_TIMERLAPS);
+    SysLimitFlag(FL_MOVIE_BITRATE,      0,  MOVIE_BITRATE_ID_MAX,       DEFAULT_MOVIE_BITRATE);
+    SysLimitFlag(FL_MOVIE_HDR_DET,      0,  MOVIE_HDR_DET_ID_MAX,       DEFAULT_MOVIE_HDR_DET);
 
 	// Playback
-	SysLimitFlag(FL_PROTECT,            0,  FILE_PROTECT_ID_MAX,    DEFAULT_PROTECT);
-	SysLimitFlag(FL_MovieAudioPlayIndex, 0,  MOVIE_AUDIO_VOL_SETTING_MAX,    DEFAULT_MOVIE_PLAY_VOLUME);
+	SysLimitFlag(FL_PROTECT,            0,  FILE_PROTECT_ID_MAX,            DEFAULT_PROTECT);
+	SysLimitFlag(FL_MovieAudioPlayIndex,0,  MOVIE_AUDIO_VOL_SETTING_MAX,    DEFAULT_MOVIE_PLAY_VOLUME);
 
 	// System
 	SysLimitFlag(FL_AudioPlayIndex,     0,  AUDIO_VOL_MAX,          DEFAULT_AUDIO_PLAY_VOLUME);
@@ -1268,7 +1462,34 @@ void SysCheckFlag(void)
 	SysLimitFlag(FL_FREQUENCY,          0,  FREQUENCY_ID_MAX,       DEFAULT_FREQUENCY);
 	SysLimitFlag(FL_TV_MODE,            0,  TV_MODE_ID_MAX,         DEFAULT_TV_MODE);
 	SysLimitFlag(FL_DualDisp,           0,  DUALDISP_SETTING_MAX,   DEFAULT_DUALDISP);
-
+    SysLimitFlag(FL_GSENSOR,            0,  GSENSOR_ID_MAX,         DEFAULT_GSENSOR);
+    SysLimitFlag(FL_LCD_OFF,            0,  LCDOFF_SETTING_MAX,     DEFAULT_LCD_OFF);
+    SysLimitFlag(FL_SENSOR_ROTATE,      0,  SEN_ROTATE_MAX,         DEFAULT_SENSOR_ROTATE);
+    SysLimitFlag(FL_SENSOR2_ROTATE,     0,  SEN_ROTATE_MAX,         DEFAULT_SENSOR_ROTATE);
+    SysLimitFlag(FL_LED,                0,  LED_ID_MAX,             DEFAULT_LED);
+    SysLimitFlag(FL_SYS_SOFT_RESET,     0,  SOFT_RESET_ID_MAX,      DEFAULT_SYS_SOFT_RESET);
+    SysLimitFlag(FL_GPS,                0,  GPS_ID_MAX,             DEFAULT_GPS);
+    SysLimitFlag(FL_TIME_ZONE,          0,  GMT_SETTING_MAX,        DEFAULT_TIME_ZONE);
+    SysLimitFlag(FL_SPEED_UNIT,         0,  SPEED_UNIT_ID_MAX,      DEFAULT_SPEED_UNIT);
+    SysLimitFlag(FL_GPS_STAMP,          0,  GPS_STAMP_ID_MAX,       DEFAULT_GPS_STAMP);
+    SysLimitFlag(FL_FORMAT_WARNING,     0,  FORMAT_WARNING_MAX,     DEFAULT_FORMAT_WARNING);
+    SysLimitFlag(FL_FIRSTPOWERON,       0,  FIRSTPOWERON_MAX,       DEFAULT_FIRSTPOWERON);
+    SysLimitFlag(FL_BOOT_DELAY,         0,  BOOT_DELAY_SETTING_MAX, DEFAULT_BOOT_DELAY);
+    SysLimitFlag(FL_MODEL_STAMP,        0,  MODEL_STAMP_ID_MAX,     DEFAULT_MODEL_STAMP);
+    SysLimitFlag(FL_PARKING_MODE,       0,  PARKING_MODE_ID_MAX,    DEFAULT_PARKING_MODE);
+    SysLimitFlag(FL_PARKING_MODE_TIMELAPSE_REC,  0,  PARKING_MODE_TIMELAPSEREC_ID_MAX,  DEFAULT_PARKING_MODE_TIMELAPSE_REC);
+    SysLimitFlag(FL_PARKING_GSENSOR,    0,  PARKING_GSENSOR_ID_MAX, DEFAULT_PARKING_GSENSOR);
+    SysLimitFlag(FL_PARKING_MOTION_DET, 0,  PARKING_MOTIONDET_ID_MAX, DEFAULT_PARKING_MOTION_DET);
+    SysLimitFlag(FL_VIDEO_FORMAT,       0,  VIDEO_FORMAT_ID_MAX,    DEFAULT_VIDEO_FORMAT);
+    SysLimitFlag(FL_VIDEO_FORMAT_MENU,  0,  VIDEO_FORMAT_ID_MAX,    DEFAULT_VIDEO_FORMAT);
+    SysLimitFlag(FL_IR_REAR_COLOR,      0,  IR_REAR_COLOR_ID_MAX,   DEFAULT_IR_REAR_COLOR);
+    SysLimitFlag(FL_REAR_SENSOR_MIRROR, 0,  REAR_SENSOR_MIRROR_ID_MAX, DEFAULT_REAR_SENSOR_MIRROR);
+    SysLimitFlag(FL_SHUTDOWN_TIMER,     0,  SHUTDOWN_TIMER_ID_MAX,  DEFAULT_SHUTDOWN_TIMER);
+    SysLimitFlag(FL_ENTER_PARKING_TIMER,0,  ENTER_PARKING_TIMER_ID_MAX, DEFAULT_ENTER_PARKING_TIMER);
+    SysLimitFlag(FL_REAR_MIRROR_DISPLAY,0,  REAR_MIRROR_DISPLAY_ID_MAX, DEFAULT_REAR_MIRROR_DISPLAY);
+    SysLimitFlag(FL_TIME_START,         0,  2360,                   DEFAULT_TIME_START);//max = 23:59
+    SysLimitFlag(FL_TIME_STOP,          0,  2360,                   DEFAULT_TIME_STOP);//max = 23:59
+	SysLimitFlag(FL_PARKING_OFF_GPS,0,PGPS_ID_MAX,DEFAULT_PARKING_OFF_GPS);
 	SysLimitFlag(FL_DATE_FORMAT,        0,  DATE_FORMAT_ID_MAX,     DEFAULT_DATE_FORMAT);
 	SysLimitFlag(FL_OPENING_LOGO,       0,  OPENING_LOGO_ID_MAX,    DEFAULT_OPENING_LOGO);
 	SysLimitFlag(FL_LCD_DISPLAY,        0,  DISPOUT_ID_MAX,         DEFAULT_LCD_DISPLAY);
@@ -1276,6 +1497,7 @@ void SysCheckFlag(void)
 	SysLimitFlag(FL_MACRO,              0,  MACRO_ID_MAX,           DEFAULT_MACRO);
 	SysLimitFlag(FL_USB_MODE,           0,  USB_MODE_ID_MAX,        DEFAULT_USB_MODE);
 
+    SysLimitFlag(FL_VOLUME,             0,  VOLUME_ID_MAX,          DEFAULT_VOLUME);
 #if (USE_DCF==ENABLE)
 	// Sepcial flags
 	SysLimitFlag(FL_DCF_DIR_ID,         MIN_DCF_DIR_NUM,    MAX_DCF_DIR_NUM,    MIN_DCF_DIR_NUM);
@@ -1288,7 +1510,27 @@ void SysCheckFlag(void)
 #endif
 	SysLimitFlag(FL_WIFI_AUTO_RECORDING, 0,  WIFI_AUTO_RECORDING_ID_MAX, DEFAULT_MOVIE_WIFI_AUTO_RECORDING_OPTION);
 	SysLimitFlag(FL_NetWorkMode, 0, NET_MODE_SETTING_MAX, DEFAULT_WIFI_MODE);
+    SysLimitFlag(FL_WIFI,        0, WIFI_ID_MAX,          DEFAULT_WIFI);
+    SysLimitFlag(FL_WIFI_AUTO,   0, WIFI_AUTO_ID_MAX,     DEFAULT_WIFI_AUTO);
+    SysLimitFlag(FL_WIFI_BAND,   0, WIFI_BAND_ID_MAX,     DEFAULT_WIFI_BAND);
 #endif
+
+    SysLimitFlag(FL_IsCloneRec,  0, CLONE_REC_MAX,        DEFAULT_CLONE_REC);
+	SysLimitFlag(FL_FW_UI_RESET, 0, FW_UI_RESET_MAX,	  DEFAULT_FW_UI_RESET);
+    SysLimitFlag(FL_EDOG_OVERSPEED_ALARM,   0,  EDOG_OVERSPEED_ALARM_ID_MAX,    DEFAULT_EDOG_OVERSPEED_ALARM);
+
+    //#NT#Check SSID and passphrase and reset it if illegal.
+    if (currentInfo.strSSID[0] == 0xFF) {
+        memset(currentInfo.strSSID, '\0', NVT_WSC_MAX_SSID_LEN);
+    }
+    if (currentInfo.strPASSPHRASE[0] == 0xFF) {
+        memset(currentInfo.strPASSPHRASE, '\0', NVT_MAX_WEP_KEY_LEN);
+    }
+
+	//5G
+    if (currentInfo.strSSID_5G[0] == 0xFF) {
+        memset(currentInfo.strSSID_5G, '\0', NVT_WSC_MAX_SSID_LEN);
+    }
 }
 
 void SysSetFixedFlag(void)
@@ -1330,29 +1572,41 @@ void SysSetFixedFlag(void)
     SysSetFlag(FL_MovieRSCIndex_MENU, MOVIE_RSC_OFF);
     SysSetFlag(FL_MovieRSCIndex, MOVIE_RSC_OFF);
 #endif
+    //SysSetFlag(FL_FIRSTPOWERON,            FIRSTPOWERON_FALSE);
+    SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_OFF);
 
+	//SysSetFlag(FL_COMMON_LOCAL,            WIFI_OFF);
+	SysSetFlag(FL_IsCloneRec,              CLONE_REC_OFF);
 #if 0 // unnecessary
-	if (System_GetState(SYS_STATE_CARD)  == CARD_REMOVED) {
+	if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
 		SysSetFlag(FL_PHOTO_SIZE, PHOTO_SIZE_5M);
 		SysSetFlag(FL_MOVIE_SIZE, MOVIE_SIZE_720P);
 	}
 #endif
+   if (SysGetFlag(FL_TIME_START) == 0xFF) {
+        SysSetFlag(FL_TIME_START, DEFAULT_TIME_START);
+    }
+    if (SysGetFlag(FL_TIME_STOP) == 0xFF) {
+        SysSetFlag(FL_TIME_STOP, DEFAULT_TIME_STOP);
+    }
+
 }
 
 void SysSetFixedFlagSysInit(void)
 {
 	// Set fixed system flags (only on system init)
-	SysSetFlag(FL_WIFI_LINK,            WIFI_LINK_NG);
-	SysSetFlag(FL_DUAL_CAM,             SysGetFlag(FL_DUAL_CAM_MENU));
-	SysSetFlag(FL_MOVIE_SIZE, SysGetFlag(FL_MOVIE_SIZE_MENU));
-	SysSetFlag(FL_MOVIE_HDR, SysGetFlag(FL_MOVIE_HDR_MENU));
-	SysSetFlag(FL_MOVIE_WDR, SysGetFlag(FL_MOVIE_WDR_MENU));
-	SysSetFlag(FL_MOVIE_DEFOG, SysGetFlag(FL_MOVIE_DEFOG_MENU));
-	SysSetFlag(FL_MovieRSCIndex, SysGetFlag(FL_MovieRSCIndex_MENU));
+	SysSetFlag(FL_WIFI_LINK,		WIFI_LINK_NG);
+	SysSetFlag(FL_DUAL_CAM,			SysGetFlag(FL_DUAL_CAM_MENU));
+	SysSetFlag(FL_MOVIE_SIZE,		SysGetFlag(FL_MOVIE_SIZE_MENU));
+	SysSetFlag(FL_MOVIE_HDR_MENU,       DEFAULT_MOVIE_WDR);
+	SysSetFlag(FL_MOVIE_WDR,		DEFAULT_MOVIE_WDR);
+	//SysSetFlag(FL_MOVIE_DEFOG,     SysGetFlag(FL_MOVIE_DEFOG_MENU));
+	//SysSetFlag(FL_MovieRSCIndex,   SysGetFlag(FL_MovieRSCIndex_MENU));
+	SysSetFlag(FL_NetWorkMode,		DEFAULT_WIFI_MODE);  // Reset Wi-Fi mode to AP mode.
 	//#NT#2016/07/12#KCHong#[0104994] -begin
 	//#NT#Use FL_MOVIE_LDWS_MENU & FL_MOVIE_FCW_MENU instead of FL_MOVIE_LDWS & FL_MOVIE_FCW
-	SysSetFlag(FL_MOVIE_LDWS, SysGetFlag(FL_MOVIE_LDWS_MENU));
-	SysSetFlag(FL_MOVIE_FCW, SysGetFlag(FL_MOVIE_FCW_MENU));
+    SysSetFlag(FL_MOVIE_LDWS,		DEFAULT_MOVIE_LDWS);//SysGetFlag(FL_MOVIE_LDWS_MENU)
+    SysSetFlag(FL_MOVIE_FCW,		DEFAULT_MOVIE_FCWS);//SysGetFlag(FL_MOVIE_FCW_MENU)
 	//#NT#2016/07/12#KCHong#[0104994] -end
 	//#NT#2016/07/26#KCHong#[0105955] -begin
 	//#NT#If ADAS is ON and timelapse changes to OFF, reopen movie mode
@@ -1360,17 +1614,27 @@ void SysSetFixedFlagSysInit(void)
 	//#NT#2016/07/26#KCHong#[0105955] -end
 	//#NT#2016/08/19#Lincy Lin#[0106935] -begin
 	//#NT# Support change WDR, SHDR, RSC setting will change mode after exit menu
-	SysSetFlag(FL_RSC,             SysGetFlag(FL_RSC_MENU));
-	SysSetFlag(FL_WDR,             SysGetFlag(FL_WDR_MENU));
-	SysSetFlag(FL_SHDR,            SysGetFlag(FL_SHDR_MENU));
+	SysSetFlag(FL_RSC,				SysGetFlag(FL_RSC_MENU));
+	SysSetFlag(FL_WDR,				SysGetFlag(FL_WDR_MENU));
+	SysSetFlag(FL_SHDR,				SysGetFlag(FL_SHDR_MENU));
 	//#NT#2016/08/19#Lincy Lin -end
-	SysSetFlag(FL_DEFOG,            SysGetFlag(FL_DEFOG_MENU));
-	SysSetFlag(FL_MOVIE_CODEC,            SysGetFlag(FL_MOVIE_CODEC_MENU));
-
+	SysSetFlag(FL_DEFOG,			SysGetFlag(FL_DEFOG_MENU));
+	SysSetFlag(FL_MOVIE_CODEC,		SysGetFlag(FL_MOVIE_CODEC_MENU));
+	//after power ,always set 0.
+	UI_SetData(FL_MOVIE_REC, 0);
     //wifi
 #if(WIFI_FUNC==ENABLE)
 	SysSetFlag(FL_NetWorkMode,          DEFAULT_WIFI_MODE);  // Reset Wi-Fi mode to AP mode.
 #endif
+	if ((UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_2560x1440P60)
+		/*||(UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_1920x1080P60)*/)//
+	{
+		UI_SetData(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+		UI_SetData(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+		UI_SetData(FL_MOVIE_WDR, MOVIE_WDR_OFF);
+		UI_SetData(FL_MOVIE_WDR_MENU, MOVIE_WDR_OFF);
+	} 
+
 
 }
 
@@ -1383,6 +1647,7 @@ void SysResetFlag(void)
 	SysSetFlag(FL_COLOR_EFFECT,         DEFAULT_PHOTO_COLOR);
 	SysSetFlag(FL_SCENE,                DEFAULT_SCENE);
 	SysSetFlag(FL_EV,                   DEFAULT_EV);
+    SysSetFlag(FL_EV2,                  DEFAULT_EV2);
 	SysSetFlag(FL_ISO,                  DEFAULT_ISO);
 	SysSetFlag(FL_WB,                   DEFAULT_WB);
 	SysSetFlag(FL_METERING,             DEFAULT_METERING);
@@ -1397,7 +1662,7 @@ void SysResetFlag(void)
 	SysSetFlag(FL_DATE_STAMP,           DEFAULT_DATE_STAMP);
 	SysSetFlag(FL_SELFTIMER,            DEFAULT_SELFTIMER);
 	SysSetFlag(FL_FLASH_MODE,           DEFAULT_FLASH_MODE);
-	SysSetFlag(FL_CONTINUE_SHOT,       DEFAULT_CONTINUE_SHOT);
+	SysSetFlag(FL_CONTINUE_SHOT,        DEFAULT_CONTINUE_SHOT);
 	SysSetFlag(FL_SHDR,                 DEFAULT_SHDR);
 	//#NT#2016/08/19#Lincy Lin#[0106935] -begin
 	//#NT# Support change WDR, SHDR, RSC setting will change mode after exit menu
@@ -1410,20 +1675,32 @@ void SysResetFlag(void)
 
 	// Movie
 	if (System_GetEnableSensor() == (SENSOR_1 | SENSOR_2)) {
-		SysSetFlag(FL_MOVIE_SIZE_MENU,           DEFAULT_MOVIE_SIZE_DUAL);
+		SysSetFlag(FL_MOVIE_SIZE_MENU,  DEFAULT_MOVIE_SIZE_DUAL);
+        SysSetFlag(FL_MOVIE_SIZE,       DEFAULT_MOVIE_SIZE_DUAL);
 	} else {
-		SysSetFlag(FL_MOVIE_SIZE_MENU,           DEFAULT_MOVIE_SIZE);
+		SysSetFlag(FL_MOVIE_SIZE_MENU,  DEFAULT_MOVIE_SIZE);
+        SysSetFlag(FL_MOVIE_SIZE,       DEFAULT_MOVIE_SIZE);
 	}
 	SysSetFlag(FL_MOVIE_QUALITY,        DEFAULT_MOVIE_QUALITY);
 	SysSetFlag(FL_MOVIE_COLOR,          DEFAULT_MOVIE_COLOR);
 	SysSetFlag(FL_MOVIE_CYCLIC_REC,     DEFAULT_MOVIE_CYCLICREC);
 	SysSetFlag(FL_MOVIE_MOTION_DET,     DEFAULT_MOVIE_MOTION_DET);
 	SysSetFlag(FL_MOVIE_AUDIO,          DEFAULT_MOVIE_AUDIO);
+	SysSetFlag(FL_MOVIE_VOICE,          DEFAULT_MOVIE_VOICE);
+	SysSetFlag(FL_ASR,          		DEFAULT_ASR);
+	SysSetFlag(FL_ASR_CONTENT,          DEFAULT_ASR_CONTENT);
 	SysSetFlag(FL_MOVIE_DATEIMPRINT,    DEFAULT_MOVIE_DATEIMPRINT);
-	SysSetFlag(FL_MOVIE_HDR_MENU,            DEFAULT_MOVIE_HDR);
-	SysSetFlag(FL_MOVIE_WDR_MENU,            DEFAULT_MOVIE_WDR);
-	SysSetFlag(FL_MOVIE_DEFOG_MENU, 		DEFAULT_MOVIE_DEFOG);
-	SysSetFlag(FL_MovieRSCIndex_MENU,        DEFAULT_MOVIE_RSC);
+	SysSetFlag(FL_MOVIE_HDR_MENU,       DEFAULT_MOVIE_HDR);
+    SysSetFlag(FL_MOVIE_HDR,            DEFAULT_MOVIE_HDR);
+	SysSetFlag(FL_MOVIE_HDR_CHANGE_BEFSIZE,            DEFAULT_HDR_CHANGE_BEFSIZE);
+	SysSetFlag(FL_MOVIE_HDR_STATECHANGE,            DEFAULT_HDR_STATE_CHANGE);
+	SysSetFlag(FL_MOVIE_WDR_MENU,       DEFAULT_MOVIE_WDR);
+    SysSetFlag(FL_MOVIE_WDR,            DEFAULT_MOVIE_WDR);
+	SysSetFlag(FL_MOVIE_DEFOG_MENU, 	DEFAULT_MOVIE_DEFOG);
+    SysSetFlag(FL_MOVIE_DEFOG, 	        DEFAULT_MOVIE_DEFOG);
+	SysSetFlag(FL_MovieRSCIndex_MENU,   DEFAULT_MOVIE_RSC);
+    SysSetFlag(FL_MovieRSCIndex,        DEFAULT_MOVIE_RSC);
+	SysSetFlag(FL_MOVIE_SENSOR_ROTATE,  DEFAULT_SENSOR_ROTATE);
 	SysSetFlag(FL_MOVIE_SENSOR_ROTATE_MENU,  DEFAULT_SENSOR_ROTATE);
 	SysSetFlag(FL_MovieMCTFIndex,       DEFAULT_MCTFINDEX);
 	SysSetFlag(FL_MOVIE_PTZ,                   DEFAULT_MOVIE_PTZ);
@@ -1434,6 +1711,7 @@ void SysResetFlag(void)
 	//#NT#If ADAS is ON and timelapse changes to OFF, reopen movie mode
 	SysSetFlag(FL_MOVIE_TIMELAPSE_REC_MENU,  DEFAULT_MOVIE_TIMELAPSE_REC);
 	//#NT#2016/07/26#KCHong#[0105955] -end
+    SysSetFlag(FL_MOVIE_TIMELAPSE_REC,  DEFAULT_MOVIE_TIMELAPSE_REC);
 	SysSetFlag(FL_MOVIE_PIM,            DEFAULT_MOVIE_PIM);
 	//#NT#2016/07/12#KCHong#[0104994] -begin
 	//#NT#Use FL_MOVIE_LDWS_MENU & FL_MOVIE_FCW_MENU instead of FL_MOVIE_LDWS & FL_MOVIE_FCW
@@ -1442,10 +1720,14 @@ void SysResetFlag(void)
 	//#NT#2016/07/12#KCHong#[0104994] -end
 	SysSetFlag(FL_MovieAudioRecIndex,   DEFAULT_MOVIE_REC_VOLUME);
 	SysSetFlag(FL_MovieAudioRec,        DEFAULT_MOVIE_REC_AUD);
-	SysSetFlag(FL_MOVIE_DDD,                   DEFAULT_MOVIE_DDD);
-	SysSetFlag(FL_MOVIE_ADAS_CAL,              DEFAULT_MOVIE_ADAS_CAL);
-	SysSetFlag(FL_MOVIE_CODEC,                  DEFAULT_MOVIE_CODEC);
-	SysSetFlag(FL_MOVIE_CODEC_MENU,                  DEFAULT_MOVIE_CODEC);
+	SysSetFlag(FL_MOVIE_DDD,            DEFAULT_MOVIE_DDD);
+	SysSetFlag(FL_MOVIE_ADAS_CAL,       DEFAULT_MOVIE_ADAS_CAL);
+	SysSetFlag(FL_MOVIE_CODEC,          DEFAULT_MOVIE_CODEC);
+	SysSetFlag(FL_MOVIE_CODEC_MENU,     DEFAULT_MOVIE_CODEC);
+	SysSetFlag(FL_MOVIE_DECODE,         DEFAULT_MOVIE_DECODE);
+    SysSetFlag(FL_MOVIE_TIMERLAPS,      DEFAULT_MOVIE_TIMERLAPS);
+    SysSetFlag(FL_MOVIE_BITRATE,        DEFAULT_MOVIE_BITRATE);
+	SysSetFlag(FL_MOVIE_HDR_DET,		DEFAULT_MOVIE_HDR_DET);
 
 	// Playback
 	SysSetFlag(FL_PROTECT,              DEFAULT_PROTECT);
@@ -1463,6 +1745,33 @@ void SysResetFlag(void)
 	SysSetFlag(FL_DATE_FORMAT,          DEFAULT_DATE_FORMAT);
 	SysSetFlag(FL_OPENING_LOGO,         DEFAULT_OPENING_LOGO);
 	SysSetFlag(FL_CPU2_DEFAULT,         1);
+    SysSetFlag(FL_SENSOR_ROTATE,        DEFAULT_SENSOR_ROTATE);
+    SysSetFlag(FL_SENSOR2_ROTATE,       DEFAULT_SENSOR_ROTATE);
+    SysSetFlag(FL_LED,                  DEFAULT_LED);
+    SysSetFlag(FL_GPS,                  DEFAULT_GPS);
+    SysSetFlag(FL_TIME_ZONE,            DEFAULT_TIME_ZONE);
+    SysSetFlag(FL_SPEED_UNIT,           DEFAULT_SPEED_UNIT);
+    SysSetFlag(FL_GPS_STAMP,            DEFAULT_GPS_STAMP);
+    SysSetFlag(FL_FORMAT_WARNING,       DEFAULT_FORMAT_WARNING);
+    SysSetFlag(FL_FORMAT_WARNING_DATE,  DEFAULT_FORMAT_WARNING_DATE);
+    SysSetFlag(FL_FIRSTPOWERON,         DEFAULT_FIRSTPOWERON);
+    SysSetFlag(FL_BOOT_DELAY,           DEFAULT_BOOT_DELAY);
+    SysSetFlag(FL_MODEL_STAMP,          DEFAULT_MODEL_STAMP);
+    SysSetFlag(FL_PARKING_MODE,         DEFAULT_PARKING_MODE);
+    SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC,  DEFAULT_PARKING_MODE_TIMELAPSE_REC);
+	SysSetFlag(FL_PARKING_GSENSOR,      DEFAULT_PARKING_GSENSOR);
+    SysSetFlag(FL_PARKING_MOTION_DET,   DEFAULT_PARKING_MOTION_DET);
+    SysSetFlag(FL_VIDEO_FORMAT,         DEFAULT_VIDEO_FORMAT);
+    SysSetFlag(FL_VIDEO_FORMAT_MENU,    DEFAULT_VIDEO_FORMAT);
+    SysSetFlag(FL_IR_REAR_COLOR,        DEFAULT_IR_REAR_COLOR);
+    SysSetFlag(FL_REAR_SENSOR_MIRROR,   DEFAULT_REAR_SENSOR_MIRROR);
+    SysSetFlag(FL_SHUTDOWN_TIMER,       DEFAULT_SHUTDOWN_TIMER);
+    SysSetFlag(FL_LAST_DATETIME,        DEFAULT_LAST_DATETIME);
+    SysSetFlag(FL_ENTER_PARKING_TIMER,  DEFAULT_ENTER_PARKING_TIMER);
+    SysSetFlag(FL_REAR_MIRROR_DISPLAY,  DEFAULT_REAR_MIRROR_DISPLAY);
+    SysSetFlag(FL_TIME_START,           DEFAULT_TIME_START);
+    SysSetFlag(FL_TIME_STOP,            DEFAULT_TIME_STOP);
+    SysSetFlag(FL_PARKING_OFF_GPS,			DEFAULT_PARKING_OFF_GPS);
 
 	SysSetFlag(FL_LCD_DISPLAY,          DEFAULT_LCD_DISPLAY);
 	SysSetFlag(FL_LCD_BRIGHTNESS,       DEFAULT_LCD_BRIGHTNESS);
@@ -1476,26 +1785,44 @@ void SysResetFlag(void)
 	//#NT#2016/06/14#Charlie Chang -begin
 	//#NT#support contrast, two way audio in and sample rate, flip, movie qualiity set
 	SysSetFlag(FL_MOVIE_CONTRAST,       DEFAULT_MOVIE_CONTRAST);
-	SysSetFlag(FL_MOVIE_AUDIOIN,       DEFAULT_MOVIE_AUDIOIN);
-	SysSetFlag(FL_MOVIE_AUDIOIN_SR,       DEFAULT_MOVIE_AUDIOIN_SR);
-	SysSetFlag(FL_MOVIE_FLIP_MIRROR,       DEFAULT_MOVIE_FLIP_MIRROR);
-	SysSetFlag(FL_MOVIE_QUALITY_SET,       DEFAULT_MOVIE_QUALITY_SET);
+	SysSetFlag(FL_MOVIE_AUDIOIN,        DEFAULT_MOVIE_AUDIOIN);
+	SysSetFlag(FL_MOVIE_AUDIOIN_SR,     DEFAULT_MOVIE_AUDIOIN_SR);
+	SysSetFlag(FL_MOVIE_FLIP_MIRROR,    DEFAULT_MOVIE_FLIP_MIRROR);
+	SysSetFlag(FL_MOVIE_QUALITY_SET,    DEFAULT_MOVIE_QUALITY_SET);
 	//#NT#2016/06/14#Charlie Chang -end
 	//#NT#2017/03/03#Jeah Yen -begin
 	//#NT# support sbs mode
-	SysSetFlag(FL_MOVIE_SBS_MODE,   DEFAULT_MOVIE_SBS_MODE);
+	SysSetFlag(FL_MOVIE_SBS_MODE,       DEFAULT_MOVIE_SBS_MODE);
 	//#NT#2017/03/03#Jeah Yen -end
+    SysSetFlag(FL_VOLUME,               DEFAULT_VOLUME);	
 	// Wi-Fi
 #if(WIFI_FUNC==ENABLE)
 
 #if (WIFI_FINALCAM_APP_STYLE == ENABLE || UCTRL_APP_MOVIE_FEATURE_SETGET == ENABLE || YOUKU_SDK == ENABLE)
-	SysSetFlag(FL_WIFI_MOVIE_APP_PREVIEW_SIZE, DEFAULT_MOVIE_WIFI_APP_PREVIEW_SIZE);
+	SysSetFlag(FL_WIFI_MOVIE_APP_PREVIEW_SIZE,  DEFAULT_MOVIE_WIFI_APP_PREVIEW_SIZE);
 #endif
-	SysSetFlag(FL_WIFI_AUTO_RECORDING, DEFAULT_MOVIE_WIFI_AUTO_RECORDING_OPTION);
-	SysSetFlag(FL_NetWorkMode, DEFAULT_WIFI_MODE); // Reset To Wi-Fi mode to AP mode.
+	SysSetFlag(FL_WIFI_AUTO_RECORDING,          DEFAULT_MOVIE_WIFI_AUTO_RECORDING_OPTION);
+	SysSetFlag(FL_NetWorkMode,                  DEFAULT_WIFI_MODE); // Reset To Wi-Fi mode to AP mode.
+    SysSetFlag(FL_WIFI,        					DEFAULT_WIFI);
+    SysSetFlag(FL_WIFI_AUTO,   					DEFAULT_WIFI_AUTO);
+    SysSetFlag(FL_WIFI_BAND,   					DEFAULT_WIFI_BAND);
 #endif
 
-	SysSetFlag(FL_ETHCAM_TX_IP_ADDR, 		DEFAULT_ETHCAM_TX_IP_ADDR);
+	SysSetFlag(FL_FW_UI_RESET, 					DEFAULT_FW_UI_RESET);
+    SysSetFlag(FL_EDOG_OVERSPEED_ALARM, DEFAULT_EDOG_OVERSPEED_ALARM);
+
+    //#NT#Check SSID and passphrase and reset it if illegal.
+    if (currentInfo.strSSID[0] == 0xFF) {
+        memset(currentInfo.strSSID, '\0', NVT_WSC_MAX_SSID_LEN);
+    }
+    if (currentInfo.strPASSPHRASE[0] == 0xFF) {
+        memset(currentInfo.strPASSPHRASE, '\0', NVT_MAX_WEP_KEY_LEN);
+    }
+    //5G
+    if (currentInfo.strSSID_5G[0] == 0xFF) {
+        memset(currentInfo.strSSID_5G, '\0', NVT_WSC_MAX_SSID_LEN);
+    }
+	SysSetFlag(FL_ETHCAM_TX_IP_ADDR, 			DEFAULT_ETHCAM_TX_IP_ADDR);
 
 	SysSetFixedFlag();
 
@@ -1508,6 +1835,7 @@ void SysExeMenuSettingFuncs(void)
 	Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_QUALITY,        1,  SysGetFlag(FL_QUALITY));
 	Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_ISO,            1,  SysGetFlag(FL_ISO));
 	Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_EV,             1,  SysGetFlag(FL_EV));
+    Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_EV2,            1,  SysGetFlag(FL_EV2));
 	Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_WB,             1,  SysGetFlag(FL_WB));
 	Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_COLOR,          1,  SysGetFlag(FL_COLOR_EFFECT));
 	Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_METERING,       1,  SysGetFlag(FL_METERING));
@@ -1527,10 +1855,13 @@ void SysExeMenuSettingFuncs(void)
 	/* Cyclic recording/record with mute or sound/DateImptint/Motion Detect */
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_CYCLIC_REC,          1,  SysGetFlag(FL_MOVIE_CYCLIC_REC));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOTION_DET,          1,  SysGetFlag(FL_MOVIE_MOTION_DET));
+    //Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_PARKING_MOTION_DET,  1,  SysGetFlag(FL_PARKING_MOTION_DET));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_DATE_IMPRINT,  1,  SysGetFlag(FL_MOVIE_DATEIMPRINT));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_AUDIO,         1,  SysGetFlag(FL_MOVIE_AUDIO));
+	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_VOICE,         1,  SysGetFlag(FL_MOVIE_VOICE));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_MCTF,          1,  SysGetFlag(FL_MovieMCTFIndex));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_GSENSOR,             1,  SysGetFlag(FL_GSENSOR));
+	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_PARKING_GSENSOR,     1,  SysGetFlag(FL_PARKING_GSENSOR));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_SENSOR_ROTATE, 1,  SysGetFlag(FL_MOVIE_SENSOR_ROTATE));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_IR_CUT,        1,  SysGetFlag(FL_MOVIE_IR_CUT));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_PROTECT_AUTO,  1,  SysGetFlag(FL_MOVIE_URGENT_PROTECT_AUTO));
@@ -1539,6 +1870,7 @@ void SysExeMenuSettingFuncs(void)
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_FCW,           1,  SysGetFlag(FL_MOVIE_FCW));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_CODEC,         1,  SysGetFlag(FL_MOVIE_CODEC));
 	Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_WDR,           1,  SysGetFlag(FL_MOVIE_WDR));
+    Ux_SendEvent(&CustomMovieObjCtrl,   NVTEVT_EXE_MOVIE_BITRATE,       1,  SysGetFlag(FL_MOVIE_BITRATE));
 #endif
 	/*--- Setup ---*/
 	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_LANGUAGE,      1,  SysGetFlag(FL_LANGUAGE));
@@ -1551,6 +1883,13 @@ void SysExeMenuSettingFuncs(void)
 	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_DISPLAY,       1,  SysGetFlag(FL_LCD_DISPLAY));
 	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_FREQ,          1,  SysGetFlag(FL_FREQUENCY));
 	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_DATEFORMAT,    1,  SysGetFlag(FL_DATE_FORMAT));
+    Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_TIMEZONE,      1,  SysGetFlag(FL_TIME_ZONE));
+    Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_SPEED_UNIT,    1,  SysGetFlag(FL_SPEED_UNIT));
+    Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_LED,           1,  SysGetFlag(FL_LED));
+    Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_PARKING_MODE,  1,  SysGetFlag(FL_PARKING_MODE));
+    Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_ENTER_PARKING_TIMER, 1, SysGetFlag(FL_ENTER_PARKING_TIMER));
+    Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_VOLUME,        1,  SysGetFlag(FL_VOLUME));//
+    Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_WIFI_OFF_ON,   1,  SysGetFlag(FL_WIFI));
 
 #if (WIFI_FUNC==ENABLE)
 	/*--- Wi-Fi ---*/
@@ -1562,6 +1901,13 @@ void SysExeMenuSettingFuncs(void)
 		if (currentInfo.strPASSPHRASE[0] != 0) { // Load PASSPHARSE if existed.
 			Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_WIFI_SET_PASSPHRASE, 1, currentInfo.strPASSPHRASE);
 		}
+
+        //5G
+		if (currentInfo.strSSID_5G[0] != 0) { // Load SSID if existed.
+			Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_WIFI_SET_SSID_5G, 1, currentInfo.strSSID_5G);
+		}
+
+        Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_WIFI_MODE, 1, SysGetFlag(FL_NetWorkMode));
 	} else if (UI_GetData(FL_NetWorkMode) == NET_STATION_MODE) {
 		char szTemp[NVT_WSC_MAX_SSID_LEN + NVT_MAX_WEP_KEY_LEN] = {0};
 
@@ -1825,11 +2171,11 @@ void FlowDCF_UpdateName(void)
 {
 	CHAR FolderName[6] = "MEDIA";
 	CHAR FileName[5] = "PTDC";
-	char DCFpathname[0x20]={0};
+	char DCFpathname[0x20];
 	UINT32    uiAddr, uiNextDCFID;
 	CHAR filePath[DCF_FULL_FILE_PATH_LEN];
     struct tm Curr_DateTime;
-    Curr_DateTime = hwclock_get_time(TIME_ID_CURRENT);
+    Curr_DateTime = HwClock_GetTime(TIME_ID_CURRENT);
 
 	snprintf(FolderName, sizeof(FolderName), "%1d%02d%02d", Curr_DateTime.tm_year % 0x0A, Curr_DateTime.tm_mon,Curr_DateTime.tm_mday);
 	snprintf(FileName, sizeof(FileName), "%02d%02d", Curr_DateTime.tm_hour,  Curr_DateTime.tm_min);
@@ -1845,7 +2191,7 @@ void FlowDCF_UpdateName(void)
 			}
 			DCF_SetNextID(uiNextDCFID, MIN_DCF_FILE_NUM);
 		} else {
-			DBG_DUMP("DCF Folder full\r\n");
+			debug_msg("DCF Folder full\r\n");
 		}
 	}
 

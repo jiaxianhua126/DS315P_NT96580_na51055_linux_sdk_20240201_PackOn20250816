@@ -15,6 +15,8 @@ typedef enum {
 	NVTEVT_SYSTEM_SHUTDOWN      = 0x10010001, ///< Close last mode here
 	NVTEVT_SYSTEM_MODE          = 0x10010002, ///< Change mode
 	NVTEVT_SYSTEM_SLEEP         = 0x10010003, ///< Change sleep level of mode
+	NVTEVT_ACC_SHUTDOWN         = 0x10010004, ///< ACC power off
+	NVTEVT_ACC_POWERON          = 0x10010005, ///< ACC power on
 	/* INSERT NEW EVENT HRER */
 	NVTEVT_FLOW_EVT_END         = SYS_FLOW_EVENT_BASE + 0x1000 - 1, ///< Max value = 0x10010fff
 

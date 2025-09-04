@@ -42,6 +42,7 @@
 
 
 static DX_HANDLE gDispDev = 0;
+BOOL g_bTVStatusChanged = FALSE;
 
 void Display_SetEnable(UINT8 LayerID, BOOL bEnable)
 {
@@ -354,6 +355,7 @@ void System_OnVideoInit2(void)
 	TM_BOOT_END("video", "open");
 	TM_BOOT_END("video", "init");
 	TM_BOOT_BEGIN("video", "show_logo");
+#if 0	
 #if (POWERONLOGO_FUNCTION == ENABLE)
 	{
 		Display_ShowSplash(SPLASH_POWERON);
@@ -365,6 +367,7 @@ void System_OnVideoInit2(void)
 	}
 #endif
 	TM_BOOT_END("video", "show_logo");
+#endif
 
     #if 0
     //for hdal not close vout

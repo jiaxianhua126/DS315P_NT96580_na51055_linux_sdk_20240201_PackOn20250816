@@ -10,6 +10,7 @@
 #define DEFAULT_PHOTO_COLOR             COLOR_EFFECT_STANDARD
 #define DEFAULT_SCENE                   SCENE_AUTO
 #define DEFAULT_EV                      EV_00
+#define DEFAULT_EV2                     EV_00
 #define DEFAULT_ISO                     ISO_AUTO
 #define DEFAULT_WB                      WB_AUTO
 #define DEFAULT_METERING                METERING_AIAE
@@ -34,7 +35,7 @@
 #define DEFAULT_DUAL_CAM                DUALCAM_LR_16_9
 #else
 #if (SENSOR_CAPS_COUNT == 1)
-#define DEFAULT_DUAL_CAM                DUALCAM_FRONT
+#define DEFAULT_DUAL_CAM                DUALCAM_BOTH
 #endif
 #if (SENSOR_CAPS_COUNT == 2)
 #define DEFAULT_DUAL_CAM                DUALCAM_BOTH
@@ -52,7 +53,7 @@
 #if (_BOARD_DRAM_SIZE_ == 0x04000000)
 #define DEFAULT_MOVIE_SIZE              MOVIE_SIZE_DUAL_1920x1080P30_848x480P30
 #else
-#define DEFAULT_MOVIE_SIZE              MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30
+#define DEFAULT_MOVIE_SIZE              MOVIE_SIZE_DUAL_2560x1440P30_1920x1080P30 //MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30
 #endif
 
 #else
@@ -67,10 +68,8 @@
 #endif
 
 #else
-    #if defined(_sen_imx415_) || defined(_sen_imx317_) 
+    #if defined(_sen_imx415_) || defined(_sen_imx317_)
     #define DEFAULT_MOVIE_SIZE              MOVIE_SIZE_FRONT_3840x2160P30
-	#elif defined(_MODEL_580_SDV_I860_)
-    #define DEFAULT_MOVIE_SIZE              MOVIE_SIZE_FRONT_2560x1440P30
     #elif (defined(_sen_imx335_) && (defined(_MODEL_580_SDV_C300_) || defined(_MODEL_580_SDV_C300_FAST_BT_)))
     #define DEFAULT_MOVIE_SIZE              MOVIE_SIZE_FRONT_3840x2160P30
     #else
@@ -93,13 +92,21 @@
 #define DEFAULT_MOVIE_CYCLICREC         MOVIE_CYCLICREC_1MIN
 #define DEFAULT_MOVIE_MOTION_DET        MOVIE_MOTIONDET_OFF
 #define DEFAULT_MOVIE_AUDIO             MOVIE_AUDIO_ON
+#if defined(COUNTRY_JP)
+#define DEFAULT_MOVIE_VOICE             MOVIE_VOICE_ON
+#define DEFAULT_ASR             		ASR_STANDARD
+#else
+#define DEFAULT_MOVIE_VOICE             MOVIE_VOICE_ON
+#define DEFAULT_ASR             		ASR_STANDARD
+#endif
+#define DEFAULT_ASR_CONTENT            	ASR_TAKEPHOTO
 #define DEFAULT_MOVIE_DATEIMPRINT       MOVIE_DATEIMPRINT_ON
 #if (SHDR_FUNC==ENABLE)
 #define DEFAULT_MOVIE_HDR               MOVIE_HDR_ON
 #else
 #define DEFAULT_MOVIE_HDR               MOVIE_HDR_OFF
 #endif
-#define DEFAULT_MOVIE_WDR               MOVIE_WDR_OFF
+#define DEFAULT_MOVIE_WDR               MOVIE_WDR_ON
 #define DEFAULT_MOVIE_DEFOG               MOVIE_DEFOG_OFF
 #define DEFAULT_MOVIE_REC_VOLUME        MOVIE_VOL_MAX
 #define DEFAULT_MOVIE_REC_AUD           MOVIE_AUD_REC_ON
@@ -123,31 +130,46 @@
 #define DEFAULT_MOVIE_PIM               MOVIE_PIM_ON
 
 #define DEFAULT_MOVIE_PTZ                   MOVIE_PTZ_OFF
-#define DEFAULT_MOVIE_URGENT_PROTECT_AUTO   MOVIE_URGENT_PROTECT_AUTO_OFF
-#define DEFAULT_MOVIE_URGENT_PROTECT_MANUAL MOVIE_URGENT_PROTECT_MANUAL_OFF
+#define DEFAULT_MOVIE_URGENT_PROTECT_AUTO   MOVIE_URGENT_PROTECT_AUTO_ON
+#define DEFAULT_MOVIE_URGENT_PROTECT_MANUAL MOVIE_URGENT_PROTECT_MANUAL_ON
 #define DEFAULT_MOVIE_DDD                   MOVIE_DDD_OFF
 #define DEFAULT_MOVIE_ADAS_CAL              MOVIE_ADAS_CAL_OFF
-#define DEFAULT_MOVIE_CODEC                 MOVIE_CODEC_H264
+#define DEFAULT_MOVIE_CODEC                 MOVIE_CODEC_H265
 #if(defined(_NVT_ETHREARCAM_RX_))
 //#undef DEFAULT_MOVIE_CODEC
 //#define DEFAULT_MOVIE_CODEC                 MOVIE_CODEC_H265 //for 671
 #endif
+#define DEFAULT_MOVIE_DECODE                MOVIE_DECODE_H265//MOVIE_DECODE_H264
+
+#define DEFAULT_MOVIE_TIMERLAPS             MOVIE_TIMER_LAPS_OFF
+#define DEFAULT_MOVIE_BITRATE               MOVIE_BITRATE_MED
+#define DEFAULT_MOVIE_HDR_DET               MOVIE_HDR_DET_OFF
+
 // Playback
 #define DEFAULT_PROTECT                 PROTECT_ONE
-#define DEFAULT_MOVIE_PLAY_VOLUME       (MOVIE_AUDIO_VOL_SETTING_MAX-1)
+#define DEFAULT_MOVIE_PLAY_VOLUME       MOVIE_AUDIO_VOL_9//(MOVIE_AUDIO_VOL_SETTING_MAX-1)
 
 // System
 #define DEFAULT_AUDIO_PLAY_VOLUME       AUDIO_VOL_MAX
 #define DEFAULT_AUTO_POWER_OFF          POWER_ON
-#define DEFAULT_LCD_OFF                 LCDOFF_ON
+#define DEFAULT_LCD_OFF                 LCDOFF_1MIN
 #define DEFAULT_BEEP                    BEEP_ON
-#define DEFAULT_LANGUAGE                LANG_EN
+#if defined(COUNTRY_JP)
+#define DEFAULT_LANGUAGE                LANG_JP
+#else
+#define DEFAULT_LANGUAGE                LANG_TC
+#endif
+
 #define DEFAULT_FREQUENCY               FREQUENCY_60HZ
 #define DEFAULT_TV_MODE                 TV_MODE_NTSC
 #define DEFAULT_HDMI_MODE               VIDEOOUT2_AUTO
 #define DEFAULT_DUALDISP                DUALDISP_OFF
 #define DEFAULT_SENSOR_ROTATE           SEN_ROTATE_OFF
+#if defined(COUNTRY_JP)
+#define DEFAULT_DATE_FORMAT             DATE_FORMAT_DMY
+#else
 #define DEFAULT_DATE_FORMAT             DATE_FORMAT_YMD
+#endif
 #define DEFAULT_OPENING_LOGO            OPENING_LOGO_ON
 #define DEFAULT_LCD_DISPLAY             DISPOUT_NORMAL
 #define DEFAULT_LCD_BRIGHTNESS          LCDBRT_LVL_05
@@ -160,6 +182,37 @@
 #endif
 #define DEFAULT_EDGE                    MOVIE_EDGE_ON
 #define DEFAULT_NR                      MOVIE_NR_LV_NORMAL
+#define DEFAULT_LED                     LED_ON
+#define DEFAULT_SYS_SOFT_RESET          SOFT_RESET_OFF
+#define DEFAULT_GPS                     GPS_ON
+#if defined(COUNTRY_JP)
+#define DEFAULT_TIME_ZONE               GMT_P9
+#else
+#define DEFAULT_TIME_ZONE               GMT_P8
+#endif
+#define DEFAULT_SPEED_UNIT              SPEED_UNIT_KPH
+#define DEFAULT_GPS_STAMP               GPS_STAMP_BOTH
+#define DEFAULT_FORMAT_WARNING          FORMAT_WARNING_60_DAY
+#define DEFAULT_FORMAT_WARNING_DATE     20250101
+#define DEFAULT_FIRSTPOWERON            FIRSTPOWERON_FALSE
+#define DEFAULT_BOOT_DELAY              BOOT_DELAY_5SEC
+#define DEFAULT_MODEL_STAMP             MODEL_STAMP_ON
+#define DEFAULT_PARKING_MODE			PARKING_MODE_OFF
+#define DEFAULT_PARKING_MODE_TIMELAPSE_REC  PARKING_MODE_TIMELAPSEREC_OFF
+#define DEFAULT_PARKING_GSENSOR         PARKING_GSENSOR_MED
+#define DEFAULT_PARKING_MOTION_DET      PARKING_MOTIONDET_MED
+#define DEFAULT_VIDEO_FORMAT            VIDEO_FORMAT_MP4
+#define DEFAULT_VOLUME                  VOLUME80
+#define DEFAULT_IR_REAR_COLOR           IR_REAR_COLOR_BW
+#define DEFAULT_REAR_SENSOR_MIRROR      REAR_SENSOR_MIRROR_OFF
+#define DEFAULT_SHUTDOWN_TIMER          SHUTDOWN_TIMER_48HOUR
+#define DEFAULT_LAST_DATETIME           2025010100
+#define DEFAULT_ENTER_PARKING_TIMER     ENTER_PARKING_TIMER_OFF
+#define DEFAULT_REAR_MIRROR_DISPLAY     REAR_MIRROR_DISPLAY_OFF
+#define DEFAULT_TIME_START              700//07:00
+#define DEFAULT_TIME_STOP               1900//19:00
+#define DEFAULT_PARKING_OFF_GPS  		PGPS_FALSE
+#define DEFAULT_EDOG_OVERSPEED_ALARM    EDOG_OVERSPEED_ALARM_ON
 
 //-----------------------------------------------------------------------------
 // System
@@ -177,7 +230,19 @@
 #define DEFAULT_MOVIE_WIFI_APP_PREVIEW_SIZE    WIFI_MOVIE_APP_PREVIEW_SIZE_VGA_16_9
 #endif
 #endif
+#define DEFAULT_WIFI                    WIFI_OFF
+#define DEFAULT_WIFI_AUTO               WIFI_AUTO_OFF
+#define DEFAULT_WIFI_BAND               WIFI_BAND_58G
+#define DEFAULT_CLONE_REC               CLONE_REC_OFF
 
-#define DEFAULT_ETHCAM_TX_IP_ADDR    0 //0xc00a8c0
+//fw_ui_reset
+#define DEFAULT_FW_UI_RESET				FW_UI_RESET_ON
+
+//HDR state change
+#define DEFAULT_HDR_STATE_CHANGE		MOVIE_HDR_STATE_DISCHANGE
+//HDR Before 
+#define DEFAULT_HDR_CHANGE_BEFSIZE    	MOVIE_SIZE_FRONT_2560x1440P30
+
+#define DEFAULT_ETHCAM_TX_IP_ADDR    	0 //0xc00a8c0
 
 #endif

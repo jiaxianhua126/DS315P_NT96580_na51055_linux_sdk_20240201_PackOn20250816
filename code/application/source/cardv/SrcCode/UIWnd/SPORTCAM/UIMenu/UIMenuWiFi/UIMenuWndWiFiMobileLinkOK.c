@@ -103,8 +103,8 @@ INT32 UIMenuWndWiFiMobileLinkOK_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 
 
 	Ux_FlushEventByRange(NVTEVT_KEY_EVT_START, NVTEVT_KEY_EVT_END);
 	Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
-	Input_SetKeyMask(KEY_RELEASE, 0);
-	Input_SetKeyMask(KEY_CONTINUE, 0);
+	Input_SetKeyMask(KEY_RELEASE, FLGKEY_KEY_MASK_DEFAULT);
+	Input_SetKeyMask(KEY_CONTINUE, FLGKEY_KEY_MASK_DEFAULT);
 //#NT#2016/05/31#Ben Wang -begin
 //#NT#Add UVC multimedia function.
 #if(UVC_MULTIMEDIA_FUNC == ENABLE)
@@ -492,11 +492,24 @@ EVENT_END
 //----------------------UIMenuWndWiFiMobileLinkOK_Button_DisconnectCtrl Event---------------------------
 INT32 UIMenuWndWiFiMobileLinkOK_Button_Disconnect_OnKeyEnter(VControl *, UINT32, UINT32 *);
 EVENT_BEGIN(UIMenuWndWiFiMobileLinkOK_Button_Disconnect)
-EVENT_ITEM(NVTEVT_KEY_SELECT, UIMenuWndWiFiMobileLinkOK_Button_Disconnect_OnKeyEnter)
+EVENT_ITEM(NVTEVT_KEY_LEFT, UIMenuWndWiFiMobileLinkOK_Button_Disconnect_OnKeyEnter)
 EVENT_END
 
 INT32 UIMenuWndWiFiMobileLinkOK_Button_Disconnect_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
+    UINT32	uiKeyAct;
+
+    uiKeyAct = paramArray[0];
+
+    if (uiKeyAct == NVTEVT_KEY_RELEASE) {
+        return NVTEVT_CONSUME;
+    }
+
+    if (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD) {
+        FlowWiFiMovie_StopRec();
+        Delay_DelayMs(100);
+    }
+
 //#NT#2016/05/31#Ben Wang -begin
 //#NT#Add UVC multimedia function.
 #if(UVC_MULTIMEDIA_FUNC == ENABLE)

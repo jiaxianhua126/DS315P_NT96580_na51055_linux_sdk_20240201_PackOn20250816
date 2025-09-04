@@ -320,25 +320,26 @@ MOVIE_RECODE_FILE_OPTION gMovie_Rec_Option = {
 	5,                          //MOVIE_CFG_FILE_SECOND keep_sec (main path)
 	0,                          //MOVIE_CFG_FILE_SECOND overlap_sec (only 0 or 1 is valid)
 	MOVREC_ENDTYPE_CUTOVERLAP,  //MOVIE_CFG_FILE_ENDTYPE  end_type
-	10,                         //MOVIE_CFG_FILE_SECOND rollback_sec (for crash)
-	10,                         //MOVIE_CFG_FILE_SECOND forward_sec (for crash)
+	15,                         //MOVIE_CFG_FILE_SECOND rollback_sec (for crash)
+	15,                         //MOVIE_CFG_FILE_SECOND forward_sec (for crash)
 	3,                          //MOVIE_CFG_FILE_OPTION emr_sec (rollback sec) (clone path)
 	5,                          //MOVIE_CFG_FILE_SECOND keep_sec (clone path)
 };
+
 MOVIEMULTI_RECODE_FOLDER_NAMING gMovie_Folder_Naming[SENSOR_MAX_NUM] = {
 	{
 		_CFG_REC_ID_1,			//MOVIE_CFG_REC_ID
 		"Movie",				//MOVIE_CFG_FOLDER_NAME   movie
-		"EMR",					//MOVIE_CFG_FOLDER_NAME   emr
-		"Movie",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
+		"Movie\\RO",			//MOVIE_CFG_FOLDER_NAME   emr
+		"Photo",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
 		TRUE,					//MOVIE_CFG_FILE_NAMING   2018/02/13
 	},
 
 	{
 		_CFG_REC_ID_2,			//MOVIE_CFG_REC_ID
 		"Movie",				//MOVIE_CFG_FOLDER_NAME   movie
-		"EMR",					//MOVIE_CFG_FOLDER_NAME   emr
-		"Movie",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
+		"Movie\\RO",			//MOVIE_CFG_FOLDER_NAME   emr
+		"Photo",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
 		TRUE,					//MOVIE_CFG_FILE_NAMING   2018/02/13
 	},
 
@@ -359,6 +360,40 @@ MOVIEMULTI_RECODE_FOLDER_NAMING gMovie_Folder_Naming[SENSOR_MAX_NUM] = {
 	},
 
  };
+
+MOVIEMULTI_RECODE_FOLDER_NAMING gMovie_Folder_Naming2[SENSOR_MAX_NUM] = {
+	{
+		_CFG_REC_ID_1,			//MOVIE_CFG_REC_ID
+		"Parking",				//MOVIE_CFG_FOLDER_NAME   movie
+		"Parking\\RO",			    //MOVIE_CFG_FOLDER_NAME   emr
+		"Photo",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
+		TRUE,					//MOVIE_CFG_FILE_NAMING   2018/02/13
+	},
+
+	{
+		_CFG_REC_ID_2,			//MOVIE_CFG_REC_ID
+		"Parking",				//MOVIE_CFG_FOLDER_NAME   movie
+		"Parking\\RO",			    //MOVIE_CFG_FOLDER_NAME   emr
+		"Photo",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
+		TRUE,					//MOVIE_CFG_FILE_NAMING   2018/02/13
+	},
+
+	{
+		_CFG_REC_ID_3,			//MOVIE_CFG_REC_ID
+		"Movie",				//MOVIE_CFG_FOLDER_NAME   movie
+		"EMR",					//MOVIE_CFG_FOLDER_NAME   emr
+		"Movie",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
+		TRUE,					//MOVIE_CFG_FILE_NAMING   2018/02/13
+	},
+
+	{
+		_CFG_REC_ID_4,			//MOVIE_CFG_REC_ID
+		"Movie",				//MOVIE_CFG_FOLDER_NAME   movie
+		"EMR",					//MOVIE_CFG_FOLDER_NAME   emr
+		"Movie",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
+		TRUE,					//MOVIE_CFG_FILE_NAMING   2018/02/13
+	},
+};
 
 MOVIEMULTI_RECODE_FOLDER_NAMING gMovie_Clone_Folder_Naming[SENSOR_MAX_NUM] = {
 	{
@@ -396,16 +431,16 @@ MOVIEMULTI_RECODE_FOLDER_NAMING gMovie_Clone_Folder_Naming[SENSOR_MAX_NUM] = {
 MOVIEMULTI_RECODE_FOLDER_NAMING gMovie_EthCam_Folder_Naming[ETHCAM_PATH_ID_MAX] = {
 	{
 		_CFG_ETHCAM_ID_1,		//MOVIE_CFG_REC_ID
-		"Movie_E",				//MOVIE_CFG_FOLDER_NAME   movie
-		"EMR_E",				//MOVIE_CFG_FOLDER_NAME   emr
-		"Movie_E",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
+		"Movie",				//MOVIE_CFG_FOLDER_NAME   movie
+		"Movie\\RO",				//MOVIE_CFG_FOLDER_NAME   emr
+		"Photo",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
 		TRUE,					//MOVIE_CFG_FILE_NAMING   2018/02/13
 	},
 	{
 		_CFG_ETHCAM_ID_2,		//MOVIE_CFG_REC_ID
-		"Movie_E",				//MOVIE_CFG_FOLDER_NAME   movie
-		"EMR_E",				//MOVIE_CFG_FOLDER_NAME   emr
-		"Movie_E",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
+		"Movie",				//MOVIE_CFG_FOLDER_NAME   movie
+		"Movie\\RO",				//MOVIE_CFG_FOLDER_NAME   emr
+		"Photo",				//MOVIE_CFG_FOLDER_NAME   snapshot  modify for autotest
 		TRUE,					//MOVIE_CFG_FILE_NAMING   2018/02/13
 	},
 

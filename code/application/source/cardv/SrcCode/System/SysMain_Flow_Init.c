@@ -67,7 +67,7 @@ void System_PowerOn(UINT32 pwrOnType)
 
 void System_BootStart(void)
 {
-	//DBG_DUMP("^MSystem Boot start\r\n");
+	DBG_DUMP("^MSystem Boot start\r\n");
 }
 
 
@@ -81,7 +81,7 @@ void System_BootStart(void)
 void System_BootEnd(void)
 {
 	//Enable_WP
-	//DBG_DUMP("^MSystem Boot end\r\n");
+	DBG_DUMP("^MSystem Boot end\r\n");
 }
 
 
@@ -90,7 +90,7 @@ void SystemInit(void)
 	DBG_MSG("^GInit Start\r\n");
 	if (System_GetState(SYS_STATE_POWERON) == SYSTEM_POWERON_SAFE) {
 		//"safe power-on sequence"
-		//DBG_DUMP("Power On Sequence = Safe\r\n");
+		DBG_DUMP("Power On Sequence = Safe\r\n");
 #if (FWS_FUNC == ENABLE)
 		System_OnStrgInit_EMBMEM();
 		System_OnStrgInit_FWS();

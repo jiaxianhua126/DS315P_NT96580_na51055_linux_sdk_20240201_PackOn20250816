@@ -23,11 +23,19 @@ typedef enum {
 	NVTEVT_EXE_DISPLAY          = 0x14080007, ///< system UI display style
 	NVTEVT_EXE_LANGUAGE         = 0x14080008, ///< system UI string table
 	NVTEVT_EXE_POWEROFF         = 0x14080009, ///< system auto power off
+    NVTEVT_EXE_TIMEZONE         = 0x1408000a, ///< system time zone
+    NVTEVT_EXE_SPEED_UNIT       = 0x1408000b, ///< system speed unit
+    NVTEVT_EXE_LED              = 0x1408000c, ///< system LED
+    NVTEVT_EXE_FORMAT_WARNING   = 0x1408000d, ///< system format warning
+    NVTEVT_EXE_PARKING_MODE     = 0x1408000e, ///< system parking mode
+    NVTEVT_EXE_ENTER_PARKING_TIMER = 0x1408000f, ///< system enter parking timer
 	/* INSERT NEW EVENT HRER */
 	NVTEVT_EXE_CHANGEDSCMODE    = 0x14080010, ///< mode
 	NVTEVT_PREVIEWMODE      = 0x14080011, ///< mode
 	NVTEVT_FORCETO_LIVEVIEW_MODE = 0x14080012, ///< mode
 	NVTEVT_FORCETO_PLAYBACK_MODE = 0x14080013, ///< mode
+	NVTEVT_FORCETO_PHOTO_MODE    = 0x14080014, ///< mode
+    NVTEVT_FORCETO_MOVIE_MODE    = 0x14080015, ///< mode
 	/* INSERT NEW EVENT HRER */
 	//Storage
 	NVTEVT_EXE_FORMAT           = 0x14080020, ///< device storage
@@ -42,6 +50,8 @@ typedef enum {
 	NVTEVT_EXE_BEEPVOLUME       = 0x14080040, ///< audio
 	NVTEVT_EXE_BEEPKEY          = 0x14080041, ///< audio
 	/* INSERT NEW EVENT HRER */
+    NVTEVT_EXE_VOLUME,
+	NVTEVT_EXE_SPEED_SHOW,
 	//Display
 	NVTEVT_EXE_DUALDISP         = 0x14080050, ///< device display dual
 	NVTEVT_EXE_LCDFORMAT        = 0x14080052, ///< device display LCD format
@@ -77,7 +87,11 @@ typedef enum {
 	NVTEVT_EXE_WIFI_SET_PIP_STYLE          = 0x14080100, ///< Wifi
 	NVTEVT_EXE_WIFI_SEND_SSID_PASSPHRASE   = 0x14080101, ///< Wifi
 	NVTEVT_EXE_WIFI_REQ_QR_DECODE = 0x14080102,
-	NVTEVT_EXE_WIFI_LIVESTREAM    = 0x14080103
+	NVTEVT_EXE_WIFI_LIVESTREAM    = 0x14080103,
+	NVTEVT_EXE_WIFI_CUSTOM_STAMP,
+	NVTEVT_EXE_WIFI_SET_CARNO,
+	NVTEVT_EXE_WIFI_OFF_ON,
+	NVTEVT_EXE_WIFI_SET_SSID_5G
 #endif
 	/* INSERT NEW EVENT HRER */
 }

@@ -188,7 +188,7 @@ BOOL GPIOMap_DetACCPlugIn(void)
     }
 }
 
-/*extern */BOOL   isACCTrigPowerOn;
+extern BOOL   isACCTrigPowerOn;
 static UINT32 ACC_OnTimerCount = 0;
 static UINT32 ACC_OffTimerCount = 0;
 static BOOL   bACC_On = FALSE;

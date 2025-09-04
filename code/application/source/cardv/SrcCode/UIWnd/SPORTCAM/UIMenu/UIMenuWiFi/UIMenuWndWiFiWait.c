@@ -38,7 +38,7 @@
 //---------------------UIMenuWndWiFiWaitCtrl Private API  ---------------------------------
 //---------------------UIMenuWndWiFiWaitCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIMenuWndWiFiWait)
-CTRL_LIST_ITEM(UIMenuWndWiFiWait_StatusGraph)
+CTRL_LIST_ITEM(UIMenuWndWiFiWait_Connect_Icon_Status)
 CTRL_LIST_END
 
 //----------------------UIMenuWndWiFiWaitCtrl Event---------------------------
@@ -54,21 +54,19 @@ INT32 UIMenuWndWiFiWait_OnKeyMode(VControl *, UINT32, UINT32 *);
 INT32 UIMenuWndWiFiWait_OnBattery(VControl *, UINT32, UINT32 *);
 INT32 UIMenuWndWiFiWait_OnTimer(VControl *, UINT32, UINT32 *);
 INT32 UIMenuWndWiFiWait_OnBackgroundDone(VControl *, UINT32, UINT32 *);
-INT32 UIMenuWndWiFiWait_Tab_Authorized_OK(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray);
 EVENT_BEGIN(UIMenuWndWiFiWait)
-EVENT_ITEM(NVTEVT_OPEN_WINDOW, UIMenuWndWiFiWait_OnOpen)
-EVENT_ITEM(NVTEVT_CLOSE_WINDOW, UIMenuWndWiFiWait_OnClose)
-EVENT_ITEM(NVTEVT_CHILD_CLOSE, UIMenuWndWiFiWait_OnChildClose)
-EVENT_ITEM(NVTEVT_KEY_MENU, UIMenuWndWiFiWait_OnKeyMenu)
-EVENT_ITEM(NVTEVT_KEY_UP, UIMenuWndWiFiWait_OnKeyUp)
-EVENT_ITEM(NVTEVT_KEY_DOWN, UIMenuWndWiFiWait_OnKeyDown)
-EVENT_ITEM(NVTEVT_KEY_ENTER, UIMenuWndWiFiWait_OnKeyEnter)
-EVENT_ITEM(NVTEVT_KEY_SHUTTER2, UIMenuWndWiFiWait_OnKeyShutter2)
-EVENT_ITEM(NVTEVT_KEY_MODE, UIMenuWndWiFiWait_OnKeyMode)
-EVENT_ITEM(NVTEVT_BATTERY, UIMenuWndWiFiWait_OnBattery)
-EVENT_ITEM(NVTEVT_TIMER, UIMenuWndWiFiWait_OnTimer)
-EVENT_ITEM(NVTEVT_BACKGROUND_DONE, UIMenuWndWiFiWait_OnBackgroundDone)
-EVENT_ITEM(NVTEVT_WIFI_AUTHORIZED_OK, UIMenuWndWiFiWait_Tab_Authorized_OK)
+EVENT_ITEM(NVTEVT_OPEN_WINDOW,UIMenuWndWiFiWait_OnOpen)
+EVENT_ITEM(NVTEVT_CLOSE_WINDOW,UIMenuWndWiFiWait_OnClose)
+EVENT_ITEM(NVTEVT_CHILD_CLOSE,UIMenuWndWiFiWait_OnChildClose)
+EVENT_ITEM(NVTEVT_KEY_MENU,UIMenuWndWiFiWait_OnKeyMenu)
+EVENT_ITEM(NVTEVT_KEY_UP,UIMenuWndWiFiWait_OnKeyUp)
+EVENT_ITEM(NVTEVT_KEY_DOWN,UIMenuWndWiFiWait_OnKeyDown)
+EVENT_ITEM(NVTEVT_KEY_ENTER,UIMenuWndWiFiWait_OnKeyEnter)
+EVENT_ITEM(NVTEVT_KEY_SHUTTER2,UIMenuWndWiFiWait_OnKeyShutter2)
+EVENT_ITEM(NVTEVT_KEY_MODE,UIMenuWndWiFiWait_OnKeyMode)
+//EVENT_ITEM(NVTEVT_BATTERY,UIMenuWndWiFiWait_OnBattery)
+EVENT_ITEM(NVTEVT_TIMER,UIMenuWndWiFiWait_OnTimer)
+EVENT_ITEM(NVTEVT_BACKGROUND_DONE,UIMenuWndWiFiWait_OnBackgroundDone)
 EVENT_END
 
 INT32 UIMenuWndWiFiWait_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -144,12 +142,14 @@ INT32 UIMenuWndWiFiWait_OnBackgroundDone(VControl *pCtrl, UINT32 paramNum, UINT3
 			bIsWiFiRecorded =  FALSE;
 #if (WIFI_FUNC==ENABLE)
 		    if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE){
-				#if _TODO
 			    Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
-				#endif
 			}
+            #if 0
 			Ux_PostEvent(NVTEVT_OPEN_WINDOW, 1, &UIMenuWndWiFiModuleLinkCtrl);
         	Ux_PostEvent(NVTEVT_EXE_MOVIE_STRM_START,0);
+            #else
+            Ux_PostEvent(NVTEVT_SYSTEM_MODE, 2, PRIMARY_MODE_MOVIE, SYS_SUBMODE_WIFI);
+            #endif
 
 #endif
 		} else {
@@ -165,16 +165,7 @@ INT32 UIMenuWndWiFiWait_OnBackgroundDone(VControl *pCtrl, UINT32 paramNum, UINT3
 
 	return NVTEVT_CONSUME;
 }
-
-INT32 UIMenuWndWiFiWait_Tab_Authorized_OK(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
-{
-	printf("UIMenuWndWiFiWait_Tab_Authorized_OK\r\n");
-	Ux_OpenWindow(&UIMenuWndWiFiMobileLinkOKCtrl, 0);
-
-	return NVTEVT_CONSUME;
-}
-
-//----------------------UIMenuWndWiFiWait_StatusGraphCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndWiFiWait_StatusGraph)
+//----------------------UIMenuWndWiFiWait_Connect_Icon_StatusCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndWiFiWait_Connect_Icon_Status)
 EVENT_END
 

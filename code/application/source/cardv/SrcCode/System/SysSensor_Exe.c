@@ -13,9 +13,10 @@ void DetSensor(void);
 int SX_TIMER_DET_SENSOR_ID = -1;
 SX_TIMER_ITEM(DetSensor, DetSensor, 25, FALSE)
 #endif
-
+extern BOOL SysInit_getintopcc_mode_getstd(void);
 static UINT32 uiSensorEnableState_fw = SENSOR_DEFAULT_DISPLAY_MASK; //fw attach sensor
 static UINT32 uiSensorEnableState_prev_fw = 0; //previous fw attach sensor status
+BOOL g_bSensorNumChanged = FALSE;
 
 UINT32 System_GetEnableSensor(void)
 {
@@ -193,10 +194,12 @@ ER System_GetSensorInfo(UINT32 id, UINT32 param, void *value)
 					}
 					// shdrmap
 					UINT32 shdr_info[2] = {0};
-					pfdt_node = fdt_getprop(p_fdt_sensor, node_ofst, "shdr_map", (int *)&data_len);
-					if ((p_data = (UINT32 *)pfdt_node) != NULL) {
-						for (i = 0; i < 2; i++) {
-							shdr_info[i] = (UINT32)be32_to_cpu(p_data[i]);
+					if (!SysInit_getintopcc_mode_getstd()) {
+						pfdt_node = fdt_getprop(p_fdt_sensor, node_ofst, "shdr_map", (int *)&data_len);
+						if ((p_data = (UINT32 *)pfdt_node) != NULL) {
+							for (i = 0; i < 2; i++) {
+								shdr_info[i] = (UINT32)be32_to_cpu(p_data[i]);
+							}
 						}
 					}
 					pcfg->sen_cfg.shdr_map = HD_VIDEOCAP_SHDR_MAP(shdr_info[0], shdr_info[1]);

@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <linux/ioctl.h>
 #include <sys/ioctl.h>
+#include "UIWnd/SPORTCAM/Resource/SoundData.h"
 
 
 //local debug level: THIS_DBGLVL
@@ -87,36 +88,45 @@ static BOOL Cmd_key_movie(unsigned char argc, char **argv)
 		return TRUE;
 	}
 }
+static UINT8 soundIndex = DEMOSOUND_SOUND_EP0_TONE_WRONGDIRECT;
 static BOOL Cmd_key_up(unsigned char argc, char **argv)
 {
 	//if(uiKeyTmpMsk & FLGkey_UP)
 	{
 		DBG_DUMP("Up Key\r\n");
- 		Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_PRESS);
-
-		Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_RELEASE);
+		//Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_PRESS);
+		DBG_DUMP("%d\r\n",soundIndex);
+		UISound_Play(soundIndex);
+		if(soundIndex < DEMOSOUND_SOUND_MAX_CNT)
+			soundIndex++;
+		//UISound_Play(soundIndex);
 		return TRUE;
 	}
 }
+
 static BOOL Cmd_key_down(unsigned char argc, char **argv)
 {
 	//if(uiKeyTmpMsk & FLGkey_DOWN)
 	{
 		DBG_DUMP("Down Key\r\n");
- 		Ux_PostEvent(NVTEVT_KEY_DOWN, 1, NVTEVT_KEY_PRESS);
-
-		Ux_PostEvent(NVTEVT_KEY_DOWN, 1, NVTEVT_KEY_RELEASE);
+		//Ux_PostEvent(NVTEVT_KEY_DOWN, 1, NVTEVT_KEY_PRESS);
+		DBG_DUMP("%d\r\n",soundIndex);
+		UISound_Play(soundIndex);
+		if(soundIndex >= DEMOSOUND_SOUND_EP0_TONE_WRONGDIRECT)
+			soundIndex--;
 		return TRUE;
 	}
 }
+
 static BOOL Cmd_key_right(unsigned char argc, char **argv)
 {
 	//if(uiKeyTmpMsk & FLGkey_RIGHT)
 	{
-		DBG_DUMP("Right Key\r\n");
- 		Ux_PostEvent(NVTEVT_KEY_RIGHT, 1, NVTEVT_KEY_PRESS);
+		DBG_DUMP("==NVTEVT_ACC_POWERON===\r\n");
+ 		//Ux_PostEvent(NVTEVT_KEY_RIGHT, 1, NVTEVT_KEY_PRESS);
+		Ux_PostEvent(NVTEVT_ACC_POWERON, 1, 0);
 
-		Ux_PostEvent(NVTEVT_KEY_RIGHT, 1, NVTEVT_KEY_RELEASE);
+		//Ux_PostEvent(NVTEVT_KEY_RIGHT, 1, NVTEVT_KEY_RELEASE);
 		return TRUE;
 	}
 }
@@ -124,10 +134,11 @@ static BOOL Cmd_key_left(unsigned char argc, char **argv)
 {
 	//if(uiKeyTmpMsk & FLGkey_LEFT)
 	{
-		DBG_DUMP("Left Key\r\n");
- 		Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_PRESS);
+		DBG_DUMP("==NVTEVT_ACC_SHUTDOWN===\r\n");
+ 		//Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_PRESS);
+		Ux_PostEvent(NVTEVT_ACC_SHUTDOWN, 1, 0);
 
-		Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_RELEASE);
+		//Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_RELEASE);
 		return TRUE;
 	}
 }
@@ -136,9 +147,11 @@ static BOOL Cmd_key_enter(unsigned char argc, char **argv)
 	//if(uiKeyTmpMsk & FLGkey_ENTER)
 	{
 		DBG_DUMP("Enter Key\r\n");
- 		Ux_PostEvent(NVTEVT_KEY_ENTER, 1, NVTEVT_KEY_PRESS);
+		char *ptr = NULL;
+		*ptr = 255;
+ 		//Ux_PostEvent(NVTEVT_KEY_ENTER, 1, NVTEVT_KEY_PRESS);
 
-		Ux_PostEvent(NVTEVT_KEY_ENTER, 1, NVTEVT_KEY_RELEASE);
+		//Ux_PostEvent(NVTEVT_KEY_ENTER, 1, NVTEVT_KEY_RELEASE);
 		return TRUE;
 	}
 }
@@ -641,20 +654,22 @@ MAINFUNC_ENTRY(key, argc, argv)
 #include "EthCam/EthCamSocket.h"
 #include "UIApp/Network/EthCamAppNetwork.h"
 
-static BOOL Cmd_ethcam_tx_fwupdate(unsigned char argc, char **argv)
+//static 
+BOOL Cmd_ethcam_tx_fwupdate(unsigned char argc, char **argv)
 {
 	UINT32 uiFwAddr=0, uiFwSize=0;
 	FST_FILE hFile;
-	static char uiUpdateFWName[64] = "A:\\EthcamTxFW1.bin";
-	static char uiUpdateFWName2[64] = "A:\\EthcamTxFW2.bin";
+	static char uiUpdateFWName[64] = ETHCAM_TXFW_FILE;
+	static char uiUpdateFWName2[64] = ETHCAM_TXFW_FILE;
 	INT32 fst_er;
 	UINT32 EthCamCmdRET[ETH_REARCAM_CAPS_COUNT]={0};
-
+	BOOL 	sendFWFail = FALSE;
 #if defined(_UI_STYLE_LVGL_)
 	UIFlowWaitMomentAPI_Set_Text_Param param = (UIFlowWaitMomentAPI_Set_Text_Param){.string_id = LV_PLUGIN_STRING_ID_STRID_ETHCAM_UDFW_SEND};
 	lv_plugin_scr_open(UIFlowWaitMoment, &param);
 #else
 	Ux_OpenWindow(&UIFlowWndWaitMomentCtrl, 1, UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_SENDFW);
+    Ux_Redraw();//add this for show immdiately
 #endif
 
 	UINT32 i;
@@ -751,10 +766,11 @@ static BOOL Cmd_ethcam_tx_fwupdate(unsigned char argc, char **argv)
 				EthCam_SendXMLCmd(ETHCAM_PATH_ID_1+i, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_TX_FWUPDATE_START, 0);
 			}else{
 				DBG_ERR("[%d]FW send error, %d\r\n",i,EthCamCmdRET[i]);
+				sendFWFail = TRUE;//
 			}
 		}
 	}
-
+	
 
 #if defined(_UI_STYLE_LVGL_)
 	lv_plugin_scr_close(UIFlowWaitMoment, NULL);
@@ -762,7 +778,14 @@ static BOOL Cmd_ethcam_tx_fwupdate(unsigned char argc, char **argv)
 	lv_plugin_scr_open(UIFlowWaitMoment, &param);
 #else
 	Ux_CloseWindow(&UIFlowWndWaitMomentCtrl, 0);
-	Ux_OpenWindow(&UIFlowWndWaitMomentCtrl, 1, UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_START);
+	if(sendFWFail)
+	{
+		Ux_OpenWindow(&UIFlowWndWaitMomentCtrl, 1, UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_SENDFW_FAIL);
+	}
+	else
+	{
+		Ux_OpenWindow(&UIFlowWndWaitMomentCtrl, 1, UIFlowWndWaitMoment_StatusTXT_Msg_STRID_ETHCAM_UDFW_START);
+	}
 #endif
 
 	//SxCmd_RelTempMem(uiFwAddr);
@@ -873,7 +896,8 @@ static BOOL Cmd_ethcam_chk_tx_running(unsigned char argc, char **argv)
 	return TRUE;
 }
 
-static BOOL Cmd_ethcam_ethboot(unsigned char argc, char **argv)
+//static 
+BOOL Cmd_ethcam_ethboot(unsigned char argc, char **argv)
 {
 	//A://ethcam/
 

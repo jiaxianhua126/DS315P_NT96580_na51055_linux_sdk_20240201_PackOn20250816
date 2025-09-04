@@ -8,6 +8,7 @@
 //---------------------UIFlowWndUSBCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndUSB)
 CTRL_LIST_ITEM(UIFlowWndMSDC_StaticTxt_MassStorage)
+CTRL_LIST_ITEM(UIFlowWndMSDC_StaticIcon_MassStorage)
 CTRL_LIST_END
 
 //----------------------UIFlowWndUSBCtrl Event---------------------------
@@ -29,25 +30,33 @@ EVENT_END
 
 INT32 UIFlowWndUSB_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	if (paramNum == 1) {
-		if (paramArray[0] == UIFlowWndUSB_PCC_MODE) {
-			// show pcc string
-			UxStatic_SetData(&UIFlowWndMSDC_StaticTxt_MassStorageCtrl,
-							 STATIC_VALUE, STRID_PCC);
-		} else {
-#if (SDHOTPLUG_FUNCTION == ENABLE)
-			if (UIStorageCheck(STORAGE_CHECK_ERROR, NULL) == TRUE) {
-				Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, UIFlowWndWrnMsg_StatusTXT_Msg_STRID_PLEASE_INSERT_SD, FLOWWRNMSG_TIMER_KEEP);
-				return NVTEVT_CONSUME;
-			}
-#endif
-			// show msdc string
-			UxStatic_SetData(&UIFlowWndMSDC_StaticTxt_MassStorageCtrl,
-							 STATIC_VALUE, STRID_MSDC);
-		}
-	}
-	Ux_DefaultEvent(pCtrl, NVTEVT_OPEN_WINDOW, paramNum, paramArray);
-	return NVTEVT_CONSUME;
+    if (paramNum==1)
+    {
+        if (paramArray[0]==UIFlowWndUSB_PCC_MODE)
+        { // show pcc string
+            UxStatic_SetData(&UIFlowWndMSDC_StaticTxt_MassStorageCtrl,
+                         STATIC_VALUE,STRID_PCC);
+            UxCtrl_SetShow(&UIFlowWndMSDC_StaticTxt_MassStorageCtrl, TRUE);
+            UxCtrl_SetShow(&UIFlowWndMSDC_StaticIcon_MassStorageCtrl, FALSE);
+        }
+        else
+        {
+        	#if (SDHOTPLUG_FUNCTION == ENABLE)
+        	if(UIStorageCheck(STORAGE_CHECK_ERROR, NULL) == TRUE)
+		    {
+		       Ux_OpenWindow(&UIFlowWndWrnMsgCtrl,2,UIFlowWndWrnMsg_StatusTXT_Msg_STRID_PLEASE_INSERT_SD, FLOWWRNMSG_TIMER_KEEP);
+		       return NVTEVT_CONSUME;
+		    }
+		    #endif
+            // show msdc string
+            //UxStatic_SetData(&UIFlowWndMSDC_StaticTxt_MassStorageCtrl,
+            //             STATIC_VALUE,STRID_MSDC);
+            UxCtrl_SetShow(&UIFlowWndMSDC_StaticTxt_MassStorageCtrl, FALSE);
+            UxCtrl_SetShow(&UIFlowWndMSDC_StaticIcon_MassStorageCtrl, TRUE);
+        }
+    }
+    Ux_DefaultEvent(pCtrl,NVTEVT_OPEN_WINDOW,paramNum,paramArray);
+    return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndUSB_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -69,5 +78,9 @@ INT32 UIFlowWndUSB_OnStorageChange(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 #endif
 //----------------------UIFlowWndMSDC_StaticTxt_MassStorageCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndMSDC_StaticTxt_MassStorage)
+EVENT_END
+
+//----------------------UIFlowWndMSDC_StaticIcon_MassStorageCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMSDC_StaticIcon_MassStorage)
 EVENT_END
 

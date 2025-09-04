@@ -101,6 +101,7 @@ typedef enum {
 	DRVPWR_CTRL_CURRENT_TIME,                           ///< current time
 	DRVPWR_CTRL_HWRT_TIME,                              ///< HW reset time
 	DRVPWR_CTRL_SWRT_TIME,                              ///< SW reset time
+	DRVPWR_CTRL_SWRT_COUNTER,                           ///< SW reset counter (WO)//
 	DRVPWR_CTRL_PSW1,                                   ///< power switch 1 (RW)
 	DRVPWR_CTRL_PSW2,                                   ///< power switch 2 (RO)
 	DRVPWR_CTRL_PSW3,                                   ///< power switch 3 (RO)

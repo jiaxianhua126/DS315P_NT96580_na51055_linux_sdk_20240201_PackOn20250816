@@ -17,6 +17,12 @@
 #if(WIFI_FUNC==ENABLE)
 static UINT32 bExeWiFiStart = FALSE;
 #endif
+#if (defined(_NVT_ETHREARCAM_RX_))
+#include "UIApp/Network/EthCamAppSocket.h"
+#include "UIApp/Network/EthCamAppCmd.h"
+#include "UIApp/Network/EthCamAppNetwork.h"
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 #define __MODULE__          UISetupExe
 #define __DBGLVL__          1 // 0=FATAL, 1=ERR, 2=WRN, 3=UNIT, 4=FUNC, 5=IND, 6=MSG, 7=VALUE, 8=USER
@@ -360,7 +366,7 @@ INT32 SetupExe_OnFreq(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
 INT32 SetupExe_OnChangeDSCMode(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-#if _TODO
+#if 1//_TODO
 	UINT32 uiCurMode, uiChangeTo = 0;
 	UINT32 uiType = DSCMODE_CHGTO_NEXT;
 
@@ -381,7 +387,7 @@ INT32 SetupExe_OnChangeDSCMode(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 #endif
 			if (PRIMARY_MODE_MOVIE == (INT32)uiCurMode) {
 #if (PHOTO_MODE==ENABLE)
-				uiChangeTo = PRIMARY_MODE_PHOTO;
+				uiChangeTo = PRIMARY_MODE_PLAYBACK; //PRIMARY_MODE_PHOTO;
 #endif
 			} else
 #if (PLAY_MODE==ENABLE)
@@ -467,7 +473,8 @@ INT32 SetupExe_OnForceToPlaybackMode(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 	uiCurrMode = UI_GetData(FL_NextMode);
 
-	if ((INT32)uiCurrMode != PRIMARY_MODE_PLAYBACK) {
+	//if ((INT32)uiCurrMode != PRIMARY_MODE_PLAYBACK) 
+	{
 		UI_SetData(FL_PreMode, uiCurrMode);
 		UI_SetData(FL_NextMode, PRIMARY_MODE_PLAYBACK);
 		Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_PLAYBACK);
@@ -475,6 +482,23 @@ INT32 SetupExe_OnForceToPlaybackMode(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 #endif
 	return NVTEVT_CONSUME;
 }
+INT32 SetupExe_OnForceToMovieMode(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    UINT32 uiCurrMode;
+
+    uiCurrMode = UI_GetData(FL_ModeIndex);
+    DBG_IND("[SetupObj] ForceToMovieMode:%d,%d\r\n", uiCurrMode, PRIMARY_MODE_MOVIE);
+
+    //if ((INT32)uiCurrMode != PRIMARY_MODE_MOVIE)
+    {
+        UI_SetData(FL_PreMode, uiCurrMode);
+        UI_SetData(FL_NextMode, PRIMARY_MODE_MOVIE);
+        Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
+    }
+
+    return NVTEVT_CONSUME;
+}
+
 ///////////////////////////////////////////////////////////////////
 INT32 SetupExe_OnLCDOff(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -487,7 +511,8 @@ INT32 SetupExe_OnLCDOff(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	DBG_FUNC("uhSelect %d \r\n", uhSelect);
 
 	UI_SetData(FL_LCD_OFF, uhSelect);
-
+	GxPower_SetControl(GXPWR_CTRL_AUTOSLEEP_EN, FALSE);
+#if 0
 	switch (uhSelect) {
 	case LCDOFF_ON:
 		GxPower_SetControl(GXPWR_CTRL_AUTOSLEEP_EN, FALSE);
@@ -526,7 +551,7 @@ INT32 SetupExe_OnLCDOff(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		DBG_ERR("Error parameter (%d) with SetupExe_OnLCDOff\r\n", uhSelect);
 		break;
 	}
-
+#endif
     DBG_FUNC_END("\r\n");
 	return NVTEVT_CONSUME;
 }
@@ -580,9 +605,29 @@ INT32 SetupExe_OnPowerOff(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
 ///////////////////////////////////////////////////////////////////
 
+char *BT_XMLS[] = {
+    "/bt_ble_client_devices.xml",
+    "/bt_config.xml",
+    "/bt_devices.xml",
+    "/bt_hh_devices.xml",
+};
+
+void DeleteFile(char *filename)
+{
+    if (remove(filename) == 0) {
+        DBG_DUMP("remove %s success! \r\n", filename);
+    } else {
+        DBG_DUMP("remove %s failure! \r\n", filename);
+    }
+}
+
 INT32 SetupExe_OnSysReset(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
+    unsigned int i;
     DBG_FUNC_BEGIN("\r\n");
+    for (i = 0; i < sizeof(BT_XMLS)/sizeof(BT_XMLS[0]); i++) {
+        DeleteFile(BT_XMLS[i]);
+    }
 #if(UI_FUNC==ENABLE)
     DBG_ERR("To Do Setup_Menu\r\n");
 #if (PST_FUNC == ENABLE)
@@ -826,6 +871,15 @@ INT32 SetupExe_OnWifiMode(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		} else {
 			UINet_SetPASSPHRASE(UINet_GetDefaultAPPASSPHRASE(), strlen(UINet_GetDefaultAPPASSPHRASE()));  // passwd of AP
 		}
+
+		//5G
+		if (ptMenuStoreInfo->strSSID_5G[0]) {
+			DBG_DUMP("ptMenuStoreInfo->strSSID_5G =  %s\r\n", ptMenuStoreInfo->strSSID_5G);
+			UINet_SetSSID_5G(ptMenuStoreInfo->strSSID_5G, strlen(ptMenuStoreInfo->strSSID_5G));           // SSID of AP
+		} else {
+			DBG_DUMP("ptMenuStoreInfo->strSSID_5G = NULL\r\n");
+			UINet_SetSSID_5G(UINet_GetDefaultAPSSID_5G(), strlen(UINet_GetDefaultAPSSID_5G())); // SSID of AP
+		}
 	}
     DBG_FUNC_END("\r\n");
 	return NVTEVT_CONSUME;
@@ -960,23 +1014,24 @@ INT32 SetupExe_OnWifiStop(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	}
 
 	// stop live555 service
-	ImageApp_Common_RtspStop(0);
-
+	//ImageApp_Common_RtspStop(0);
+	//DBG_DUMP("call SetupExe_OnWifiStop\r\n");
 	UINet_WifiUnInit(UI_GetData(FL_NetWorkMode));
 #if ONVIF_FUNC
 	UINet_OnvifUnInit();
 #endif
 	SxTimer_SetFuncActive(SX_TIMER_DET_AUTOPOWEROFF_ID, TRUE);
 	UINet_AppIpc_UnInit();
-	UI_SetData(FL_COMMON_LOCAL, WIFI_OFF);
-
+	//UI_SetData(FL_COMMON_LOCAL, WIFI_OFF);
+	UI_SetData(FL_COMMON_LOCAL, SysGetFlag(FL_WIFI));
 #if (defined(_CPU2_ECOS_) && (POWERON_FAST_CPU2_BOOT != ENABLE))
 	System_CPU2_Stop();
 #endif
 	bExeWiFiStart = FALSE;
 
 	UI_SetData(FL_WIFI_LINK, WIFI_LINK_NG);
-	if (UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) {
+	if (1) //(UI_GetData(FL_MOVIE_DATEIMPRINT) == MOVIE_DATEIMPRINT_ON) 
+	{
           MovieStamp_Disable();
 	}
     DBG_FUNC_END("\r\n");
@@ -1007,6 +1062,23 @@ INT32 SetupExe_OnWifiSetSSID(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 		}
 	}
     DBG_FUNC_END("\r\n");
+	return NVTEVT_CONSUME;
+}
+
+INT32 SetupExe_OnWifiSetSSID_5G(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	char *Data = 0;
+	UIMenuStoreInfo *ptMenuStoreInfo = UI_GetMenuInfo();
+
+	if (paramNum) {
+		Data = (char *)paramArray[0];
+		DBG_IND(" %s %d\r\n", Data, strlen(Data));
+		UINet_SetSSID_5G(Data, strlen(Data));
+		if (strlen(Data) <= NVT_WSC_MAX_SSID_LEN - 1) {
+			strncpy(ptMenuStoreInfo->strSSID_5G, UINet_GetSSID_5G(), (NVT_WSC_MAX_SSID_LEN - 1)); // Save Wi-Fi SSID.
+			ptMenuStoreInfo->strSSID_5G[strlen(ptMenuStoreInfo->strSSID_5G)] = '\0';
+		}
+	}
 	return NVTEVT_CONSUME;
 }
 
@@ -1130,19 +1202,19 @@ INT32 SetupExe_OnDate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     DBG_FUNC_BEGIN("\r\n");
 	if (paramNum == 3) {
-        #if 1 // Todo elvis
+        #if 0 // Todo elvis
         DBG_ERR("To Do Setup_Menu\r\n");
         #else // Todo elvis
         struct tm Curr_DateTime;
 
 		DBG_IND("%d %d %d\r\n", paramArray[0], paramArray[1], paramArray[2]);
 
-        Curr_DateTime = HwClock_GetTime(TIME_ID_CURRENT);
+        Curr_DateTime = hwclock_get_time(TIME_ID_CURRENT);
         Curr_DateTime.tm_year = paramArray[0];
         Curr_DateTime.tm_mon = paramArray[1];
         Curr_DateTime.tm_mday = paramArray[2];
 
-        HwClock_SetTime(TIME_ID_CURRENT, Curr_DateTime, 0);
+        hwclock_set_time(TIME_ID_CURRENT, Curr_DateTime, 0);
         #endif // Todo elvis
 
 	}
@@ -1154,20 +1226,34 @@ INT32 SetupExe_OnTime(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     DBG_FUNC_BEGIN("\r\n");
 	if (paramNum == 3) {
-        #if 1 // Todo elvis
+        #if 0 // Todo elvis
         DBG_ERR("To Do Setup_Menu\r\n");
         #else // Todo elvis
         struct tm Curr_DateTime;
 
 		DBG_IND("%d %d %d\r\n", paramArray[0], paramArray[1], paramArray[2]);
 
-        Curr_DateTime = HwClock_GetTime(TIME_ID_CURRENT);
+        Curr_DateTime = hwclock_get_time(TIME_ID_CURRENT);
         Curr_DateTime.tm_hour = paramArray[0];
         Curr_DateTime.tm_min  = paramArray[1];
         Curr_DateTime.tm_sec  = paramArray[2];
 
-        HwClock_SetTime(TIME_ID_CURRENT, Curr_DateTime, 0);
-        #endif // Todo elvis
+        hwclock_set_time(TIME_ID_CURRENT, Curr_DateTime, 0);
+		#if (defined(_NVT_ETHREARCAM_RX_))//close menu ,will sync time to tx
+		UINT32 i;
+		for (i=0; i<ETH_REARCAM_CAPS_COUNT; i++){
+			if(EthCamNet_GetEthLinkStatus(i)==ETHCAM_LINK_UP){
+				//sync time
+				#if 0
+				EthCam_SendXMLCmd(i, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_TIME, 0);
+				EthCam_SendXMLData(i, (UINT8 *)&Curr_DateTime, sizeof(struct tm));
+				#else
+				EthCam_SendXMLCmdData(i, ETHCAM_PORT_DEFAULT , ETHCAM_CMD_SYNC_TIME, 0, (UINT8 *)&Curr_DateTime, sizeof(struct tm));
+				#endif
+			}
+		}
+		#endif
+		#endif
 	}
     DBG_FUNC_END("\r\n");
 	return NVTEVT_CONSUME;
@@ -1241,6 +1327,285 @@ INT32 SetupExe_OnPbRetractLens(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 
 #endif
 
+INT32 SetupExe_OnSpeedUnit(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    UINT32 uhSelect = 0;
+
+    if (paramNum > 0) {
+        uhSelect = paramArray[0];
+    }
+
+    UI_SetData(FL_SPEED_UNIT, uhSelect);
+
+    if (UI_GetData(FL_SPEED_UNIT) == SPEED_UNIT_MPH) {
+        GPS_SetSpeedUint(1);
+    } else {
+        GPS_SetSpeedUint(0);
+    }
+    return NVTEVT_CONSUME;
+}
+
+BOOL GPS_UpdateDateTime = FALSE;
+INT32 SetupExe_OnTimeZone(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    UINT32 uhSelect = 0;
+
+    if (paramNum > 0) {
+        uhSelect = paramArray[0];
+    }
+
+    UI_SetData(FL_TIME_ZONE, uhSelect);
+
+    GPS_UpdateDateTime = FALSE;  //@ken add 150509
+    return NVTEVT_CONSUME;
+}
+/*
+UINT32 SysGet_TimeZone(void)
+{
+    //debug_msg("SysGet_TimeZone= %d\r\n ",FL_TIME_ZONE);
+    return FL_TIME_ZONE;
+}*/
+UINT32 SysGet_TimeZoneValue(void)
+{
+    UINT32 value = 0;
+
+    value = SysGetFlag(FL_TIME_ZONE);
+    //debug_msg("*** value= %d ***\r\n",value);
+
+    return value;
+}
+
+INT32 SetupExe_OnParkingMode(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    UINT32 uhSelect = 0;
+
+    if (paramNum > 0) {
+        uhSelect = paramArray[0];
+    }
+
+    UI_SetData(FL_PARKING_MODE, uhSelect);
+
+    if (UI_GetData(FL_PARKING_MODE) == PARKING_MODE_OFF) {
+        isACCTrigParkMode = FALSE;
+        isACCTrigLowBitrate = FALSE;
+        isACCTrigPreRecordDet = FALSE;
+        UI_SetData(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_OFF);
+    } else {
+        if (isACCTrigParkMode) {
+            switch (UI_GetData(FL_PARKING_MODE)) {
+            case PARKING_MODE_ON_1FPS:
+                isACCTrigLowBitrate = FALSE;
+                isACCTrigPreRecordDet = FALSE;
+                SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_1SEC);
+                break;
+
+            case PARKING_MODE_ON_2FPS:
+                isACCTrigLowBitrate = FALSE;
+                isACCTrigPreRecordDet = FALSE;
+                SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_500MS);
+                break;
+
+            case PARKING_MODE_ON_3FPS:
+                isACCTrigLowBitrate = FALSE;
+                isACCTrigPreRecordDet = FALSE;
+                SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_333MS);
+                break;
+
+            case PARKING_MODE_ON_5FPS:
+                isACCTrigLowBitrate = FALSE;
+                isACCTrigPreRecordDet = FALSE;
+                SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_200MS);
+                break;
+
+            case PARKING_MODE_ON_10FPS:
+                isACCTrigLowBitrate = FALSE;
+                isACCTrigPreRecordDet = FALSE;
+                SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_100MS);
+                break;
+
+            case PARKING_MODE_MOTION_DET:
+                isACCTrigLowBitrate = FALSE;
+                isACCTrigPreRecordDet = TRUE;
+                UI_SetData(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_OFF);
+                MovieExe_PM_MD_LowBitrateRec();
+                break;
+
+            case PARKING_MODE_LOW_BITRATE:
+                isACCTrigLowBitrate = TRUE;
+                isACCTrigPreRecordDet = FALSE;
+                UI_SetData(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_OFF);
+                MovieExe_LowBitrateRec();
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+
+    if ((UI_GetData(FL_PARKING_MODE) != PARKING_MODE_MOTION_DET) && (UI_GetData(FL_PARKING_MODE) != PARKING_MODE_LOW_BITRATE)) {
+        Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_BITRATE, 1, SysGetFlag(FL_MOVIE_BITRATE));
+    }
+	//Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_PROTECT_AUTO,   1, SysGetFlag(FL_MOVIE_URGENT_PROTECT_AUTO));
+	//Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_PROTECT_MANUAL, 1, SysGetFlag(FL_MOVIE_URGENT_PROTECT_MANUAL));
+
+    return NVTEVT_CONSUME;
+}
+
+extern void EnterParkingTimer_Set(UINT32 value);
+INT32 SetupExe_OnEnterParkingTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    UINT32 uhSelect = 0;
+
+    if (paramNum > 0) {
+        uhSelect = paramArray[0];
+    }
+
+    UI_SetData(FL_ENTER_PARKING_TIMER, uhSelect);
+
+    if (UI_GetData(FL_ENTER_PARKING_TIMER) == ENTER_PARKING_TIMER_90SEC) {
+        EnterParkingTimer_Set(4500);//90sec
+    } else {
+        EnterParkingTimer_Set(150);//3sec
+    }
+    return NVTEVT_CONSUME;
+}
+
+INT32 SetupExe_OnLED(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    UINT32 uhSelect = 0;
+
+    if (paramNum > 0) {
+        uhSelect = paramArray[0];
+    }
+
+    UI_SetData(FL_LED, uhSelect);
+
+    if (SysGetFlag(FL_LED) == LED_OFF) {
+       GPIOMap_TurnOffLED();
+        //FlowMovie_DetVx1LED(0);
+    } else {
+       GPIOMap_TurnOnLED();
+        //FlowMovie_DetVx1LED(1);
+    }
+    return NVTEVT_CONSUME;
+}
+
+#define CUSTOM_STAMP_STR_MAX    13
+extern char Customize_Buf[13];
+INT32 SetupExe_OnSetCustomStamp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	char *Data = 0;
+	UINT32 len = 0;
+	UINT32 i = 0;
+	UIMenuStoreInfo *ptMenuStoreInfo = UI_GetMenuInfo();
+
+	if (paramNum) {
+		Data = (char *)paramArray[0];
+		len = strlen(Data);
+		DBG_IND("^G SetupExe_OnSetCustomStamp %s %d\r\n", Data, strlen(Data));
+
+		if (len > CUSTOM_STAMP_STR_MAX) {
+			DBG_ERR("max len %d\r\n", CUSTOM_STAMP_STR_MAX);
+			len = CUSTOM_STAMP_STR_MAX;
+		}
+
+		//Process sentence, change '+' as ' '.
+		for (i = 0; i < len; i++) {
+			if (Data[i] == '+') {
+				Data[i] = 0x20;   //Instead of ' '
+			}
+		}
+
+		memset(Customize_Buf, ' ', CUSTOM_STAMP_STR_MAX);//memset(Customize_Buf, '\0', CUSTOM_STAMP_STR_MAX);
+		strncpy(Customize_Buf, Data, len);
+		Customize_Buf[11] = '\0';
+		DBG_IND("%s\r\n", Customize_Buf);
+
+		if (strlen(Data) <= CUSTOM_STAMP_STR_MAX-1) {
+			strncpy(ptMenuStoreInfo->strCustomize, Customize_Buf, (CUSTOM_STAMP_STR_MAX -1)); // Save strCustomize.
+			ptMenuStoreInfo->strCustomize[strlen(ptMenuStoreInfo->strCustomize)] = '\0';
+		}
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+extern char CarNo_Buf[13];
+INT32 SetupExe_OnSetCarNo(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	char *Data = 0;
+	UINT32 len = 0;
+	UINT32 i = 0;
+	UIMenuStoreInfo *ptMenuStoreInfo = UI_GetMenuInfo();
+
+	if (paramNum) {
+		Data = (char *)paramArray[0];
+		len = strlen(Data);
+		DBG_IND("^G SetupExe_OnSetCarNo %s %d\r\n", Data, strlen(Data));
+
+		if (len > CUSTOM_STAMP_STR_MAX) {
+			DBG_ERR("max len %d\r\n", CUSTOM_STAMP_STR_MAX);
+			len = CUSTOM_STAMP_STR_MAX;
+		}
+
+		//Process sentence, change '+' as ' '.
+		for (i = 0; i < len; i++) {
+			if (Data[i] == '+') {
+			    Data[i] = 0x20;   //Instead of ' '
+			}
+		}
+
+		memset(CarNo_Buf, ' ', CUSTOM_STAMP_STR_MAX);//memset(CarNo_Buf, '\0', CUSTOM_STAMP_STR_MAX);
+		strncpy(CarNo_Buf, Data, len);
+		CarNo_Buf[11] = '\0';
+		DBG_IND("%s\r\n", CarNo_Buf);
+
+		if (strlen(Data) <= CUSTOM_STAMP_STR_MAX-1) {
+			strncpy(ptMenuStoreInfo->strCarNo, CarNo_Buf, (CUSTOM_STAMP_STR_MAX -1)); // Save strCarNo.
+			ptMenuStoreInfo->strCarNo[strlen(ptMenuStoreInfo->strCarNo)] = '\0';
+		}
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+extern BOOL autoWifi;
+INT32 SetupExe_OnWiFiOffOn(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 uhSelect = 0;
+
+	if (paramNum > 0) {
+		uhSelect = paramArray[0];
+	}
+
+	UI_SetData(FL_WIFI, uhSelect);
+
+	switch (UI_GetData(FL_WIFI)) {
+	case WIFI_ON_24G:
+	case WIFI_ON:
+		DBG_DUMP("call WIFI_ON_24G\r\n");
+		UI_SetData(FL_WIFI_BAND, WIFI_BAND_24G);
+		autoWifi = FALSE;
+		break;
+	case WIFI_ON_52G:
+		DBG_DUMP("call WIFI_ON_52G\r\n");
+		UI_SetData(FL_WIFI_BAND, WIFI_BAND_52G);
+		autoWifi = FALSE;
+		break;
+	case WIFI_ON_58G:
+		DBG_DUMP("call WIFI_ON_5.8G\r\n");
+		UI_SetData(FL_WIFI_BAND, WIFI_BAND_58G);
+		autoWifi = FALSE;
+		break;
+	default:
+		break;
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+
 EVENT_ENTRY UISetupObjCmdMap[] = {
 //Mode
 #if(UI_FUNC==ENABLE)
@@ -1251,6 +1616,7 @@ EVENT_ENTRY UISetupObjCmdMap[] = {
 #if (PLAY_MODE==ENABLE)
 	{NVTEVT_FORCETO_PLAYBACK_MODE,   SetupExe_OnForceToPlaybackMode},
 #endif
+	{NVTEVT_FORCETO_MOVIE_MODE,      SetupExe_OnForceToMovieMode   },
 	{NVTEVT_FILEID_RESET,            SetupExe_OnFILEDB_FILEID_RESET},
 	{NVTEVT_PREVIEWMODE,             SetupExe_OnPreviewMode       },
 
@@ -1282,6 +1648,7 @@ EVENT_ENTRY UISetupObjCmdMap[] = {
 	{NVTEVT_EXE_WIFI_START,          SetupExe_OnWifiStart         },
 	{NVTEVT_EXE_WIFI_STOP,           SetupExe_OnWifiStop          },
 	{NVTEVT_EXE_WIFI_SET_SSID,       SetupExe_OnWifiSetSSID       },
+	{NVTEVT_EXE_WIFI_SET_SSID_5G,    SetupExe_OnWifiSetSSID_5G    },
 	{NVTEVT_EXE_WIFI_SET_PASSPHRASE, SetupExe_OnWifiSetPassPhrase },
 	{NVTEVT_EXE_WIFI_SET_AUTHTYPE,   SetupExe_OnWifiSetAuthType   },
 	{NVTEVT_EXE_WIFI_DHCP_START,     SetupExe_OnDHCPStart         },
@@ -1332,6 +1699,17 @@ EVENT_ENTRY UISetupObjCmdMap[] = {
 #endif
 
 #endif
+	{NVTEVT_EXE_SPEED_UNIT, 		 SetupExe_OnSpeedUnit		  },
+    {NVTEVT_EXE_TIMEZONE,            SetupExe_OnTimeZone          },
+    {NVTEVT_EXE_PARKING_MODE,        SetupExe_OnParkingMode       },
+    {NVTEVT_EXE_ENTER_PARKING_TIMER, SetupExe_OnEnterParkingTimer },
+    {NVTEVT_EXE_LED,                 SetupExe_OnLED               },
+
+	{NVTEVT_EXE_WIFI_CUSTOM_STAMP,   SetupExe_OnSetCustomStamp    },
+    {NVTEVT_EXE_WIFI_SET_CARNO,      SetupExe_OnSetCarNo          },
+    //wifi
+	{NVTEVT_EXE_WIFI_OFF_ON,		 SetupExe_OnWiFiOffOn		  },
+
 	{NVTEVT_NULL,                    0},  //End of Command Map
 };
 #if(WIFI_AP_FUNC==ENABLE)

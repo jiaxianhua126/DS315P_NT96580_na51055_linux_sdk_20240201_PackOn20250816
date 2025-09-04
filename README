@@ -1,0 +1,4 @@
+51055_linux_sdk_turnkey_20240201_PackOn20250816_uclib
+解决没有产生录像的时候，停止录像卡住的问题。待确认是否需要导入？？
+1.ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_FILE_BSMUX_FAST_PUT, ENABLE)
+2.JIRA542停止录像概率卡住的问题。需要更新补丁。

@@ -5,8 +5,11 @@
 
 #include "UIFramework.h"
 
-extern VControl UIFlowWndUSBCtrl;//Panel type
+extern VControl UIFlowWndUSBCtrl;//Panel type 
 
-extern VControl UIFlowWndMSDC_StaticTxt_MassStorageCtrl;//Static type
+extern VControl UIFlowWndMSDC_StaticTxt_MassStorageCtrl;//Static type 
 
+extern VControl UIFlowWndMSDC_StaticIcon_MassStorageCtrl;//Static type 
+
+//---------------------UIFlowWndUSBCtrl User Export---------------------------
 #endif

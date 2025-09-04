@@ -87,8 +87,8 @@ obj-m += \
 	touch/touch_sj10/ \
 	touch/touch_c300/ \
 	touch/touch2_c300/ \
-	lcd_backlight_pwm/
-	
+	lcd_backlight_pwm/ \
+	gsensor/gsensor_da380/
 #obj-$(CONFIG_HAVE_HW_BREAKPOINT) += debug/nvt_data_breakpoint/
 
 endif

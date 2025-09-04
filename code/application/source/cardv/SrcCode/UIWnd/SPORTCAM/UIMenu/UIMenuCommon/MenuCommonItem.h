@@ -5,41 +5,68 @@
 
 #include "UIWnd/UIFlow.h"
 
-extern VControl MenuCommonItemCtrl;//Panel type
+extern VControl MenuCommonItemCtrl;//Panel type 
 
-extern VControl MenuCommonItem_ListCtrl;//List type
+extern VControl MenuCommonItem_TitleTextCtrl;//Static type 
 
-typedef enum {
-	MenuCommonItem_List_ICON_MODE_CAPTURE_M,
-	MenuCommonItem_List_ICON_CLOUD_ON_M,
-	MenuCommonItem_List_ICON_WIFI_ON_M,
-	MenuCommonItem_List_ICON_WIFI_OFF_M,
-	MenuCommonItem_List_MAX
-} MenuCommonItem_List_Setting;
+extern VControl MenuCommonItem_MenuCtrl;//Menu type 
 
-extern VControl MenuCommonItem_TitleCtrl;//Menu type
+typedef enum
+{
+MenuCommonItem_Menu_STRID_A0,
+MenuCommonItem_Menu_STRID_A1,
+MenuCommonItem_Menu_STRID_A2,
+MenuCommonItem_Menu_STRID_A3,
+MenuCommonItem_Menu_STRID_A4,
+MenuCommonItem_Menu_STRID_A5,
+MenuCommonItem_Menu_STRID_A6,
+MenuCommonItem_Menu_STRID_A7,
+MenuCommonItem_Menu_STRID_A8,
+MenuCommonItem_Menu_STRID_A9,
+MenuCommonItem_Menu_STRID_B0,
+MenuCommonItem_Menu_STRID_B1,
+MenuCommonItem_Menu_STRID_B2,
+MenuCommonItem_Menu_STRID_B3,
+MenuCommonItem_Menu_STRID_B4,
+MenuCommonItem_Menu_STRID_B5,
+MenuCommonItem_Menu_STRID_B6,
+MenuCommonItem_Menu_STRID_B7,
+MenuCommonItem_Menu_STRID_B8,
+MenuCommonItem_Menu_STRID_B9,
+MenuCommonItem_Menu_STRID_C0,
+MenuCommonItem_Menu_STRID_C1,
+MenuCommonItem_Menu_STRID_C2,
+MenuCommonItem_Menu_STRID_C3,
+MenuCommonItem_Menu_STRID_C4,
+MenuCommonItem_Menu_STRID_C5,
+MenuCommonItem_Menu_STRID_C6,
+MenuCommonItem_Menu_STRID_C7,
+MenuCommonItem_Menu_STRID_C8,
+MenuCommonItem_Menu_STRID_C9,
+MenuCommonItem_Menu_STRID_1UP,
+MenuCommonItem_Menu_STRID_2UP,
+MenuCommonItem_Menu_STRID_3UP,
+MenuCommonItem_Menu_STRID_4UP,
+MenuCommonItem_Menu_STRID_5UP,
+MenuCommonItem_Menu_STRID_6UP,
+MenuCommonItem_Menu_STRID_7UP,
+MenuCommonItem_Menu_STRID_8UP,
+MenuCommonItem_Menu_STRID_9UP,
+MenuCommonItem_Menu_STRID_10UP,
+MenuCommonItem_Menu_MAX
+}MenuCommonItem_Menu_Setting;
 
-typedef enum {
-	MenuCommonItem_Title_STRID_WIFI,
-	MenuCommonItem_Title_MAX
-} MenuCommonItem_Title_Setting;
+extern VControl MenuCommonItem_PageNumCtrl;//Static type 
 
-extern VControl MenuCommonItem_StatusCtrl;//Menu type
+extern VControl MenuCommonItem_TipsBarCtrl;//Panel type 
 
-typedef enum {
-	MenuCommonItem_Status_STRID_WIFI_OFF,
-	MenuCommonItem_Status_MAX
-} MenuCommonItem_Status_Setting;
+extern VControl MenuCommonItem_TipsIconReturnCtrl;//Static type 
 
-extern VControl MenuCommItem_PanelCtrl;//Panel type
+extern VControl MenuCommonItem_TipsIconUpCtrl;//Static type 
 
-extern VControl MenuCommonItem_LeftCtrl;//Static type
+extern VControl MenuCommonItem_TipsIconDownCtrl;//Static type 
 
-extern VControl MenuCommonItem_RightCtrl;//Static type
-
-extern VControl MenuCommonItem_LeftIconCtrl;//Static type
-
-extern VControl MenuCommonItem_RightIconCtrl;//Static type
+extern VControl MenuCommonItem_TipsIconOKCtrl;//Static type 
 
 //---------------------MenuCommonItemCtrl User Export---------------------------
 #endif

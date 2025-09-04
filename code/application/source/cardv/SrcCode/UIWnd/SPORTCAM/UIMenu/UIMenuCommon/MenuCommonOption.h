@@ -5,41 +5,51 @@
 
 #include "UIWnd/UIFlow.h"
 
-extern VControl MenuCommonOptionCtrl;//Panel type
+extern VControl MenuCommonOptionCtrl;//Panel type 
 
-extern VControl MenuCommonOption_ListCtrl;//List type
+extern VControl MenuCommonOption_PanelCtrl;//Panel type 
 
-typedef enum {
-	MenuCommonOption_List_ICON_MODE_CAPTURE_M,
-	MenuCommonOption_List_ICON_CLOUD_ON_M,
-	MenuCommonOption_List_ICON_WIFI_ON_M,
-	MenuCommonOption_List_ICON_WIFI_OFF_M,
-	MenuCommonOption_List_MAX
-} MenuCommonOption_List_Setting;
+extern VControl MenuCommonOption_MenuCtrl;//Menu type 
 
-extern VControl MenuCommonOption_TitleCtrl;//Menu type
+typedef enum
+{
+MenuCommonOption_Menu_STRID_A0,
+MenuCommonOption_Menu_STRID_A1,
+MenuCommonOption_Menu_STRID_A2,
+MenuCommonOption_Menu_STRID_A3,
+MenuCommonOption_Menu_STRID_A4,
+MenuCommonOption_Menu_STRID_A5,
+MenuCommonOption_Menu_STRID_A6,
+MenuCommonOption_Menu_STRID_A7,
+MenuCommonOption_Menu_STRID_A8,
+MenuCommonOption_Menu_STRID_A9,
+MenuCommonOption_Menu_STRID_B0,
+MenuCommonOption_Menu_STRID_B1,
+MenuCommonOption_Menu_STRID_B2,
+MenuCommonOption_Menu_STRID_B3,
+MenuCommonOption_Menu_STRID_B4,
+MenuCommonOption_Menu_STRID_B5,
+MenuCommonOption_Menu_STRID_B6,
+MenuCommonOption_Menu_STRID_B7,
+MenuCommonOption_Menu_STRID_B8,
+MenuCommonOption_Menu_STRID_B9,
+MenuCommonOption_Menu_STRID_C0,
+MenuCommonOption_Menu_STRID_C1,
+MenuCommonOption_Menu_STRID_C2,
+MenuCommonOption_Menu_STRID_C3,
+MenuCommonOption_Menu_STRID_C4,
+MenuCommonOption_Menu_STRID_C5,
+MenuCommonOption_Menu_STRID_C6,
+MenuCommonOption_Menu_STRID_C7,
+MenuCommonOption_Menu_STRID_C8,
+MenuCommonOption_Menu_STRID_C9,
+MenuCommonOption_Menu_STRID_1UP,
+MenuCommonOption_Menu_STRID_2UP,
+MenuCommonOption_Menu_STRID_3UP,
+MenuCommonOption_Menu_MAX
+}MenuCommonOption_Menu_Setting;
 
-typedef enum {
-	MenuCommonOption_Title_STRID_WIFI,
-	MenuCommonOption_Title_MAX
-} MenuCommonOption_Title_Setting;
-
-extern VControl MenuCommonOption_StatusCtrl;//Menu type
-
-typedef enum {
-	MenuCommonOption_Status_STRID_WIFI_OFF,
-	MenuCommonOption_Status_MAX
-} MenuCommonOption_Status_Setting;
-
-extern VControl MenuCommOption_PanelCtrl;//Panel type
-
-extern VControl MenuCommonOption_LeftCtrl;//Static type
-
-extern VControl MenuCommonOption_RightCtrl;//Static type
-
-extern VControl MenuCommonOption_LeftIconCtrl;//Static type
-
-extern VControl MenuCommonOption_RightIconCtrl;//Static type
+extern VControl MenuCommonOption_PageNumCtrl;//Static type 
 
 //---------------------MenuCommonOptionCtrl User Export---------------------------
 #endif

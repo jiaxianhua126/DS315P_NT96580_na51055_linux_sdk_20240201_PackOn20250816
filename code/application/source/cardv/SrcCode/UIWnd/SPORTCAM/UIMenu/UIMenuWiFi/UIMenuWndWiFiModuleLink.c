@@ -78,7 +78,8 @@ void UIMenuWndWiFiModuleLink_UpdateData(void)
 {
 	static char buf1[32], buf2[32];
 #if (MAC_APPEN_SSID==ENABLE)
-	UINT8 *pMacAddr;
+	//UINT8 *pMacAddr;
+	char *pMacAddr;
 #endif
 	UIMenuStoreInfo *ptMenuStoreInfo = UI_GetMenuInfo();
 
@@ -86,16 +87,21 @@ void UIMenuWndWiFiModuleLink_UpdateData(void)
 		if (UI_GetData(FL_NetWorkMode) == NET_AP_MODE || UI_GetData(FL_NetWorkMode) == NET_WPS_AP_PBC_MODE || UI_GetData(FL_NetWorkMode) == NET_STATION_MODE) {
 			if (ptMenuStoreInfo->strSSID[0] == 0) {
 #if (MAC_APPEN_SSID==ENABLE)
-				pMacAddr = (UINT8 *)UINet_GetMAC();
-				snprintf(buf1, sizeof(buf1), "SSID:%s%02x%02x%02x%02x%02x%02x", UINet_GetSSID(), (pMacAddr[0] & 0xFF), (pMacAddr[1] & 0xFF), (pMacAddr[2] & 0xFF)
-						 , (pMacAddr[3] & 0xFF), (pMacAddr[4] & 0xFF), (pMacAddr[5] & 0xFF));
+				//pMacAddr = (UINT8 *)UINet_GetMAC();
+				pMacAddr = (char *)UINet_GetMAC();
+				//snprintf(buf1, sizeof(buf1), "SSID:%s%02x%02x%02x%02x%02x%02x", UINet_GetSSID(), (pMacAddr[0] & 0xFF), (pMacAddr[1] & 0xFF), (pMacAddr[2] & 0xFF)
+				//		 , (pMacAddr[3] & 0xFF), (pMacAddr[4] & 0xFF), (pMacAddr[5] & 0xFF));
+				snprintf(buf1, sizeof(buf1), "SSID:%s%02x%02x%02x", UINet_GetSSID(), pMacAddr[3], pMacAddr[4], pMacAddr[5]);
+				DBG_DUMP("%s:%d, SSID = %s, UINet_GetSSID() = %s, pMacAddr[3] = %02x, pMacAddr[4] = %02x, pMacAddr[5] = %02x\r\n",
+							__FUNCTION__, __LINE__, buf1, UINet_GetSSID(), pMacAddr[3], pMacAddr[4], pMacAddr[5]);
 #else
 				snprintf(buf1, sizeof(buf1), "SSID:%s", UINet_GetSSID());
+				DBG_DUMP("%s:%d, UINet_GetSSID() = %s\r\n", __FUNCTION__, __LINE__, UINet_GetSSID());
 #endif
 			} else {
 				snprintf(buf1, sizeof(buf1), "SSID:%s", UINet_GetSSID());
+				DBG_DUMP("%s:%d, UINet_GetSSID() = %s\r\n", __FUNCTION__, __LINE__, UINet_GetSSID());
 			}
-
 
 			snprintf(buf2, sizeof(buf2), "PWA2:%s", UINet_GetPASSPHRASE());
 			UxStatic_SetData(&UIMenuWndWiFiModuleLink_StaticTXT_SSIDCtrl, STATIC_VALUE, Txt_Pointer(buf1));
@@ -232,8 +238,9 @@ INT32 UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_OnKeyRight(VControl *, UINT32,
 INT32 UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_OnKeyEnter(VControl *, UINT32, UINT32 *);
 INT32 UIMenuWndWiFiModeLink_Tab_Authorized_OK(VControl *, UINT32, UINT32 *);
 EVENT_BEGIN(UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff)
-EVENT_ITEM(NVTEVT_KEY_NEXT, UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_OnKeyRight)
-EVENT_ITEM(NVTEVT_KEY_SELECT, UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_OnKeyEnter)
+EVENT_ITEM(NVTEVT_KEY_UP, UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_OnKeyRight)
+EVENT_ITEM(NVTEVT_KEY_DOWN, UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_OnKeyRight)
+EVENT_ITEM(NVTEVT_KEY_ENTER, UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_OnKeyEnter)
 EVENT_ITEM(NVTEVT_WIFI_AUTHORIZED_OK, UIMenuWndWiFiModeLink_Tab_Authorized_OK)
 EVENT_END
 
@@ -260,8 +267,13 @@ INT32 UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_OnKeyEnter(VControl *pCtrl, UI
 	case NVTEVT_KEY_PRESS:
 		switch (UxTab_GetData(&UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOffCtrl, TAB_FOCUS)) {
 		case UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_Button_Refresh:
+			DBG_DUMP("call UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_Button_Refresh\r\n");
 			break;
 		case UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_Button_WiFiOff:
+            if (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD) {
+                FlowWiFiMovie_StopRec();
+                Delay_DelayMs(100);
+            }
 			if (UI_GetData(FL_WIFI_LINK) == WIFI_LINK_OK) {
 			//#NT#2016/03/08#Niven Cho -begin
 			//#NT#because it is long time closing the linux-wifi, we don't change mode to movie video ahead.
@@ -271,7 +283,7 @@ INT32 UIMenuWndWiFiModeLink_Tab_RefreshAndWiFiOff_OnKeyEnter(VControl *pCtrl, UI
 				if ( curMode!= PRIMARY_MODE_MOVIE) {
 			    	Ux_SendEvent(0,NVTEVT_EXE_WIFI_STOP, 0);
 					Ux_CloseWindow(&UIFlowWndMovieCtrl,0);
-			    	Ux_PostEvent(NVTEVT_SYSTEM_MODE, 2, curMode,SYS_SUBMODE_NORMAL);
+			    	Ux_PostEvent(NVTEVT_SYSTEM_MODE, 2, curMode, SYS_SUBMODE_NORMAL);
 				} else {
 					VControl *pWnd =0 ;
 					Ux_GetWindowByIndex(&pWnd, 1);

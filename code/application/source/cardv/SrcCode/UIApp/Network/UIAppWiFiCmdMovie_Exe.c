@@ -19,6 +19,7 @@
 #include "WifiAppCmd.h"
 //#include "ImageApp_Movie.h"
 //#include "NMediaRecVdoEncAPI.h"
+#include "DxInput.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 #define __MODULE__          UIAppWiFiCmdMovie
@@ -35,15 +36,168 @@ static BOOL   g_BRCAutoRun = FALSE;
 static UINT32 g_BRCUpperBound = 0, g_BRCLowerBound = 0;
 static INT32 g_BRCTotalLevel = 0, g_BRCCurrentLevel = 0;
 //#NT#2017/01/03#Isiah Chang -end
+extern BOOL WifiMotionLed_EN;
+extern void MovieExe_InitHDR(void);
+extern BOOL Voice_Parrecordstart;
+extern BOOL g_bWiFiMovieHDR_changed;
+extern BOOL   FlowMovie_CheckReOpenItem(void);
+
+void FlowWiFiMovie_AutoHDR(void)
+{
+	struct tm Curr_DateTime = {0};
+	UINT32 time_start = 0;
+	UINT32 time_stop = 0;
+	UINT32 temp = 0;
+
+	time_start = SysGetFlag(FL_TIME_START);
+	time_stop = SysGetFlag(FL_TIME_STOP);
+
+	if (time_start >= time_stop) {
+		return;
+	}
+
+	Curr_DateTime = hwclock_get_time(TIME_ID_CURRENT);
+	temp = Curr_DateTime.tm_hour*100 + Curr_DateTime.tm_min;
+	//debug_msg("*** temp= %d, time_start= %d, time_stop= %d, SysGetFlag(FL_MOVIE_HDR)= %d ***\r\n", temp, time_start, time_stop, SysGetFlag(FL_MOVIE_HDR));
+
+	if ((((temp >= 0) && (temp < time_start)) || ((temp >= time_stop) && (temp <= 2359)))
+		&& (SysGetFlag(FL_MOVIE_HDR) == MOVIE_HDR_OFF))
+	{
+		if ((WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)||(WiFiCmd_GetStatus() == (WIFI_MOV_ST_RECORD|MOV_ST_ZOOM))) {
+		/*
+		if ((FlowMovie_GetRecCurrTime() <= 1)&&(SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) {
+		Delay_DelayMs(1000);
+		}*/
+			FlowWiFiMovie_StopRec();
+			Delay_DelayMs(300);
+		}
+		g_NotRecordWrn = FALSE;
+		g_bWiFiMovieHDR_changed = TRUE;
+		SysSetFlag(FL_MOVIE_HDR, MOVIE_HDR_ON);
+		SysSetFlag(FL_MOVIE_HDR_MENU, MOVIE_HDR_ON);
+		UI_SetData(FL_MOVIE_WDR, MOVIE_WDR_ON);
+		UI_SetData(FL_MOVIE_WDR_MENU, MOVIE_WDR_ON);		
+		//DBG_DUMP("call FlowWiFiMovie_AutoHDR  MOVIE_HDR_ON\r\n");
+		FlowMovie_CheckReOpenItem();
+		Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
+	}
+	else if ((temp >= time_start) && (temp < time_stop) && (SysGetFlag(FL_MOVIE_HDR) == MOVIE_HDR_ON))
+	{
+		if ((WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)||(WiFiCmd_GetStatus() == (WIFI_MOV_ST_RECORD|MOV_ST_ZOOM))) {
+		/*
+		if ((FlowMovie_GetRecCurrTime() <= 1)&&(SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) {
+		Delay_DelayMs(1000);
+		}*/
+			FlowWiFiMovie_StopRec();
+			Delay_DelayMs(300);
+		}
+		g_NotRecordWrn = FALSE;
+		g_bWiFiMovieHDR_changed = TRUE;
+		SysSetFlag(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+		SysSetFlag(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+		UI_SetData(FL_MOVIE_WDR, MOVIE_WDR_OFF);
+		UI_SetData(FL_MOVIE_WDR_MENU, MOVIE_WDR_OFF);
+		//DBG_DUMP("call FlowWiFiMovie_AutoHDR  MOVIE_HDR_OFF\r\n");
+		FlowMovie_CheckReOpenItem();
+		Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
+	}
+}
+
+extern BOOL ASR_GetPCMData_EN;
 
 void FlowWiFiMovie_StartRec(void)
 {
+	//MovRec_SetROPercent(30);
+	Control_LedTurn(REC_LED,1);
+	if (SysGetFlag(FL_MOVIE_MOTION_DET) == MOVIE_MOTIONDET_ON) {
+		g_uiWiFiRecordIngMotionDet = TRUE;
+	} else {
+		g_uiWiFiRecordIngMotionDet = FALSE;
+	}
+
+	if (SysGetFlag(FL_PARKING_MODE) == PARKING_MODE_MOTION_DET) {
+		g_uiWiFiParkingModeMotionDet = TRUE;
+	} else {
+		g_uiWiFiParkingModeMotionDet = FALSE;
+	}
+
+    //FlowMovie_CreateFileRecoveryTxt();
+	if (!Voice_Parrecordstart) {	
+		UIVoice_Play(DEMOSOUND_SOUND_RECORDINGSTART_TONE);
+		Voice_Parrecordstart = FALSE;
+	}
+	Delay_DelayMs(200);	
+	ASR_GetPCMData_EN = FALSE;
 	Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_START, 0);
+	ASR_GetPCMData_EN = TRUE;
+
+	if (bWiFiRec_AutoStart) {
+		bWiFiRec_AutoStart = FALSE;
+		//WifiApp_SendCmd(WIFIAPP_CMD_NOTIFY_STATUS, WIFIAPP_RET_RECORD_STARTED);
+	}
+
+	WifiApp_SendCmd(WIFIAPP_CMD_NOTIFY_STATUS, WIFIAPP_RET_RECORD_STARTED);
+
+#if 0
+	if (SysGetFlag(FL_LED) == LED_ON) {
+		GxLED_SetCtrl(KEYSCAN_LED_GREEN, SET_TOGGLE_LED, FALSE);
+		GxLED_SetCtrl(KEYSCAN_LED_GREEN, TURNON_LED, TRUE);
+	}
+#else
+	WifiMotionLed_EN = FALSE;
+	FlowMovie_SetLedFlash_BeepWrn(FALSE);
+#endif
+	if(GPIOMap_EthCam1Det()&&(!FlowMovie_IsEthCamConnectOK()))
+	{
+		g_NotRecordWrn = TRUE;
+	}
+	else
+	{
+		g_NotRecordWrn = FALSE;
+	}
+
 }
 
 void FlowWiFiMovie_StopRec(void)
 {
+	if (bWiFiRec_AutoStop == FALSE) {
+		if (SysGetFlag(FL_MOVIE_MOTION_DET) == MOVIE_MOTIONDET_ON) {
+			if (g_uiWiFiRecordIngMotionDet) {
+				g_uiWiFiRecordIngMotionDet = FALSE;
+			}
+		}
+
+		if (SysGetFlag(FL_PARKING_MODE) == PARKING_MODE_MOTION_DET) {
+			if (g_uiWiFiParkingModeMotionDet) {
+				g_uiWiFiParkingModeMotionDet = FALSE;
+			}
+		}
+	}
+
+	//FlowMovie_DeleteFileRecoveryTxt();
+
 	Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_STOP, 0);
+
+	if (bWiFiRec_AutoStop) {
+		bWiFiRec_AutoStop = FALSE;
+		//WifiApp_SendCmd(WIFIAPP_CMD_NOTIFY_STATUS, WIFIAPP_RET_RECORD_STOPPED);
+	} else {
+		g_NotRecordWrn = TRUE;
+	}
+
+	WifiApp_SendCmd(WIFIAPP_CMD_NOTIFY_STATUS, WIFIAPP_RET_RECORD_STOPPED);
+	WifiMotionLed_EN = TRUE;
+
+	if (SysGetFlag(FL_LED) == LED_ON) {
+		//GxLED_SetCtrl(KEYSCAN_LED_GREEN, SETLED_SPEED, GXLED_1SEC_LED_TOGGLE_CNT/10);
+		//GxLED_SetCtrl(KEYSCAN_LED_GREEN, SET_TOGGLE_LED, TRUE);
+		//GxLED_SetCtrl(KEYSCAN_LED_GREEN, TURNON_LED, TRUE);
+		Control_LedTurn(REC_LED,1);
+	}
+	FlowMovie_SetLedFlash_BeepWrn(TRUE);
+
+	ParkingM_PreRecord_EMR = FALSE;
+	FlowWiFiMovie_UpdateIcons(TRUE);
 }
 
 void FlowWiFiMovie_StartLview(void)
@@ -123,7 +277,7 @@ void WiFiCmd_OnMotionDetect(void)
 				uiMotionDetGo = 0;
 			}
 #if 1
-			if (uiMotionDetStop >= 20) // 10 Sec
+			if (uiMotionDetStop >= 60) // 10 Sec
 #else
 			if (uiMotionDetStop >= 65536) // 10 Sec
 #endif
@@ -135,6 +289,7 @@ void WiFiCmd_OnMotionDetect(void)
 						// Send socket to notify APP movie recording is started.
 						DBG_DUMP("^RWIFIAPP_RET_RECORD_STOPPED\r\n");
 						// Post event to record video and send socket to notify APP recording is started.
+						bWiFiRec_AutoStop = TRUE;
 						Ux_PostEvent(NVTEVT_WIFI_EXE_MOVIE_REC, 1, 0);
 						//#NT#2016/12/30#Isiah Chang -end
 					}
@@ -149,6 +304,7 @@ INT32 WiFiCmd_OnExeMovieRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 	UINT32 uiNotifyAPPStatus = 0;
 	UINT32 result = WIFIAPP_RET_OK;
 	UINT32 curStatus = 0;
+    BOOL   CheckStorageErr = FALSE;
 //#NT#2016/08/31#Isiah Chang -begin
 //#NT#Parameter number must be larger then 0. Fixed mantis bug id:0107729
 	if (paramNum > 0) {
@@ -169,6 +325,14 @@ INT32 WiFiCmd_OnExeMovieRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 		return NVTEVT_CONSUME;
 	}
 
+    if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
+		FlowMovie_SetLedFlash_BeepWrn(TRUE);
+        Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, UIFlowWndWrnMsg_StatusTXT_Msg_STRID_PLEASE_INSERT_SD, FLOWWRNMSG_TIMER_2SEC);
+        bWiFiRec_AutoStart = FALSE;
+        WifiCmd_Done(WIFIFLAG_RECORD_DONE, WIFIAPP_RET_FAIL);
+        return NVTEVT_CONSUME;
+    }
+
 	curStatus = WiFiCmd_GetStatus();
 
 	if (startRec) {
@@ -176,10 +340,26 @@ INT32 WiFiCmd_OnExeMovieRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 			UINT32 MaxTime = Movie_GetFreeSec();
 			if ((MaxTime <= 3) && (SysGetFlag(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_OFF)) {
 				result = WIFIAPP_RET_STORAGE_FULL;
+                bWiFiRec_AutoStart = FALSE;
+                //bWiFiRec_GSensorEvent = FALSE;
 				DBG_ERR("recTime<3 sec\r\n");
 			} else {
+                /*if (SysGetFlag(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_OFF) {
+                    CheckStorageErr = FlowMovie_IsStorageErr(TRUE);
+                } else */
+                {
+                    CheckStorageErr = FlowMovie_IsStorageErr(FALSE);
+                }
+
+                if (CheckStorageErr == TRUE) {
+					FlowMovie_SetLedFlash_BeepWrn(TRUE);
+                    bWiFiRec_AutoStart = FALSE;
+                    WifiCmd_Done(WIFIFLAG_RECORD_DONE, WIFIAPP_RET_FAIL);
+                    return NVTEVT_CONSUME;
+                }
+
 				// Reset Current record time
-				FlowMovie_SetRecCurrTime(0);
+				FlowWiFiMovie_SetRecCurrTime(0);
 
 				//#NT#2016/12/30#Isiah Chang -begin
 				// Send socket to notify APP movie recording is started.
@@ -200,11 +380,13 @@ INT32 WiFiCmd_OnExeMovieRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 		}
 	} else { //stop rec
     	#if 1
-		UINT32 recordTime = FlowMovie_GetRecCurrTime();
+		UINT32 recordTime = FlowWiFiMovie_GetRecCurrTime();
+		printf("recordTime = %d\r\n");
         #else
         UINT32 recordTime = 1;
         #endif
 		if ((curStatus == WIFI_MOV_ST_RECORD) && ((recordTime >= 1) || (SysGetFlag(FL_MOVIE_TIMELAPSE_REC) != MOVIE_TIMELAPSEREC_OFF))) {
+			printf("call WiFiCmd_OnExeMovieRec (curStatus == WIFI_MOV_ST_RECORD) recordTime = %d\r\n",recordTime);
 			FlowWiFiMovie_StopRec();
 			// Notify Maximum Record Time
 			UI_SetData(FL_WIFI_MOVIE_MAXRECTIME, Movie_GetFreeSec());
@@ -235,7 +417,7 @@ INT32 WiFiCmd_OnExeMovieRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 			  && (result == WIFIAPP_RET_OK)))
 #endif
 		{
-			vos_util_delay_ms(1000);
+			vos_util_delay_ms(500); //1000
 			WifiCmd_Done(WIFIFLAG_RECORD_DONE, result);
 		}
 
@@ -252,6 +434,7 @@ INT32 WiFiCmd_OnExeSetMovieRecSize(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 
 	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
 		DBG_ERR("not movie mode\r\n");
+		WifiCmd_Done(WIFIFLAG_MODE_DONE, WIFIAPP_RET_PAR_ERR);
 		return NVTEVT_CONSUME;
 	}
 
@@ -324,7 +507,7 @@ INT32 WiFiCmd_OnExeCyclicRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 	return NVTEVT_CONSUME;
 }
 
-INT32 WiFiCmd_OnExeMovieHDR(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 WiFiCmd_OnExeMovieWDR(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32 Data;
 
@@ -345,6 +528,66 @@ INT32 WiFiCmd_OnExeMovieHDR(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 	return NVTEVT_CONSUME;
 }
 
+INT32 WiFiCmd_OnExeMovieHDR(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD)
+	{
+		//DBG_DUMP("call WiFiCmd_OnExeMovieHDR %d\r\n",Data);
+		//until start preview to set size and change HDR,
+		//UI_SetData(FL_MOVIE_HDR,Data);
+		if (Data != MOVIE_HDR_DET_AUTO) {
+			UI_SetData(FL_MOVIE_HDR_DET,Data);
+			UI_SetData(FL_MOVIE_HDR_MENU,Data);
+			FlowMovie_CheckReOpenItem();		
+		} else {
+			UI_SetData(FL_MOVIE_HDR_DET,MOVIE_HDR_DET_AUTO);
+			MovieExe_InitHDR();
+		}
+		Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));	
+		//Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_HDR, 1, Data);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetHDRTime(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	char *Data = 0;
+	static UINT32 Hdr_StartTime[2] = {0};
+	static UINT32 Hdr_EndTime[2] = {0};
+	if (paramNum) {
+		Data = (char *)paramArray[0];
+		printf("call WiFiCmd_OnExeSetHDRTime Data = %s\r\n",Data);
+		if (sscanf_s(Data, "%d:%d-%d:%d", &Hdr_StartTime[0], &Hdr_StartTime[1],&Hdr_EndTime[0],&Hdr_EndTime[1])>0) {
+			//printf("call wdj %d %d  %d %d \r\n",Hdr_StartTime[0],Hdr_StartTime[1],Hdr_EndTime[0],Hdr_EndTime[1]);
+			if (UI_GetData(FL_MOVIE_HDR_DET) == MOVIE_HDR_DET_AUTO ) {
+				//printf("call WiFiCmd_OnExeSetHDRTime\r\n");
+				SysSetFlag(FL_TIME_START, (Hdr_EndTime[0]*100+Hdr_EndTime[1]));
+				SysSetFlag(FL_TIME_STOP, (Hdr_StartTime[0]*100+Hdr_StartTime[1]));
+				//printf("call FL_TIME_START = %d   FL_TIME_STOP = %d\r\n",SysGetFlag(FL_TIME_START),SysGetFlag(FL_TIME_STOP));
+			} else {
+				DBG_DUMP("WiFiCmd_OnExeSetHDRTime fail!\r\n");
+			}
+		} else {
+			printf("sscanf_s error\r\n");
+		}
+		WifiCmd_UnlockString(Data);
+	}
+	MovieExe_InitHDR();
+	Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));	
+	return NVTEVT_CONSUME;
+}
+
+
 INT32 WiFiCmd_OnExeSetMovieEV(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32 Data;
@@ -361,11 +604,43 @@ INT32 WiFiCmd_OnExeSetMovieEV(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 //#NT#2015/09/09#Janice Huang -end
 
 	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+        #if 0
 		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_EV, 1, Data);
+        #else
+        Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_EV, 1, Data);
+        #endif
 	}
 
 	return NVTEVT_CONSUME;
 }
+INT32 WiFiCmd_OnExeSetMovieEV2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+//#NT#2015/09/09#Janice Huang -begin
+//#NT# photo and movie use the same EV value
+#if 0
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+#endif
+//#NT#2015/09/09#Janice Huang -end
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+        #if 0
+		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_EV, 1, Data);
+        #else
+		//Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_EV2, 1, Data);
+		UI_SetData(FL_EV2,Data);
+		Ux_SendEvent(0,NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
+        #endif
+	}
+
+	return NVTEVT_CONSUME;
+}
+
 //#NT#2016/06/03#Charlie Chang -begin
 //#NT# support contrast, two-way audio, flip_mirror, quality set
 INT32 WiFiCmd_OnExeSetMovieContrast(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -441,6 +716,26 @@ INT32 WiFiCmd_OnExeSetMotionDet(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 
 	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
 		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOTION_DET, 1, Data);
+        FlowWiFiMovie_IconDrawTimelapse(FALSE);
+        FlowWiFiMovie_IconDrawMotionDet(TRUE);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetParkingMotionDet(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_PARKING_MOTION_DET, 1, Data);
 	}
 
 	return NVTEVT_CONSUME;
@@ -458,11 +753,148 @@ INT32 WiFiCmd_OnExeSetMovieAudio(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 	}
 
 	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		if (Data) {
+			UIVoice_Play(DEMOSOUND_SOUND_MICEN_TONE);
+			Delay_DelayMs(50);
+		} else {
+			UIVoice_Play(DEMOSOUND_SOUND_MICDIS_TONE);
+			Delay_DelayMs(50);
+		}
 		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_AUDIO, 1, Data);
+        FlowWiFiMovie_IconDrawAudio(TRUE);
 	}
 
 	return NVTEVT_CONSUME;
 }
+
+INT32 WiFiCmd_OnExeSetBand(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_WIFI_OFF_ON, 1, Data);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetMovieVoice(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_VOICE, 1, Data);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+UINT32 APP_Sound_Control = 0;
+INT32 WiFiCmd_OnExeSetMenuComingSound(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	APP_Sound_Control = Data;
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetParkingOffGPS(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		UI_SetData(FL_PARKING_OFF_GPS, Data);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetDateFormat(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		UI_SetData(FL_DATE_FORMAT, Data);
+	}
+
+	return NVTEVT_CONSUME;
+
+}
+
+INT32 WiFiCmd_OnExeSetAsrControl(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		UI_SetData(FL_ASR, Data);
+		#if (ASR_FUNCTION == ENABLE)
+		if (SysGetFlag(FL_ASR) == ASR_STANDARD) {
+			ASR_SetMode(SysGetFlag(FL_LANGUAGE));
+			ASR_Open();
+		} else if (SysGetFlag(FL_ASR) == ASR_OFF) {
+			ASR_Uninstall();
+		}
+		#endif
+	}
+
+	return NVTEVT_CONSUME;
+
+}
+
+INT32 WiFiCmd_OnExeSetAsrContent(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		DBG_DUMP("call WiFiCmd_OnExeSetAsrContent\r\n");
+	}
+
+	return NVTEVT_CONSUME;
+
+}
+
 
 INT32 WiFiCmd_OnExeSetMovieDateImprint(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -478,6 +910,7 @@ INT32 WiFiCmd_OnExeSetMovieDateImprint(VControl *pCtrl, UINT32 paramNum, UINT32 
 	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
 		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_DATE_IMPRINT, 1, Data);
 	}
+    UI_SetData(FL_MOVIE_DATEIMPRINT, Data);
 
 	return NVTEVT_CONSUME;
 }
@@ -513,6 +946,24 @@ INT32 WiFiCmd_OnExeSetMovieGSesnorSensitivity(VControl *pCtrl, UINT32 paramNum, 
 
 	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
 		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_GSENSOR, 1, Data);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetParkingGSensor(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_PARKING_GSENSOR, 1, Data);
 	}
 
 	return NVTEVT_CONSUME;
@@ -722,6 +1173,7 @@ INT32 WiFiCmd_OnExeMovieLiveviewStart(VControl *pCtrl, UINT32 paramNum, UINT32 *
 				BOOL bReOpen = FlowMovie_CheckReOpenItem();
 				if(bReOpen==TRUE)
 				{
+					printf("call WiFiCmd_OnExeMovieLiveviewStart0\r\n");
 					if(ResetFlag==0){
 						Ux_SendEvent(0,NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
 					}else{
@@ -730,6 +1182,7 @@ INT32 WiFiCmd_OnExeMovieLiveviewStart(VControl *pCtrl, UINT32 paramNum, UINT32 *
 				}
 				else
 				{
+					printf("call FlowWiFiMovie_StartLview3\r\n");
 					FlowWiFiMovie_StartLview();
 				}
 			} else if (curStatus == WIFI_MOV_ST_RECORD) {
@@ -809,6 +1262,7 @@ INT32 WiFiCmd_OnMovieFull(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 #endif
 	FlowMovie_SetRecCurrTime(0);
 	FlowWiFiMovie_StopRec();
+	FlowWiFiMovie_StartRec();//
 
 	return NVTEVT_CONSUME;
 }
@@ -829,6 +1283,7 @@ INT32 WiFiCmd_OnMovieWrError(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 #endif
 	FlowMovie_SetRecCurrTime(0);
 	FlowWiFiMovie_StopRec();
+	g_NotRecordWrn = TRUE;
 
 	return NVTEVT_CONSUME;
 }
@@ -917,4 +1372,483 @@ INT32 WiFiCmd_GetStatus(void)
 	return status;
 }
 #endif
+
+INT32 WiFiCmd_OnExeSetCarNo(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	char *Data = 0;
+	char CarNo[VER_STR_MAX] = {0};
+
+	if (paramNum) {
+		Data = (char *)paramArray[0];
+
+		if (1 == sscanf_s(Data, "%s", CarNo, sizeof(CarNo))) {
+			if (strlen(CarNo) < 12) {
+				Ux_SendEvent(0, NVTEVT_EXE_WIFI_SET_CARNO, 1, CarNo);
+			} else {
+				DBG_DUMP("CarNo length illegal!\r\n");
+			}
+		}
+		WifiCmd_UnlockString(Data);
+	}
+
+    return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetCustomStamp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	char *Data = 0;
+	char CustomText[VER_STR_MAX] = {0};
+
+	if (paramNum) {
+		Data = (char *)paramArray[0];
+
+		if (1 == sscanf_s(Data, "%s", CustomText, sizeof(CustomText))) {
+			if (strlen(CustomText) < 12) {
+				Ux_SendEvent(0, NVTEVT_EXE_WIFI_CUSTOM_STAMP, 1, CustomText);
+			} else {
+				DBG_DUMP("CustomText length illegal!\r\n");
+			}
+		}
+		WifiCmd_UnlockString(Data);
+	}
+
+    return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetMovieTimeLapseRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		//if timelapse rec on, turn off parking mode
+		if (Data != MOVIE_TIMELAPSEREC_OFF) {
+			SysSetFlag(FL_PARKING_MODE, PARKING_MODE_OFF);
+			SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC, PARKING_MODE_TIMELAPSEREC_OFF);
+		}
+		SysSetFlag(FL_MOVIE_TIMELAPSE_REC, Data);
+		SysSetFlag(FL_MOVIE_TIMELAPSE_REC_MENU, Data);
+        FlowWiFiMovie_IconDrawMotionDet(FALSE);
+		FlowWiFiMovie_IconDrawTimelapse(TRUE);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetMovieMetering(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_METERING, 1, Data);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetMovieBitRate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_BITRATE, 1, Data);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetMovieGPSStamp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+    if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+        SysSetFlag(FL_GPS_STAMP, Data);
+    }
+
+    return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSetMovieModelStamp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		SysSetFlag(FL_MODEL_STAMP, Data);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeBeep(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_BEEPKEY, 1, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeScreenSaver(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_LCDOFF, 1, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeFrequency(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_FREQ, 1, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeGPS(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	SysSetFlag(FL_GPS, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeTimeZone(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_TIMEZONE, 1, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSpeedUnit(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_SPEED_UNIT, 1, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSensorRotate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	SysSetFlag(FL_MOVIE_SENSOR_ROTATE, Data);//FL_SENSOR_ROTATE
+
+	Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_SENSOR_ROTATE, 1, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeSensor2Rotate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	SysSetFlag(FL_SENSOR2_ROTATE, Data);
+
+	//Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_SENSOR_ROTATE, 1, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeFormatWarning(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_FORMAT_WARNING, 1, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeParkingMode(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	//if parking mode on, turn off motion det & timelapse rec
+	if (Data != PARKING_MODE_OFF) {
+		SysSetFlag(FL_MOVIE_MOTION_DET, MOVIE_MOTIONDET_OFF);
+		SysSetFlag(FL_MOVIE_TIMELAPSE_REC, MOVIE_TIMELAPSEREC_OFF);
+		SysSetFlag(FL_MOVIE_TIMELAPSE_REC_MENU, MOVIE_TIMELAPSEREC_OFF);
+	}
+
+	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_PARKING_MODE, 1, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+/*
+INT32 WiFiCmd_OnExeSysReboot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    if (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD) {
+        if (FlowWiFiMovie_GetRecCurrTime() <= 1) {
+            Delay_DelayMs(1000);
+        }
+        FlowWiFiMovie_StopRec();
+        Delay_DelayMs(300);
+    }
+    SysSetFlag(FL_FIRSTPOWERON, FIRSTPOWERON_FALSE);
+    SysSetFlag(FL_WIFI_AUTO, WIFI_AUTO_ON);
+    Save_MenuInfo();
+    Delay_DelayMs(100);
+    GxSystem_SWResetNOW();
+
+    return NVTEVT_CONSUME;
+}
+*/
+INT32 WiFiCmd_OnExeSysBootDelay(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	SysSetFlag(FL_BOOT_DELAY, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeIRRearColor(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	//UINT32 Data;
+
+	//Data = paramNum ? paramArray[0] : 0;
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+	    //Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_IR_REAR_COLOR, 1, Data);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeRearSensorMirror(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+	    SysSetFlag(FL_REAR_SENSOR_MIRROR, Data);
+	    //Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_SENSOR_ROTATE, 1, SysGetFlag(FL_MOVIE_SENSOR_ROTATE));//Data
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeMovieCodec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+		DBG_ERR("not movie mode\r\n");
+		return NVTEVT_CONSUME;
+	}
+
+	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
+		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_CODEC, 1, Data);
+	}
+
+	return NVTEVT_CONSUME;
+}
+
+#if (defined(_NVT_ETHREARCAM_RX_))
+extern void Update_FW(void);
+#endif
+INT32 WiFiCmd_OnExeCustomFWUpdate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	DBG_IND("%s \r\n", __FUNCTION__);
+#if (defined(_NVT_ETHREARCAM_RX_))
+#if (ASR_FUNCTION == ENABLE)
+	if (SysGetFlag(FL_ASR) == ASR_STANDARD) {
+		//printf("call ASR_STANDARD \r\n",SysGetFlag(FL_ASR) );
+		ASR_Uninstall();
+	}
+#endif
+	Update_FW();
+#endif
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeEdogDataUpdate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	DBG_IND("%s \r\n", __FUNCTION__);
+#if (defined(_NVT_ETHREARCAM_RX_))
+	FlowMovie_WakeUpLCDBacklight();
+	#if 0
+	if (gUIFlowWndWiFiMotionDetTimerID != NULL_TIMER)
+	{
+		GxTimer_StopTimer(&gUIFlowWndWiFiMotionDetTimerID);
+	}
+	if (g_uiDateTimerID != NULL_TIMER)
+	{
+		GxTimer_StopTimer(&g_uiDateTimerID);
+	}
+	#endif
+	if (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)
+	{
+		if (FlowMovie_GetRecCurrTime() <= 1)
+		{
+			Delay_DelayMs(1000);
+		}
+		FlowWiFiMovie_StopRec();
+		Delay_DelayMs(100);
+	}
+	//SxCmd_DoCommand("key edogmap");//HTK_TBD
+#endif
+	return NVTEVT_CONSUME;
+}
+
+char gFW_MD5[64] = {0};
+char gEthFW_MD5[64] = {0};
+UINT8 g_FWCnt = 0; 
+extern void Delete_FW(void);
+INT32 WiFiCmd_OnExeSendFWMD5(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	DBG_IND("%s %s\r\n", __FUNCTION__, paramArray[0]);
+	char *Data = 0;
+	if (paramNum) {
+		Data = (char *)paramArray[0];
+		DBG_IND("%d\r\n", strlen(Data));
+		memset(gFW_MD5,0,sizeof(gFW_MD5));	
+		memset(gEthFW_MD5,0,sizeof(gEthFW_MD5));
+		if (2 == sscanf_s(Data, "%[^:]:%s", gFW_MD5, gEthFW_MD5, sizeof(gFW_MD5) + sizeof(gEthFW_MD5)))
+		{
+			DBG_DUMP("md5:%s, md5:%s\r\n", gFW_MD5, gEthFW_MD5);
+			g_FWCnt = 2;
+		}
+		else
+		{
+			memset(gFW_MD5,0,sizeof(gFW_MD5));	
+			memset(gEthFW_MD5,0,sizeof(gEthFW_MD5));
+			if(1 == sscanf_s(Data, "%s", gFW_MD5, sizeof(gFW_MD5))) 
+			{
+				DBG_DUMP("md5:%s, md5:%s\r\n", gFW_MD5, gEthFW_MD5);
+			}
+			g_FWCnt = 1;
+		}
+		Delete_FW();
+		WifiCmd_UnlockString(Data);
+	}
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeVolume(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+    SysSetFlag(FL_VOLUME, Data);
+
+    return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeShutdownTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	SysSetFlag(FL_SHUTDOWN_TIMER, Data);
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeWaterLogo(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	SysSetFlag(FL_MODEL_STAMP, Data);
+
+	return NVTEVT_CONSUME;
+}
+//extern void UIMenuWndPlayStorageType_SetStorageType(UINT32 StorageType);
+
+INT32 WiFiCmd_OnExeSetStorageType(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+
+#if 0
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+    if((Data>=0)&&(Data<=1)){
+		UIMenuWndPlayStorageType_SetStorageType(Data);
+	}else{
+		UIMenuWndPlayStorageType_SetStorageType(0);//emmc alawys on
+	}
+#endif
+    return NVTEVT_CONSUME;
+}
+INT32 WiFiCmd_OnExeSetEnterParkingTime(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	SysSetFlag(FL_ENTER_PARKING_TIMER, Data);
+	Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_ENTER_PARKING_TIMER, 1, SysGetFlag(FL_ENTER_PARKING_TIMER));
+
+	return NVTEVT_CONSUME;
+}
+
+INT32 WiFiCmd_OnExeVideoFormat(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32 Data;
+
+	Data = paramNum ? paramArray[0] : 0;
+
+	SysSetFlag(FL_VIDEO_FORMAT_MENU, Data);
+	return NVTEVT_CONSUME;
+}
 

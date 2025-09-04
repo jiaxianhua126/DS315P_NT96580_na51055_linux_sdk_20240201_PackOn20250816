@@ -13,12 +13,20 @@
 #include "kwrap/sxcmd.h"
 #include "kwrap/perf.h"
 #include "Dx.h"
+#include "DxGPS.h"
+#include "DxASR.h"
+#include "DxGSensor.h"
+#include "DxDisplay.h"
+#include "DxGpio.h"
+#include "Dxwatchdog.h"
+#include "DxLed.h"
 #include "GxVideo.h"
 #include "GxDisplay.h"
 #include "GxPower.h"
 #include "GxSound.h"
+#include "ProjectInfo.h"
 
-#define Prj_GetVersionString()  "20210611_1"    //in ProjectInfo
+//#define Prj_GetVersionString()  "20210611_1"    //in ProjectInfo
 
 #define Delay_DelayMs(x)    vos_util_delay_ms(x)
 //#define UI_Show(iShow,bEn)  if(iShow==0) {GxDisplay_Set(LAYER_OSD1, LAYER_STATE_ENABLE, bEn);}

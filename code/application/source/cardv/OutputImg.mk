@@ -44,6 +44,7 @@ EXTRA_LIB_DIR += \
 	-L$(NVT_VOS_DIR)/output \
 	-L$(NVT_DRIVER_DIR)/output \
 
+#C_CFLAGS = $(PLATFORM_CFLAGS) $(EXTRA_INCLUDE) $(C_PREDEFINED) $(COMPILE_OPTS) $(WARNING) -Wno-format -g -O0
 C_CFLAGS = $(PLATFORM_CFLAGS) $(EXTRA_INCLUDE) $(C_PREDEFINED) $(COMPILE_OPTS) $(WARNING) -Wno-format
 C_CXXFLAGS = $(PLATFORM_CXXFLAGS) $(EXTRA_INCLUDE) $(C_PREDEFINED) $(COMPILE_OPTS) $(WARNING)
 C_AFLAGS = $(PLATFORM_AFLAGS) $(EXTRA_INCLUDE)
@@ -209,6 +210,9 @@ EXTRA_LIB += \
 	-l:libssl.a \
 	-l:libcrypto.a \
 	-l:libzlib.a \
+	-l:libaiengine-nt96580-20230202180038.a \
+	-l:liblite-wakeup_NT96580_load_export.a \
+	-l:edog_lib.a \
 
 # fix compiling error such as "undefined reference to `dlclose'"
 glibc=$(shell echo $(CROSS_COMPILE)|grep gnueabihf)	
@@ -367,6 +371,7 @@ $(OUTPUT_NAME): $(IMG_NAME)
 	@echo Creating executable $@ ... && \
 	$(STRIP) $< && \
 	$(OBJCOPY) -R .comment -R .note.ABI-tag -R .gnu.version $< $@
+#	$(OBJCOPY) $< $@
 # inline warning should be ignored with some LVGL static inline functions(e.g. lv_color_mix_with_alpha)
 %/fbdev.o: %/fbdev.c
 	@echo Compiling $< , skip inline warning

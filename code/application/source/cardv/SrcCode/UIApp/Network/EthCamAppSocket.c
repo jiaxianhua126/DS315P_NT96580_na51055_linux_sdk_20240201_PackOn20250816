@@ -1832,10 +1832,10 @@ void socketCliEthData2_RecvCB(ETHCAM_PATH_ID path_id, char* addr, int size)
 			UI_SetData(FL_DUAL_CAM, DUALCAM_BOTH);
 			//UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_BOTH);
 			#else
-			UI_SetData(FL_DUAL_CAM, DUALCAM_BEHIND);
+			//UI_SetData(FL_DUAL_CAM, DUALCAM_BEHIND);
 			//UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_BEHIND);
 			#endif
-			MovieExe_EthCam_ChgDispCB(UI_GetData(FL_DUAL_CAM));
+			MovieExe_EthCam_ChgDispCB(DUALCAM_BEHIND);
 #endif
 		}
 
@@ -2446,6 +2446,7 @@ void socketCliEthCmd_NotifyCB(ETHCAM_PATH_ID path_id, int status, int parm)
 			#else
 			if ((System_IsModeChgClose()==0 && System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE) || System_GetState(SYS_STATE_NEXTMODE) == PRIMARY_MODE_MOVIE) {
 					BKG_PostEvent(NVTEVT_BKW_ETHCAM_SET_TX_SYSINFO);
+					BKG_PostEvent(NVTEVT_BKW_ETHCAM_SYNC_GPS_INFO);//when  connected, update immdiately
 
 					#if (ETH_REARCAM_CAPS_COUNT>=2)
 					BKG_PostEvent(NVTEVT_BKW_GET_ETHCAM_TX_INFO);
