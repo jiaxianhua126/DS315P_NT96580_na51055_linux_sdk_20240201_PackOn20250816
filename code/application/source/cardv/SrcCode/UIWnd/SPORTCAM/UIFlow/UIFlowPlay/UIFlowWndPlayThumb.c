@@ -757,6 +757,7 @@ CTRL_LIST_ITEM(UIFlowWndPlayThumb_TipsIconReturn)
 CTRL_LIST_ITEM(UIFlowWndPlayThumb_TipsIconUp)
 CTRL_LIST_ITEM(UIFlowWndPlayThumb_TipsIconDown)
 CTRL_LIST_ITEM(UIFlowWndPlayThumb_TipsIconOK)
+CTRL_LIST_ITEM(UIFlowWndPlayThumb_TipsIconPower)
 CTRL_LIST_END
 
 //----------------------UIFlowWndPlayThumb_TipsBarCtrl Event---------------------------
@@ -767,15 +768,31 @@ EVENT_END
 EVENT_BEGIN(UIFlowWndPlayThumb_TipsIconReturn)
 EVENT_END
 
+//---------------------UIFlowWndPlayThumb_TipsIconUpCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndPlayThumb_TipsIconUp)
+CTRL_LIST_END
+
 //----------------------UIFlowWndPlayThumb_TipsIconUpCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndPlayThumb_TipsIconUp)
 EVENT_END
+
+//---------------------UIFlowWndPlayThumb_TipsIconDownCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndPlayThumb_TipsIconDown)
+CTRL_LIST_END
 
 //----------------------UIFlowWndPlayThumb_TipsIconDownCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndPlayThumb_TipsIconDown)
 EVENT_END
 
+//---------------------UIFlowWndPlayThumb_TipsIconOKCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndPlayThumb_TipsIconOK)
+CTRL_LIST_END
+
 //----------------------UIFlowWndPlayThumb_TipsIconOKCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndPlayThumb_TipsIconOK)
+EVENT_END
+
+//----------------------UIFlowWndPlayThumb_TipsIconPowerCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlayThumb_TipsIconPower)
 EVENT_END
 

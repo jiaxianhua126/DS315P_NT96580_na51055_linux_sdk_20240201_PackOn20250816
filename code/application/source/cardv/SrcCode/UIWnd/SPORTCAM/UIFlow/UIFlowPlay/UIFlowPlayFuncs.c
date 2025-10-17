@@ -221,6 +221,13 @@ PURECT FlowPB_ThumbDisplay(void)
 			ThumbCfg.wFirstVGap         = 99;
 			ThumbCfg.wVGap              = 6;
 			ThumbCfg.wLastVGap          = 90;
+			#elif (defined(_disp_ifdsi_lcd1_ST7701SN_RZWT32P27_))
+			ThumbCfg.wFirstHGap         = 60;//50
+            ThumbCfg.wHGap              = 40;
+            ThumbCfg.wLastHGap          = 55;//52
+            ThumbCfg.wFirstVGap         = 60;//31
+            ThumbCfg.wVGap              = 20; //1
+            ThumbCfg.wLastVGap          = 53;//26
             #else 
 			ThumbCfg.wFirstHGap         = 18;//16;
 			ThumbCfg.wHGap              = 17;//16;

@@ -33,11 +33,12 @@ extern VControl UIMenuWndPlayQuickConfirmDel_TipsBarCtrl;//Panel type
 
 extern VControl UIMenuWndPlayQuickConfirmDel_TipsIconReturnCtrl;//Static type 
 
-extern VControl UIMenuWndPlayQuickConfirmDel_TipsIconUpCtrl;//Static type 
+extern VControl UIMenuWndPlayQuickConfirmDel_TipsIconUpCtrl;//Panel type 
 
-extern VControl UIMenuWndPlayQuickConfirmDel_TipsIconDownCtrl;//Static type 
+extern VControl UIMenuWndPlayQuickConfirmDel_TipsIconDownCtrl;//Panel type 
 
-extern VControl UIMenuWndPlayQuickConfirmDel_TipsIconOKCtrl;//Static type 
+extern VControl UIMenuWndPlayQuickConfirmDel_TipsIconOKCtrl;//Panel type 
 
-//---------------------UIMenuWndPlayQuickConfirmDelCtrl User Export---------------------------
+extern VControl UIMenuWndPlayQuickConfirmDel_TipsIconPowerCtrl;//Static type 
+
 #endif

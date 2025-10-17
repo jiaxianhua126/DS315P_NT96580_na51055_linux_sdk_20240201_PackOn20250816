@@ -9,14 +9,14 @@ extern VControl UIFlowWndWiFiMovieCtrl;//Panel type
 
 extern VControl UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl;//Panel type 
 
-extern VControl UIFlowWndWiFiMovie_Status_HDRCtrl;//Status type 
+extern VControl UIFlowWndWiFiMovie_Status_MotionDetCtrl;//Status type 
 
 typedef enum
 {
-UIFlowWndWiFiMovie_Status_HDR_ICONID_NULL,
-UIFlowWndWiFiMovie_Status_HDR_ICON_MENU_HDR,
-UIFlowWndWiFiMovie_Status_HDR_MAX
-}UIFlowWndWiFiMovie_Status_HDR_Setting;
+UIFlowWndWiFiMovie_Status_MotionDet_ICONID_NULL,
+UIFlowWndWiFiMovie_Status_MotionDet_ICON_FLASH_REC,
+UIFlowWndWiFiMovie_Status_MotionDet_MAX
+}UIFlowWndWiFiMovie_Status_MotionDet_Setting;
 
 extern VControl UIFlowWndWiFiMovie_YMD_StaticCtrl;//Static type 
 
@@ -24,24 +24,22 @@ extern VControl UIFlowWndWiFiMovie_HMS_StaticCtrl;//Static type
 
 extern VControl UIFlowWndWiFiMovie_PanelCtrl;//Panel type 
 
-extern VControl UIFlowWndWiFiMovie_Status_EISCtrl;//Status type 
-
-typedef enum
-{
-UIFlowWndWiFiMovie_Status_EIS_ICONID_NULL,
-UIFlowWndWiFiMovie_Status_EIS_ICON_SHAKE_ON,
-UIFlowWndWiFiMovie_Status_EIS_MAX
-}UIFlowWndWiFiMovie_Status_EIS_Setting;
-
 extern VControl UIFlowWndWiFiMovie_Static_timeCtrl;//Static type 
 
 extern VControl UIFlowWndWiFiMovie_Static_maxtimeCtrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_StaticIcon_PIMCtrl;//Static type 
-
 extern VControl UIFlowWndWiFiMovie_Static_resolutionCtrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_SOSCtrl;//Static type 
+extern VControl UIFlowWndWiFiMovie_Status_AudioCtrl;//Status type 
+
+typedef enum
+{
+UIFlowWndWiFiMovie_Status_Audio_ICON_SOUND_REC_OFF,
+UIFlowWndWiFiMovie_Status_Audio_ICON_SOUND_REC_ON,
+UIFlowWndWiFiMovie_Status_Audio_MAX
+}UIFlowWndWiFiMovie_Status_Audio_Setting;
+
+extern VControl UIFlowWndWiFiMovie_StaticIcon_PIMCtrl;//Static type 
 
 extern VControl UIFlowWndWiFiMovie_Status_WiFi_ConnectedCtrl;//Status type 
 
@@ -52,18 +50,13 @@ UIFlowWndWiFiMovie_Status_WiFi_Connected_ICON_WIFI_CONNECTED_SMALL,
 UIFlowWndWiFiMovie_Status_WiFi_Connected_MAX
 }UIFlowWndWiFiMovie_Status_WiFi_Connected_Setting;
 
+extern VControl UIFlowWndWiFiMovie_Panel_SSID_KEYCtrl;//Panel type 
+
+extern VControl UIFlowWiFiMoive_static_SSIDCtrl;//Static type 
+
+extern VControl UIFlowWiFiMoive_static_KeyCtrl;//Static type 
+
 extern VControl UIFlowWndWiFiMovie_Static_WiFi_DisconnectedCtrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_Zoom_StaticCtrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_Status_AudioCtrl;//Status type 
-
-typedef enum
-{
-UIFlowWndWiFiMovie_Status_Audio_ICON_VOICE_OFF,
-UIFlowWndWiFiMovie_Status_Audio_ICON_VOICE_ON,
-UIFlowWndWiFiMovie_Status_Audio_MAX
-}UIFlowWndWiFiMovie_Status_Audio_Setting;
 
 extern VControl UIFlowWndWiFiMovie_GPSSignalCtrl;//Static type 
 
@@ -71,67 +64,51 @@ extern VControl UIFlowWndWiFiMovie_GPSSignalCCtrl;//Static type
 
 extern VControl UIFlowWndWiFiMovie_GPSSignalCCCtrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_Status_MotionDetCtrl;//Status type 
+extern VControl UIFlowWndWiFiMovie_Static_MotionDet1Ctrl;//Static type 
 
-typedef enum
-{
-UIFlowWndWiFiMovie_Status_MotionDet_ICONID_NULL,
-UIFlowWndWiFiMovie_Status_MotionDet_ICON_FLASH_REC,
-UIFlowWndWiFiMovie_Status_MotionDet_MAX
-}UIFlowWndWiFiMovie_Status_MotionDet_Setting;
+extern VControl UIFlowWndWiFiMovie_Static_MotionDet2Ctrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_StaticIcon_TimelapseCtrl;//Static type 
+extern VControl UIFlowWndWiFiMovie_Static_TimeLapse1Ctrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_GPSCtrl;//Status type 
+extern VControl UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl;//Static type 
 
-typedef enum
-{
-UIFlowWndWiFiMovie_GPS_ICONID_NULL,
-UIFlowWndWiFiMovie_GPS_ICON_GPS_OFF,
-UIFlowWndWiFiMovie_GPS_ICON_GPS_ON,
-UIFlowWndWiFiMovie_GPS_MAX
-}UIFlowWndWiFiMovie_GPS_Setting;
+extern VControl UIFlowWndWiFiMovie_GPSN_SMALL_ICON2Ctrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_StatusIcon_TPMSCtrl;//Status type 
+extern VControl UIFlowWndWiFiMovie_GPS_SMALL_ICON2Ctrl;//Static type 
 
-typedef enum
-{
-UIFlowWndWiFiMovie_StatusIcon_TPMS_ICONID_NULL,
-UIFlowWndWiFiMovie_StatusIcon_TPMS_ICON_TPMS_ALARM,
-UIFlowWndWiFiMovie_StatusIcon_TPMS_MAX
-}UIFlowWndWiFiMovie_StatusIcon_TPMS_Setting;
+extern VControl UIFlowWndWiFiMovie_SOSCtrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_StatusIcon_CompassCtrl;//Status type 
+extern VControl UIFlowWndWiFiMovie_SOS1Ctrl;//Static type 
 
-typedef enum
-{
-UIFlowWndWiFiMovie_StatusIcon_Compass_ICONID_NULL,
-UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_NORTH_EAST,
-UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_EAST,
-UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_SOUTH_EAST,
-UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_SOUTH,
-UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_SOUTH_WEST,
-UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_WEST,
-UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_NORTH_WEST,
-UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_NORTH,
-UIFlowWndWiFiMovie_StatusIcon_Compass_MAX
-}UIFlowWndWiFiMovie_StatusIcon_Compass_Setting;
+extern VControl UIFlowWndWiFiMovie_Static_SNG1Ctrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_TipsBarCtrl;//Panel type 
+extern VControl UIFlowWndWiFiMovie_Static_SNG2Ctrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_TipsIconSOSCtrl;//Static type 
+extern VControl UIFlowWndWiFiMovie_Static_TSRCtrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_TipsIconSSIDCtrl;//Static type 
+extern VControl UIFlowWndWiFiMovie_Static_TSR1Ctrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_TipsIconCAPTURECtrl;//Static type 
+extern VControl UIFlowWndWiFiMovie_Static_TSR2Ctrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_TipsIconCLOSELCDCtrl;//Static type 
+extern VControl UIFlowWndWiFiMovie_Static_TSR3Ctrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_Panel_SSID_KEYCtrl;//Panel type 
+extern VControl UIFlowWndWiFiMovie_Static_RLCtrl;//Static type 
 
-extern VControl UIFlowWiFiMoive_static_SSIDCtrl;//Static type 
+extern VControl UIFlowWndWiFiMovie_Static_RL1Ctrl;//Static type 
 
-extern VControl UIFlowWiFiMoive_static_KeyCtrl;//Static type 
+extern VControl UIFlowWndWiFiMovie_Static_RL2Ctrl;//Static type 
+
+extern VControl UIFlowWndWiFiMovie_Static_RL3Ctrl;//Static type 
+
+extern VControl UIFlowWndWiFiMovie_MENU_SOSCtrl;//Static type 
+
+extern VControl UIFlowWndWiFiMovie_MENU_SSIDCtrl;//Static type 
+
+extern VControl UIFlowWndWiFiMovie_MENU_CAPCtrl;//Static type 
+
+extern VControl UIFlowWndWiFiMovie_MENU_CLOSELCDCtrl;//Static type 
+
+extern VControl UIFlowWndWiFiMovie_MENU_PowerKeyCtrl;//Static type 
 
 extern VControl UIFlowWndWiFiMovie_FolderCheck_StatusTxtCtrl;//Status type 
 
@@ -141,47 +118,12 @@ UIFlowWndWiFiMovie_FolderCheck_StatusTxt_STRID_FORMAT_WARNING1,
 UIFlowWndWiFiMovie_FolderCheck_StatusTxt_MAX
 }UIFlowWndWiFiMovie_FolderCheck_StatusTxt_Setting;
 
-extern VControl UIFlowWndWiFiMovie_GPS_INFOCtrl;//Panel type 
+extern VControl UIFlowWndWiFiMovie_Static_SNGCtrl;//Static type 
 
-extern VControl UIFlowWndWiFiMovie_DATE_Y3Ctrl;//Static type 
+extern VControl UIFlowWndWiFiMovie_Panel_PlayModeCtrl;//Panel type 
 
-extern VControl UIFlowWndWiFiMovie_DATE_Y2Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_DATE_Y1Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_DATE_Y0Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_DATE_M1Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_DATE_M0Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_DATE_D1Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_DATE_D0Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_TIME_AMPMCtrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_TIME_H1Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_TIME_H0Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_TIME_M1Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_TIME_M0Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_PANEL_SPEEDCtrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_SPEED_N2Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_SPEED_N1Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_SPEED_N0Ctrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_SPEED_UNITCtrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_GPS_STATUSCtrl;//Static type 
-
-extern VControl UIFlowWndWiFiMovie_COMPASSCtrl;//Static type 
+extern VControl UIFlowWiFiMoive_static_AppConnecttingCtrl;//Static type 
 
 //---------------------UIFlowWndWiFiMovieCtrl User Export---------------------------
+extern INT32 UIFlowWndWiFiMovie_OnCustom2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray);
 #endif

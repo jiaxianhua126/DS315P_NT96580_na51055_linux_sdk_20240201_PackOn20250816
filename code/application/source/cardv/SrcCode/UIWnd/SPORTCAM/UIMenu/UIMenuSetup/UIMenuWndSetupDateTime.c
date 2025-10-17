@@ -68,7 +68,6 @@ typedef enum {
 //---------------------UIMenuWndSetupDateTimeCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIMenuWndSetupDateTime)
 CTRL_LIST_ITEM(UIMenuWndSetupDateTime_Tab)
-CTRL_LIST_ITEM(UIMenuWndSetupDateTime_Static_Title)
 CTRL_LIST_END
 
 //----------------------UIMenuWndSetupDateTimeCtrl Event---------------------------
@@ -209,6 +208,9 @@ static void UIMenuWndSetupDateTime_UpdateInfo(void)
     UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other3Ctrl, STATIC_VALUE, Txt_Pointer(itemOther2_Buf));
     UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other4Ctrl, STATIC_VALUE, Txt_Pointer(itemOther4_Buf));
     Ux_SendEvent(&UISetupObjCtrl,NVTEVT_EXE_DATEFORMAT,    1,  SysGetFlag(FL_DATE_FORMAT));
+
+    UxCtrl_SetShow(&UIMenuWndSetupDateTime_YMD_SwitchCtrl, FALSE);
+    UxCtrl_SetShow(&UIMenuWndSetupDateTime_YMD_VALUE_Other4Ctrl, FALSE);
 }
 //#NT#2010/06/01#Chris Chung -end
 
@@ -648,8 +650,8 @@ EVENT_END
 EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_Switch)
 EVENT_END
 
-//----------------------UIMenuWndSetupDateTime_YMD_AMPMCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_AMPM)
+//----------------------UIMenuWndSetupDateTime_Tab_YMD_VALUECtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupDateTime_Tab_YMD_VALUE)
 EVENT_END
 
 //----------------------UIMenuWndSetupDateTime_YMD_VALUE_Other0Ctrl Event---------------------------
@@ -672,7 +674,7 @@ EVENT_END
 EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_VALUE_Other4)
 EVENT_END
 
-//----------------------UIMenuWndSetupDateTime_Static_TitleCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDateTime_Static_Title)
+//----------------------UIMenuWndSetupDateTime_YMD_AMPMCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupDateTime_YMD_AMPM)
 EVENT_END
 

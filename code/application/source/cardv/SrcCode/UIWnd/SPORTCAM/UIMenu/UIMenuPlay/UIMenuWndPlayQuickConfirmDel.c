@@ -200,6 +200,7 @@ CTRL_LIST_ITEM(UIMenuWndPlayQuickConfirmDel_TipsIconReturn)
 CTRL_LIST_ITEM(UIMenuWndPlayQuickConfirmDel_TipsIconUp)
 CTRL_LIST_ITEM(UIMenuWndPlayQuickConfirmDel_TipsIconDown)
 CTRL_LIST_ITEM(UIMenuWndPlayQuickConfirmDel_TipsIconOK)
+CTRL_LIST_ITEM(UIMenuWndPlayQuickConfirmDel_TipsIconPower)
 CTRL_LIST_END
 
 //----------------------UIMenuWndPlayQuickConfirmDel_TipsBarCtrl Event---------------------------
@@ -210,15 +211,31 @@ EVENT_END
 EVENT_BEGIN(UIMenuWndPlayQuickConfirmDel_TipsIconReturn)
 EVENT_END
 
+//---------------------UIMenuWndPlayQuickConfirmDel_TipsIconUpCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPlayQuickConfirmDel_TipsIconUp)
+CTRL_LIST_END
+
 //----------------------UIMenuWndPlayQuickConfirmDel_TipsIconUpCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPlayQuickConfirmDel_TipsIconUp)
 EVENT_END
+
+//---------------------UIMenuWndPlayQuickConfirmDel_TipsIconDownCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPlayQuickConfirmDel_TipsIconDown)
+CTRL_LIST_END
 
 //----------------------UIMenuWndPlayQuickConfirmDel_TipsIconDownCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPlayQuickConfirmDel_TipsIconDown)
 EVENT_END
 
+//---------------------UIMenuWndPlayQuickConfirmDel_TipsIconOKCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPlayQuickConfirmDel_TipsIconOK)
+CTRL_LIST_END
+
 //----------------------UIMenuWndPlayQuickConfirmDel_TipsIconOKCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPlayQuickConfirmDel_TipsIconOK)
+EVENT_END
+
+//----------------------UIMenuWndPlayQuickConfirmDel_TipsIconPowerCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndPlayQuickConfirmDel_TipsIconPower)
 EVENT_END
 

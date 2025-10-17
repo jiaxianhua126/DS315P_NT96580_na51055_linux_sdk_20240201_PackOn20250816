@@ -237,10 +237,10 @@ void MenuCommonOption_UpdateContent(TM_MENU* pMenu)
 		if(pItem->ItemId != IDM_ASR_CONTENT){
 			UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, ICON_SEL_FOCUS);
 		}else{
-        	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, ICON_TRANSPAENT);
+        	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, ICON_OK);
 		}
     }else{
-        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, ICON_TRANSPAENT);
+        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, ICON_OK);
     }
     }
 

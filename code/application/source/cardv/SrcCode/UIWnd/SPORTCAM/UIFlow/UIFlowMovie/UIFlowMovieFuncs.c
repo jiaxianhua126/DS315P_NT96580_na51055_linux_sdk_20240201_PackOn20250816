@@ -126,7 +126,7 @@ void FlowMovie_StopRec(void)
 	UxCtrl_SetShow(&UIFlowWndMovie_PanelCtrl, FALSE);
 	Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_STOP, 0);
 
-    FlowMovie_IconHideSOS(&UIFlowWndMovie_SOSCtrl);
+    ///FlowMovie_IconHideSOS(&UIFlowWndMovie_SOSCtrl);///harrison ds315
     FlowMovie_DrawPIM(FALSE);
     FlowMovie_SetSOSStatusNow(FALSE);
 

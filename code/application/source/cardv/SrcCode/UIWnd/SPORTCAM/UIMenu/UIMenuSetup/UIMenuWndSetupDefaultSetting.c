@@ -9,9 +9,8 @@
 
 //---------------------UIMenuWndSetupDefaultSettingCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIMenuWndSetupDefaultSetting)
+CTRL_LIST_ITEM(UIMenuWndSetupDefaultSetting_List_Text)
 CTRL_LIST_ITEM(UIMenuWndSetupDefaultSetting_Static_Text)
-CTRL_LIST_ITEM(UIMenuWndSetupDefaultSetting_Static_Title)
-CTRL_LIST_ITEM(UIMenuWndSetupDefaultSetting_Menu)
 CTRL_LIST_END
 
 //----------------------UIMenuWndSetupDefaultSettingCtrl Event---------------------------
@@ -33,7 +32,9 @@ extern void GxSystem_SWResetNOW(void);
 
 INT32 UIMenuWndSetupDefaultSetting_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    UxMenu_SetData(&UIMenuWndSetupDefaultSetting_MenuCtrl, MNU_CURITM, 1);
+    //UxMenu_SetData(&UIMenuWndSetupDefaultSetting_MenuCtrl, MNU_CURITM, 1);
+	//harrison ds315
+    UxList_SetData(&UIMenuWndSetupDefaultSetting_List_TextCtrl, LST_CURITM, 0);
     Ux_DefaultEvent(pCtrl,NVTEVT_OPEN_WINDOW,paramNum,paramArray);
     return NVTEVT_CONSUME;
 }
@@ -72,25 +73,19 @@ INT32 UIMenuWndSetupDefaultSetting_OnKeyShutter2(VControl *pCtrl, UINT32 paramNu
     Ux_SendEvent(&UISetupObjCtrl,NVTEVT_FORCETO_LIVEVIEW_MODE,0);
     return NVTEVT_CONSUME;
 }
-//----------------------UIMenuWndSetupDefaultSetting_Static_TextCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDefaultSetting_Static_Text)
+//----------------------UIMenuWndSetupDefaultSetting_List_TextCtrl Event---------------------------
+INT32 UIMenuWndSetupDefaultSetting_List_Text_OnKeyUp(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDefaultSetting_List_Text_OnKeyDown(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDefaultSetting_List_Text_OnKeyEnter(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupDefaultSetting_List_Text_OnKeyShutter2(VControl *, UINT32, UINT32 *);
+EVENT_BEGIN(UIMenuWndSetupDefaultSetting_List_Text)
+EVENT_ITEM(NVTEVT_KEY_UP,UIMenuWndSetupDefaultSetting_List_Text_OnKeyUp)
+EVENT_ITEM(NVTEVT_KEY_DOWN,UIMenuWndSetupDefaultSetting_List_Text_OnKeyDown)
+EVENT_ITEM(NVTEVT_KEY_ENTER,UIMenuWndSetupDefaultSetting_List_Text_OnKeyEnter)
+//EVENT_ITEM(NVTEVT_KEY_SHUTTER2,UIMenuWndSetupDefaultSetting_List_Text_OnKeyShutter2)
 EVENT_END
 
-//----------------------UIMenuWndSetupDefaultSetting_Static_TitleCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupDefaultSetting_Static_Title)
-EVENT_END
-
-//----------------------UIMenuWndSetupDefaultSetting_MenuCtrl Event---------------------------
-INT32 UIMenuWndSetupDefaultSetting_Menu_OnKeyUp(VControl *, UINT32, UINT32 *);
-INT32 UIMenuWndSetupDefaultSetting_Menu_OnKeyDown(VControl *, UINT32, UINT32 *);
-INT32 UIMenuWndSetupDefaultSetting_Menu_OnKeyEnter(VControl *, UINT32, UINT32 *);
-EVENT_BEGIN(UIMenuWndSetupDefaultSetting_Menu)
-EVENT_ITEM(NVTEVT_KEY_UP,UIMenuWndSetupDefaultSetting_Menu_OnKeyUp)
-EVENT_ITEM(NVTEVT_KEY_DOWN,UIMenuWndSetupDefaultSetting_Menu_OnKeyDown)
-EVENT_ITEM(NVTEVT_KEY_ENTER,UIMenuWndSetupDefaultSetting_Menu_OnKeyEnter)
-EVENT_END
-
-INT32 UIMenuWndSetupDefaultSetting_Menu_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupDefaultSetting_List_Text_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  state = 0;
 
@@ -105,7 +100,7 @@ INT32 UIMenuWndSetupDefaultSetting_Menu_OnKeyUp(VControl *pCtrl, UINT32 paramNum
     }
     return NVTEVT_CONSUME;
 }
-INT32 UIMenuWndSetupDefaultSetting_Menu_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupDefaultSetting_List_Text_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  state = 0;
 
@@ -120,7 +115,7 @@ INT32 UIMenuWndSetupDefaultSetting_Menu_OnKeyDown(VControl *pCtrl, UINT32 paramN
     }
     return NVTEVT_CONSUME;
 }
-INT32 UIMenuWndSetupDefaultSetting_Menu_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupDefaultSetting_List_Text_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  state = 0;
     INT32   ui32CurrItem = 0;
@@ -131,12 +126,12 @@ INT32 UIMenuWndSetupDefaultSetting_Menu_OnKeyEnter(VControl *pCtrl, UINT32 param
     switch(state)
     {
     case NVTEVT_KEY_PRESS:
-        ui32CurrItem = UxMenu_GetData(pCtrl, MNU_CURITM);
+        ui32CurrItem = UxList_GetData(pCtrl, LST_CURITM);
         switch (ui32CurrItem)
         {
-        case UIMenuWndSetupDefaultSetting_Menu_STRID_CANCEL:  //cancel
+        case UIMenuWndSetupDefaultSetting_List_Text_STRID_CANCEL:  //cancel
             break;
-        case UIMenuWndSetupDefaultSetting_Menu_STRID_OK:  //OK
+        case UIMenuWndSetupDefaultSetting_List_Text_STRID_OK:  //OK
             //debug_err(("Reser default setting\n\r"));
             UI_ResetSSIDPASSPHRASE(); //reset Wi-Fi SSID and PASSPHRASE
             Ux_SendEvent(&UISetupObjCtrl,NVTEVT_EXE_SYSRESET, 0);
@@ -158,4 +153,12 @@ INT32 UIMenuWndSetupDefaultSetting_Menu_OnKeyEnter(VControl *pCtrl, UINT32 param
     }
     return NVTEVT_CONSUME;
 }
+INT32 UIMenuWndSetupDefaultSetting_List_Text_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    // the same behavior as ENTER key!
+    return UIMenuWndSetupDefaultSetting_List_Text_OnKeyEnter(pCtrl, paramNum, paramArray);
+}
+//----------------------UIMenuWndSetupDefaultSetting_Static_TextCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupDefaultSetting_Static_Text)
+EVENT_END
 

@@ -7,18 +7,15 @@
 
 extern VControl UIMenuWndSetupDefaultSettingCtrl;//Panel type 
 
-extern VControl UIMenuWndSetupDefaultSetting_Static_TextCtrl;//Static type 
-
-extern VControl UIMenuWndSetupDefaultSetting_Static_TitleCtrl;//Static type 
-
-extern VControl UIMenuWndSetupDefaultSetting_MenuCtrl;//Menu type 
+extern VControl UIMenuWndSetupDefaultSetting_List_TextCtrl;//List type 
 
 typedef enum
 {
-UIMenuWndSetupDefaultSetting_Menu_STRID_OK,
-UIMenuWndSetupDefaultSetting_Menu_STRID_CANCEL,
-UIMenuWndSetupDefaultSetting_Menu_MAX
-}UIMenuWndSetupDefaultSetting_Menu_Setting;
+UIMenuWndSetupDefaultSetting_List_Text_STRID_CANCEL,
+UIMenuWndSetupDefaultSetting_List_Text_STRID_OK,
+UIMenuWndSetupDefaultSetting_List_Text_MAX
+}UIMenuWndSetupDefaultSetting_List_Text_Setting;
 
-//---------------------UIMenuWndSetupDefaultSettingCtrl User Export---------------------------
+extern VControl UIMenuWndSetupDefaultSetting_Static_TextCtrl;//Static type 
+
 #endif

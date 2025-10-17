@@ -164,6 +164,7 @@ CTRL_LIST_ITEM(UIMenuWndPlayFileType_TipsIconReturn)
 CTRL_LIST_ITEM(UIMenuWndPlayFileType_TipsIconUp)
 CTRL_LIST_ITEM(UIMenuWndPlayFileType_TipsIconDown)
 CTRL_LIST_ITEM(UIMenuWndPlayFileType_TipsIconOK)
+CTRL_LIST_ITEM(UIMenuWndPlayFileType_TipsIconPower)
 CTRL_LIST_END
 
 //----------------------UIMenuWndPlayFileType_TipsBarCtrl Event---------------------------
@@ -174,15 +175,31 @@ EVENT_END
 EVENT_BEGIN(UIMenuWndPlayFileType_TipsIconReturn)
 EVENT_END
 
+//---------------------UIMenuWndPlayFileType_TipsIconUpCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPlayFileType_TipsIconUp)
+CTRL_LIST_END
+
 //----------------------UIMenuWndPlayFileType_TipsIconUpCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPlayFileType_TipsIconUp)
 EVENT_END
+
+//---------------------UIMenuWndPlayFileType_TipsIconDownCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPlayFileType_TipsIconDown)
+CTRL_LIST_END
 
 //----------------------UIMenuWndPlayFileType_TipsIconDownCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPlayFileType_TipsIconDown)
 EVENT_END
 
+//---------------------UIMenuWndPlayFileType_TipsIconOKCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPlayFileType_TipsIconOK)
+CTRL_LIST_END
+
 //----------------------UIMenuWndPlayFileType_TipsIconOKCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPlayFileType_TipsIconOK)
+EVENT_END
+
+//----------------------UIMenuWndPlayFileType_TipsIconPowerCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndPlayFileType_TipsIconPower)
 EVENT_END
 

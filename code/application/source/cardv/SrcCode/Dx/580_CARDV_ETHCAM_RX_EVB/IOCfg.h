@@ -50,7 +50,7 @@ extern void vio_setpin(UINT32 id, UINT32 v);
 // ADC common
 //--------------------------------------------------------------------
 
-#define GPIO_KEY            ENABLE
+#define GPIO_KEY            DISABLE
 #define ADC_KEY             ENABLE
 
 #define VOLDET_ADC_CONT_MODE        ENABLE //!< ENABLE for continuous, DISABLE for one-shot
@@ -103,8 +103,8 @@ extern void vio_setpin(UINT32 id, UINT32 v);
 #define GPIO_PWM_LCD_BLG_PCTL       x
 #define PWMID_LCD_BLG_PCTL          PWMID_x
 #elif (LCD_BACKLIGHT_CTRL == LCD_BACKLIGHT_BY_GPIO)
-#define GPIO_LCD_BLG_PCTL           P_GPIO_4
-#define PAD_LCD_BLG_PCTL            PAD_PIN_PGPIO4
+#define GPIO_LCD_BLG_PCTL           S_GPIO_2//P_GPIO_4
+#define PAD_LCD_BLG_PCTL            PAD_PIN_SGPIO2//PAD_PIN_PGPIO4
 #endif
 
 // LCD2 communicate
@@ -198,15 +198,15 @@ extern BOOL     SDIO2CardUser_CheckCardWP(void);
 //--------------------------------------------------------------------
 
 // Audio
-#define GPIO_AUDIO_AMP_EN           P_GPIO_9
-#define PAD_AUDIO_POWER             PAD_PIN_PGPIO9
+#define GPIO_AUDIO_AMP_EN           L_GPIO_17//P_GPIO_9
+#define PAD_AUDIO_POWER             PAD_PIN_LGPIO17//PAD_PIN_PGPIO9
 
 //Audio
 extern BOOL     GPIOMap_DetAudio(void);
 
 // ACC Det
-#define GPIO_ACC_PLUG               C_GPIO_6
-#define PAD_ACC_PLUG                PAD_PIN_CGPIO6
+#define GPIO_ACC_PLUG               S_GPIO_6//C_GPIO_6
+#define PAD_ACC_PLUG                PAD_PIN_SGPIO3//PAD_PIN_CGPIO6
 
 //--------------------------------------------------------------------
 // Input device
@@ -258,8 +258,8 @@ extern BOOL     GPIOMap_DetAudio(void);
 */
 //#define ADC_CH_VOLDET_MS1           ADC_CHANNEL_1
 //#define ADC_CH_VOLDET_MS2           ADC_CHANNEL_0
-#define GPIO_KEY_RIGHT              C_GPIO_5            // Key Menu (km)
-#define PAD_KEY_RIGHT               PAD_PIN_CGPIO5
+//#define GPIO_KEY_RIGHT              C_GPIO_5            // Key Menu (km)
+//#define PAD_KEY_RIGHT               PAD_PIN_CGPIO5
 #define ADC_CH_VOLDET_KEY1          ADC_CHANNEL_1
 #define ADC_CH_VOLDET_KEY2          ADC_CHANNEL_2
 

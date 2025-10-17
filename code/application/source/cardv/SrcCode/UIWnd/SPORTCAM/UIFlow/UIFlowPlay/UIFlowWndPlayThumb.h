@@ -71,11 +71,12 @@ extern VControl UIFlowWndPlayThumb_TipsBarCtrl;//Panel type
 
 extern VControl UIFlowWndPlayThumb_TipsIconReturnCtrl;//Static type 
 
-extern VControl UIFlowWndPlayThumb_TipsIconUpCtrl;//Static type 
+extern VControl UIFlowWndPlayThumb_TipsIconUpCtrl;//Panel type 
 
-extern VControl UIFlowWndPlayThumb_TipsIconDownCtrl;//Static type 
+extern VControl UIFlowWndPlayThumb_TipsIconDownCtrl;//Panel type 
 
-extern VControl UIFlowWndPlayThumb_TipsIconOKCtrl;//Static type 
+extern VControl UIFlowWndPlayThumb_TipsIconOKCtrl;//Panel type 
 
-//---------------------UIFlowWndPlayThumbCtrl User Export---------------------------
+extern VControl UIFlowWndPlayThumb_TipsIconPowerCtrl;//Static type 
+
 #endif

@@ -157,34 +157,34 @@ static UINT32 DisplayDigital_YellowSmall(UINT8 Value)
     switch(Value)
     {
     case 0:
-        ICON_ID = ICON_EDOG_NUM_YELLOW_MID_0;
+        ICON_ID = ICON_OK;////harrison ds315
         break;
     case 1:
-        ICON_ID = ICON_EDOG_NUM_YELLOW_MID_1;
+        ICON_ID = ICON_OK;
         break;
     case 2:
-        ICON_ID = ICON_EDOG_NUM_YELLOW_MID_2;
+        ICON_ID = ICON_OK;
         break;
     case 3:
-        ICON_ID = ICON_EDOG_NUM_YELLOW_MID_3;
+        ICON_ID = ICON_OK;
         break;
     case 4:
-        ICON_ID = ICON_EDOG_NUM_YELLOW_MID_4;
+        ICON_ID = ICON_OK;
         break;
     case 5:
-        ICON_ID = ICON_EDOG_NUM_YELLOW_MID_5;
+        ICON_ID = ICON_OK;
         break;
     case 6:
-        ICON_ID = ICON_EDOG_NUM_YELLOW_MID_6;
+        ICON_ID = ICON_OK;
         break;
     case 7:
-        ICON_ID = ICON_EDOG_NUM_YELLOW_MID_7;
+        ICON_ID = ICON_OK;
         break;
     case 8:
-        ICON_ID = ICON_EDOG_NUM_YELLOW_MID_8;
+        ICON_ID = ICON_OK;
         break;
     case 9:
-        ICON_ID = ICON_EDOG_NUM_YELLOW_MID_9;
+        ICON_ID = ICON_OK;
         break;
     }
     return ICON_ID;

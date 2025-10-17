@@ -10,12 +10,12 @@
 #include "UIDisplayUtil.h"
 //------------------------------------------------------------
 
-SHOW_ITEM_RECT(CMD_Rectangle,Skin1Rect,0,0,319,239,0,0,1,1,0,0,0)
+SHOW_ITEM_RECT(CMD_Rectangle,Skin1Rect,0,0,619,239,0,0,1,1,0,0,0)
 SHOW_MAP_BEGIN(Skin1)
 SHOW_MAP_BODY(Skin1Rect)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group,Skin1,0,0,319,239)
+SHOW_ITEM_GROUP(CMD_Group,Skin1,0,0,619,239)
 
 SHOW_ITEM_RECT(CMD_Rectangle,Skin3Rect,0,0,271,27,0,0,1,1,0,0,0)
 SHOW_MAP_BEGIN(Skin3)
@@ -30,7 +30,7 @@ SHOW_MAP_BODY(Skin3)
 SHOW_MAP_BODY(Text5)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group,Normal2,24,106,295,133)
+SHOW_ITEM_GROUP(CMD_Group,Normal2,174,118,445,145)
 
 SHOW_MAP_BEGIN(UIFlowWndMSDC_StaticTxt_MassStorage)
 SHOW_MAP_BODY(Normal2)
@@ -38,7 +38,7 @@ SHOW_MAP_END
 
 DECLARE_EVENT(UIFlowWndMSDC_StaticTxt_MassStorage)
 CREATE_STATIC_DATA(UIFlowWndMSDC_StaticTxt_MassStorage,STRID_NULL_)
-CREATE_STATIC_CTRL(UIFlowWndMSDC_StaticTxt_MassStorage,0,24,106,295,133)
+CREATE_STATIC_CTRL(UIFlowWndMSDC_StaticTxt_MassStorage,0,174,118,445,145)
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -55,7 +55,7 @@ SHOW_MAP_BODY(Skin8)
 SHOW_MAP_BODY(Icon9)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group,Normal7,64,79,258,156)
+SHOW_ITEM_GROUP(CMD_Group,Normal7,212,91,406,168)
 
 SHOW_MAP_BEGIN(UIFlowWndMSDC_StaticIcon_MassStorage)
 SHOW_MAP_BODY(Normal7)
@@ -63,7 +63,7 @@ SHOW_MAP_END
 
 DECLARE_EVENT(UIFlowWndMSDC_StaticIcon_MassStorage)
 CREATE_STATIC_DATA(UIFlowWndMSDC_StaticIcon_MassStorage,ICON_USB)
-CREATE_STATIC_CTRL(UIFlowWndMSDC_StaticIcon_MassStorage,0,64,79,258,156)
+CREATE_STATIC_CTRL(UIFlowWndMSDC_StaticIcon_MassStorage,0,212,91,406,168)
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -73,5 +73,5 @@ SHOW_MAP_END
 
 DECLARE_EVENT(UIFlowWndUSB)
 DECLARE_CTRL_LIST(UIFlowWndUSB)
-CREATE_CTRL(UIFlowWndUSB,UIFlowWndUSB,CTRL_WND,NULL,0 ,0,0,319,239)
+CREATE_CTRL(UIFlowWndUSB,UIFlowWndUSB,CTRL_WND,NULL,0 ,0,0,619,239)
 #endif

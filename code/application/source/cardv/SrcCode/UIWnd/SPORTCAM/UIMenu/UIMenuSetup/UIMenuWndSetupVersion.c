@@ -14,7 +14,6 @@ CTRL_LIST_BEGIN(UIMenuWndSetupVersion)
 CTRL_LIST_ITEM(UIMenuSetupVersionText)
 CTRL_LIST_ITEM(UIMenuSetupVersionText2)
 CTRL_LIST_ITEM(UIMenuSetupVersionText3)
-CTRL_LIST_ITEM(UIMenuSetupVersionText4)
 CTRL_LIST_END
 
 //----------------------UIMenuWndSetupVersionCtrl Event---------------------------
@@ -40,38 +39,21 @@ EVENT_END
 
 INT32 UIMenuWndSetupVersion_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    static CHAR FwVersion[32] = {0};
-    static CHAR FwVersion_2[32] = {0};
-    static CHAR FwBuild[32] = {0};
-	#if (defined(COUNTRY_JP))	
-    sprintf((char*)FwVersion, "%s_JP: %s", FW_CUSTOMER_MODEL, FW_CUSTOMER_VERSION_NUM);
-	#else
-    sprintf((char*)FwVersion, "%s: %s", FW_CUSTOMER_MODEL, FW_CUSTOMER_VERSION_NUM);
-	#endif
-    sprintf((char*)FwBuild, "Build: %04d%02d%02d", Prj_GetBuildYear(), Prj_GetBuildMonth(), Prj_GetBuildDay());
-    //sprintf((char*)FwBuild, "Build: %s",Prj_GetVersionString());
-    sprintf((char*)FwVersion_2, "%s", Prj_GetEthCam1VersionString());
-
-    UxStatic_SetData(&UIMenuSetupVersionTextCtrl, STATIC_VALUE, Txt_Pointer(FwVersion));
-    UxStatic_SetData(&UIMenuSetupVersionText2Ctrl, STATIC_VALUE, Txt_Pointer(FwBuild));
-    UxStatic_SetData(&UIMenuSetupVersionText3Ctrl, STATIC_VALUE, Txt_Pointer(FwVersion_2));
-
-#if (defined(_NVT_ETHREARCAM_RX_))
-    if (FlowMovie_IsEthCamConnectOK()) {
-        UxCtrl_SetShow(&UIMenuSetupVersionTextCtrl, TRUE);
-        UxCtrl_SetShow(&UIMenuSetupVersionText2Ctrl, TRUE);
-        UxCtrl_SetShow(&UIMenuSetupVersionText3Ctrl, TRUE);
-    } else
+    UxStatic_SetData(&UIMenuSetupVersionTextCtrl, STATIC_VALUE, Txt_Pointer(Prj_GetVersionString()));
+#if 0//harrison ds315//defined(_NVT_ETHREARCAM_RX_)
+	if(FlowMovie_IsEthCamConnectOK())
+	{
+    	UxStatic_SetData(&UIMenuSetupVersionText2Ctrl, STATIC_VALUE, Txt_Pointer(Prj_GetEthCamVersionString()));
+	}
+	else
+	{
+		UxCtrl_SetShow(&UIMenuSetupVersionText2Ctrl,FALSE);
+	}
 #endif
-    {
-        UxCtrl_SetShow(&UIMenuSetupVersionTextCtrl, TRUE);
-        UxCtrl_SetShow(&UIMenuSetupVersionText2Ctrl, TRUE);
-        UxCtrl_SetShow(&UIMenuSetupVersionText3Ctrl, FALSE);
-    }
-#if (defined(COUNTRY_JP))	
-	UxCtrl_SetShow(&UIMenuSetupVersionText4Ctrl, FALSE);
+#if defined(_GPS_EDOG_UNIQUE_SKY_)
+	UxStatic_SetData(&UIMenuSetupVersionText3Ctrl, STATIC_VALUE, Txt_Pointer(GPSRec_GetEdogVersion()));
 #else
-	UxStatic_SetData(&UIMenuSetupVersionText4Ctrl, STATIC_VALUE, Txt_Pointer(GPSRec_GetEdogVersion()));
+	UxCtrl_SetShow(&UIMenuSetupVersionText3Ctrl,FALSE);
 #endif
     Ux_DefaultEvent(pCtrl,NVTEVT_OPEN_WINDOW,paramNum,paramArray);
     return NVTEVT_CONSUME;
@@ -137,9 +119,5 @@ EVENT_END
 
 //----------------------UIMenuSetupVersionText3Ctrl Event---------------------------
 EVENT_BEGIN(UIMenuSetupVersionText3)
-EVENT_END
-
-//----------------------UIMenuSetupVersionText4Ctrl Event---------------------------
-EVENT_BEGIN(UIMenuSetupVersionText4)
 EVENT_END
 

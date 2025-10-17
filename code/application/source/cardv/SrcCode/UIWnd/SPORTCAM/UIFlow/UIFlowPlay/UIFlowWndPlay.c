@@ -101,10 +101,25 @@ CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_Filename)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticICN_Protect)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_Date)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_Time)
-CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_MovPlayTime)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionPanel)
 CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_VideoTotalTime)
+CTRL_LIST_ITEM(UIFlowWndPlay_StaticICN_UnProtect)
 CTRL_LIST_ITEM(UIFlowWndPlay_Static_Speed)
-CTRL_LIST_ITEM(UIFlowWndPlay_TipsBar)
+CTRL_LIST_ITEM(UIFlowWndPlay_StaticTXT_MovPlayTime)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionStaticIcon_Return)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionStaticIcon_PLAY_FF_B)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionStaticIcon_COLN0)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionStaticIcon_DEL)
+CTRL_LIST_ITEM(UIFlowWndPlay_StatusIcon_Play)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionStaticIcon_Protect)
+CTRL_LIST_ITEM(UIFlowWndPlay_Option_StaticOK)
+CTRL_LIST_ITEM(UIFlowWndPlay_Option_StaticReturn)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionStaticIcon_UP)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionStaticIcon_Down)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionStaticIcon_COLN1)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionStaticIcon_LockStd)
+CTRL_LIST_ITEM(UIFlowWndPlay_OptionStaticIcon_PLAY_FF_F)
+CTRL_LIST_ITEM(UIFlowWndPlay_StatusIcon_PowerKey)
 CTRL_LIST_END
 
 //----------------------UIFlowWndPlayCtrl Event---------------------------
@@ -1153,8 +1168,8 @@ INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 			   	FlowPB_IconDrawMovPlayTime(TRUE);
 			   	//FlowPB_IconDrawMovBwd(TRUE);
 			   	//FlowPB_IconDrawMovFwd(TRUE);
-			   	FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
-                FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
+			   	////////////FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
+                //harrison ds315 FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
 
 			} else {
 				g_PlbData.State = PLB_ST_MAGNIFY;
@@ -1178,8 +1193,8 @@ INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
             FlowPB_IconDrawMovStop(TRUE);
             //FlowPB_IconDrawMovBwd(TRUE);
             //FlowPB_IconDrawMovFwd(TRUE);
-            FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
-            FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
+            //harrison ds315 FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
+            //////////////////////////FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
             //#NT#2012/10/23#Philex Lin - begin
             // enable auto power off/USB detect timer
             // enable sound key tone flag
@@ -1202,8 +1217,8 @@ INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
             FlowPB_IconDrawMovStop(TRUE);
             //FlowPB_IconDrawMovBwd(TRUE);
             //FlowPB_IconDrawMovFwd(TRUE);
-            FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
-            FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
+            //harrison ds315   FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
+            //////////////////FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
             break;
         }
 		break;
@@ -1362,43 +1377,83 @@ EVENT_END
 EVENT_BEGIN(UIFlowWndPlay_StaticTXT_Time)
 EVENT_END
 
-//----------------------UIFlowWndPlay_StaticTXT_MovPlayTimeCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_StaticTXT_MovPlayTime)
+//---------------------UIFlowWndPlay_OptionPanelCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndPlay_OptionPanel)
+CTRL_LIST_END
+
+//----------------------UIFlowWndPlay_OptionPanelCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionPanel)
 EVENT_END
 
 //----------------------UIFlowWndPlay_StaticTXT_VideoTotalTimeCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndPlay_StaticTXT_VideoTotalTime)
 EVENT_END
 
+//----------------------UIFlowWndPlay_StaticICN_UnProtectCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_StaticICN_UnProtect)
+EVENT_END
+
 //----------------------UIFlowWndPlay_Static_SpeedCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndPlay_Static_Speed)
 EVENT_END
 
-//---------------------UIFlowWndPlay_TipsBarCtrl Control List---------------------------
-CTRL_LIST_BEGIN(UIFlowWndPlay_TipsBar)
-CTRL_LIST_ITEM(UIFlowWndPlay_TipsIconReturn)
-CTRL_LIST_ITEM(UIFlowWndPlay_TipsIconDel)
-CTRL_LIST_ITEM(UIFlowWndPlay_TipsIconLock)
-CTRL_LIST_ITEM(UIFlowWndPlay_TipsIconPlay)
-CTRL_LIST_END
-
-//----------------------UIFlowWndPlay_TipsBarCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_TipsBar)
+//----------------------UIFlowWndPlay_StaticTXT_MovPlayTimeCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_StaticTXT_MovPlayTime)
 EVENT_END
 
-//----------------------UIFlowWndPlay_TipsIconReturnCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_TipsIconReturn)
+//----------------------UIFlowWndPlay_OptionStaticIcon_ReturnCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionStaticIcon_Return)
 EVENT_END
 
-//----------------------UIFlowWndPlay_TipsIconDelCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_TipsIconDel)
+//----------------------UIFlowWndPlay_OptionStaticIcon_PLAY_FF_BCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionStaticIcon_PLAY_FF_B)
 EVENT_END
 
-//----------------------UIFlowWndPlay_TipsIconLockCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_TipsIconLock)
+//----------------------UIFlowWndPlay_OptionStaticIcon_COLN0Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionStaticIcon_COLN0)
 EVENT_END
 
-//----------------------UIFlowWndPlay_TipsIconPlayCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndPlay_TipsIconPlay)
+//----------------------UIFlowWndPlay_OptionStaticIcon_DELCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionStaticIcon_DEL)
+EVENT_END
+
+//----------------------UIFlowWndPlay_StatusIcon_PlayCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_StatusIcon_Play)
+EVENT_END
+
+//----------------------UIFlowWndPlay_OptionStaticIcon_ProtectCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionStaticIcon_Protect)
+EVENT_END
+
+//----------------------UIFlowWndPlay_Option_StaticOKCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_Option_StaticOK)
+EVENT_END
+
+//----------------------UIFlowWndPlay_Option_StaticReturnCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_Option_StaticReturn)
+EVENT_END
+
+//----------------------UIFlowWndPlay_OptionStaticIcon_UPCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionStaticIcon_UP)
+EVENT_END
+
+//----------------------UIFlowWndPlay_OptionStaticIcon_DownCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionStaticIcon_Down)
+EVENT_END
+
+//----------------------UIFlowWndPlay_OptionStaticIcon_COLN1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionStaticIcon_COLN1)
+EVENT_END
+
+//----------------------UIFlowWndPlay_OptionStaticIcon_LockStdCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionStaticIcon_LockStd)
+EVENT_END
+
+//----------------------UIFlowWndPlay_OptionStaticIcon_PLAY_FF_FCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_OptionStaticIcon_PLAY_FF_F)
+EVENT_END
+
+//----------------------UIFlowWndPlay_StatusIcon_PowerKeyCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndPlay_StatusIcon_PowerKey)
 EVENT_END
 

@@ -7,20 +7,16 @@
 
 extern VControl UIMenuWndSetupFormatConfirmCtrl;//Panel type 
 
-extern VControl UIMenuWndSetupFormatConfirm_Static_TextCtrl;//Static type 
-
-extern VControl UIMenuWndSetupFormatConfirm_Static_TitleCtrl;//Static type 
-
-extern VControl UIMenuWndSetupFormatConfirm_MenuCtrl;//Menu type 
+extern VControl UIMenuWndSetupFormatConfirm_List_TextCtrl;//List type 
 
 typedef enum
 {
-UIMenuWndSetupFormatConfirm_Menu_STRID_OK,
-UIMenuWndSetupFormatConfirm_Menu_STRID_CANCEL,
-UIMenuWndSetupFormatConfirm_Menu_MAX
-}UIMenuWndSetupFormatConfirm_Menu_Setting;
+UIMenuWndSetupFormatConfirm_List_Text_STRID_CANCEL,
+UIMenuWndSetupFormatConfirm_List_Text_STRID_OK,
+UIMenuWndSetupFormatConfirm_List_Text_MAX
+}UIMenuWndSetupFormatConfirm_List_Text_Setting;
 
-//---------------------UIMenuWndSetupFormatConfirmCtrl User Export---------------------------
+extern VControl UIMenuWndSetupFormatConfirm_Static_TextCtrl;//Static type 
 
 extern BOOL UIMenuWndSetupFormatConfirm_GetFormatStatus(void);
 extern void UIMenuWndSetupFormatConfirm_SetFormatStatus(BOOL std);

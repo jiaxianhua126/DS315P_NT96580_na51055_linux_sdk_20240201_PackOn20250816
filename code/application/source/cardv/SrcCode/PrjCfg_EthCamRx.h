@@ -372,19 +372,21 @@
 // Display Config (for UI window, FD window)
 
 // OSD size and format
-#define DISPLAY_OSD_W                   320//640
+#define DISPLAY_OSD_W                   620//640
 #define DISPLAY_OSD_H                   240
 #define DISPLAY_OSD_FMT                 PXLFMT_INDEX8 // 256 colors
 //#define DISPLAY_OSD_FMT                 PXLFMT_RGBA5658_PK // 16bpp-colors
 
 //UI tool layout size setting
-#define TOOL_LAYOUT_W                   320//640
+#define TOOL_LAYOUT_W                   620//640
 #define TOOL_LAYOUT_H                   240//480
 #define OSD_USE_DOUBLE_BUFFER           DISABLE //use double buffer
 #if defined(_disp_if8b_lcd1_ili9341_)
 #define OSD_USE_ROTATE_BUFFER           ENABLE  //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #elif defined(_disp_ifdsi_lcd1_ut35067a0_ili9488_)
 #define OSD_USE_ROTATE_BUFFER           ENABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
+#elif defined(_disp_ifdsi_lcd1_ST7701SN_RZWT32P27_)
+#define OSD_USE_ROTATE_BUFFER           ENABLE  //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #else
 #define OSD_USE_ROTATE_BUFFER           DISABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #endif
@@ -409,6 +411,9 @@
 #define VDO_USE_ROTATE_BUFFER           ENABLE  //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #elif defined(_disp_ifdsi_lcd1_ut35067a0_ili9488_)
 #define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_270
+#define VDO_USE_ROTATE_BUFFER           ENABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
+#elif defined(_disp_ifdsi_lcd1_ST7701SN_RZWT32P27_)
+#define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_90
 #define VDO_USE_ROTATE_BUFFER           ENABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #else
 #define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_0
@@ -443,7 +448,9 @@
       defined(_disp_if8b_lcd1_ili9341_) || defined(_Disp_IF8B_LCD1_T15P11_)
 #define LCDMODE                         0//DISP_LCDMODE_RGB_SERIAL
 #else
-#error "Unknown _LCD_"
+//#error "Unknown _LCD_"
+#define LCDMODE                         0
+
 #endif
 
 #define LCD2MODE                        DISABLE

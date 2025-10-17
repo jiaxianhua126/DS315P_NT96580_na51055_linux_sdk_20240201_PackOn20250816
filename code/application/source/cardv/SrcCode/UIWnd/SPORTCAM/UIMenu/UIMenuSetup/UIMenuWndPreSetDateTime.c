@@ -192,6 +192,9 @@ static void UIMenuWndPreSetDateTime_UpdateInfo(void)
     UxStatic_SetData(&UIMenuWndPreSetDateTime_YMD_VALUE_Other3Ctrl, STATIC_VALUE, Txt_Pointer(itemOther2_Buf));
     UxStatic_SetData(&UIMenuWndPreSetDateTime_YMD_VALUE_Other4Ctrl, STATIC_VALUE, Txt_Pointer(itemOther4_Buf));
     Ux_SendEvent(&UISetupObjCtrl,NVTEVT_EXE_DATEFORMAT,    1,  SysGetFlag(FL_DATE_FORMAT));
+
+    UxCtrl_SetShow(&UIMenuWndPreSetDateTime_YMD_SwitchCtrl, FALSE);
+    UxCtrl_SetShow(&UIMenuWndPreSetDateTime_YMD_VALUE_Other4Ctrl, FALSE);
 }
 //#NT#2010/06/01#Chris Chung -end
 
@@ -680,8 +683,8 @@ EVENT_END
 EVENT_BEGIN(UIMenuWndPreSetDateTime_YMD_Switch)
 EVENT_END
 
-//----------------------UIMenuWndPreSetDateTime_YMD_AMPMCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndPreSetDateTime_YMD_AMPM)
+//----------------------UIMenuWndPreSetDateTime_Tab_YMD_VALUECtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndPreSetDateTime_Tab_YMD_VALUE)
 EVENT_END
 
 //----------------------UIMenuWndPreSetDateTime_YMD_VALUE_Other0Ctrl Event---------------------------
@@ -704,6 +707,10 @@ EVENT_END
 EVENT_BEGIN(UIMenuWndPreSetDateTime_YMD_VALUE_Other4)
 EVENT_END
 
+//----------------------UIMenuWndPreSetDateTime_YMD_AMPMCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndPreSetDateTime_YMD_AMPM)
+EVENT_END
+
 //----------------------UIMenuWndPreSetDateTime_Static_TitleCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPreSetDateTime_Static_Title)
 EVENT_END
@@ -714,6 +721,7 @@ CTRL_LIST_ITEM(UIMenuWndPreSetDateTime_TipsIconReturn)
 CTRL_LIST_ITEM(UIMenuWndPreSetDateTime_TipsIconUp)
 CTRL_LIST_ITEM(UIMenuWndPreSetDateTime_TipsIconDown)
 CTRL_LIST_ITEM(UIMenuWndPreSetDateTime_TipsIconOK)
+CTRL_LIST_ITEM(UIMenuWndPreSetDateTime_TipsIconPower)
 CTRL_LIST_END
 
 //----------------------UIMenuWndPreSetDateTime_TipsBarCtrl Event---------------------------
@@ -724,15 +732,31 @@ EVENT_END
 EVENT_BEGIN(UIMenuWndPreSetDateTime_TipsIconReturn)
 EVENT_END
 
+//---------------------UIMenuWndPreSetDateTime_TipsIconUpCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPreSetDateTime_TipsIconUp)
+CTRL_LIST_END
+
 //----------------------UIMenuWndPreSetDateTime_TipsIconUpCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPreSetDateTime_TipsIconUp)
 EVENT_END
+
+//---------------------UIMenuWndPreSetDateTime_TipsIconDownCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPreSetDateTime_TipsIconDown)
+CTRL_LIST_END
 
 //----------------------UIMenuWndPreSetDateTime_TipsIconDownCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPreSetDateTime_TipsIconDown)
 EVENT_END
 
+//---------------------UIMenuWndPreSetDateTime_TipsIconOKCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPreSetDateTime_TipsIconOK)
+CTRL_LIST_END
+
 //----------------------UIMenuWndPreSetDateTime_TipsIconOKCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPreSetDateTime_TipsIconOK)
+EVENT_END
+
+//----------------------UIMenuWndPreSetDateTime_TipsIconPowerCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndPreSetDateTime_TipsIconPower)
 EVENT_END
 

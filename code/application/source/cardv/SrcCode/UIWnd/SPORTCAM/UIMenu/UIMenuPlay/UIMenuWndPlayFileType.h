@@ -28,6 +28,9 @@ extern VControl UIMenuWndPlayFileType_TipsIconDownCtrl;//Static type
 
 extern VControl UIMenuWndPlayFileType_TipsIconOKCtrl;//Static type 
 
+extern VControl UIMenuWndPlayFileType_TipsIconPowerCtrl;//Static type 
+
+
 //---------------------UIMenuWndPlayFileTypeCtrl User Export---------------------------
 
 extern void UIMenuWndPlayFileType_SetFileType(UINT32 FileType);

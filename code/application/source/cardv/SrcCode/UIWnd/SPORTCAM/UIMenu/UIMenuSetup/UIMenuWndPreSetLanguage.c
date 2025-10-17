@@ -85,10 +85,10 @@ void UIMenuWndPreSetLanguage_UpdateContent(void)
         UxMenu_SetItemData(&UIMenuWndPreSetLanguage_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
 
         UxMenu_SetItemData(&UIMenuWndPreSetLanguage_MenuCtrl, i, MNUITM_STRID,  gTM_OPTIONS_LANGUAGE[i].TextId);
-        UxMenu_SetItemData(&UIMenuWndPreSetLanguage_MenuCtrl, i, MNUITM_ICONID, ICON_CORRECT);        
+        UxMenu_SetItemData(&UIMenuWndPreSetLanguage_MenuCtrl, i, MNUITM_ICONID, ICON_REC_TRANSPAENT);        
     }
 
-    UxMenu_SetItemData(&UIMenuWndPreSetLanguage_MenuCtrl, SysGetFlag(FL_LANGUAGE), MNUITM_ICONID, ICON_SEL_FOCUS);
+    UxMenu_SetItemData(&UIMenuWndPreSetLanguage_MenuCtrl, SysGetFlag(FL_LANGUAGE), MNUITM_ICONID, ICON_CORRECT);
 }
 
 INT32 UIMenuWndPreSetLanguage_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -240,6 +240,7 @@ CTRL_LIST_ITEM(UIMenuWndPreSetLanguage_TipsIconReturn)
 CTRL_LIST_ITEM(UIMenuWndPreSetLanguage_TipsIconUp)
 CTRL_LIST_ITEM(UIMenuWndPreSetLanguage_TipsIconDown)
 CTRL_LIST_ITEM(UIMenuWndPreSetLanguage_TipsIconOK)
+CTRL_LIST_ITEM(UIMenuWndPreSetLanguage_TipsIconPower)
 CTRL_LIST_END
 
 //----------------------UIMenuWndPreSetLanguage_TipsBarCtrl Event---------------------------
@@ -250,15 +251,31 @@ EVENT_END
 EVENT_BEGIN(UIMenuWndPreSetLanguage_TipsIconReturn)
 EVENT_END
 
+//---------------------UIMenuWndPreSetLanguage_TipsIconUpCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPreSetLanguage_TipsIconUp)
+CTRL_LIST_END
+
 //----------------------UIMenuWndPreSetLanguage_TipsIconUpCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPreSetLanguage_TipsIconUp)
 EVENT_END
+
+//---------------------UIMenuWndPreSetLanguage_TipsIconDownCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPreSetLanguage_TipsIconDown)
+CTRL_LIST_END
 
 //----------------------UIMenuWndPreSetLanguage_TipsIconDownCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPreSetLanguage_TipsIconDown)
 EVENT_END
 
+//---------------------UIMenuWndPreSetLanguage_TipsIconOKCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndPreSetLanguage_TipsIconOK)
+CTRL_LIST_END
+
 //----------------------UIMenuWndPreSetLanguage_TipsIconOKCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndPreSetLanguage_TipsIconOK)
+EVENT_END
+
+//----------------------UIMenuWndPreSetLanguage_TipsIconPowerCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndPreSetLanguage_TipsIconPower)
 EVENT_END
 

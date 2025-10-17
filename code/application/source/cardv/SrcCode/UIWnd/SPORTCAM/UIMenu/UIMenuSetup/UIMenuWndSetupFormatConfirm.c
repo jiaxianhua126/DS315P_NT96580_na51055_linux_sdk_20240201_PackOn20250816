@@ -15,9 +15,8 @@ static BOOL g_FormatStatus = FALSE;
 
 //---------------------UIMenuWndSetupFormatConfirmCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIMenuWndSetupFormatConfirm)
+CTRL_LIST_ITEM(UIMenuWndSetupFormatConfirm_List_Text)
 CTRL_LIST_ITEM(UIMenuWndSetupFormatConfirm_Static_Text)
-CTRL_LIST_ITEM(UIMenuWndSetupFormatConfirm_Static_Title)
-CTRL_LIST_ITEM(UIMenuWndSetupFormatConfirm_Menu)
 CTRL_LIST_END
 
 //----------------------UIMenuWndSetupFormatConfirmCtrl Event---------------------------
@@ -40,7 +39,9 @@ EVENT_END
 
 INT32 UIMenuWndSetupFormatConfirm_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-    UxMenu_SetData(&UIMenuWndSetupFormatConfirm_MenuCtrl, MNU_CURITM, 1);
+    //UxMenu_SetData(&UIMenuWndSetupFormatConfirm_MenuCtrl, MNU_CURITM, 1);
+	//harrison ds315
+    UxList_SetData(&UIMenuWndSetupFormatConfirm_List_TextCtrl, LST_CURITM, 0);
     Ux_DefaultEvent(pCtrl,NVTEVT_OPEN_WINDOW,paramNum,paramArray);
     return NVTEVT_CONSUME;
 }
@@ -104,25 +105,19 @@ INT32 UIMenuWndSetupFormatConfirm_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum
     Ux_SendEvent(&UISetupObjCtrl,NVTEVT_FORCETO_LIVEVIEW_MODE,0);
     return NVTEVT_CONSUME;
 }
-//----------------------UIMenuWndSetupFormatConfirm_Static_TextCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupFormatConfirm_Static_Text)
+//----------------------UIMenuWndSetupFormatConfirm_List_TextCtrl Event---------------------------
+INT32 UIMenuWndSetupFormatConfirm_List_Text_OnKeyUp(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupFormatConfirm_List_Text_OnKeyDown(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupFormatConfirm_List_Text_OnKeyEnter(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupFormatConfirm_List_Text_OnKeyShutter2(VControl *, UINT32, UINT32 *);
+EVENT_BEGIN(UIMenuWndSetupFormatConfirm_List_Text)
+EVENT_ITEM(NVTEVT_KEY_UP,UIMenuWndSetupFormatConfirm_List_Text_OnKeyUp)
+EVENT_ITEM(NVTEVT_KEY_DOWN,UIMenuWndSetupFormatConfirm_List_Text_OnKeyDown)
+EVENT_ITEM(NVTEVT_KEY_ENTER,UIMenuWndSetupFormatConfirm_List_Text_OnKeyEnter)
+//EVENT_ITEM(NVTEVT_KEY_SHUTTER2,UIMenuWndSetupFormatConfirm_List_Text_OnKeyShutter2)
 EVENT_END
 
-//----------------------UIMenuWndSetupFormatConfirm_Static_TitleCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupFormatConfirm_Static_Title)
-EVENT_END
-
-//----------------------UIMenuWndSetupFormatConfirm_MenuCtrl Event---------------------------
-INT32 UIMenuWndSetupFormatConfirm_Menu_OnKeyUp(VControl *, UINT32, UINT32 *);
-INT32 UIMenuWndSetupFormatConfirm_Menu_OnKeyDown(VControl *, UINT32, UINT32 *);
-INT32 UIMenuWndSetupFormatConfirm_Menu_OnKeyEnter(VControl *, UINT32, UINT32 *);
-EVENT_BEGIN(UIMenuWndSetupFormatConfirm_Menu)
-EVENT_ITEM(NVTEVT_KEY_UP,UIMenuWndSetupFormatConfirm_Menu_OnKeyUp)
-EVENT_ITEM(NVTEVT_KEY_DOWN,UIMenuWndSetupFormatConfirm_Menu_OnKeyDown)
-EVENT_ITEM(NVTEVT_KEY_ENTER,UIMenuWndSetupFormatConfirm_Menu_OnKeyEnter)
-EVENT_END
-
-INT32 UIMenuWndSetupFormatConfirm_Menu_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupFormatConfirm_List_Text_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  state = 0;
 
@@ -137,7 +132,7 @@ INT32 UIMenuWndSetupFormatConfirm_Menu_OnKeyUp(VControl *pCtrl, UINT32 paramNum,
     }
     return NVTEVT_CONSUME;
 }
-INT32 UIMenuWndSetupFormatConfirm_Menu_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupFormatConfirm_List_Text_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  state = 0;
 
@@ -152,7 +147,7 @@ INT32 UIMenuWndSetupFormatConfirm_Menu_OnKeyDown(VControl *pCtrl, UINT32 paramNu
     }
     return NVTEVT_CONSUME;
 }
-INT32 UIMenuWndSetupFormatConfirm_Menu_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupFormatConfirm_List_Text_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  state = 0;
 
@@ -162,7 +157,9 @@ INT32 UIMenuWndSetupFormatConfirm_Menu_OnKeyEnter(VControl *pCtrl, UINT32 paramN
     switch (state)
     {
     case NVTEVT_KEY_PRESS:
-        if(UxMenu_GetData(pCtrl,MNU_CURITM)==UIMenuWndSetupFormatConfirm_Menu_STRID_OK)
+        //if(UxMenu_GetData(pCtrl,MNU_CURITM)==UIMenuWndSetupFormatConfirm_Menu_STRID_OK)
+		//harrison ds315
+        if (UxList_GetData(pCtrl,LST_CURITM) == UIMenuWndSetupFormatConfirm_List_Text_STRID_OK)
         {
             #if 0
             if(g_u32FormatIndex==0)
@@ -221,4 +218,16 @@ void UIMenuWndSetupFormatConfirm_SetFormatStatus(BOOL std)
 {
     g_FormatStatus = std;
 }
+
+///harriso ds315
+INT32 UIMenuWndSetupFormatConfirm_List_Text_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    // the same behavior as ENTER key!
+    return UIMenuWndSetupFormatConfirm_List_Text_OnKeyEnter(pCtrl, paramNum, paramArray);
+}
+
+//----------------------UIMenuWndSetupFormatConfirm_Static_TextCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupFormatConfirm_Static_Text)
+EVENT_END
+
 

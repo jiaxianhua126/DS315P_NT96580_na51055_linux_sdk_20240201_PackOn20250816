@@ -7,17 +7,11 @@
 
 extern VControl UIMenuWndSetupGPSCtrl;//Panel type 
 
+extern VControl UIMenuWndSetupGPS_PanelCtrl;//Panel type 
+
+extern VControl GPS_Signal_1_NUMCtrl;//Static type 
+
 extern VControl GPS_Signal_2_NUMCtrl;//Static type 
-
-extern VControl GPS_Status_NameCtrl;//Static type 
-
-extern VControl GPS_Status_ICONCtrl;//Status type 
-
-typedef enum
-{
-GPS_Status_ICON_ICONID_NULL,
-GPS_Status_ICON_MAX
-}GPS_Status_ICON_Setting;
 
 extern VControl GPS_Signal_3_NUMCtrl;//Static type 
 
@@ -36,6 +30,10 @@ extern VControl GPS_Signal_9_NUMCtrl;//Static type
 extern VControl GPS_Signal_10_NUMCtrl;//Static type 
 
 extern VControl GPS_Signal_11_NUMCtrl;//Static type 
+
+extern VControl GPS_Signal_12_NUMCtrl;//Static type 
+
+extern VControl GPS_Signal_1_ValCtrl;//Static type 
 
 extern VControl GPS_Signal_2_ValCtrl;//Static type 
 
@@ -57,25 +55,9 @@ extern VControl GPS_Signal_10_ValCtrl;//Static type
 
 extern VControl GPS_Signal_11_ValCtrl;//Static type 
 
-extern VControl GPS_Signal_Green_2Ctrl;//ProgressBar type 
+extern VControl GPS_Signal_12_ValCtrl;//Static type 
 
-extern VControl GPS_Signal_Green_3Ctrl;//ProgressBar type 
-
-extern VControl GPS_Signal_Green_4Ctrl;//ProgressBar type 
-
-extern VControl GPS_Signal_Green_5Ctrl;//ProgressBar type 
-
-extern VControl GPS_Signal_Green_6Ctrl;//ProgressBar type 
-
-extern VControl GPS_Signal_Green_7Ctrl;//ProgressBar type 
-
-extern VControl GPS_Signal_Green_8Ctrl;//ProgressBar type 
-
-extern VControl GPS_Signal_Green_9Ctrl;//ProgressBar type 
-
-extern VControl GPS_Signal_Green_10Ctrl;//ProgressBar type 
-
-extern VControl GPS_Signal_Green_11Ctrl;//ProgressBar type 
+extern VControl GPS_Signal_Red_1Ctrl;//ProgressBar type 
 
 extern VControl GPS_Signal_Red_2Ctrl;//ProgressBar type 
 
@@ -97,20 +79,47 @@ extern VControl GPS_Signal_Red_10Ctrl;//ProgressBar type
 
 extern VControl GPS_Signal_Red_11Ctrl;//ProgressBar type 
 
-extern VControl GPS_Signal_Red_1Ctrl;//ProgressBar type 
-
 extern VControl GPS_Signal_Red_12Ctrl;//ProgressBar type 
 
 extern VControl GPS_Signal_Green_1Ctrl;//ProgressBar type 
 
+extern VControl GPS_Signal_Green_2Ctrl;//ProgressBar type 
+
+extern VControl GPS_Signal_Green_3Ctrl;//ProgressBar type 
+
+extern VControl GPS_Signal_Green_4Ctrl;//ProgressBar type 
+
+extern VControl GPS_Signal_Green_5Ctrl;//ProgressBar type 
+
+extern VControl GPS_Signal_Green_6Ctrl;//ProgressBar type 
+
+extern VControl GPS_Signal_Green_7Ctrl;//ProgressBar type 
+
+extern VControl GPS_Signal_Green_8Ctrl;//ProgressBar type 
+
+extern VControl GPS_Signal_Green_9Ctrl;//ProgressBar type 
+
+extern VControl GPS_Signal_Green_10Ctrl;//ProgressBar type 
+
+extern VControl GPS_Signal_Green_11Ctrl;//ProgressBar type 
+
 extern VControl GPS_Signal_Green_12Ctrl;//ProgressBar type 
 
-extern VControl GPS_Signal_12_NUMCtrl;//Static type 
+extern VControl GPS_Status_ICONCtrl;//Status type 
 
-extern VControl GPS_Signal_1_NUMCtrl;//Static type 
+typedef enum
+{
+GPS_Status_ICON_ICONID_NULL,
+GPS_Status_ICON_MAX
+}GPS_Status_ICON_Setting;
 
-extern VControl GPS_Signal_1_ValCtrl;//Static type 
+extern VControl GPS_Status_NameCtrl;//Static type 
 
-extern VControl GPS_Signal_12_ValCtrl;//Static type 
+extern VControl UIMenuWndSetupGPS_TipsIconPowerCtrl;//Static type 
 
+extern VControl UIMenuWndSetupGPS_TipsIconLUDOKCtrl;//Panel type 
+
+extern VControl UIMenuWndSetupGPS_TipsIconReturnCtrl;//Static type 
+
+//---------------------UIMenuWndSetupGPSCtrl User Export---------------------------
 #endif
