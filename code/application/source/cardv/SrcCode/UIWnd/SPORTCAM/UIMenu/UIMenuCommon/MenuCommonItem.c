@@ -30,10 +30,11 @@
 #endif
 //---------------------MenuCommonItemCtrl Control List---------------------------
 CTRL_LIST_BEGIN(MenuCommonItem)
-CTRL_LIST_ITEM(MenuCommonItem_TitleText)
-CTRL_LIST_ITEM(MenuCommonItem_Menu)
-CTRL_LIST_ITEM(MenuCommonItem_PageNum)
+CTRL_LIST_ITEM(MenuCommonItem_BG)
+CTRL_LIST_ITEM(MenuCommonItem_TitleBar)
 CTRL_LIST_ITEM(MenuCommonItem_TipsBar)
+CTRL_LIST_ITEM(MenuCommonItem_Menu)
+CTRL_LIST_ITEM(MenuCommonItem_TabBar)
 CTRL_LIST_END
 
 //----------------------MenuCommonItemCtrl Event---------------------------
@@ -98,7 +99,7 @@ void MenuCommonItem_UpdateContent(TM_MENU* pMenu)
     TM_PAGE*    pPage;
     TM_ITEM*    pItem;
     UINT32      i;
-    //UINT32      uiIcon[2]; // 2 pages per menu
+    UINT32      uiIcon[2]; // 2 pages per menu
 
     pPage = &pMenu->pPages[pMenu->SelPage];
 
@@ -112,7 +113,7 @@ void MenuCommonItem_UpdateContent(TM_MENU* pMenu)
     for (i = 0; i < pPage->Count; i++)
     {
         pItem = &pPage->pItems[i];
-		if(pItem->TextId & STRID_USER_START)
+		if (0)//harrison ds315 (pItem->TextId & STRID_USER_START)
 		{
         	UxMenu_SetItemData(&MenuCommonItem_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer(UIRes_GetUserString(pItem->TextId)));
         	UxMenu_SetItemData(&MenuCommonItem_MenuCtrl, i, MNUITM_ICONID, pItem->IconId);
@@ -125,7 +126,7 @@ void MenuCommonItem_UpdateContent(TM_MENU* pMenu)
 
     }
 
-	#if 0
+	#if 1//0///harrison ds315
     for (i = 0; i < pMenu->Count; i++)
     {
         if ((UINT32)pMenu->SelPage == i)
@@ -148,9 +149,12 @@ void MenuCommonItem_UpdateContent(TM_MENU* pMenu)
             UxMenu_SetItemData(&MenuCommonItem_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE); // disable all items
     }
 
+    UxStatic_SetData(&MenuCommonItem_TitleIconTab1Ctrl, STATIC_VALUE, uiIcon[0]);
+    UxStatic_SetData(&MenuCommonItem_TitleIconTab2Ctrl, STATIC_VALUE, uiIcon[1]);
     UxStatic_SetData(&MenuCommonItem_TitleTextCtrl, STATIC_VALUE, pPage->TextId);
     UxCtrl_SetShow(&MenuCommonItem_TitleTextCtrl, TRUE);
     UxCtrl_SetDirty(&MenuCommonItemCtrl, TRUE);
+	UxCtrl_SetShow(&MenuCommonItem_TitleIconTab2Ctrl, FALSE); //add for only one page
 }
 INT32 MenuCommonItem_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -177,9 +181,9 @@ INT32 MenuCommonItem_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 
     MenuCommon_CalcPageInfo(&MenuCommonItem_MenuCtrl); // calculate page information for display
 
-    //UxCtrl_SetShow(&MenuCommonItem_TipsIconUpCtrl, TRUE);
-    //UxCtrl_SetShow(&MenuCommonItem_TipsIconDownCtrl, TRUE);
-    //UxCtrl_SetShow(&MenuCommonItem_TipsIconLUDOKCtrl, TRUE);
+    UxCtrl_SetShow(&MenuCommonItem_TipsIconUpCtrl, TRUE);
+    UxCtrl_SetShow(&MenuCommonItem_TipsIconDownCtrl, TRUE);
+    UxCtrl_SetShow(&MenuCommonItem_TipsIconLUDOKCtrl, TRUE);
     //MenuCommonItem_DrawOptionOK(TRUE);
     Ux_DefaultEvent(pCtrl,NVTEVT_OPEN_WINDOW,paramNum,paramArray);
 	Ux_FlushEventByRange(NVTEVT_KEY_EVT_START, NVTEVT_KEY_EVT_END);
@@ -240,9 +244,9 @@ INT32 MenuCommonItem_OnChildClose(VControl *pCtrl, UINT32 paramNum, UINT32 *para
     pMenu->Status = TMS_ON_ITEM;
     MenuCommonItem_UpdateContent(pMenu);
     //MenuCommonItem_DrawOptionOK(TRUE);
-    //UxCtrl_SetShow(&MenuCommonItem_TipsIconUpCtrl, TRUE);
-    //UxCtrl_SetShow(&MenuCommonItem_TipsIconDownCtrl, TRUE);
-    //UxCtrl_SetShow(&MenuCommonItem_TipsIconLUDOKCtrl, TRUE);
+    UxCtrl_SetShow(&MenuCommonItem_TipsIconUpCtrl, TRUE);
+    UxCtrl_SetShow(&MenuCommonItem_TipsIconDownCtrl, TRUE);
+    UxCtrl_SetShow(&MenuCommonItem_TipsIconLUDOKCtrl, TRUE);
     Ux_DefaultEvent(pCtrl,NVTEVT_CHILD_CLOSE,paramNum,paramArray);
     return NVTEVT_CONSUME;
 }
@@ -410,8 +414,85 @@ INT32 MenuCommonItem_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *par
     }
     return NVTEVT_CONSUME;
 }
+//---------------------MenuCommonItem_BGCtrl Control List---------------------------
+CTRL_LIST_BEGIN(MenuCommonItem_BG)
+CTRL_LIST_END
+
+//----------------------MenuCommonItem_BGCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_BG)
+EVENT_END
+
+//---------------------MenuCommonItem_TitleBarCtrl Control List---------------------------
+CTRL_LIST_BEGIN(MenuCommonItem_TitleBar)
+CTRL_LIST_ITEM(MenuCommonItem_TitleIconTab1)
+CTRL_LIST_ITEM(MenuCommonItem_TitleIconTab2)
+CTRL_LIST_ITEM(MenuCommonItem_TitleText)
+CTRL_LIST_END
+
+//----------------------MenuCommonItem_TitleBarCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_TitleBar)
+EVENT_END
+
+//----------------------MenuCommonItem_TitleIconTab1Ctrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_TitleIconTab1)
+EVENT_END
+
+//----------------------MenuCommonItem_TitleIconTab2Ctrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_TitleIconTab2)
+EVENT_END
+
 //----------------------MenuCommonItem_TitleTextCtrl Event---------------------------
 EVENT_BEGIN(MenuCommonItem_TitleText)
+EVENT_END
+
+//---------------------MenuCommonItem_TipsBarCtrl Control List---------------------------
+CTRL_LIST_BEGIN(MenuCommonItem_TipsBar)
+CTRL_LIST_ITEM(MenuCommonItem_TipsIconReturn)
+CTRL_LIST_ITEM(MenuCommonItem_TipsIconUp)
+CTRL_LIST_ITEM(MenuCommonItem_TipsIconDown)
+CTRL_LIST_ITEM(MenuCommonItem_TipsIconLUDOK)
+CTRL_LIST_ITEM(MenuCommonItem_PageNum)
+CTRL_LIST_ITEM(MenuCommonItem_TipsIconPower)
+CTRL_LIST_END
+
+//----------------------MenuCommonItem_TipsBarCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_TipsBar)
+EVENT_END
+
+//----------------------MenuCommonItem_TipsIconReturnCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_TipsIconReturn)
+EVENT_END
+
+//---------------------MenuCommonItem_TipsIconUpCtrl Control List---------------------------
+CTRL_LIST_BEGIN(MenuCommonItem_TipsIconUp)
+CTRL_LIST_END
+
+//----------------------MenuCommonItem_TipsIconUpCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_TipsIconUp)
+EVENT_END
+
+//---------------------MenuCommonItem_TipsIconDownCtrl Control List---------------------------
+CTRL_LIST_BEGIN(MenuCommonItem_TipsIconDown)
+CTRL_LIST_END
+
+//----------------------MenuCommonItem_TipsIconDownCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_TipsIconDown)
+EVENT_END
+
+//---------------------MenuCommonItem_TipsIconLUDOKCtrl Control List---------------------------
+CTRL_LIST_BEGIN(MenuCommonItem_TipsIconLUDOK)
+CTRL_LIST_END
+
+//----------------------MenuCommonItem_TipsIconLUDOKCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_TipsIconLUDOK)
+EVENT_END
+
+//----------------------MenuCommonItem_PageNumCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_PageNum)
+EVENT_END
+
+//----------------------MenuCommonItem_TipsIconPowerCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_TipsIconPower)
 EVENT_END
 
 //----------------------MenuCommonItem_MenuCtrl Event---------------------------
@@ -496,9 +577,9 @@ INT32 MenuCommonItem_Menu_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *pa
                 UxMenu_SetItemData(pCtrl, i, MNUITM_STATUS, (STATUS_DISABLE | STATUS_NORMAL_BIT)); // disable all items
             }
 
-            //UxCtrl_SetShow(&MenuCommonItem_TipsIconUpCtrl, TRUE);
-            //UxCtrl_SetShow(&MenuCommonItem_TipsIconDownCtrl, TRUE);
-            //UxCtrl_SetShow(&MenuCommonItem_TipsIconLUDOKCtrl, TRUE);
+            UxCtrl_SetShow(&MenuCommonItem_TipsIconUpCtrl, TRUE);
+            UxCtrl_SetShow(&MenuCommonItem_TipsIconDownCtrl, TRUE);
+            UxCtrl_SetShow(&MenuCommonItem_TipsIconLUDOKCtrl, TRUE);
             //MenuCommonItem_DrawOptionOK(TRUE);
         }
         break;
@@ -541,9 +622,9 @@ INT32 MenuCommonItem_Menu_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			{
             	UxStatic_SetData(&MenuCommonItem_TitleTextCtrl, STATIC_VALUE, pItem->TextId);
 			}
-            //UxCtrl_SetShow(&MenuCommonItem_TipsIconUpCtrl, TRUE);
-            //UxCtrl_SetShow(&MenuCommonItem_TipsIconDownCtrl, TRUE);
-            //UxCtrl_SetShow(&MenuCommonItem_TipsIconLUDOKCtrl, TRUE);
+            UxCtrl_SetShow(&MenuCommonItem_TipsIconUpCtrl, TRUE);
+            UxCtrl_SetShow(&MenuCommonItem_TipsIconDownCtrl, TRUE);
+            UxCtrl_SetShow(&MenuCommonItem_TipsIconLUDOKCtrl, TRUE);
             //MenuCommonItem_DrawOptionOK(TRUE);
 
             UxCtrl_SetShow(&MenuCommonItem_PageNumCtrl, FALSE);
@@ -569,35 +650,11 @@ INT32 MenuCommonItem_Menu_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 {
     return MenuCommonItem_Menu_OnKeyRight(pCtrl, paramNum, paramArray);
 }
-//----------------------MenuCommonItem_PageNumCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonItem_PageNum)
-EVENT_END
-
-//---------------------MenuCommonItem_TipsBarCtrl Control List---------------------------
-CTRL_LIST_BEGIN(MenuCommonItem_TipsBar)
-CTRL_LIST_ITEM(MenuCommonItem_TipsIconReturn)
-CTRL_LIST_ITEM(MenuCommonItem_TipsIconUp)
-CTRL_LIST_ITEM(MenuCommonItem_TipsIconDown)
-CTRL_LIST_ITEM(MenuCommonItem_TipsIconOK)
+//---------------------MenuCommonItem_TabBarCtrl Control List---------------------------
+CTRL_LIST_BEGIN(MenuCommonItem_TabBar)
 CTRL_LIST_END
 
-//----------------------MenuCommonItem_TipsBarCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonItem_TipsBar)
-EVENT_END
-
-//----------------------MenuCommonItem_TipsIconReturnCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonItem_TipsIconReturn)
-EVENT_END
-
-//----------------------MenuCommonItem_TipsIconUpCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonItem_TipsIconUp)
-EVENT_END
-
-//----------------------MenuCommonItem_TipsIconDownCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonItem_TipsIconDown)
-EVENT_END
-
-//----------------------MenuCommonItem_TipsIconOKCtrl Event---------------------------
-EVENT_BEGIN(MenuCommonItem_TipsIconOK)
+//----------------------MenuCommonItem_TabBarCtrl Event---------------------------
+EVENT_BEGIN(MenuCommonItem_TabBar)
 EVENT_END
 

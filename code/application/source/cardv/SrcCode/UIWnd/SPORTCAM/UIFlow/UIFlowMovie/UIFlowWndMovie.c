@@ -40,7 +40,7 @@
 //---------------------UIFlowWndMovieCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndMovie)
 CTRL_LIST_ITEM(UIFlowWndMovie_Panel_Normal_Display)
-CTRL_LIST_ITEM(UIFlowWndMovie_GPS_INFO)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Alert_Display)
 CTRL_LIST_END
 
 //----------------------UIFlowWndMovieCtrl Event---------------------------
@@ -275,7 +275,7 @@ INT32 UIFlowWndMovie_OnExeRecord(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 				if (CheckStorageErr == TRUE) {
 					gMovData.State = MOV_ST_WARNING_MENU;
 					gMovData.SysTimeCount = 0;
-					FlowMovie_IconHideSOS(&UIFlowWndMovie_SOSCtrl);
+					FlowMovie_IconHideSOS();
 					FlowMovie_SetLedFlash_BeepWrn(TRUE);
 					return NVTEVT_CONSUME;
 				}
@@ -436,10 +436,14 @@ INT32 UIFlowWndMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 	Dx_SetASR_Flag(0);
 	ASR_GetPCMData_EN = FALSE;
 #endif
-	//UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
 	UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 	//UxCtrl_SetShow(&UIFlowWndMovie_Status_WIFICtrl, FALSE);
-    UxCtrl_SetShow(&UIFlowWndMovie_GPS_INFOCtrl, FALSE);
+    ////////UxCtrl_SetShow(&UIFlowWndMovie_GPS_INFOCtrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_DrawingLineCtrl,FALSE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ALG_DrawCtrl,FALSE);
+	FlowMovie_initIcon();
+	FlowMovie_IconHideSNG();
 
 	Ux_FlushEventByRange(NVTEVT_KEY_EVT_START, NVTEVT_KEY_EVT_END);
 	g_uiMaskKeyPress = MOVIE_KEY_PRESS_MASK;
@@ -727,7 +731,7 @@ INT32 UIFlowWndMovie_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 		}
 
 		if(GPIOMap_EthCam1Det()){
-			if(Get_IsRearOK()>WAIT_SECONDS)
+			/*if(Get_IsRearOK()>WAIT_SECONDS)
 			{
 				//Delay_DelayMs(200);
 			}
@@ -735,7 +739,7 @@ INT32 UIFlowWndMovie_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 			{
 				DBG_DUMP("key ignore\r\n");
 				return NVTEVT_CONSUME;
-			}
+			}*///harrison ds315
 		}
 		switch (gMovData.State) {
 		case MOV_ST_VIEW:
@@ -1120,7 +1124,7 @@ INT32 UIFlowWndMovie_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
                         ImageApp_MovieMulti_TrigEMR(_CFG_ETHCAM_ID_1);
                     }
 					ParkingM_PreRecord_EMR = TRUE;
-					FlowMovie_IconDrawSOS(&UIFlowWndMovie_SOSCtrl);
+					///FlowMovie_IconDrawSOS();
 					FlowMovie_SetSOSStatusNow(TRUE);
 					ManualSetSOS = TRUE;
 				}
@@ -1143,7 +1147,7 @@ INT32 UIFlowWndMovie_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 				FlowMovie_SetCrash();
 				//Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
 				if (FlowMovie_GetSOSStatusNow() == FALSE) {
-					FlowMovie_IconDrawSOS(&UIFlowWndMovie_SOSCtrl);
+					//FlowMovie_IconDrawSOS();
 					FlowMovie_SetSOSStatusNow(TRUE);
 					ManualSetSOS = TRUE;
 				}
@@ -1542,7 +1546,7 @@ INT32 UIFlowWndMovie_OnCustom1(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
                         ImageApp_MovieMulti_TrigEMR(_CFG_ETHCAM_ID_1);
                     }
                     ParkingM_PreRecord_EMR = TRUE;
-                    FlowMovie_IconDrawSOS(&UIFlowWndMovie_SOSCtrl);
+                    //FlowMovie_IconDrawSOS(&UIFlowWndMovie_SOSCtrl);//harrison ds315
                     FlowMovie_SetSOSStatusNow(TRUE);
                 }
                 return NVTEVT_CONSUME;
@@ -1551,7 +1555,7 @@ INT32 UIFlowWndMovie_OnCustom1(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 			FlowMovie_SetCrash();
 			Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
 			if (FlowMovie_GetSOSStatusNow() == FALSE) {
-				FlowMovie_IconDrawSOS(&UIFlowWndMovie_SOSCtrl);
+				/////FlowMovie_IconDrawSOS();
 				FlowMovie_SetSOSStatusNow(TRUE);
 			}
 		}
@@ -1721,7 +1725,7 @@ INT32 UIFlowWndMovie_OnMovieOneSec(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 							ParkingM_PreRecord_EMR = FALSE;
 						}
 
-						FlowMovie_IconHideSOS(&UIFlowWndMovie_SOSCtrl);
+						//FlowMovie_IconHideSOS();
 						Control_LedTurn(REC_LED,1);
 					}
 					FlowMovie_IconHideMaxRecTime(&UIFlowWndMovie_Static_maxtimeCtrl);
@@ -1746,7 +1750,7 @@ INT32 UIFlowWndMovie_OnMovieOneSec(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 				uiRecSecond = paramArray[0];
 				uiCyclicRecTime = Movie_GetCyclicRecTime() - 1;
 				if (uiRecSecond == uiCyclicRecTime) {
-					FlowMovie_IconHideSOS(&UIFlowWndMovie_SOSCtrl);
+					//FlowMovie_IconHideSOS();///harrison ds315
 				}
 				if (!UxCtrl_IsShow(&UIFlowWndMovie_PanelCtrl)) {
 					UxCtrl_SetShow(&UIFlowWndMovie_PanelCtrl,TRUE);
@@ -1983,7 +1987,7 @@ static void UIFlowWndMovie_OneFrameMovie(void)
 {
 	//DBG_DUMP("call UIFlowWndMovie_OneFrameMovie\r\n");
 
-    FlowMovie_IconDrawTimelapse(&UIFlowWndMovie_StaticIcon_TimelapseCtrl);
+    //////////////FlowMovie_IconDrawTimelapse(&UIFlowWndMovie_StaticIcon_TimelapseCtrl);
 
     switch (gMovData.State) {
     case MOV_ST_REC:
@@ -2020,7 +2024,7 @@ static void UIFlowWndMovie_OneFrameMovie(void)
                 //g_AutoRec = TRUE;
                 g_TLRecTime = 0;
                 g_NotRecordWrn = FALSE;
-                FlowMovie_IconHideSOS(&UIFlowWndMovie_SOSCtrl);
+                FlowMovie_IconHideSOS();
             }
         }
 
@@ -2031,7 +2035,7 @@ static void UIFlowWndMovie_OneFrameMovie(void)
                 //g_AutoRec = TRUE;
                 g_ParkingModeTLRecTime = 0;
                 g_NotRecordWrn = FALSE;
-                FlowMovie_IconHideSOS(&UIFlowWndMovie_SOSCtrl);
+                FlowMovie_IconHideSOS();
             }
         }
         break;
@@ -2637,34 +2641,66 @@ INT32 UIFlowWndMovie_OnStorageInit(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 
 //---------------------UIFlowWndMovie_Panel_Normal_DisplayCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndMovie_Panel_Normal_Display)
-CTRL_LIST_ITEM(UIFlowWndMovie_Status_CyclicRec)
-CTRL_LIST_ITEM(UIFlowWndMovie_Status_MotionDet)
-CTRL_LIST_ITEM(UIFlowWndMovie_Status_HDR)
+#if (!defined(_NVT_ETHREARCAM_TX_))
+//CTRL_LIST_ITEM(UIFlowWndMovie_Static_camera)
+//CTRL_LIST_ITEM(UIFlowWndMovie_Status_CyclicRec)
+//CTRL_LIST_ITEM(UIFlowWndMovie_Status_MotionDet)
+//CTRL_LIST_ITEM(UIFlowWndMovie_Status_battery)
 CTRL_LIST_ITEM(UIFlowWndMovie_YMD_Static)
 CTRL_LIST_ITEM(UIFlowWndMovie_HMS_Static)
 CTRL_LIST_ITEM(UIFlowWndMovie_Panel)
+//CTRL_LIST_ITEM(UIFlowWndMovie_Status_REC)
+//CTRL_LIST_ITEM(UIFlowWndMovie_Status_Storage)
 CTRL_LIST_ITEM(UIFlowWndMovie_Static_time)
 CTRL_LIST_ITEM(UIFlowWndMovie_Static_maxtime)
 CTRL_LIST_ITEM(UIFlowWndMovie_Static_resolution)
-CTRL_LIST_ITEM(UIFlowWndMovie_Zoom_Static)
-CTRL_LIST_ITEM(UIFlowWndMovie_SOS)
+//CTRL_LIST_ITEM(UIFlowWndMovie_Zoom_Static)
 CTRL_LIST_ITEM(UIFlowWndMovie_Status_Audio)
-CTRL_LIST_ITEM(UIFlowWndMovie_Status_EIS)
-CTRL_LIST_ITEM(UIFlowWndMovie_CustomType)
+//CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_EV)
+//CTRL_LIST_ITEM(UIFlowWndMovie_Status_HDR)
+//CTRL_LIST_ITEM(UIFlowWndMovie_Status_WIFI)
 CTRL_LIST_ITEM(UIFlowWndMovie_StaticIcon_PIM)
-CTRL_LIST_ITEM(UIFlowWndMovie_GPSSignal)
-CTRL_LIST_ITEM(UIFlowWndMovie_GPSSignalC)
-CTRL_LIST_ITEM(UIFlowWndMovie_GPSSignalCC)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_DrawingLine)
+CTRL_LIST_ITEM(UIFlowWndMovie_ALG_Draw)
+//CTRL_LIST_ITEM(UIFlowWndMovie_CUSTOMER)
+//CTRL_LIST_ITEM(UIFlowWndMovie_GPS)
+//CTRL_LIST_ITEM(UIFlowWndMovie_GPSSignal)
+//CTRL_LIST_ITEM(UIFlowWndMovie_GPSSignalC)
+//CTRL_LIST_ITEM(UIFlowWndMovie_GPSSignalCC)
+CTRL_LIST_ITEM(UIFlowWndMovie_Static_MotionDet1)
+CTRL_LIST_ITEM(UIFlowWndMovie_Static_MotionDet2)
+CTRL_LIST_ITEM(UIFlowWndMovie_Static_TimeLapse1)
+CTRL_LIST_ITEM(UIFlowWndMovie_Static_TimeLapse2)
+CTRL_LIST_ITEM(UIFlowWndMovie_GPSN_SMALL_ICON2)
+CTRL_LIST_ITEM(UIFlowWndMovie_GPS_SMALL_ICON2)
+CTRL_LIST_ITEM(UIFlowWndMovie_SOS)
+CTRL_LIST_ITEM(UIFlowWndMovie_SOS1)
+CTRL_LIST_ITEM(UIFlowWndMovie_SNG_SMALL_ICON)
+CTRL_LIST_ITEM(UIFlowWndMovie_SNG_SMALL_ICON1)
+CTRL_LIST_ITEM(UIFlowWndMovie_SNG_SMALL_ICON2)
+CTRL_LIST_ITEM(UIFlowWndMovie_TSR_SMALL_ICON)
+CTRL_LIST_ITEM(UIFlowWndMovie_TSR_SMALL_ICON1)
+CTRL_LIST_ITEM(UIFlowWndMovie_TSR_SMALL_ICON2)
+CTRL_LIST_ITEM(UIFlowWndMovie_TSR_SMALL_ICON3)
+CTRL_LIST_ITEM(UIFlowWndMovie_RL_SMALL_ICON)
+CTRL_LIST_ITEM(UIFlowWndMovie_RL_SMALL_ICON1)
+CTRL_LIST_ITEM(UIFlowWndMovie_RL_SMALL_ICON2)
+CTRL_LIST_ITEM(UIFlowWndMovie_RL_SMALL_ICON3)
 CTRL_LIST_ITEM(UIFlowWndMovie_FolderCheck_StatusTxt)
-CTRL_LIST_ITEM(UIFlowWndMovie_StaticIcon_Timelapse)
-CTRL_LIST_ITEM(UIFlowWndMovie_GPS)
-CTRL_LIST_ITEM(UIFlowWndMovie_StatusIcon_TPMS)
-CTRL_LIST_ITEM(UIFlowWndMovie_StatusIcon_Compass)
-CTRL_LIST_ITEM(UIFlowWndMovie_TipsBar)
+CTRL_LIST_ITEM(UIFlowWndMovie_MENU_SOS)
+CTRL_LIST_ITEM(UIFlowWndMovie_MENU_PLAYBCAK)
+CTRL_LIST_ITEM(UIFlowWndMovie_MENU_SETTING)
+CTRL_LIST_ITEM(UIFlowWndMovie_MENU_CLOSELCD)
+CTRL_LIST_ITEM(UIFlowWndMovie_MENU_PowerKey)
+#endif
 CTRL_LIST_END
 
 //----------------------UIFlowWndMovie_Panel_Normal_DisplayCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndMovie_Panel_Normal_Display)
+EVENT_END
+
+//----------------------UIFlowWndMovie_Static_cameraCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_Static_camera)
 EVENT_END
 
 //----------------------UIFlowWndMovie_Status_CyclicRecCtrl Event---------------------------
@@ -2675,8 +2711,8 @@ EVENT_END
 EVENT_BEGIN(UIFlowWndMovie_Status_MotionDet)
 EVENT_END
 
-//----------------------UIFlowWndMovie_Status_HDRCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_Status_HDR)
+//----------------------UIFlowWndMovie_Status_batteryCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_Status_battery)
 EVENT_END
 
 //----------------------UIFlowWndMovie_YMD_StaticCtrl Event---------------------------
@@ -2695,6 +2731,14 @@ CTRL_LIST_END
 EVENT_BEGIN(UIFlowWndMovie_Panel)
 EVENT_END
 
+//----------------------UIFlowWndMovie_Status_RECCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_Status_REC)
+EVENT_END
+
+//----------------------UIFlowWndMovie_Status_StorageCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_Status_Storage)
+EVENT_END
+
 //----------------------UIFlowWndMovie_Static_timeCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndMovie_Static_time)
 EVENT_END
@@ -2711,24 +2755,54 @@ EVENT_END
 EVENT_BEGIN(UIFlowWndMovie_Zoom_Static)
 EVENT_END
 
-//----------------------UIFlowWndMovie_SOSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_SOS)
-EVENT_END
-
 //----------------------UIFlowWndMovie_Status_AudioCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndMovie_Status_Audio)
 EVENT_END
 
-//----------------------UIFlowWndMovie_Status_EISCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_Status_EIS)
+//----------------------UIFlowWndMovie_StatusICN_EVCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_StatusICN_EV)
 EVENT_END
 
-//----------------------UIFlowWndMovie_CustomTypeCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_CustomType)
+//----------------------UIFlowWndMovie_Status_HDRCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_Status_HDR)
+EVENT_END
+
+//----------------------UIFlowWndMovie_Status_WIFICtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_Status_WIFI)
 EVENT_END
 
 //----------------------UIFlowWndMovie_StaticIcon_PIMCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndMovie_StaticIcon_PIM)
+EVENT_END
+
+//---------------------UIFlowWndMovie_ADAS_DrawingLineCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndMovie_ADAS_DrawingLine)
+CTRL_LIST_END
+
+//----------------------UIFlowWndMovie_ADAS_DrawingLineCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_DrawingLine)
+EVENT_END
+
+//---------------------UIFlowWndMovie_ALG_DrawCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndMovie_ALG_Draw)
+CTRL_LIST_END
+
+//----------------------UIFlowWndMovie_ALG_DrawCtrl Event---------------------------
+INT32 UIFlowWndMovie_ALG_Draw_OnRedraw(VControl *, UINT32, UINT32 *);
+EVENT_BEGIN(UIFlowWndMovie_ALG_Draw)
+EVENT_ITEM(NVTEVT_REDRAW,UIFlowWndMovie_ALG_Draw_OnRedraw)
+EVENT_END
+
+INT32 UIFlowWndMovie_ALG_Draw_OnRedraw(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+    return NVTEVT_CONSUME;
+}
+//----------------------UIFlowWndMovie_CUSTOMERCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_CUSTOMER)
+EVENT_END
+
+//----------------------UIFlowWndMovie_GPSCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_GPS)
 EVENT_END
 
 //----------------------UIFlowWndMovie_GPSSignalCtrl Event---------------------------
@@ -2743,159 +2817,126 @@ EVENT_END
 EVENT_BEGIN(UIFlowWndMovie_GPSSignalCC)
 EVENT_END
 
+//----------------------UIFlowWndMovie_Static_MotionDet1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_Static_MotionDet1)
+EVENT_END
+
+//----------------------UIFlowWndMovie_Static_MotionDet2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_Static_MotionDet2)
+EVENT_END
+
+//----------------------UIFlowWndMovie_Static_TimeLapse1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_Static_TimeLapse1)
+EVENT_END
+
+//----------------------UIFlowWndMovie_Static_TimeLapse2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_Static_TimeLapse2)
+EVENT_END
+
+//----------------------UIFlowWndMovie_GPSN_SMALL_ICON2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_GPSN_SMALL_ICON2)
+EVENT_END
+
+//----------------------UIFlowWndMovie_GPS_SMALL_ICON2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_GPS_SMALL_ICON2)
+EVENT_END
+
+//----------------------UIFlowWndMovie_SOSCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_SOS)
+EVENT_END
+
+//----------------------UIFlowWndMovie_SOS1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_SOS1)
+EVENT_END
+
+//----------------------UIFlowWndMovie_SNG_SMALL_ICONCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_SNG_SMALL_ICON)
+EVENT_END
+
+//----------------------UIFlowWndMovie_SNG_SMALL_ICON1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_SNG_SMALL_ICON1)
+EVENT_END
+
+//----------------------UIFlowWndMovie_SNG_SMALL_ICON2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_SNG_SMALL_ICON2)
+EVENT_END
+
+//----------------------UIFlowWndMovie_TSR_SMALL_ICONCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_TSR_SMALL_ICON)
+EVENT_END
+
+//----------------------UIFlowWndMovie_TSR_SMALL_ICON1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_TSR_SMALL_ICON1)
+EVENT_END
+
+//----------------------UIFlowWndMovie_TSR_SMALL_ICON2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_TSR_SMALL_ICON2)
+EVENT_END
+
+//----------------------UIFlowWndMovie_TSR_SMALL_ICON3Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_TSR_SMALL_ICON3)
+EVENT_END
+
+//----------------------UIFlowWndMovie_RL_SMALL_ICONCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_RL_SMALL_ICON)
+EVENT_END
+
+//----------------------UIFlowWndMovie_RL_SMALL_ICON1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_RL_SMALL_ICON1)
+EVENT_END
+
+//----------------------UIFlowWndMovie_RL_SMALL_ICON2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_RL_SMALL_ICON2)
+EVENT_END
+
+//----------------------UIFlowWndMovie_RL_SMALL_ICON3Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_RL_SMALL_ICON3)
+EVENT_END
+
 //----------------------UIFlowWndMovie_FolderCheck_StatusTxtCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndMovie_FolderCheck_StatusTxt)
 EVENT_END
 
-//----------------------UIFlowWndMovie_StaticIcon_TimelapseCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_StaticIcon_Timelapse)
+//----------------------UIFlowWndMovie_MENU_SOSCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_MENU_SOS)
 EVENT_END
 
-//----------------------UIFlowWndMovie_GPSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_GPS)
+//----------------------UIFlowWndMovie_MENU_PLAYBCAKCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_MENU_PLAYBCAK)
 EVENT_END
 
-//----------------------UIFlowWndMovie_StatusIcon_TPMSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_StatusIcon_TPMS)
+//----------------------UIFlowWndMovie_MENU_SETTINGCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_MENU_SETTING)
 EVENT_END
 
-//----------------------UIFlowWndMovie_StatusIcon_CompassCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_StatusIcon_Compass)
+//----------------------UIFlowWndMovie_MENU_CLOSELCDCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_MENU_CLOSELCD)
 EVENT_END
 
-//---------------------UIFlowWndMovie_TipsBarCtrl Control List---------------------------
-CTRL_LIST_BEGIN(UIFlowWndMovie_TipsBar)
-CTRL_LIST_ITEM(UIFlowWndMovie_TipsIconSOS)
-CTRL_LIST_ITEM(UIFlowWndMovie_TipsIconPLAYBACK)
-CTRL_LIST_ITEM(UIFlowWndMovie_TipsIconSETTING)
-CTRL_LIST_ITEM(UIFlowWndMovie_TipsIconCLOSELCD)
+//----------------------UIFlowWndMovie_MENU_PowerKeyCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_MENU_PowerKey)
+EVENT_END
+
+//---------------------UIFlowWndMovie_ADAS_Alert_DisplayCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndMovie_ADAS_Alert_Display)
+CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_LDWS_Alert)
+CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_FCWS_Alert)
+CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_SNG_Alert)
 CTRL_LIST_END
 
-//----------------------UIFlowWndMovie_TipsBarCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_TipsBar)
+//----------------------UIFlowWndMovie_ADAS_Alert_DisplayCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Alert_Display)
 EVENT_END
 
-//----------------------UIFlowWndMovie_TipsIconSOSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_TipsIconSOS)
+//----------------------UIFlowWndMovie_StatusICN_LDWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_StatusICN_LDWS_Alert)
 EVENT_END
 
-//----------------------UIFlowWndMovie_TipsIconPLAYBACKCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_TipsIconPLAYBACK)
+//----------------------UIFlowWndMovie_StatusICN_FCWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_StatusICN_FCWS_Alert)
 EVENT_END
 
-//----------------------UIFlowWndMovie_TipsIconSETTINGCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_TipsIconSETTING)
-EVENT_END
-
-//----------------------UIFlowWndMovie_TipsIconCLOSELCDCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_TipsIconCLOSELCD)
-EVENT_END
-
-//---------------------UIFlowWndMovie_GPS_INFOCtrl Control List---------------------------
-CTRL_LIST_BEGIN(UIFlowWndMovie_GPS_INFO)
-CTRL_LIST_ITEM(UIFlowWndMovie_DATE_Y3)
-CTRL_LIST_ITEM(UIFlowWndMovie_DATE_Y2)
-CTRL_LIST_ITEM(UIFlowWndMovie_DATE_Y1)
-CTRL_LIST_ITEM(UIFlowWndMovie_DATE_Y0)
-CTRL_LIST_ITEM(UIFlowWndMovie_DATE_M1)
-CTRL_LIST_ITEM(UIFlowWndMovie_DATE_M0)
-CTRL_LIST_ITEM(UIFlowWndMovie_DATE_D1)
-CTRL_LIST_ITEM(UIFlowWndMovie_DATE_D0)
-CTRL_LIST_ITEM(UIFlowWndMovie_TIME_AMPM)
-CTRL_LIST_ITEM(UIFlowWndMovie_TIME_H1)
-CTRL_LIST_ITEM(UIFlowWndMovie_TIME_H0)
-CTRL_LIST_ITEM(UIFlowWndMovie_TIME_M1)
-CTRL_LIST_ITEM(UIFlowWndMovie_TIME_M0)
-CTRL_LIST_ITEM(UIFlowWndMovie_PANEL_SPEED)
-CTRL_LIST_ITEM(UIFlowWndMovie_SPEED_N2)
-CTRL_LIST_ITEM(UIFlowWndMovie_SPEED_N1)
-CTRL_LIST_ITEM(UIFlowWndMovie_SPEED_N0)
-CTRL_LIST_ITEM(UIFlowWndMovie_SPEED_UNIT)
-CTRL_LIST_ITEM(UIFlowWndMovie_GPS_STATUS)
-CTRL_LIST_ITEM(UIFlowWndMovie_COMPASS)
-CTRL_LIST_END
-
-//----------------------UIFlowWndMovie_GPS_INFOCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_GPS_INFO)
-EVENT_END
-
-//----------------------UIFlowWndMovie_DATE_Y3Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_DATE_Y3)
-EVENT_END
-
-//----------------------UIFlowWndMovie_DATE_Y2Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_DATE_Y2)
-EVENT_END
-
-//----------------------UIFlowWndMovie_DATE_Y1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_DATE_Y1)
-EVENT_END
-
-//----------------------UIFlowWndMovie_DATE_Y0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_DATE_Y0)
-EVENT_END
-
-//----------------------UIFlowWndMovie_DATE_M1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_DATE_M1)
-EVENT_END
-
-//----------------------UIFlowWndMovie_DATE_M0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_DATE_M0)
-EVENT_END
-
-//----------------------UIFlowWndMovie_DATE_D1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_DATE_D1)
-EVENT_END
-
-//----------------------UIFlowWndMovie_DATE_D0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_DATE_D0)
-EVENT_END
-
-//----------------------UIFlowWndMovie_TIME_AMPMCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_TIME_AMPM)
-EVENT_END
-
-//----------------------UIFlowWndMovie_TIME_H1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_TIME_H1)
-EVENT_END
-
-//----------------------UIFlowWndMovie_TIME_H0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_TIME_H0)
-EVENT_END
-
-//----------------------UIFlowWndMovie_TIME_M1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_TIME_M1)
-EVENT_END
-
-//----------------------UIFlowWndMovie_TIME_M0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_TIME_M0)
-EVENT_END
-
-//----------------------UIFlowWndMovie_PANEL_SPEEDCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_PANEL_SPEED)
-EVENT_END
-
-//----------------------UIFlowWndMovie_SPEED_N2Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_SPEED_N2)
-EVENT_END
-
-//----------------------UIFlowWndMovie_SPEED_N1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_SPEED_N1)
-EVENT_END
-
-//----------------------UIFlowWndMovie_SPEED_N0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_SPEED_N0)
-EVENT_END
-
-//----------------------UIFlowWndMovie_SPEED_UNITCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_SPEED_UNIT)
-EVENT_END
-
-//----------------------UIFlowWndMovie_GPS_STATUSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_GPS_STATUS)
-EVENT_END
-
-//----------------------UIFlowWndMovie_COMPASSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_COMPASS)
+//----------------------UIFlowWndMovie_StatusICN_SNG_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_StatusICN_SNG_Alert)
 EVENT_END
 

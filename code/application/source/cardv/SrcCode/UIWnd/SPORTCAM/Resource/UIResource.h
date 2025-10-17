@@ -48,7 +48,7 @@
 
 extern UINT32 Get_LanguageTable(void);
 
-#if 1
+#if 0
 //temp define for compile
 #define ICONID_NULL_TMP             0xFFFF
 //#define ICON_MENU_HDR               ICON_HDR

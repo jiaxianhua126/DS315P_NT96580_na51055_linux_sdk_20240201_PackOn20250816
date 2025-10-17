@@ -273,8 +273,8 @@ void FlowWiFiMovie_IconDrawMaxRecTime(BOOL bShow)
 
     if (GxStrg_GetDevice(0) == NULL)
     {
-        //snprintf(g_RecMaxTimeStr, 20, "%02d:%02d:%02d", 0, 0, 0);
-        snprintf(g_RecMaxTimeStr, 20, "%02d:%02d", 0, 0);
+        snprintf(g_RecMaxTimeStr, 20, "%02d:%02d:%02d", 0, 0, 0);
+        //snprintf(g_RecMaxTimeStr, 20, "%02d:%02d", 0, 0);
         UxStatic_SetData(&UIFlowWndWiFiMovie_Static_maxtimeCtrl, STATIC_VALUE, Txt_Pointer(g_RecMaxTimeStr));
         UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_maxtimeCtrl, TRUE);
         //No Storage, direct to return.
@@ -307,24 +307,17 @@ void FlowWiFiMovie_IconDrawMaxRecTime(BOOL bShow)
 
     if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED)
     {
-        //snprintf(g_RecMaxTimeStr, 20, "%02d:%02d:%02d", 0, 0, 0);
-        snprintf(g_RecMaxTimeStr, 20, "%02d:%02d", 0, 0);
+        snprintf(g_RecMaxTimeStr, 20, "%02d:%02d:%02d", 0, 0, 0);
+        //snprintf(g_RecMaxTimeStr, 20, "%02d:%02d", 0, 0);
     }
     else
     {
-        //snprintf(g_RecMaxTimeStr, 20, "%02d:%02d:%02d", g_RecMaxTime/3600,(g_RecMaxTime%3600)/60, (g_RecMaxTime%3600)%60);
-        snprintf(g_RecMaxTimeStr, 20, "%02d:%02d", g_RecMaxTime/3600,(g_RecMaxTime%3600)/60);
+        snprintf(g_RecMaxTimeStr, 20, "%02d:%02d:%02d", g_RecMaxTime/3600,(g_RecMaxTime%3600)/60, (g_RecMaxTime%3600)%60);
+        //snprintf(g_RecMaxTimeStr, 20, "%02d:%02d", g_RecMaxTime/3600,(g_RecMaxTime%3600)/60);
     }
     UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_timeCtrl, FALSE);
-    UxStatic_SetData(&UIFlowWndWiFiMovie_Static_maxtimeCtrl,STATIC_VALUE,Txt_Pointer(g_RecMaxTimeStr));
-    if ((SysGetFlag(FL_MOVIE_TIMELAPSE_REC) != MOVIE_TIMELAPSEREC_OFF)/*&&(bWiFiTimelapse_Rec == TRUE)*/)
-    {
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_maxtimeCtrl, FALSE);
-    }
-    else
-    {
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_maxtimeCtrl, TRUE);
-    }
+    UxStatic_SetData(&UIFlowWndWiFiMovie_Static_maxtimeCtrl, STATIC_VALUE, Txt_Pointer(g_RecMaxTimeStr));
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_maxtimeCtrl, TRUE);
 }
 
 void FlowWiFiMovie_IconDrawRecTime(BOOL bShow)
@@ -340,24 +333,11 @@ void FlowWiFiMovie_IconDrawRecTime(BOOL bShow)
     case WIFI_MOV_ST_RECORD:
         g_RecCurrTime = FlowWiFiMovie_GetRecCurrTime();
         memset((void *)g_RecCurrTimeStr, 0, sizeof(g_RecCurrTimeStr));
-        //snprintf(g_RecCurrTimeStr, 20, "%02d:%02d:%02d", g_RecCurrTime/3600,(g_RecCurrTime%3600)/60, (g_RecCurrTime%3600)%60);
-        snprintf(g_RecCurrTimeStr, 20, "%02d:%02d", (g_RecCurrTime%3600)/60, (g_RecCurrTime%3600)%60);
-        UxStatic_SetData(&UIFlowWndWiFiMovie_Static_timeCtrl,STATIC_VALUE,Txt_Pointer(g_RecCurrTimeStr));
+        snprintf(g_RecCurrTimeStr, 20, "%02d:%02d:%02d", g_RecCurrTime/3600,(g_RecCurrTime%3600)/60, (g_RecCurrTime%3600)%60);
+        //snprintf(g_RecCurrTimeStr, 20, "%02d:%02d", (g_RecCurrTime%3600)/60, (g_RecCurrTime%3600)%60);
+        UxStatic_SetData(&UIFlowWndWiFiMovie_Static_timeCtrl, STATIC_VALUE, Txt_Pointer(g_RecCurrTimeStr));
         UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_timeCtrl, TRUE);
         break;
-    }
-}
-void FlowWiFiMovie_DrawPIM(BOOL bShow)
-{
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_StaticIcon_PIMCtrl, bShow);
-}
-
-void FlowWiFiMovie_IconDrawSOS(BOOL bShow)
-{
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOSCtrl, bShow);
-    if (bShow == FALSE)
-    {
-        FlowMovie_SetSOSStatusNow(FALSE);
     }
 }
 
@@ -396,16 +376,22 @@ void FlowWiFiMovie_IconDrawDateTime(BOOL bShow)
     UxCtrl_SetShow(&UIFlowWndWiFiMovie_HMS_StaticCtrl, TRUE);
 }
 
-void FlowWiFiMovie_IconDrawBattery(BOOL bShow)
+void FlowWiFiMovie_IconDrawRec(BOOL bShow)
+{
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_PanelCtrl, bShow);
+}
+
+void FlowWiFiMovie_IconDrawEV(BOOL bShow)
 {
 #if 0
     if (bShow == FALSE)
     {
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_batteryCtrl,FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_EVCtrl, FALSE);
         return;
     }
-    UxState_SetData(&UIFlowWndWiFiMovie_Status_batteryCtrl,STATE_CURITEM,GetBatteryLevel());
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_batteryCtrl, bShow);
+
+    UxState_SetData(&UIFlowWndWiFiMovie_StatusICN_EVCtrl, STATE_CURITEM, SysGetFlag(FL_EV));
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_EVCtrl, TRUE);
 #endif
 }
 
@@ -437,146 +423,319 @@ void FlowWiFiMovie_IconDrawStorage(BOOL bShow)
 #endif
 }
 
-void FlowWiFiMovie_IconDrawWiFiConnected(BOOL bShow)
+void FlowWiFiMovie_IconDrawCyclicRec(BOOL bShow)
 {
-    bWiFiConnected = bShow;
+#if 0
     if (bShow == FALSE)
     {
-        UxState_SetData(&UIFlowWndWiFiMovie_Status_WiFi_ConnectedCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_Status_WiFi_Connected_ICON_WIFI);
-    }
-    else
-    {
-        UxState_SetData(&UIFlowWndWiFiMovie_Status_WiFi_ConnectedCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_Status_WiFi_Connected_ICON_WIFI_CONNECTED_SMALL);
-    }
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_WiFi_ConnectedCtrl,TRUE);
-}
-
-void FlowWiFiMovie_IconDrawWiFiDisConnected(BOOL bShow)
-{
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_WiFi_DisconnectedCtrl, bShow);
-}
-
-void FlowWiFiMovie_IconDrawDZoom(BOOL bShow)
-{
-    if (bShow == FALSE)
-    {
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Zoom_StaticCtrl,FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_CyclicRecCtrl, FALSE);
         return;
     }
-    
-#if 0//(PHOTO_MODE==ENABLE)
-    UxStatic_SetData(&UIFlowWndWiFiMovie_Zoom_StaticCtrl,STATIC_VALUE,Txt_Pointer(Get_DZoomRatioString()));
-    bShow = (DZOOM_IDX_GET() > DZOOM_IDX_MIN())? TRUE : FALSE;
+
+    UxState_SetData(&UIFlowWndWiFiMovie_Status_CyclicRecCtrl, STATE_CURITEM, SysGetFlag(FL_MOVIE_CYCLIC_REC));
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_CyclicRecCtrl, TRUE);
 #endif
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Zoom_StaticCtrl,bShow);
 }
 
-void FlowWiFiMovie_IconDrawAudio(BOOL bShow)
+void FlowWiFiMovie_IconDrawHDR(BOOL bShow)
 {
+#if 0
     if (bShow == FALSE)
     {
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_AudioCtrl,FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_HDRCtrl, FALSE);
         return;
     }
-    UxState_SetData(&UIFlowWndWiFiMovie_Status_AudioCtrl,STATE_CURITEM,SysGetFlag(FL_MOVIE_AUDIO));
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_AudioCtrl,bShow);
+
+	UxState_SetData(&UIFlowWndWiFiMovie_Status_HDRCtrl, STATE_CURITEM, SysGetFlag(FL_MOVIE_WDR));//FL_MOVIE_HDR
+	UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_HDRCtrl, TRUE);
+#endif
 }
 
 void FlowWiFiMovie_IconDrawMotionDet(BOOL bShow)
 {
     if (bShow == FALSE)
     {
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_MotionDetCtrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_MotionDet1Ctrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_MotionDet2Ctrl, FALSE);
         return;
     }
 
-    UxState_SetData(&UIFlowWndWiFiMovie_Status_MotionDetCtrl, STATE_CURITEM, SysGetFlag(FL_MOVIE_MOTION_DET));
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_MotionDetCtrl, bShow);
+    if (UI_GetData(FL_MOVIE_AUDIO) == MOVIE_AUDIO_ON)
+    {
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_MotionDet1Ctrl, TRUE);
+    }
+    else
+    {
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_MotionDet2Ctrl, TRUE);
+    }
+}
+
+void FlowWiFiMovie_IconDrawBattery(BOOL bShow)
+{
+#if 0
+    if (bShow == FALSE)
+    {
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_batteryCtrl, FALSE);
+        return;
+    }
+
+    UxState_SetData(&UIFlowWndWiFiMovie_Status_batteryCtrl, STATE_CURITEM, GetBatteryLevel());
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_batteryCtrl, bShow);
+#endif
+}
+
+void FlowWiFiMovie_IconDrawDZoom(BOOL bShow)
+{
+#if 0
+    if (bShow == FALSE)
+    {
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Zoom_StaticCtrl, FALSE);
+        return;
+    }
+
+    UxStatic_SetData(&UIFlowWndWiFiMovie_Zoom_StaticCtrl, STATIC_VALUE, Txt_Pointer(Get_DZoomRatioString()));
+	bShow = (DZOOM_IDX_GET() > DZOOM_IDX_MIN()) ? TRUE : FALSE;
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Zoom_StaticCtrl, bShow);
+#endif
+}
+
+void FlowWiFiMovie_DrawPIM(BOOL bShow)
+{
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_StaticIcon_PIMCtrl, bShow);
+}
+
+void FlowWiFiMovie_IconDrawSOS(BOOL bShow)
+{
+    INT8 gpsstatus;
+    gpsstatus = GetGPSSignalStatus();
+
+    if (!bShow)
+    {
+        FlowMovie_SetSOSStatusNow(FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOSCtrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOS1Ctrl, FALSE);
+    }
+    else
+    {
+        if (gpsstatus < 0)
+        {    
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOS1Ctrl, TRUE);	
+        }
+        else
+        {
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOSCtrl, TRUE);
+        }
+    }
+}
+
+void FlowWiFiMovie_IconDrawAudio(BOOL bShow)
+{
+    if (bShow == FALSE)
+    {
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_AudioCtrl, FALSE);
+        return;
+    }
+	UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_AudioCtrl, FALSE);
+    if (UI_GetData(FL_MOVIE_AUDIO) == MOVIE_AUDIO_ON)
+    {
+        UxState_SetData(&UIFlowWndWiFiMovie_Status_AudioCtrl, STATE_CURITEM, SysGetFlag(FL_MOVIE_AUDIO));
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_AudioCtrl, TRUE);
+		#if 0
+        if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_MotionDet2Ctrl))
+        {
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_MotionDet2Ctrl, FALSE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_MotionDet1Ctrl, TRUE);
+        }
+        if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl))
+        {
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl, FALSE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse1Ctrl, TRUE);
+        }
+		#endif
+    } 
+    else
+    {
+        UxState_SetData(&UIFlowWndWiFiMovie_Status_AudioCtrl, STATE_CURITEM, SysGetFlag(FL_MOVIE_AUDIO));
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_AudioCtrl, TRUE);
+		#if 0
+        if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_MotionDet1Ctrl))
+        {
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_MotionDet2Ctrl, TRUE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_MotionDet1Ctrl, FALSE);
+        }
+        if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_TimeLapse1Ctrl))
+        {
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl, TRUE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse1Ctrl, FALSE);
+        }
+		#endif
+    }
 }
 
 void FlowWiFiMovie_IconDrawTimelapse(BOOL bShow)
 {
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_StaticIcon_TimelapseCtrl,bShow);
+	VControl *pCtrl = &UIFlowWndWiFiMovie_Static_TimeLapse1Ctrl;
+
+    if (bShow == FALSE)
+    {
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse1Ctrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl, FALSE);
+        return;
+    }
+
+    if (!isACCTrigParkMode) {
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse1Ctrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl, FALSE);
+        return;
+    }
+
+    switch (UI_GetData(FL_PARKING_MODE)) {
+    case PARKING_MODE_MOTION_DET:
+		UxStatic_SetData(pCtrl,STATIC_VALUE,ICON_PARKINGMODE_MD);
+        UxCtrl_SetShow(pCtrl, TRUE);
+        break;
+
+    case PARKING_MODE_ON_1FPS:
+    case PARKING_MODE_ON_2FPS:
+    case PARKING_MODE_ON_3FPS:
+    case PARKING_MODE_ON_5FPS:
+    case PARKING_MODE_ON_10FPS:
+		UxStatic_SetData(pCtrl,STATIC_VALUE,ICON_AUTO_1FPS);//ICON_PARKINGMODE_TL
+        UxCtrl_SetShow(pCtrl, TRUE);
+        break;
+
+    case PARKING_MODE_LOW_BITRATE:
+		UxStatic_SetData(pCtrl,STATIC_VALUE,ICON_PARKINGMODE_LB);
+        UxCtrl_SetShow(pCtrl, TRUE);
+        break;
+	/*case PARKING_MODE_GSENSOR_DET:
+		UxStatic_SetData(pCtrl,STATIC_VALUE,ICON_PARKINGMODE_GSENSOR);
+		UxCtrl_SetShow(pCtrl, TRUE);
+		break;
+	case PARKING_MODE_MOTION_GSENSOR_DET:
+		UxStatic_SetData(pCtrl,STATIC_VALUE,ICON_PARKINGMODE_GSENSOR);
+		UxCtrl_SetShow(pCtrl, TRUE);
+		break;*///harrison ds315
+
+    default:
+    case PARKING_MODE_OFF:
+        UxCtrl_SetShow(pCtrl, FALSE);
+        break;
+    }
+	#if 0///harrison ds315
+	if((UI_GetData(FL_PARKING_MODE)) == PARKING_MODE_MOTION_GSENSOR_DET)
+	{
+		UxStatic_SetData(&UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl,STATIC_VALUE,ICON_PARKINGMODE_MD);
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl, TRUE);
+	}
+	else
+	{		
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl, FALSE);
+	}
+	#endif
 }
-#if 1
+
+void FlowWiFiMovie_DrawFolderCheck(BOOL bShow)
+{
+	if(bShow)
+	{
+		UxState_SetItemData(&UIFlowWndWiFiMovie_FolderCheck_StatusTxtCtrl, UIFlowWndWiFiMovie_FolderCheck_StatusTxt_STRID_FORMAT_WARNING1, STATE_ITEM_STRID, STRID_REAR_ERROR);
+	}
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_FolderCheck_StatusTxtCtrl, bShow);
+}
+
+void FlowWiFiMovie_DrawCustomerType(BOOL bShow)
+{
+#if 0
+    if (bShow == FALSE)
+    {
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_CustomTypeCtrl, FALSE);
+        return;
+    }
+
+    UxStatic_SetData(&UIFlowWndWiFiMovie_CustomTypeCtrl, STATIC_VALUE, Txt_Pointer("AUKEY DR02 P"));
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_CustomTypeCtrl, TRUE);
+#endif
+}
+
 extern CHAR *Get_GpsSpeedString(void);
-extern char *GPS_OSDSpeedData(void);
 extern CHAR Speed1[32];
-extern CHAR GPSSpeedData[32];
-static UINT32 g_year = DEF_YEAR;
+//static UINT32 g_year = DEF_YEAR;
 static UINT32 g_Count = 0;
+extern INT8 uitpmsstatus;
 extern BOOL GPS_UpdateDateTime;
-extern BOOL g_GPS_PlaySound_onetime;
+#if defined(_GPS_EDOG_)
+extern BOOL EdogFstCnetd;
+//extern BOOL g_GPS_PlaySound_onetime;
+#elif defined(_GPS_EDOG_UNIQUE_SKY_)
+extern BOOL EdogFstCnetd;
+//extern BOOL g_GPS_PlaySound_onetime;
 #endif
 void FlowWiFiMovie_IconDrawGPSSignal(BOOL bShow)
 {
-	#if 1
-    //static UINT32 g_year = 2017;
-    //static UINT32 g_Count = 0;
     INT8 gpsstatus = 0;
     RMCINFO RMCInfo;
-    struct tm Curr_DateTime = {0};
-	static UINT8 compassUpdate_cnt = 0;
+    //struct tm Curr_DateTime = {0};
+
     if (bShow == FALSE)
     {
         g_Count = 0;
         UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCtrl, FALSE);
         UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCtrl, FALSE);
         UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCCtrl, FALSE);
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSCtrl, FALSE);
-		FlowWiFiMovie_IconHideCompass();
         return;
     }
 
     if (UI_GetData(FL_GPS) == GPS_OFF)
     {
-        g_Count = 0;
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCtrl, FALSE);
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCtrl, FALSE);
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCCtrl, FALSE);
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSCtrl, FALSE);
-		FlowWiFiMovie_IconHideCompass();
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCtrl,FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCtrl,FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCCtrl,FALSE);
     }
     else
     {
         Get_GpsSpeedString();
-        GPS_OSDSpeedData();
         gpsstatus = GetGPSSignalStatus();
         if (gpsstatus < 0)
         {
-            //if (GPS_UpdateDateTime)
+            g_Count = 0;
+            //GPS_UpdateDateTime = FALSE;
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCtrl,FALSE);
+            //UxStatic_SetData(&UIFlowWndWiFiMovie_GPSSignalCtrl,STATIC_VALUE,Txt_Pointer(Get_GpsSpeedString()));
+            UxStatic_SetData(&UIFlowWndWiFiMovie_GPSSignalCtrl,STATIC_VALUE,Txt_Pointer(Speed1));
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCtrl,FALSE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCCtrl,FALSE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_SMALL_ICON2Ctrl,FALSE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSN_SMALL_ICON2Ctrl,FALSE);
+            //UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCtrl,TRUE);
+            if(UxCtrl_IsShow(&UIFlowWndWiFiMovie_SOSCtrl))
             {
-                g_Count = 0;
-                //GPS_UpdateDateTime = FALSE;
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOS1Ctrl,TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOSCtrl,FALSE);
             }
-            UxStatic_SetData(&UIFlowWndWiFiMovie_GPSSignalCtrl, STATIC_VALUE, Txt_Pointer("No GPS"));//Speed1
-            UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCtrl, TRUE);
-            UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCtrl, FALSE);
-            UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCCtrl, FALSE);
-            UxState_SetData(&UIFlowWndWiFiMovie_GPSCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_GPS_ICONID_NULL);
-            UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSCtrl, FALSE);
-			FlowWiFiMovie_IconHideCompass();
         }
         else
         {
-            if (gpsstatus)
+            if (gpsstatus == 1)
             {
-                UxStatic_SetData(&UIFlowWndWiFiMovie_GPSSignalCCCtrl, STATIC_VALUE, Txt_Pointer(GPSSpeedData));//Speed1
-                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCtrl, FALSE);
-                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCtrl, FALSE);
-                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCCtrl, TRUE);
-                UxState_SetData(&UIFlowWndWiFiMovie_GPSCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_GPS_ICON_GPS_ON);
-				++compassUpdate_cnt;
-				if(compassUpdate_cnt%10==0)
-				{
-					FlowWiFiMovie_IconDrawCompass();
-				}
-				
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCCtrl,FALSE);
+                UxStatic_SetData(&UIFlowWndWiFiMovie_GPSSignalCCCtrl,STATIC_VALUE,Txt_Pointer(Speed1));
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCtrl,FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCtrl,FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_SMALL_ICON2Ctrl,TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSN_SMALL_ICON2Ctrl,FALSE);
+                if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_SOS1Ctrl))
+                {
+                    UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOS1Ctrl,FALSE);
+                    UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOSCtrl,TRUE);
+                }
+                //UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCCtrl,TRUE);
                 if (TRUE == GPSRec_GetRMCDate(&RMCInfo))
                 {
                     if (GPS_UpdateDateTime == FALSE)
                     {
                         g_Count++;
+						#if 0 //harrison ds315
 						#if defined(_GPS_EDOG_)
 						if ((g_Count == 1) && !g_GPS_PlaySound_onetime)
                         {
@@ -593,7 +752,11 @@ void FlowWiFiMovie_IconDrawGPSSignal(BOOL bShow)
 						#endif
                         //rtc_waitCSETDone();
                         //debug_err(("FlowMovie_GPS= %d %d %d %d \r\n",RMCInfo.Year,RMCInfo.Hour,RMCInfo.Day,g_Count));
-                        g_year = 2000 + RMCInfo.Year;//2023 
+                        g_year = 2000 + RMCInfo.Year;
+                        if ((g_year < MIN_YEAR)||(g_year > MAX_YEAR))
+                        {
+                            g_year = DEF_YEAR;
+                        }
 
                         //rtc_setDate(RMCInfo.Year, RMCInfo.Month, RMCInfo.Day);
                         if (g_Count%10 == 0)
@@ -604,18 +767,19 @@ void FlowWiFiMovie_IconDrawGPSSignal(BOOL bShow)
                             Curr_DateTime.tm_hour = RMCInfo.Hour;
                             Curr_DateTime.tm_min = RMCInfo.Minute;
                             Curr_DateTime.tm_sec = RMCInfo.Second;
-                            hwclock_set_time(TIME_ID_CURRENT, Curr_DateTime, 0);
+                            HwClock_SetTime(TIME_ID_CURRENT, Curr_DateTime, 0);
                             g_Count = 0;
                             //GPS_UpdateDateTime = TRUE;
                             //debug_err(("FlowMovie_GPS##= %d %d %d \r\n",g_year,RMCInfo.Hour,RMCInfo.Day));
 
-							#if(defined(_NVT_ETHREARCAM_RX_))				   
+                            #if(defined(_NVT_ETHREARCAM_RX_))                  
 							#if 0
                             UINT32 i;
                             for (i=0; i<ETH_REARCAM_CAPS_COUNT; i++){
                                 if(EthCamNet_GetEthLinkStatus(i)==ETHCAM_LINK_UP){
                                     //sync time
 									EthCam_SendXMLCmdData(i, ETHCAM_PORT_DEFAULT , ETHCAM_CMD_SYNC_TIME, 0, (UINT8 *)&Curr_DateTime, sizeof(struct tm));
+
                                 }
                             }
 							#else
@@ -624,441 +788,421 @@ void FlowWiFiMovie_IconDrawGPSSignal(BOOL bShow)
 								BKG_PostEvent(NVTEVT_BKW_ETHCAM_SYNC_TIME_ONLY);
 							}
 							#endif
-							#endif
+                            #endif
                         }
+						#endif
                     }
                 }
             }
-            else //if(gpsstatus==0)
+            else if(gpsstatus == 0)
             {
-                //if (GPS_UpdateDateTime)
+                g_Count = 0;
+                //GPS_UpdateDateTime = FALSE;
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCtrl,FALSE);
+                //UxStatic_SetData(&UIFlowWndWiFiMovie_GPSSignalCCtrl,STATIC_VALUE,Txt_Pointer(Get_GpsSpeedString()));
+                UxStatic_SetData(&UIFlowWndWiFiMovie_GPSSignalCCtrl,STATIC_VALUE,Txt_Pointer(Speed1));
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCtrl,FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCCtrl,FALSE);
+                //UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCtrl,TRUE);
+
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_SMALL_ICON2Ctrl,FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSN_SMALL_ICON2Ctrl,TRUE);
+                if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_SOS1Ctrl))
                 {
-                    g_Count = 0;
-                    //GPS_UpdateDateTime = FALSE;
+                    UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOS1Ctrl,FALSE);
+                    UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOSCtrl,TRUE);
                 }
-                UxStatic_SetData(&UIFlowWndWiFiMovie_GPSSignalCCtrl, STATIC_VALUE, Txt_Pointer(GPSSpeedData));//Speed1
-                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCtrl, FALSE);
-                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCtrl, TRUE);
-                UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSSignalCCCtrl, FALSE);
-                UxState_SetData(&UIFlowWndWiFiMovie_GPSCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_GPS_ICON_GPS_OFF);
             }
-            UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSCtrl, TRUE);
         }
-        Ux_Redraw();
     }
-	#endif
+    Ux_Redraw();
+}
+
+void FlowWiFiMovie_IconDrawWiFiConnected(BOOL bShow)
+{
+    bWiFiConnected = bShow;
+
+    if (bShow == FALSE)
+    {
+        UxState_SetData(&UIFlowWndWiFiMovie_Status_WiFi_ConnectedCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_Status_WiFi_Connected_ICON_WIFI);
+    }
+    else
+    {
+        UxState_SetData(&UIFlowWndWiFiMovie_Status_WiFi_ConnectedCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_Status_WiFi_Connected_ICON_WIFI_CONNECTED_SMALL);
+    }
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_WiFi_ConnectedCtrl, TRUE);
+}
+
+void FlowWiFiMovie_IconDrawWiFiDisConnected(BOOL bShow)
+{
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_WiFi_DisconnectedCtrl, bShow);
 }
 
 void FlowWiFiMovie_OnTimer1SecIndex(void)
 {
-    if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_YMD_StaticCtrl)
-		&&!UxCtrl_IsShow(&UIFlowWndWiFiMovie_Panel_SSID_KEYCtrl))
+    if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_YMD_StaticCtrl))
     {
         FlowWiFiMovie_IconDrawDateTime(TRUE);
     }
 }
 
-void FlowWiFiMovie_IconDrawTPMS(BOOL bShow)
+void FlowWiFiMovie_IconDrawSNG(BOOL bShow)
 {
-    if (bShow == FALSE)
+    INT8 gpsstatus;
+    gpsstatus = GetGPSSignalStatus();
+
+    if(!bShow)
     {
-        UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusIcon_TPMSCtrl, FALSE);
-        return;
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNGCtrl,FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG1Ctrl,FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG2Ctrl,FALSE);   
+        return;		
     }
-
-    UxState_SetData(&UIFlowWndWiFiMovie_StatusIcon_TPMSCtrl, STATE_CURITEM,UIFlowWndWiFiMovie_StatusIcon_TPMS_ICON_TPMS_ALARM);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusIcon_TPMSCtrl, TRUE);
-}
-
-void FlowWiFiMovie_IconDrawCompass(void)
-{
-	switch(GPSRec_getAngle())
-	{
-		case NORTH_EAST:
-			UxState_SetData(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_NORTH_EAST);
-			break;
-		case EAST:
-			UxState_SetData(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_EAST);
-			break;
-		case SOUTH_EAST:
-			UxState_SetData(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_SOUTH_EAST);
-			break;
-		case SOUTH:
-			UxState_SetData(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_SOUTH);
-			break;
-		case SOUTH_WEST:
-			UxState_SetData(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_SOUTH_WEST);
-			break;
-		case WEST:
-			UxState_SetData(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_WEST);
-			break;
-		case NORTH_WEST:
-			UxState_SetData(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_NORTH_WEST);
-			break;
-		case NORTH:
-			UxState_SetData(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_StatusIcon_Compass_ICON_NORTH);
-			break;
-		default:
-			UxState_SetData(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl,STATE_CURITEM,UIFlowWndWiFiMovie_StatusIcon_Compass_ICONID_NULL);
-			break;
-	}
-   UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl, TRUE);
-}
-
-void FlowWiFiMovie_IconHideCompass(void)
-{
-   UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusIcon_CompassCtrl, FALSE);
-}
-
-#if 0//(GPS_PANEL_FUNC==ENABLE)
-void FlowWiFiMovie_IconDrawTimeDate(void)
-{
-    struct tm Curr_DateTime;
-    UINT32 uiHour0,uiHour1,uiMin0,uiMin1;//uiS1,uiS0;
-	UINT32 uiYear0,uiYear1,uiYear2,uiYear3,uiMon0,uiMon1,uiDay0,uiDay1;
-
-    FlowWiFiMovie_IconHideTimeDate(); 
 	
-	GxTime_GetTime(&Curr_DateTime);
-
-	//UxCtrl_SetShow(&UIFlowWndWiFiMovie_Clock_AMPMCtrl, FALSE);
-
-#if 1 //M- 20221215
-	//static char   itemHR_Buf[32] = "00";
-	//static char   itemAMPM_Buf[32] = "AM";
-
-	if ((Curr_DateTime.tm_hour) <= 11) {
-		//snprintf(itemAMPM_Buf, 32, "AM");
-		UxStatic_SetData(&UIFlowWndWiFiMovie_TIME_AMPMCtrl, STATIC_VALUE, ICON_AM);
-	} else {
-		//snprintf(itemAMPM_Buf, 32, "PM");
-		UxStatic_SetData(&UIFlowWndWiFiMovie_TIME_AMPMCtrl, STATIC_VALUE, ICON_PM);
-	}
-	if ((Curr_DateTime.tm_hour) <= 12) {
-		//snprintf(itemHR_Buf, 32, "%02ld", (Curr_DateTime.tm_hour));
-	} else {
-		//snprintf(itemHR_Buf, 32, "%02ld", (Curr_DateTime.tm_hour)-12);
-		Curr_DateTime.tm_hour = (Curr_DateTime.tm_hour)-12;
-	}
-
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_TIME_AMPMCtrl, TRUE);
-#endif
-
-    //YEAR
-    uiYear0 = ((Curr_DateTime.tm_year)%10);
-    uiYear1 = (((Curr_DateTime.tm_year)/10)%10);
-	uiYear2 = (((Curr_DateTime.tm_year)/100)%10);
-	uiYear3 = ((Curr_DateTime.tm_year)/1000);
-    //MONTH
-    uiMon0 = ((Curr_DateTime.tm_mon)%10);
-    uiMon1 = ((Curr_DateTime.tm_mon)/10);
-    //DAY
-    uiDay0 = ((Curr_DateTime.tm_mday)%10);
-    uiDay1 = ((Curr_DateTime.tm_mday)/10);
-
-    //HOUR
-    uiHour0 = ((Curr_DateTime.tm_hour)%10);
-    uiHour1 = ((Curr_DateTime.tm_hour)/10);
-    //MIN
-    uiMin0 = ((Curr_DateTime.tm_min)%10);
-    uiMin1 = ((Curr_DateTime.tm_min)/10);
-
-    UxStatic_SetData(&UIFlowWndWiFiMovie_DATE_Y3Ctrl,STATIC_VALUE,FlowWndMovie_DrawDateNum(uiYear3));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_DATE_Y2Ctrl,STATIC_VALUE,FlowWndMovie_DrawDateNum(uiYear2));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_DATE_Y1Ctrl,STATIC_VALUE,FlowWndMovie_DrawDateNum(uiYear1));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_DATE_Y0Ctrl,STATIC_VALUE,FlowWndMovie_DrawDateNum(uiYear0));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_DATE_M1Ctrl,STATIC_VALUE,FlowWndMovie_DrawDateNum(uiMon1));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_DATE_M0Ctrl,STATIC_VALUE,FlowWndMovie_DrawDateNum(uiMon0));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_DATE_D1Ctrl,STATIC_VALUE,FlowWndMovie_DrawDateNum(uiDay1));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_DATE_D0Ctrl,STATIC_VALUE,FlowWndMovie_DrawDateNum(uiDay0));
-
-    UxStatic_SetData(&UIFlowWndWiFiMovie_TIME_H1Ctrl,STATIC_VALUE,FlowWndMovie_DrawTimeNum(uiHour1));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_TIME_H0Ctrl,STATIC_VALUE,FlowWndMovie_DrawTimeNum(uiHour0));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_TIME_M1Ctrl,STATIC_VALUE,FlowWndMovie_DrawTimeNum(uiMin1));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_TIME_M0Ctrl,STATIC_VALUE,FlowWndMovie_DrawTimeNum(uiMin0));
-
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_Y3Ctrl,TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_Y2Ctrl,TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_Y1Ctrl,TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_Y0Ctrl,TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_M1Ctrl,TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_M0Ctrl,TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_D1Ctrl,TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_D0Ctrl,TRUE);
-
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_TIME_H1Ctrl,TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_TIME_H0Ctrl,TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_TIME_M1Ctrl,TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_TIME_M0Ctrl,TRUE);
-
-    //Ux_Redraw();
-}
-
-void FlowWiFiMovie_IconHideTimeDate(void)
-{
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_Y3Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_Y2Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_Y1Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_Y0Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_M1Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_M0Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_D1Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_DATE_D0Ctrl,FALSE);
-
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_TIME_AMPMCtrl, FALSE);
-
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_TIME_H1Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_TIME_H0Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_TIME_M1Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_TIME_M0Ctrl,FALSE);
-}
-
-void FlowWiFiMovie_IconDrawSpeed(void)
-{
-    UINT32 uiN0,uiN1,uiN2,Cur_GPS_Speed;
-
-	Cur_GPS_Speed = (UINT32)GPSRec_GetGPS_Speed();
-    FlowWiFiMovie_IconHideSpeed(); 
-
-	if (Cur_GPS_Speed < 6) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_0);
-	} else if ((Cur_GPS_Speed >= 6)&& (Cur_GPS_Speed < 16)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_10);
-	} else if ((Cur_GPS_Speed >= 16)&& (Cur_GPS_Speed < 26)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_20);
-	} else if ((Cur_GPS_Speed >= 26)&& (Cur_GPS_Speed < 36)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_30);
-	} else if ((Cur_GPS_Speed >= 36)&& (Cur_GPS_Speed < 46)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_40);
-	} else if ((Cur_GPS_Speed >= 46)&& (Cur_GPS_Speed < 56)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_50);
-	} else if ((Cur_GPS_Speed >= 56)&& (Cur_GPS_Speed < 66)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_60);
-	} else if ((Cur_GPS_Speed >= 66)&& (Cur_GPS_Speed < 76)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_70);
-	} else if ((Cur_GPS_Speed >= 76)&& (Cur_GPS_Speed < 86)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_80);
-	} else if ((Cur_GPS_Speed >= 86)&& (Cur_GPS_Speed < 96)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_90);
-	} else if ((Cur_GPS_Speed >= 96)&& (Cur_GPS_Speed < 106)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_100);
-	} else if ((Cur_GPS_Speed >= 106)&& (Cur_GPS_Speed < 116)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_110);
-	} else if ((Cur_GPS_Speed >= 116)&& (Cur_GPS_Speed < 126)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_120);
-	} else if ((Cur_GPS_Speed >= 126)&& (Cur_GPS_Speed < 136)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_130);
-	} else if ((Cur_GPS_Speed >= 136)&& (Cur_GPS_Speed < 146)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_140);
-	} else if ((Cur_GPS_Speed >= 146)&& (Cur_GPS_Speed < 156)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_150);
-	} else {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_160);
-	} 
-
-    uiN0 = (Cur_GPS_Speed%10);
-    uiN1 = ((Cur_GPS_Speed%100)/10);
-    uiN2 = (Cur_GPS_Speed/100); 
-
-    UxStatic_SetData(&UIFlowWndWiFiMovie_SPEED_N2Ctrl,STATIC_VALUE,FlowWndMovie_DrawSpeedNum(uiN2));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_SPEED_N1Ctrl,STATIC_VALUE,FlowWndMovie_DrawSpeedNum(uiN1));
-    UxStatic_SetData(&UIFlowWndWiFiMovie_SPEED_N0Ctrl,STATIC_VALUE,FlowWndMovie_DrawSpeedNum(uiN0));
-
-	if (UI_GetData(FL_SPEED_UNIT) == SPEED_UNIT_KPH) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_SPEED_UNITCtrl, STATIC_VALUE, ICON_KMH);
-	} else  {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_SPEED_UNITCtrl, STATIC_VALUE, ICON_MPH);
-	}
-
-	if (GetGPSSignalStatus() == 1) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_GPS_STATUSCtrl, STATIC_VALUE, ICON_GPS_S_ON);
-	} else {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_GPS_STATUSCtrl, STATIC_VALUE, ICON_GPS_S_OFF);
-	}
-
-	switch(GPSRec_getAngle())
-	{
-	case NORTH_EAST:
-		UxStatic_SetData(&UIFlowWndWiFiMovie_COMPASSCtrl, STATIC_VALUE, ICON_COMPASS_NE);
-		break;
-	case EAST:
-		UxStatic_SetData(&UIFlowWndWiFiMovie_COMPASSCtrl, STATIC_VALUE, ICON_COMPASS_E);
-		break;
-	case SOUTH_EAST:
-		UxStatic_SetData(&UIFlowWndWiFiMovie_COMPASSCtrl, STATIC_VALUE, ICON_COMPASS_SE);
-		break;
-	case SOUTH:
-		UxStatic_SetData(&UIFlowWndWiFiMovie_COMPASSCtrl, STATIC_VALUE, ICON_COMPASS_S);
-		break;
-	case SOUTH_WEST:
-		UxStatic_SetData(&UIFlowWndWiFiMovie_COMPASSCtrl, STATIC_VALUE, ICON_COMPASS_SW);
-		break;
-	case WEST:
-		UxStatic_SetData(&UIFlowWndWiFiMovie_COMPASSCtrl, STATIC_VALUE, ICON_COMPASS_W);
-		break;
-	case NORTH_WEST:
-		UxStatic_SetData(&UIFlowWndWiFiMovie_COMPASSCtrl, STATIC_VALUE, ICON_COMPASS_NW);
-		break;
-	case NORTH:
-		UxStatic_SetData(&UIFlowWndWiFiMovie_COMPASSCtrl, STATIC_VALUE, ICON_COMPASS_N);
-		break;
-	default:
-		//UxStatic_SetData(&UIFlowWndWiFiMovie_COMPASSCtrl, STATIC_VALUE, ICON_COMPASS_S);
-		break;
-	}
-
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl,TRUE);
-	if (uiN2 == 0) {
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_N2Ctrl,FALSE);
-	} else {
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_N2Ctrl,TRUE);
-	}
-	if ((uiN2 == 0) && (uiN1 == 0)) {
-		UxStatic_SetData(&UIFlowWndWiFiMovie_SPEED_N1Ctrl,STATIC_VALUE,FlowWndMovie_DrawSpeedNum(uiN0));
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_N2Ctrl,FALSE);
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_N1Ctrl,TRUE);
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_N0Ctrl,FALSE);
-	} else {
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_N1Ctrl,TRUE);
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_N0Ctrl,TRUE);
-	}
-
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_UNITCtrl,TRUE);
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_STATUSCtrl,TRUE);
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_COMPASSCtrl,TRUE);
-
-    //Ux_Redraw();
-}
-
-void FlowWiFiMovie_IconHideSpeed(void)
-{
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl,FALSE);
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_N2Ctrl,FALSE);
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_N1Ctrl,FALSE);
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_N0Ctrl,FALSE);
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_SPEED_UNITCtrl,FALSE);
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_STATUSCtrl,FALSE);
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_COMPASSCtrl,FALSE);
-}
-
-void FlowWiFiMovie_IconDrawPanelSpeed(UINT32 Count)
-{
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl,FALSE);
-	UxStatic_SetData(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl, STATIC_VALUE, ICON_PANEL_SPPED_0+Count-1);
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_PANEL_SPEEDCtrl,TRUE);
-}
-#endif
-
-void FlowWiFiMovie_IconDrawHDR(BOOL bShow)
-{
-	VControl *pCtrl = &UIFlowWndWiFiMovie_Status_HDRCtrl;
-
-    if (bShow == FALSE)
-    {
-        UxCtrl_SetShow(pCtrl, FALSE);
-        return;
+    if (gpsstatus < 0)
+    {    
+        if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_SOS1Ctrl))
+        {
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG1Ctrl, TRUE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG2Ctrl, FALSE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNGCtrl, FALSE);
+        }
+        else
+        {
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNGCtrl, TRUE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG1Ctrl, FALSE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG2Ctrl, FALSE);
+        }
     }
-
-	#if 1//(SHDR_FUNC == ENABLE)
-	UxState_SetItemData(pCtrl, UIFlowWndWiFiMovie_Status_HDR_ICON_MENU_HDR, STATE_ITEM_ICONID, ICON_MENU_HDR);
-	UxState_SetData(pCtrl, STATE_CURITEM, SysGetFlag(FL_MOVIE_HDR));
-	#else
-	UxState_SetItemData(pCtrl, UIFlowWndWiFiMovie_Status_HDR_ICON_MENU_HDR, STATE_ITEM_ICONID, ICON_MENU_WDR);
-	UxState_SetData(pCtrl, STATE_CURITEM, SysGetFlag(FL_MOVIE_WDR));
-	#endif
-	UxCtrl_SetShow(pCtrl, TRUE);
-}
-
-void FlowWiFiMovie_IconDrawEIS(BOOL bShow)
-{
-	VControl *pCtrl = &UIFlowWndWiFiMovie_Status_EISCtrl;
-
-    if (bShow == FALSE)
+    else
     {
-        UxCtrl_SetShow(pCtrl, FALSE);
-        return;
+        if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_SOSCtrl))
+        {
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG2Ctrl, TRUE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNGCtrl, FALSE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG1Ctrl, FALSE);
+        }
+        else
+        {
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG1Ctrl, TRUE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG2Ctrl, FALSE);
+            UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNGCtrl, FALSE);
+        }
     }
-
-	#if (ETHCAM_EIS == ENABLE)
-	UxState_SetData(pCtrl, STATE_CURITEM, SysGetFlag(FL_MOVIE_EIS));
-	UxCtrl_SetShow(pCtrl, TRUE);
-	#else
-	UxCtrl_SetShow(pCtrl, TRUE);//DEFAULT NO ICON
-	#endif
 }
 
-void FlowWiFiMovie_DrawFolderCheck(BOOL bShow)
+void FlowWiFiMovie_IconDrawTSR(BOOL bShow)
 {
-	if(bShow)
-	{
-		UxState_SetItemData(&UIFlowWndWiFiMovie_FolderCheck_StatusTxtCtrl, UIFlowWndWiFiMovie_FolderCheck_StatusTxt_STRID_FORMAT_WARNING1, STATE_ITEM_STRID, STRID_REAR_ERROR);
-	}
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_FolderCheck_StatusTxtCtrl, bShow);
+    INT8 gpsstatus;
+    gpsstatus = GetGPSSignalStatus();
+
+    if (!bShow)
+    {
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSRCtrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR1Ctrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR2Ctrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR3Ctrl, FALSE);
+        return;		
+    }
+	
+    if (gpsstatus < 0)
+    {    
+        if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_SOS1Ctrl))
+        {
+            if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_SNG1Ctrl))
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSRCtrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR2Ctrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawRL(FALSE);
+            }
+            else
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSRCtrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR2Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawRL(FALSE);
+            }
+        }
+        else
+        {
+            if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_SNGCtrl))
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSRCtrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR2Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawRL(FALSE);
+            }
+            else
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSRCtrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR1Ctrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR2Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawRL(FALSE);
+            }
+        }
+    }
+    else
+    {
+        if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_SOSCtrl))
+        {
+            if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_SNG2Ctrl))
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSRCtrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR2Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR3Ctrl, TRUE);
+                FlowWiFiMovie_IconDrawRL(FALSE);
+            }
+            else
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSRCtrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR2Ctrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawRL(FALSE);
+            }
+        }
+        else
+        {
+            if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_SNG1Ctrl))
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSRCtrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR2Ctrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawRL(FALSE);
+            }
+            else
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSRCtrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR2Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawRL(FALSE);
+            }
+        }
+    }
 }
+
+void FlowWiFiMovie_IconDrawRL(BOOL bShow)
+{
+    INT8 gpsstatus;
+    gpsstatus = GetGPSSignalStatus();
+
+    if (!bShow)
+    {
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RLCtrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL1Ctrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL2Ctrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, FALSE);
+        return;		
+    }
+	
+    if (gpsstatus < 0)
+    {    
+        if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_SOS1Ctrl))
+        {
+            if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_SNG1Ctrl))
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RLCtrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL2Ctrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawTSR(FALSE);
+            }
+            else
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RLCtrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL2Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawTSR(FALSE);
+            }
+        }
+        else
+        {
+            if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_SNGCtrl))
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RLCtrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL2Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawTSR(FALSE);
+            }
+            else
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RLCtrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL1Ctrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL2Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawTSR(FALSE);
+            }
+        }
+    }
+    else
+    {
+        if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_SOSCtrl))
+        {
+            if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_SNG2Ctrl))
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RLCtrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL2Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, TRUE);
+                FlowWiFiMovie_IconDrawTSR(FALSE);
+            }
+            else
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RLCtrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL2Ctrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawTSR(FALSE);
+            }
+        }
+        else
+        {
+            if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Static_SNG1Ctrl))
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RLCtrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL2Ctrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawTSR(FALSE);
+            }
+            else
+            {
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RLCtrl, TRUE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL1Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL2Ctrl, FALSE);
+                UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, FALSE);
+                FlowWiFiMovie_IconDrawTSR(FALSE);
+            }
+        }
+    }
+}
+
+void FlowWiFiMovie_initIcon(void)
+{
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_WiFi_DisconnectedCtrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_StaticIcon_PIMCtrl, FALSE);
+    
+    //UxCtrl_SetShow(&UIFlowWndMovie_YMD_StaticCtrl,FALSE);
+    //UxCtrl_SetShow(&UIFlowWndMovie_HMS_StaticCtrl,FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_AudioCtrl, FALSE);
+	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_MotionDet1Ctrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_MotionDet2Ctrl, FALSE);	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse1Ctrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl, FALSE);
+	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_SMALL_ICON2Ctrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPSN_SMALL_ICON2Ctrl, FALSE);
+	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOSCtrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_SOS1Ctrl, FALSE);
+	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNGCtrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG1Ctrl, FALSE);	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SNG2Ctrl, FALSE);	
+	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSRCtrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR1Ctrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR2Ctrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_TSR3Ctrl, FALSE);
+	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RLCtrl, FALSE);	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL1Ctrl, FALSE);	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL2Ctrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_PlayModeCtrl, FALSE);
+}
+
 
 void FlowWiFiMovie_UpdateIcons(BOOL bShow)
 {
     if ((bShow == FALSE) || (SysGetFlag(FL_LCD_DISPLAY) == DISPOUT_OFF))
     {
-        FlowWiFiMovie_IconDrawDscMode(FALSE);
+        //FlowWiFiMovie_IconDrawDscMode(FALSE);
         FlowWiFiMovie_IconDrawSize(FALSE);
-        FlowWiFiMovie_IconDrawMaxRecTime(FALSE);
         FlowWiFiMovie_IconDrawRecTime(FALSE);
-        FlowWiFiMovie_DrawRecState(FALSE);
-        //FlowWiFiMovie_IconDrawBattery(FALSE);
-        //FlowWiFiMovie_IconDrawStorage(FALSE);
-        FlowWiFiMovie_IconDrawHDR(FALSE);
+        FlowWiFiMovie_IconDrawMaxRecTime(FALSE);
+        FlowWiFiMovie_IconDrawRec(FALSE);
+        FlowWiFiMovie_IconDrawStorage(FALSE);
+        FlowWiFiMovie_IconDrawCyclicRec(FALSE);
+        //FlowWiFiMovie_IconDrawHDR(FALSE);
+        FlowWiFiMovie_IconDrawMotionDet(FALSE);
+        FlowWiFiMovie_IconDrawDZoom(FALSE);
+        FlowWiFiMovie_IconDrawBattery(FALSE);
+        //FlowWiFiMovie_IconDrawEV(FALSE);
+        FlowWiFiMovie_IconDrawSOS(FALSE);
+        FlowWiFiMovie_IconDrawAudio(FALSE);
+        FlowWiFiMovie_IconDrawTimelapse(FALSE);
         FlowWiFiMovie_IconDrawDateTime(FALSE);
         FlowWiFiMovie_DrawPIM(FALSE);
-        FlowWiFiMovie_IconDrawSOS(FALSE);
+        FlowWiFiMovie_DrawFolderCheck(FALSE);
+        FlowWiFiMovie_DrawCustomerType(FALSE);
         //FlowWiFiMovie_IconDrawWiFiConnected(FALSE);
         FlowWiFiMovie_IconDrawWiFiDisConnected(FALSE);
-        FlowWiFiMovie_IconDrawDZoom(FALSE);
-        FlowWiFiMovie_IconDrawAudio(FALSE);
-        FlowWiFiMovie_IconDrawMotionDet(FALSE);
-        FlowWiFiMovie_IconDrawTimelapse(FALSE);
         FlowWiFiMovie_IconDrawGPSSignal(FALSE);
-        FlowWiFiMovie_IconDrawTPMS(FALSE);
-        FlowWiFiMovie_IconDrawEIS(FALSE);
-		FlowWiFiMovie_DrawFolderCheck(FALSE);
     }
     else
     {
-        FlowWiFiMovie_IconDrawDscMode(FALSE);
+        //FlowWiFiMovie_IconDrawDscMode(FALSE);
         FlowWiFiMovie_IconDrawSize(TRUE);
-        FlowWiFiMovie_IconDrawMaxRecTime(TRUE);
         FlowWiFiMovie_IconDrawRecTime(FALSE);
-        FlowWiFiMovie_DrawRecState(FALSE);
-        //FlowWiFiMovie_IconDrawBattery(FALSE);
-        //FlowWiFiMovie_IconDrawStorage(FALSE);
-        FlowWiFiMovie_IconDrawHDR(TRUE);
+        FlowWiFiMovie_IconDrawMaxRecTime(TRUE);
+        FlowWiFiMovie_IconDrawRec(FALSE);
+        FlowWiFiMovie_IconDrawStorage(FALSE);
+        FlowWiFiMovie_IconDrawCyclicRec(FALSE);
+        //FlowWiFiMovie_IconDrawHDR(FALSE);
+        FlowWiFiMovie_IconDrawDZoom(FALSE);
+        FlowWiFiMovie_IconDrawBattery(FALSE);
+        //FlowWiFiMovie_IconDrawEV(FALSE);
+        FlowWiFiMovie_IconDrawSOS(FALSE);
+        FlowWiFiMovie_IconDrawAudio(TRUE);
         FlowWiFiMovie_IconDrawDateTime(TRUE);
         FlowWiFiMovie_DrawPIM(FALSE);
-        FlowWiFiMovie_IconDrawSOS(FALSE);
+        FlowWiFiMovie_DrawFolderCheck(FALSE);
+        FlowWiFiMovie_DrawCustomerType(FALSE);
         //FlowWiFiMovie_IconDrawWiFiConnected(FALSE);
         FlowWiFiMovie_IconDrawWiFiDisConnected(FALSE);
-        FlowWiFiMovie_IconDrawDZoom(FALSE);
-        FlowWiFiMovie_IconDrawAudio(TRUE);
-        FlowWiFiMovie_IconDrawTPMS(FALSE);
-        FlowWiFiMovie_IconDrawEIS(FALSE);
-        if ((SysGetFlag(FL_MOVIE_MOTION_DET) == MOVIE_MOTIONDET_OFF)&&(UI_GetData(FL_MOVIE_TIMELAPSE_REC) != MOVIE_TIMELAPSEREC_OFF)) //time lapse
+		#if 1
+		FlowWiFiMovie_IconDrawMotionDet(FALSE);
+		FlowWiFiMovie_IconDrawTimelapse(TRUE);
+		#else
+        //if ((SysGetFlag(FL_MOVIE_MOTION_DET) == MOVIE_MOTIONDET_OFF)&&(UI_GetData(FL_MOVIE_TIMELAPSE_REC) != MOVIE_TIMELAPSEREC_OFF)) //time lapse
+        if ((SysGetFlag(FL_MOVIE_REC_MODE) == MOVIE_REC_MODE_ONEFRAM))
         {
             FlowWiFiMovie_IconDrawMotionDet(FALSE);
             FlowWiFiMovie_IconDrawTimelapse(TRUE);
         }
-        else if ((SysGetFlag(FL_MOVIE_MOTION_DET) == MOVIE_MOTIONDET_ON)&&(UI_GetData(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) //motion det
+        //else if ((SysGetFlag(FL_MOVIE_MOTION_DET) == MOVIE_MOTIONDET_ON)&&(UI_GetData(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) //motion det
+        else if ((SysGetFlag(FL_MOVIE_REC_MODE) == MOVIE_REC_MODE_MOTIONDET))
         {
             FlowWiFiMovie_IconDrawTimelapse(FALSE);
             FlowWiFiMovie_IconDrawMotionDet(TRUE);
         }
         else
         {
-            FlowWiFiMovie_IconDrawMotionDet(FALSE);
-            FlowWiFiMovie_IconDrawTimelapse(FALSE);
+        	if(UI_GetData(FL_MOVIE_TIMELAPSE_REC) != MOVIE_TIMELAPSEREC_OFF)
+			{
+            	FlowWiFiMovie_IconDrawMotionDet(FALSE);
+            	FlowWiFiMovie_IconDrawTimelapse(TRUE);
+        	}
+			else
+			{
+				FlowWiFiMovie_IconDrawMotionDet(FALSE);
+				FlowWiFiMovie_IconDrawTimelapse(FALSE);
+			}
         }
-        //FlowWiFiMovie_IconDrawGPSSignal();
-        FlowWiFiMovie_DrawFolderCheck(FALSE);
+        //FlowWiFiMovie_IconDrawGPSSignal(TRUE);
+		#endif
     }
 }
-
 

@@ -37,6 +37,11 @@ const char default_pach[] = "/dev/ili9341";
 #define LCD_MAX_H                       ALIGN_CEIL_16(320)  //device h of DISP_LCDMODE_xxx, to support rotate, it must align to 16
 #define LCD_ASPECT_W                    3//5//20//40 
 #define LCD_ASPECT_H                    4//9//36//72
+#elif defined(_disp_ifdsi_lcd1_ST7701SN_RZWT32P27_)
+#define LCD_MAX_W                       ALIGN_CEIL_16(376)  //device w of DISP_LCDMODE_xxx, to support rotate, it must align to 16
+#define LCD_MAX_H                       ALIGN_CEIL_16(960)  //device h of DISP_LCDMODE_xxx, to support rotate, it must align to 16
+#define LCD_ASPECT_W                    9
+#define LCD_ASPECT_H                    16
 #else
 //EVB default is _Disp_IF8B_LCD1_PW35P00_HX8238D_
 #define LCD_MAX_W                       ALIGN_CEIL_16(960)  //device w of DISP_LCDMODE_xxx, to support rotate, it must align to 16

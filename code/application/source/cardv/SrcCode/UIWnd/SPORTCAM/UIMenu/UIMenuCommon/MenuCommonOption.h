@@ -46,6 +46,9 @@ MenuCommonOption_Menu_STRID_C9,
 MenuCommonOption_Menu_STRID_1UP,
 MenuCommonOption_Menu_STRID_2UP,
 MenuCommonOption_Menu_STRID_3UP,
+MenuCommonOption_Menu_STRID_4UP,
+MenuCommonOption_Menu_STRID_5UP,
+MenuCommonOption_Menu_STRID_6UP,
 MenuCommonOption_Menu_MAX
 }MenuCommonOption_Menu_Setting;
 

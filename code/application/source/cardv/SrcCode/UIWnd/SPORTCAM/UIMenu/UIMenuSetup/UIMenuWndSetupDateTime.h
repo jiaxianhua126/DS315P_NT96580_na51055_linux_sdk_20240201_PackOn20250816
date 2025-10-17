@@ -18,12 +18,8 @@ UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_YMD_HR,
 UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_YMD_MIN,
 UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_YMD_SEC,
 UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_YMD_Switch,
+UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_Tab_YMD_VALUE,
 UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_YMD_AMPM,
-UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_YMD_VALUE_Other0,
-UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_YMD_VALUE_Other1,
-UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_YMD_VALUE_Other2,
-UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_YMD_VALUE_Other3,
-UIMenuWndSetupDateTime_Tab_UIMenuWndSetupDateTime_YMD_VALUE_Other4,
 UIMenuWndSetupDateTime_Tab_MAX
 }UIMenuWndSetupDateTime_Tab_Setting;
 
@@ -41,7 +37,17 @@ extern VControl UIMenuWndSetupDateTime_YMD_SECCtrl;//Button type
 
 extern VControl UIMenuWndSetupDateTime_YMD_SwitchCtrl;//Button type 
 
-extern VControl UIMenuWndSetupDateTime_YMD_AMPMCtrl;//Button type 
+extern VControl UIMenuWndSetupDateTime_Tab_YMD_VALUECtrl;//Tab type 
+
+typedef enum
+{
+UIMenuWndSetupDateTime_Tab_YMD_VALUE_UIMenuWndSetupDateTime_YMD_VALUE_Other0,
+UIMenuWndSetupDateTime_Tab_YMD_VALUE_UIMenuWndSetupDateTime_YMD_VALUE_Other1,
+UIMenuWndSetupDateTime_Tab_YMD_VALUE_UIMenuWndSetupDateTime_YMD_VALUE_Other2,
+UIMenuWndSetupDateTime_Tab_YMD_VALUE_UIMenuWndSetupDateTime_YMD_VALUE_Other3,
+UIMenuWndSetupDateTime_Tab_YMD_VALUE_UIMenuWndSetupDateTime_YMD_VALUE_Other4,
+UIMenuWndSetupDateTime_Tab_YMD_VALUE_MAX
+}UIMenuWndSetupDateTime_Tab_YMD_VALUE_Setting;
 
 extern VControl UIMenuWndSetupDateTime_YMD_VALUE_Other0Ctrl;//Static type 
 
@@ -53,7 +59,6 @@ extern VControl UIMenuWndSetupDateTime_YMD_VALUE_Other3Ctrl;//Static type
 
 extern VControl UIMenuWndSetupDateTime_YMD_VALUE_Other4Ctrl;//Static type 
 
-extern VControl UIMenuWndSetupDateTime_Static_TitleCtrl;//Static type 
+extern VControl UIMenuWndSetupDateTime_YMD_AMPMCtrl;//Button type 
 
-//---------------------UIMenuWndSetupDateTimeCtrl User Export---------------------------
 #endif

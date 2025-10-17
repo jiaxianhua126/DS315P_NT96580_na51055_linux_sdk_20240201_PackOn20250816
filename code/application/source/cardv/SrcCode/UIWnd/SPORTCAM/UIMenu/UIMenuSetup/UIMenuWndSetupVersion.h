@@ -13,7 +13,5 @@ extern VControl UIMenuSetupVersionText2Ctrl;//Static type
 
 extern VControl UIMenuSetupVersionText3Ctrl;//Static type 
 
-extern VControl UIMenuSetupVersionText4Ctrl;//Static type 
-
 //---------------------UIMenuWndSetupVersionCtrl User Export---------------------------
 #endif

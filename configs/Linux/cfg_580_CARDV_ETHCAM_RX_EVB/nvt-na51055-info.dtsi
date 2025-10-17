@@ -8,9 +8,8 @@
 
 / {
 	nvt_info {						/* Get from ModelConfig.txt */
-		/*BIN_NAME = "FWT221A";*/
-		BIN_NAME = "FW205WGS";
-		BIN_NAME_T = "FW96580T";
+		BIN_NAME = "FWA363W";//"FW96580A";
+		BIN_NAME_T = "FW98529T";//"FW96580T";
 		RTOS_APP_MAIN = "cardv"; /* Optional, if OS type is Linux, dont care it. */
 		/* EMBMEM_BLK_SIZE, Normally, 2KPageNand=0x20000, 512PageNand=0x4000, SPI=0x10000 */
 		EMBMEM_BLK_SIZE = "0x20000";
@@ -46,7 +45,7 @@
 		 * disp_if8b_lcd1_ili9342c
 		 * disp_if8b_lcd1_ili9341
 		 */
-		LCD1 = "disp_if8b_lcd1_ili9341";
+		LCD1 = "disp_ifdsi_lcd1_ST7701SN_RZWT32P27";
 
 		/**
 		 * [SENSOR]
@@ -58,8 +57,8 @@
 		 * sen_imx290
 		 * sen_os05a10
 		 */
-		SENSOR1     = "sen_imx675";
-		SENSOR1_CFG = "sen_imx675";
+		SENSOR1     = "sen_imx678";
+		SENSOR1_CFG = "sen_imx678";
 		SENSOR2     = "sen_off";
 		SENSOR2_CFG = "sen_off";
 

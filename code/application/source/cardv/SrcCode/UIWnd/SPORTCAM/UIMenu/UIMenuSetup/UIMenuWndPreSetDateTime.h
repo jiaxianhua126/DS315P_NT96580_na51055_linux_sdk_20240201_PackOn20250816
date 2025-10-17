@@ -18,12 +18,8 @@ UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_YMD_HR,
 UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_YMD_MIN,
 UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_YMD_SEC,
 UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_YMD_Switch,
+UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_Tab_YMD_VALUE,
 UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_YMD_AMPM,
-UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_YMD_VALUE_Other0,
-UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_YMD_VALUE_Other1,
-UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_YMD_VALUE_Other2,
-UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_YMD_VALUE_Other3,
-UIMenuWndPreSetDateTime_Tab_UIMenuWndPreSetDateTime_YMD_VALUE_Other4,
 UIMenuWndPreSetDateTime_Tab_MAX
 }UIMenuWndPreSetDateTime_Tab_Setting;
 
@@ -41,7 +37,17 @@ extern VControl UIMenuWndPreSetDateTime_YMD_SECCtrl;//Button type
 
 extern VControl UIMenuWndPreSetDateTime_YMD_SwitchCtrl;//Button type 
 
-extern VControl UIMenuWndPreSetDateTime_YMD_AMPMCtrl;//Button type 
+extern VControl UIMenuWndPreSetDateTime_Tab_YMD_VALUECtrl;//Tab type 
+
+typedef enum
+{
+UIMenuWndPreSetDateTime_Tab_YMD_VALUE_UIMenuWndPreSetDateTime_YMD_VALUE_Other0,
+UIMenuWndPreSetDateTime_Tab_YMD_VALUE_UIMenuWndPreSetDateTime_YMD_VALUE_Other1,
+UIMenuWndPreSetDateTime_Tab_YMD_VALUE_UIMenuWndPreSetDateTime_YMD_VALUE_Other2,
+UIMenuWndPreSetDateTime_Tab_YMD_VALUE_UIMenuWndPreSetDateTime_YMD_VALUE_Other3,
+UIMenuWndPreSetDateTime_Tab_YMD_VALUE_UIMenuWndPreSetDateTime_YMD_VALUE_Other4,
+UIMenuWndPreSetDateTime_Tab_YMD_VALUE_MAX
+}UIMenuWndPreSetDateTime_Tab_YMD_VALUE_Setting;
 
 extern VControl UIMenuWndPreSetDateTime_YMD_VALUE_Other0Ctrl;//Static type 
 
@@ -53,17 +59,20 @@ extern VControl UIMenuWndPreSetDateTime_YMD_VALUE_Other3Ctrl;//Static type
 
 extern VControl UIMenuWndPreSetDateTime_YMD_VALUE_Other4Ctrl;//Static type 
 
+extern VControl UIMenuWndPreSetDateTime_YMD_AMPMCtrl;//Button type 
+
 extern VControl UIMenuWndPreSetDateTime_Static_TitleCtrl;//Static type 
 
 extern VControl UIMenuWndPreSetDateTime_TipsBarCtrl;//Panel type 
 
 extern VControl UIMenuWndPreSetDateTime_TipsIconReturnCtrl;//Static type 
 
-extern VControl UIMenuWndPreSetDateTime_TipsIconUpCtrl;//Static type 
+extern VControl UIMenuWndPreSetDateTime_TipsIconUpCtrl;//Panel type 
 
-extern VControl UIMenuWndPreSetDateTime_TipsIconDownCtrl;//Static type 
+extern VControl UIMenuWndPreSetDateTime_TipsIconDownCtrl;//Panel type 
 
-extern VControl UIMenuWndPreSetDateTime_TipsIconOKCtrl;//Static type 
+extern VControl UIMenuWndPreSetDateTime_TipsIconOKCtrl;//Panel type 
 
-//---------------------UIMenuWndPreSetDateTimeCtrl User Export---------------------------
+extern VControl UIMenuWndPreSetDateTime_TipsIconPowerCtrl;//Static type 
+
 #endif

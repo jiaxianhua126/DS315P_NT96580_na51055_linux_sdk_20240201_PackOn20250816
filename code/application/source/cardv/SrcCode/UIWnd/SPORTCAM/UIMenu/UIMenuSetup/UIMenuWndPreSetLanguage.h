@@ -29,12 +29,6 @@ UIMenuWndPreSetLanguage_Menu_STRID_B0,
 UIMenuWndPreSetLanguage_Menu_STRID_B1,
 UIMenuWndPreSetLanguage_Menu_STRID_B2,
 UIMenuWndPreSetLanguage_Menu_STRID_B3,
-UIMenuWndPreSetLanguage_Menu_STRID_B4,
-UIMenuWndPreSetLanguage_Menu_STRID_B5,
-UIMenuWndPreSetLanguage_Menu_STRID_B6,
-UIMenuWndPreSetLanguage_Menu_STRID_B7,
-UIMenuWndPreSetLanguage_Menu_STRID_B8,
-UIMenuWndPreSetLanguage_Menu_STRID_B9,
 UIMenuWndPreSetLanguage_Menu_MAX
 }UIMenuWndPreSetLanguage_Menu_Setting;
 
@@ -42,11 +36,13 @@ extern VControl UIMenuWndPreSetLanguage_TipsBarCtrl;//Panel type
 
 extern VControl UIMenuWndPreSetLanguage_TipsIconReturnCtrl;//Static type 
 
-extern VControl UIMenuWndPreSetLanguage_TipsIconUpCtrl;//Static type 
+extern VControl UIMenuWndPreSetLanguage_TipsIconUpCtrl;//Panel type 
 
-extern VControl UIMenuWndPreSetLanguage_TipsIconDownCtrl;//Static type 
+extern VControl UIMenuWndPreSetLanguage_TipsIconDownCtrl;//Panel type 
 
-extern VControl UIMenuWndPreSetLanguage_TipsIconOKCtrl;//Static type 
+extern VControl UIMenuWndPreSetLanguage_TipsIconOKCtrl;//Panel type 
+
+extern VControl UIMenuWndPreSetLanguage_TipsIconPowerCtrl;//Static type 
 
 //---------------------UIMenuWndPreSetLanguageCtrl User Export---------------------------
 #endif

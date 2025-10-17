@@ -32,49 +32,55 @@ extern VControl UIFlowWndPlay_StaticTXT_DateCtrl;//Static type
 
 extern VControl UIFlowWndPlay_StaticTXT_TimeCtrl;//Static type 
 
-extern VControl UIFlowWndPlay_StaticTXT_MovPlayTimeCtrl;//Static type 
+extern VControl UIFlowWndPlay_OptionPanelCtrl;//Panel type 
 
 extern VControl UIFlowWndPlay_StaticTXT_VideoTotalTimeCtrl;//Static type 
 
+extern VControl UIFlowWndPlay_StaticICN_UnProtectCtrl;//Static type 
+
 extern VControl UIFlowWndPlay_Static_SpeedCtrl;//Static type 
 
-extern VControl UIFlowWndPlay_TipsBarCtrl;//Panel type 
+extern VControl UIFlowWndPlay_StaticTXT_MovPlayTimeCtrl;//Static type 
 
-extern VControl UIFlowWndPlay_TipsIconReturnCtrl;//Status type 
+extern VControl UIFlowWndPlay_OptionStaticIcon_ReturnCtrl;//Static type 
 
-typedef enum
-{
-UIFlowWndPlay_TipsIconReturn_ICON_BACK,
-UIFlowWndPlay_TipsIconReturn_MAX
-}UIFlowWndPlay_TipsIconReturn_Setting;
+extern VControl UIFlowWndPlay_OptionStaticIcon_PLAY_FF_BCtrl;//Static type 
 
-extern VControl UIFlowWndPlay_TipsIconDelCtrl;//Status type 
+extern VControl UIFlowWndPlay_OptionStaticIcon_COLN0Ctrl;//Static type 
 
-typedef enum
-{
-UIFlowWndPlay_TipsIconDel_ICON_DELETE,
-UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B,
-UIFlowWndPlay_TipsIconDel_MAX
-}UIFlowWndPlay_TipsIconDel_Setting;
+extern VControl UIFlowWndPlay_OptionStaticIcon_DELCtrl;//Static type 
 
-extern VControl UIFlowWndPlay_TipsIconLockCtrl;//Status type 
+extern VControl UIFlowWndPlay_StatusIcon_PlayCtrl;//Status type 
 
 typedef enum
 {
-UIFlowWndPlay_TipsIconLock_ICON_FILE_LOCK,
-UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F,
-UIFlowWndPlay_TipsIconLock_ICON_SET_LOCK,
-UIFlowWndPlay_TipsIconLock_MAX
-}UIFlowWndPlay_TipsIconLock_Setting;
+UIFlowWndPlay_StatusIcon_Play_ICON_DIR_R,
+UIFlowWndPlay_StatusIcon_Play_ICON_PAUSE,
+UIFlowWndPlay_StatusIcon_Play_MAX
+}UIFlowWndPlay_StatusIcon_Play_Setting;
 
-extern VControl UIFlowWndPlay_TipsIconPlayCtrl;//Status type 
+extern VControl UIFlowWndPlay_OptionStaticIcon_ProtectCtrl;//Static type 
+
+extern VControl UIFlowWndPlay_Option_StaticOKCtrl;//Static type 
+
+extern VControl UIFlowWndPlay_Option_StaticReturnCtrl;//Static type 
+
+extern VControl UIFlowWndPlay_OptionStaticIcon_UPCtrl;//Static type 
+
+extern VControl UIFlowWndPlay_OptionStaticIcon_DownCtrl;//Static type 
+
+extern VControl UIFlowWndPlay_OptionStaticIcon_COLN1Ctrl;//Static type 
+
+extern VControl UIFlowWndPlay_OptionStaticIcon_LockStdCtrl;//Static type 
+
+extern VControl UIFlowWndPlay_OptionStaticIcon_PLAY_FF_FCtrl;//Static type 
+
+extern VControl UIFlowWndPlay_StatusIcon_PowerKeyCtrl;//Status type 
 
 typedef enum
 {
-UIFlowWndPlay_TipsIconPlay_ICON_DIR_R,
-UIFlowWndPlay_TipsIconPlay_ICON_PAUSE,
-UIFlowWndPlay_TipsIconPlay_MAX
-}UIFlowWndPlay_TipsIconPlay_Setting;
+UIFlowWndPlay_StatusIcon_PowerKey_ICON_POWER_OFF,
+UIFlowWndPlay_StatusIcon_PowerKey_MAX
+}UIFlowWndPlay_StatusIcon_PowerKey_Setting;
 
-//---------------------UIFlowWndPlayCtrl User Export---------------------------
 #endif

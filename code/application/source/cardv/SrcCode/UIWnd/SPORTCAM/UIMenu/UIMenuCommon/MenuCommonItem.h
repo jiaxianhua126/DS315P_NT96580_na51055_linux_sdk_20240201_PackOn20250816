@@ -7,7 +7,29 @@
 
 extern VControl MenuCommonItemCtrl;//Panel type 
 
+extern VControl MenuCommonItem_BGCtrl;//Panel type 
+
+extern VControl MenuCommonItem_TitleBarCtrl;//Panel type 
+
+extern VControl MenuCommonItem_TitleIconTab1Ctrl;//Static type 
+
+extern VControl MenuCommonItem_TitleIconTab2Ctrl;//Static type 
+
 extern VControl MenuCommonItem_TitleTextCtrl;//Static type 
+
+extern VControl MenuCommonItem_TipsBarCtrl;//Panel type 
+
+extern VControl MenuCommonItem_TipsIconReturnCtrl;//Static type 
+
+extern VControl MenuCommonItem_TipsIconUpCtrl;//Panel type 
+
+extern VControl MenuCommonItem_TipsIconDownCtrl;//Panel type 
+
+extern VControl MenuCommonItem_TipsIconLUDOKCtrl;//Panel type 
+
+extern VControl MenuCommonItem_PageNumCtrl;//Static type 
+
+extern VControl MenuCommonItem_TipsIconPowerCtrl;//Static type 
 
 extern VControl MenuCommonItem_MenuCtrl;//Menu type 
 
@@ -56,17 +78,7 @@ MenuCommonItem_Menu_STRID_10UP,
 MenuCommonItem_Menu_MAX
 }MenuCommonItem_Menu_Setting;
 
-extern VControl MenuCommonItem_PageNumCtrl;//Static type 
-
-extern VControl MenuCommonItem_TipsBarCtrl;//Panel type 
-
-extern VControl MenuCommonItem_TipsIconReturnCtrl;//Static type 
-
-extern VControl MenuCommonItem_TipsIconUpCtrl;//Static type 
-
-extern VControl MenuCommonItem_TipsIconDownCtrl;//Static type 
-
-extern VControl MenuCommonItem_TipsIconOKCtrl;//Static type 
+extern VControl MenuCommonItem_TabBarCtrl;//Panel type 
 
 //---------------------MenuCommonItemCtrl User Export---------------------------
 #endif

@@ -5,7 +5,8 @@
  *
  */
 #include <dt-bindings/gpio/nvt-gpio.h>
+#include <dt-bindings/pinctrl/nvt_lcd.h>
 / {
-	display { type = "lcd"; lcd_ctrl = <1>; sif_channel = <0>; gpio_cs = <L_GPIO(22)>; gpio_clk = <L_GPIO(23)>; gpio_data = <L_GPIO(24)>; };
+	display { type = "lcd"; lcd_ctrl = <0>; sif_channel = <2>; gpio_cs = <L_GPIO(22)>; gpio_clk = <L_GPIO(23)>; gpio_data = <L_GPIO(24)>; };
 };
 

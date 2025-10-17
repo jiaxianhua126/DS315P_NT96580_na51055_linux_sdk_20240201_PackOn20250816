@@ -628,6 +628,7 @@ static void FlowPB_IconDrawBattery(BOOL bShow)
 
 static void FlowPB_IconDrawFileLock(BOOL bShow)
 {
+#if 0 ///harrison ds315
 	UINT32 uiLockStatus;
 	if (bShow == FALSE) {
 		UxCtrl_SetShow(&UIFlowWndPlay_StaticICN_ProtectCtrl, FALSE);
@@ -648,6 +649,7 @@ static void FlowPB_IconDrawFileLock(BOOL bShow)
 		UxCtrl_SetShow(&UIFlowWndPlay_StaticICN_ProtectCtrl, TRUE);
 		FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_FILE_LOCK);
 	}
+#endif
 }
 
 void FlowPB_IconDrawDate(BOOL bShow)
@@ -766,8 +768,8 @@ void FlowPB_IconDrawMovPlay_HideShowIcon(BOOL bShow)
     //UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_LockStdCtrl, bShow);
     //UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_ProtectCtrl, bShow);
     //UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_DELCtrl, bShow);
-    FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_DELETE);
-	FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_FILE_LOCK);
+    //FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_DELETE);
+	//FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_FILE_LOCK);
 }
 
 /*
@@ -783,7 +785,7 @@ void FlowPB_IconDrawMovPlay_FBShowIcon(BOOL bShow)
 
 void FlowPB_IconDrawMovPlay(BOOL bShow)
 {
-#if 1
+#if 0///harrison ds315
     if (bShow==FALSE)
     {
         UxCtrl_SetShow(&UIFlowWndPlay_TipsIconPlayCtrl, FALSE);
@@ -816,7 +818,7 @@ void FlowPB_IconDrawMovStop(BOOL bShow)
 
 void FlowPB_IconDrawMovBwd(BOOL bShow,UINT32 iconID)
 {
-
+#if 0 ////harrison ds315
     if (bShow==FALSE)
     {
         UxCtrl_SetShow(&UIFlowWndPlay_TipsIconDelCtrl, FALSE);
@@ -829,10 +831,12 @@ void FlowPB_IconDrawMovBwd(BOOL bShow,UINT32 iconID)
     	UxState_SetData(&UIFlowWndPlay_TipsIconDelCtrl,STATE_CURITEM,iconID);
         UxCtrl_SetShow(&UIFlowWndPlay_TipsIconDelCtrl, TRUE);
     }
+#endif
 }
 
 void FlowPB_IconDrawMovFwd(BOOL bShow,UINT32 iconID)
 {
+#if 0 //harrison ds315
     if (bShow==FALSE)
     {
         UxCtrl_SetShow(&UIFlowWndPlay_TipsIconLockCtrl, FALSE);
@@ -845,6 +849,7 @@ void FlowPB_IconDrawMovFwd(BOOL bShow,UINT32 iconID)
     	UxState_SetData(&UIFlowWndPlay_TipsIconLockCtrl,STATE_CURITEM,iconID);
         UxCtrl_SetShow(&UIFlowWndPlay_TipsIconLockCtrl, TRUE);
     }
+#endif
 }
 
 void FlowPB_IconDrawMovSpeed(void)
@@ -990,7 +995,7 @@ void FlowPB_UpdateIcons(BOOL bShow)
             FlowPB_IconDrawMovSpeed();
             FlowPB_IconDrawVideoTotalTime(TRUE);
         }
-		FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_DELETE);
+		//FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_DELETE);
     }
 }
 

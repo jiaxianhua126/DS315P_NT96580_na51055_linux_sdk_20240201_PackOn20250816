@@ -12,56 +12,7 @@
 
 //---------------------UIMenuWndSetupGPSCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIMenuWndSetupGPS)
-CTRL_LIST_ITEM(GPS_Signal_2_NUM)
-CTRL_LIST_ITEM(GPS_Status_Name)
-CTRL_LIST_ITEM(GPS_Status_ICON)
-CTRL_LIST_ITEM(GPS_Signal_3_NUM)
-CTRL_LIST_ITEM(GPS_Signal_4_NUM)
-CTRL_LIST_ITEM(GPS_Signal_5_NUM)
-CTRL_LIST_ITEM(GPS_Signal_6_NUM)
-CTRL_LIST_ITEM(GPS_Signal_7_NUM)
-CTRL_LIST_ITEM(GPS_Signal_8_NUM)
-CTRL_LIST_ITEM(GPS_Signal_9_NUM)
-CTRL_LIST_ITEM(GPS_Signal_10_NUM)
-CTRL_LIST_ITEM(GPS_Signal_11_NUM)
-CTRL_LIST_ITEM(GPS_Signal_2_Val)
-CTRL_LIST_ITEM(GPS_Signal_3_Val)
-CTRL_LIST_ITEM(GPS_Signal_4_Val)
-CTRL_LIST_ITEM(GPS_Signal_5_Val)
-CTRL_LIST_ITEM(GPS_Signal_6_Val)
-CTRL_LIST_ITEM(GPS_Signal_7_Val)
-CTRL_LIST_ITEM(GPS_Signal_8_Val)
-CTRL_LIST_ITEM(GPS_Signal_9_Val)
-CTRL_LIST_ITEM(GPS_Signal_10_Val)
-CTRL_LIST_ITEM(GPS_Signal_11_Val)
-CTRL_LIST_ITEM(GPS_Signal_Green_2)
-CTRL_LIST_ITEM(GPS_Signal_Green_3)
-CTRL_LIST_ITEM(GPS_Signal_Green_4)
-CTRL_LIST_ITEM(GPS_Signal_Green_5)
-CTRL_LIST_ITEM(GPS_Signal_Green_6)
-CTRL_LIST_ITEM(GPS_Signal_Green_7)
-CTRL_LIST_ITEM(GPS_Signal_Green_8)
-CTRL_LIST_ITEM(GPS_Signal_Green_9)
-CTRL_LIST_ITEM(GPS_Signal_Green_10)
-CTRL_LIST_ITEM(GPS_Signal_Green_11)
-CTRL_LIST_ITEM(GPS_Signal_Red_2)
-CTRL_LIST_ITEM(GPS_Signal_Red_3)
-CTRL_LIST_ITEM(GPS_Signal_Red_4)
-CTRL_LIST_ITEM(GPS_Signal_Red_5)
-CTRL_LIST_ITEM(GPS_Signal_Red_6)
-CTRL_LIST_ITEM(GPS_Signal_Red_7)
-CTRL_LIST_ITEM(GPS_Signal_Red_8)
-CTRL_LIST_ITEM(GPS_Signal_Red_9)
-CTRL_LIST_ITEM(GPS_Signal_Red_10)
-CTRL_LIST_ITEM(GPS_Signal_Red_11)
-CTRL_LIST_ITEM(GPS_Signal_Red_1)
-CTRL_LIST_ITEM(GPS_Signal_Red_12)
-CTRL_LIST_ITEM(GPS_Signal_Green_1)
-CTRL_LIST_ITEM(GPS_Signal_Green_12)
-CTRL_LIST_ITEM(GPS_Signal_12_NUM)
-CTRL_LIST_ITEM(GPS_Signal_1_NUM)
-CTRL_LIST_ITEM(GPS_Signal_1_Val)
-CTRL_LIST_ITEM(GPS_Signal_12_Val)
+CTRL_LIST_ITEM(UIMenuWndSetupGPS_Panel)
 CTRL_LIST_END
 
 //----------------------UIMenuWndSetupGPSCtrl Event---------------------------
@@ -455,6 +406,7 @@ INT32 UIMenuWndSetupGPS_OnSatelliteDBVal(VControl *pCtrl, UINT32 paramNum, UINT3
 
 INT32 UIMenuWndSetupGPS_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
+	UxCtrl_SetShow(&UIMenuWndSetupGPS_PanelCtrl, TRUE);///Harrison ds315
     UIMenuWndSetupGPS_OnUpdateGpsNameStr();
     UIMenuWndSetupGPS_OnUpdateGpsNum();
     {
@@ -523,16 +475,73 @@ INT32 UIMenuWndSetupGPS_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
     return NVTEVT_CONSUME;
 }
 
+//---------------------UIMenuWndSetupGPS_PanelCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndSetupGPS_Panel)
+CTRL_LIST_ITEM(GPS_Signal_1_NUM)
+CTRL_LIST_ITEM(GPS_Signal_2_NUM)
+CTRL_LIST_ITEM(GPS_Signal_3_NUM)
+CTRL_LIST_ITEM(GPS_Signal_4_NUM)
+CTRL_LIST_ITEM(GPS_Signal_5_NUM)
+CTRL_LIST_ITEM(GPS_Signal_6_NUM)
+CTRL_LIST_ITEM(GPS_Signal_7_NUM)
+CTRL_LIST_ITEM(GPS_Signal_8_NUM)
+CTRL_LIST_ITEM(GPS_Signal_9_NUM)
+CTRL_LIST_ITEM(GPS_Signal_10_NUM)
+CTRL_LIST_ITEM(GPS_Signal_11_NUM)
+CTRL_LIST_ITEM(GPS_Signal_12_NUM)
+CTRL_LIST_ITEM(GPS_Signal_1_Val)
+CTRL_LIST_ITEM(GPS_Signal_2_Val)
+CTRL_LIST_ITEM(GPS_Signal_3_Val)
+CTRL_LIST_ITEM(GPS_Signal_4_Val)
+CTRL_LIST_ITEM(GPS_Signal_5_Val)
+CTRL_LIST_ITEM(GPS_Signal_6_Val)
+CTRL_LIST_ITEM(GPS_Signal_7_Val)
+CTRL_LIST_ITEM(GPS_Signal_8_Val)
+CTRL_LIST_ITEM(GPS_Signal_9_Val)
+CTRL_LIST_ITEM(GPS_Signal_10_Val)
+CTRL_LIST_ITEM(GPS_Signal_11_Val)
+CTRL_LIST_ITEM(GPS_Signal_12_Val)
+CTRL_LIST_ITEM(GPS_Signal_Red_1)
+CTRL_LIST_ITEM(GPS_Signal_Red_2)
+CTRL_LIST_ITEM(GPS_Signal_Red_3)
+CTRL_LIST_ITEM(GPS_Signal_Red_4)
+CTRL_LIST_ITEM(GPS_Signal_Red_5)
+CTRL_LIST_ITEM(GPS_Signal_Red_6)
+CTRL_LIST_ITEM(GPS_Signal_Red_7)
+CTRL_LIST_ITEM(GPS_Signal_Red_8)
+CTRL_LIST_ITEM(GPS_Signal_Red_9)
+CTRL_LIST_ITEM(GPS_Signal_Red_10)
+CTRL_LIST_ITEM(GPS_Signal_Red_11)
+CTRL_LIST_ITEM(GPS_Signal_Red_12)
+CTRL_LIST_ITEM(GPS_Signal_Green_1)
+CTRL_LIST_ITEM(GPS_Signal_Green_2)
+CTRL_LIST_ITEM(GPS_Signal_Green_3)
+CTRL_LIST_ITEM(GPS_Signal_Green_4)
+CTRL_LIST_ITEM(GPS_Signal_Green_5)
+CTRL_LIST_ITEM(GPS_Signal_Green_6)
+CTRL_LIST_ITEM(GPS_Signal_Green_7)
+CTRL_LIST_ITEM(GPS_Signal_Green_8)
+CTRL_LIST_ITEM(GPS_Signal_Green_9)
+CTRL_LIST_ITEM(GPS_Signal_Green_10)
+CTRL_LIST_ITEM(GPS_Signal_Green_11)
+CTRL_LIST_ITEM(GPS_Signal_Green_12)
+CTRL_LIST_ITEM(GPS_Status_ICON)
+CTRL_LIST_ITEM(GPS_Status_Name)
+CTRL_LIST_ITEM(UIMenuWndSetupGPS_TipsIconPower)
+CTRL_LIST_ITEM(UIMenuWndSetupGPS_TipsIconLUDOK)
+CTRL_LIST_ITEM(UIMenuWndSetupGPS_TipsIconReturn)
+CTRL_LIST_END
+
+//----------------------UIMenuWndSetupGPS_PanelCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupGPS_Panel)
+EVENT_END
+
+//----------------------GPS_Signal_1_NUMCtrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_1_NUM)
+EVENT_END
+
 //----------------------GPS_Signal_2_NUMCtrl Event---------------------------
 EVENT_BEGIN(GPS_Signal_2_NUM)
-EVENT_END
-
-//----------------------GPS_Status_NameCtrl Event---------------------------
-EVENT_BEGIN(GPS_Status_Name)
-EVENT_END
-
-//----------------------GPS_Status_ICONCtrl Event---------------------------
-EVENT_BEGIN(GPS_Status_ICON)
 EVENT_END
 
 //----------------------GPS_Signal_3_NUMCtrl Event---------------------------
@@ -569,6 +578,14 @@ EVENT_END
 
 //----------------------GPS_Signal_11_NUMCtrl Event---------------------------
 EVENT_BEGIN(GPS_Signal_11_NUM)
+EVENT_END
+
+//----------------------GPS_Signal_12_NUMCtrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_12_NUM)
+EVENT_END
+
+//----------------------GPS_Signal_1_ValCtrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_1_Val)
 EVENT_END
 
 //----------------------GPS_Signal_2_ValCtrl Event---------------------------
@@ -611,44 +628,12 @@ EVENT_END
 EVENT_BEGIN(GPS_Signal_11_Val)
 EVENT_END
 
-//----------------------GPS_Signal_Green_2Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Green_2)
+//----------------------GPS_Signal_12_ValCtrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_12_Val)
 EVENT_END
 
-//----------------------GPS_Signal_Green_3Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Green_3)
-EVENT_END
-
-//----------------------GPS_Signal_Green_4Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Green_4)
-EVENT_END
-
-//----------------------GPS_Signal_Green_5Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Green_5)
-EVENT_END
-
-//----------------------GPS_Signal_Green_6Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Green_6)
-EVENT_END
-
-//----------------------GPS_Signal_Green_7Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Green_7)
-EVENT_END
-
-//----------------------GPS_Signal_Green_8Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Green_8)
-EVENT_END
-
-//----------------------GPS_Signal_Green_9Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Green_9)
-EVENT_END
-
-//----------------------GPS_Signal_Green_10Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Green_10)
-EVENT_END
-
-//----------------------GPS_Signal_Green_11Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Green_11)
+//----------------------GPS_Signal_Red_1Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Red_1)
 EVENT_END
 
 //----------------------GPS_Signal_Red_2Ctrl Event---------------------------
@@ -691,10 +676,6 @@ EVENT_END
 EVENT_BEGIN(GPS_Signal_Red_11)
 EVENT_END
 
-//----------------------GPS_Signal_Red_1Ctrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_Red_1)
-EVENT_END
-
 //----------------------GPS_Signal_Red_12Ctrl Event---------------------------
 EVENT_BEGIN(GPS_Signal_Red_12)
 EVENT_END
@@ -703,23 +684,71 @@ EVENT_END
 EVENT_BEGIN(GPS_Signal_Green_1)
 EVENT_END
 
+//----------------------GPS_Signal_Green_2Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Green_2)
+EVENT_END
+
+//----------------------GPS_Signal_Green_3Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Green_3)
+EVENT_END
+
+//----------------------GPS_Signal_Green_4Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Green_4)
+EVENT_END
+
+//----------------------GPS_Signal_Green_5Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Green_5)
+EVENT_END
+
+//----------------------GPS_Signal_Green_6Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Green_6)
+EVENT_END
+
+//----------------------GPS_Signal_Green_7Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Green_7)
+EVENT_END
+
+//----------------------GPS_Signal_Green_8Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Green_8)
+EVENT_END
+
+//----------------------GPS_Signal_Green_9Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Green_9)
+EVENT_END
+
+//----------------------GPS_Signal_Green_10Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Green_10)
+EVENT_END
+
+//----------------------GPS_Signal_Green_11Ctrl Event---------------------------
+EVENT_BEGIN(GPS_Signal_Green_11)
+EVENT_END
+
 //----------------------GPS_Signal_Green_12Ctrl Event---------------------------
 EVENT_BEGIN(GPS_Signal_Green_12)
 EVENT_END
 
-//----------------------GPS_Signal_12_NUMCtrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_12_NUM)
+//----------------------GPS_Status_ICONCtrl Event---------------------------
+EVENT_BEGIN(GPS_Status_ICON)
 EVENT_END
 
-//----------------------GPS_Signal_1_NUMCtrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_1_NUM)
+//----------------------GPS_Status_NameCtrl Event---------------------------
+EVENT_BEGIN(GPS_Status_Name)
 EVENT_END
 
-//----------------------GPS_Signal_1_ValCtrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_1_Val)
+//----------------------UIMenuWndSetupGPS_TipsIconPowerCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupGPS_TipsIconPower)
 EVENT_END
 
-//----------------------GPS_Signal_12_ValCtrl Event---------------------------
-EVENT_BEGIN(GPS_Signal_12_Val)
+//---------------------UIMenuWndSetupGPS_TipsIconLUDOKCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndSetupGPS_TipsIconLUDOK)
+CTRL_LIST_END
+
+//----------------------UIMenuWndSetupGPS_TipsIconLUDOKCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupGPS_TipsIconLUDOK)
+EVENT_END
+
+//----------------------UIMenuWndSetupGPS_TipsIconReturnCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupGPS_TipsIconReturn)
 EVENT_END
 

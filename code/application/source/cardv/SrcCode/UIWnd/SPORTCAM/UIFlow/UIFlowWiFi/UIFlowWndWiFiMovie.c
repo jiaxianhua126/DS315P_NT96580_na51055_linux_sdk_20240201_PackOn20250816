@@ -100,7 +100,6 @@ static UINT32 beepCntTimeout = 0;
 //---------------------UIFlowWndWiFiMovieCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndWiFiMovie)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Panel_Normal_Display)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPS_INFO)
 CTRL_LIST_END
 
 //----------------------UIFlowWndWiFiMovieCtrl Event---------------------------
@@ -297,7 +296,8 @@ INT32 UIFlowWndWiFiMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
     UIFlowWndWiFiMovie_Initparam();
     #endif
 	UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_INFOCtrl, FALSE);
+    ///UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_INFOCtrl, FALSE); ///harrison ds315
+	FlowWiFiMovie_initIcon();
 
     FlowMovie_SetSOSStatusNow(FALSE);
     if (!bWndWiFiMovieOpenFirst)
@@ -2229,39 +2229,55 @@ void UIFlowWndWiFiMovie_StartTimer(void)
 
 //---------------------UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndWiFiMovie_Panel_Normal_Display)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Status_HDR)
+//CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Status_MotionDet)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_YMD_Static)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_HMS_Static)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Panel)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Status_EIS)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_time)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_maxtime)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StaticIcon_PIM)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_resolution)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_SOS)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Status_WiFi_Connected)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_WiFi_Disconnected)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Zoom_Static)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Status_Audio)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPSSignal)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPSSignalC)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPSSignalCC)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Status_MotionDet)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StaticIcon_Timelapse)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPS)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StatusIcon_TPMS)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StatusIcon_Compass)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_TipsBar)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StaticIcon_PIM)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Status_WiFi_Connected)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Panel_SSID_KEY)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_WiFi_Disconnected)
+//CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPSSignal)
+//CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPSSignalC)
+//CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPSSignalCC)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_MotionDet1)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_MotionDet2)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_TimeLapse1)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_TimeLapse2)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPSN_SMALL_ICON2)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPS_SMALL_ICON2)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_SOS)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_SOS1)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_SNG1)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_SNG2)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_TSR)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_TSR1)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_TSR2)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_TSR3)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_RL)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_RL1)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_RL2)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_RL3)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_MENU_SOS)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_MENU_SSID)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_MENU_CAP)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_MENU_CLOSELCD)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_MENU_PowerKey)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_FolderCheck_StatusTxt)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_SNG)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Panel_PlayMode)
 CTRL_LIST_END
 
 //----------------------UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndWiFiMovie_Panel_Normal_Display)
 EVENT_END
 
-//----------------------UIFlowWndWiFiMovie_Status_HDRCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_Status_HDR)
+//----------------------UIFlowWndWiFiMovie_Status_MotionDetCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Status_MotionDet)
 EVENT_END
 
 //----------------------UIFlowWndWiFiMovie_YMD_StaticCtrl Event---------------------------
@@ -2280,10 +2296,6 @@ CTRL_LIST_END
 EVENT_BEGIN(UIFlowWndWiFiMovie_Panel)
 EVENT_END
 
-//----------------------UIFlowWndWiFiMovie_Status_EISCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_Status_EIS)
-EVENT_END
-
 //----------------------UIFlowWndWiFiMovie_Static_timeCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndWiFiMovie_Static_time)
 EVENT_END
@@ -2292,92 +2304,20 @@ EVENT_END
 EVENT_BEGIN(UIFlowWndWiFiMovie_Static_maxtime)
 EVENT_END
 
-//----------------------UIFlowWndWiFiMovie_StaticIcon_PIMCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_StaticIcon_PIM)
-EVENT_END
-
 //----------------------UIFlowWndWiFiMovie_Static_resolutionCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndWiFiMovie_Static_resolution)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_SOSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_SOS)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_Status_WiFi_ConnectedCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_Status_WiFi_Connected)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_Static_WiFi_DisconnectedCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_Static_WiFi_Disconnected)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_Zoom_StaticCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_Zoom_Static)
 EVENT_END
 
 //----------------------UIFlowWndWiFiMovie_Status_AudioCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndWiFiMovie_Status_Audio)
 EVENT_END
 
-//----------------------UIFlowWndWiFiMovie_GPSSignalCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_GPSSignal)
+//----------------------UIFlowWndWiFiMovie_StaticIcon_PIMCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_StaticIcon_PIM)
 EVENT_END
 
-//----------------------UIFlowWndWiFiMovie_GPSSignalCCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_GPSSignalC)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_GPSSignalCCCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_GPSSignalCC)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_Status_MotionDetCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_Status_MotionDet)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_StaticIcon_TimelapseCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_StaticIcon_Timelapse)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_GPSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_GPS)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_StatusIcon_TPMSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_StatusIcon_TPMS)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_StatusIcon_CompassCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_StatusIcon_Compass)
-EVENT_END
-
-//---------------------UIFlowWndWiFiMovie_TipsBarCtrl Control List---------------------------
-CTRL_LIST_BEGIN(UIFlowWndWiFiMovie_TipsBar)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_TipsIconSOS)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_TipsIconSSID)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_TipsIconCAPTURE)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_TipsIconCLOSELCD)
-CTRL_LIST_END
-
-//----------------------UIFlowWndWiFiMovie_TipsBarCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_TipsBar)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_TipsIconSOSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_TipsIconSOS)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_TipsIconSSIDCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_TipsIconSSID)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_TipsIconCAPTURECtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_TipsIconCAPTURE)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_TipsIconCLOSELCDCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_TipsIconCLOSELCD)
+//----------------------UIFlowWndWiFiMovie_Status_WiFi_ConnectedCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Status_WiFi_Connected)
 EVENT_END
 
 //---------------------UIFlowWndWiFiMovie_Panel_SSID_KEYCtrl Control List---------------------------
@@ -2398,115 +2338,132 @@ EVENT_END
 EVENT_BEGIN(UIFlowWiFiMoive_static_Key)
 EVENT_END
 
+//----------------------UIFlowWndWiFiMovie_Static_WiFi_DisconnectedCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_WiFi_Disconnected)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_GPSSignalCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_GPSSignal)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_GPSSignalCCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_GPSSignalC)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_GPSSignalCCCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_GPSSignalCC)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_MotionDet1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_MotionDet1)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_MotionDet2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_MotionDet2)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_TimeLapse1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_TimeLapse1)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_TimeLapse2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_TimeLapse2)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_GPSN_SMALL_ICON2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_GPSN_SMALL_ICON2)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_GPS_SMALL_ICON2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_GPS_SMALL_ICON2)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_SOSCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_SOS)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_SOS1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_SOS1)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_SNG1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_SNG1)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_SNG2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_SNG2)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_TSRCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_TSR)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_TSR1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_TSR1)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_TSR2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_TSR2)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_TSR3Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_TSR3)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_RLCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_RL)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_RL1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_RL1)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_RL2Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_RL2)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Static_RL3Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_RL3)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_MENU_SOSCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_MENU_SOS)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_MENU_SSIDCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_MENU_SSID)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_MENU_CAPCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_MENU_CAP)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_MENU_CLOSELCDCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_MENU_CLOSELCD)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_MENU_PowerKeyCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_MENU_PowerKey)
+EVENT_END
+
 //----------------------UIFlowWndWiFiMovie_FolderCheck_StatusTxtCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndWiFiMovie_FolderCheck_StatusTxt)
 EVENT_END
 
-//---------------------UIFlowWndWiFiMovie_GPS_INFOCtrl Control List---------------------------
-CTRL_LIST_BEGIN(UIFlowWndWiFiMovie_GPS_INFO)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_DATE_Y3)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_DATE_Y2)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_DATE_Y1)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_DATE_Y0)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_DATE_M1)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_DATE_M0)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_DATE_D1)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_DATE_D0)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_TIME_AMPM)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_TIME_H1)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_TIME_H0)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_TIME_M1)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_TIME_M0)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_PANEL_SPEED)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_SPEED_N2)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_SPEED_N1)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_SPEED_N0)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_SPEED_UNIT)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_GPS_STATUS)
-CTRL_LIST_ITEM(UIFlowWndWiFiMovie_COMPASS)
+//----------------------UIFlowWndWiFiMovie_Static_SNGCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Static_SNG)
+EVENT_END
+
+//---------------------UIFlowWndWiFiMovie_Panel_PlayModeCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndWiFiMovie_Panel_PlayMode)
+CTRL_LIST_ITEM(UIFlowWiFiMoive_static_AppConnectting)
 CTRL_LIST_END
 
-//----------------------UIFlowWndWiFiMovie_GPS_INFOCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_GPS_INFO)
+//----------------------UIFlowWndWiFiMovie_Panel_PlayModeCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Panel_PlayMode)
 EVENT_END
 
-//----------------------UIFlowWndWiFiMovie_DATE_Y3Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_DATE_Y3)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_DATE_Y2Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_DATE_Y2)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_DATE_Y1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_DATE_Y1)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_DATE_Y0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_DATE_Y0)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_DATE_M1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_DATE_M1)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_DATE_M0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_DATE_M0)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_DATE_D1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_DATE_D1)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_DATE_D0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_DATE_D0)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_TIME_AMPMCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_TIME_AMPM)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_TIME_H1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_TIME_H1)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_TIME_H0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_TIME_H0)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_TIME_M1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_TIME_M1)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_TIME_M0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_TIME_M0)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_PANEL_SPEEDCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_PANEL_SPEED)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_SPEED_N2Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_SPEED_N2)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_SPEED_N1Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_SPEED_N1)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_SPEED_N0Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_SPEED_N0)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_SPEED_UNITCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_SPEED_UNIT)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_GPS_STATUSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_GPS_STATUS)
-EVENT_END
-
-//----------------------UIFlowWndWiFiMovie_COMPASSCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiMovie_COMPASS)
+//----------------------UIFlowWiFiMoive_static_AppConnecttingCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWiFiMoive_static_AppConnectting)
 EVENT_END
 
