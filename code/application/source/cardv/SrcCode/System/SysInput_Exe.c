@@ -371,6 +371,7 @@ SX_TIMER_ITEM(ETHCAM_DataRecvDet, EthCamNet_DataRecvDet, 25, FALSE)
 
 extern void EthCamNet_EthernetLinkDet(void);
 extern int SX_TIMER_ETHCAM_ETHERNETLINKDET_LINKDET_ID;
+
 SX_TIMER_ITEM(ETHCAM_EthernetLinkDet, EthCamNet_EthernetLinkDet, 25, FALSE)
 
 #endif
@@ -385,8 +386,16 @@ SX_TIMER_ITEM(ETHCAM_EthHubLinkDet, EthCamNet_EthHubLinkDet, 50, FALSE)
 #endif
 
 #endif
+int SX_TIMER_UI_STATIONSTATUS_DET_ID;
+extern void UINet_StationStatus_Det(void);
+SX_TIMER_ITEM(UI_StationStatus_Det, UINet_StationStatus_Det, 50, FALSE)
+
+
 void System_OnInputInit(void)
 {
+	SX_TIMER_UI_STATIONSTATUS_DET_ID = SxTimer_AddItem(&Timer_UI_StationStatus_Det);
+	
+	
 	//PHASE-1 : Init & Open Drv or DrvExt
 	{
 		GxKey_RegCB(Key_CB);         //Register CB function of GxInput

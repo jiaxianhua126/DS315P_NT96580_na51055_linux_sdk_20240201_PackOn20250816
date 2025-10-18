@@ -662,7 +662,7 @@ void FlowMovie_SetCrash(void)
 
 void FlowMovie_SyncEthCamMneu(UINT8 id,BOOL bReOpen)
 {
-#if 1
+	#if(defined(_NVT_ETHREARCAM_RX_))
 	ETHCAM_MENU_SETTING sEthCamMenuSetting[ETH_REARCAM_CAPS_COUNT]={0};
 	EthCam_SendXMLCmd(id, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_MENU_SETTING, bReOpen);
 	#if (ETH_REARCAM_CAPS_COUNT>=2)
@@ -691,40 +691,6 @@ void FlowMovie_SyncEthCamMneu(UINT8 id,BOOL bReOpen)
 	//	bReOpenMovie=1;
 	//}
 	//memcpy(&g_sEthCamMenuSetting[id], &sEthCamMenuSetting[id], sizeof(ETHCAM_MENU_SETTING));	
-
-	#else 
-    //sync menu
-    EthCam_SendXMLCmd(id, ETHCAM_PORT_DEFAULT ,ETHCAM_CMD_SYNC_MENU_SETTING, bReOpen);
-    ETHCAM_MENU_SETTING sEthCamMenuSetting[ETH_REARCAM_CAPS_COUNT]={0};
-	#if (ETH_REARCAM_CAPS_COUNT>=2)
-    sEthCamMenuSetting[id].Size=MovieExe_GetEthCamMovieSize(UI_GetData(FL_MOVIE_SIZE));
-	#else
-    sEthCamMenuSetting[id].Size=MOVIE_SIZE_CLONE_2560x1440P30_848x480P30;
-	#endif
-    sEthCamMenuSetting[id].WDR=UI_GetData(FL_MOVIE_WDR);
-    if(id==0){
-        sEthCamMenuSetting[id].EV=UI_GetData(FL_EV);
-    }else if(id==1){
-        sEthCamMenuSetting[id].EV=UI_GetData(FL_EV2);
-    }
-    sEthCamMenuSetting[id].DateImprint=UI_GetData(FL_MOVIE_DATEIMPRINT);
-    if(id==0){
-        sEthCamMenuSetting[id].SensorRotate=UI_GetData(FL_SENSOR_ROTATE);
-    }else if(id==1){
-        sEthCamMenuSetting[id].SensorRotate=UI_GetData(FL_SENSOR2_ROTATE);
-    }
-    sEthCamMenuSetting[id].Codec=UI_GetData(FL_MOVIE_CODEC);//MOVIE_CODEC_H264;//UI_GetData(FL_MOVIE_CODEC);
-	#if defined(_NVT_ETHREARCAM_CAPS_COUNT_1_)
-    sEthCamMenuSetting[id].TimeLapse=UI_GetData(FL_MOVIE_TIMELAPSE_REC);
-	#else
-    sEthCamMenuSetting[id].TimeLapse=UI_GetData(FL_MOVIE_TIMELAPSE_REC);//MOVIE_TIMELAPSEREC_OFF; 
-	#endif
-    sEthCamMenuSetting[id].MotionDet=UI_GetData(FL_MOVIE_MOTION_DET);
-    sEthCamMenuSetting[id].Frequency=UI_GetData(FL_FREQUENCY);
-    sEthCamMenuSetting[id].TV_Mode=UI_GetData(FL_TV_MODE);
-    sEthCamMenuSetting[id].hdr=UI_GetData(FL_MOVIE_HDR);
-
-    EthCam_SendXMLData(id, (UINT8 *)&sEthCamMenuSetting[id], sizeof(ETHCAM_MENU_SETTING));
 	#endif
 }
 #define SENSOR_NONE         0 
@@ -733,7 +699,7 @@ void FlowMovie_SyncEthCamMneu(UINT8 id,BOOL bReOpen)
 #define SENSOR_BOTH         3 
 void FlowMovie_DetTxDisconnected(void)
 {
-
+#if(defined(_NVT_ETHREARCAM_RX_))
 	static UINT16 sensorStsCur = SENSOR_BOTH;
 	static UINT16 sensorStsPre = SENSOR_BOTH;
 	static UINT32 sensorStsCnt = 0;
@@ -763,6 +729,7 @@ void FlowMovie_DetTxDisconnected(void)
 	}else{
 		sensorStsCnt = 0;
 	}
+#endif
 }
 
 #if 0//just for poloraid ,motor dv
@@ -859,6 +826,7 @@ void FlowMovie_UpdateLED(void)
 #endif
 BOOL FlowMovie_IsEthCamConnectOK(void)
 {
+#if(defined(_NVT_ETHREARCAM_RX_))
 	UINT32 i;
 	BOOL ret = FALSE;
 	for (i = 0; ((i < ETH_REARCAM_CAPS_COUNT)); i++) {
@@ -867,6 +835,9 @@ BOOL FlowMovie_IsEthCamConnectOK(void)
 		}
 	}
 	return ret;
+#else
+	return FALSE;
+#endif
 }
 void FlowMovie_SyncTimeToRear(void)
 {

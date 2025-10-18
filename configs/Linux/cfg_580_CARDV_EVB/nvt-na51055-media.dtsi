@@ -93,4 +93,8 @@
 	nvt_ipc {
 		compatible = "nvt,nvt_ipc";
 	};
+
+        ad_fake {
+                chg_mode_flag = <1>;
+        };
 };

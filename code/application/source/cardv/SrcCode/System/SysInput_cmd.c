@@ -946,7 +946,7 @@ static BOOL Cmd_ethcam_tx_ethfwupdate(unsigned char argc, char **argv)
 	}
 
 
-	system("udpsvd -vE 0 69 tftpd /mnt/sd/ &");
+	system("udpsvd -vE 0 69 tftpd /mnt/sd2/ &");
 
 
 #if defined(_UI_STYLE_LVGL_)

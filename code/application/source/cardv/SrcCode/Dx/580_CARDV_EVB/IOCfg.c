@@ -19,6 +19,12 @@
 #include "DrvExt.h"
 #include "IOCfg.h"
 #include "IOInit.h"
+#include "gpio_info.h"
+#include <string.h>         // for memset, strncmp
+#include <stdio.h>          // sscanf
+#include <unistd.h>
+#include "DxInput.h"
+
 
 ///////////////////////////////////////////////////////////////////////////////
 #define __MODULE__          DxDrv
@@ -101,6 +107,9 @@ void IO_InitGPIO(void)
 
 	DBG_IND("GPIO END\r\n");
 #endif
+	gpio_setDir(GPIO_ACC_PLUG, GPIO_DIR_INPUT);
+	gpio_pullSet(GPIO_ACC_PLUG);
+
 }
 
 /**
@@ -136,6 +145,14 @@ void IO_InitADC(void)
 	adc_setChConfig(ADC_CH_VOLDET_KEY1, ADC_CH_CONFIG_ID_SAMPLE_FREQ, 10000); //10K Hz, sample once about 100 us for CONTINUOUS mode
 	adc_setChConfig(ADC_CH_VOLDET_KEY1, ADC_CH_CONFIG_ID_SAMPLE_MODE, (VOLDET_ADC_MODE) ? ADC_CH_SAMPLEMODE_CONTINUOUS : ADC_CH_SAMPLEMODE_ONESHOT);
 	adc_setChConfig(ADC_CH_VOLDET_KEY1, ADC_CH_CONFIG_ID_INTEN, FALSE);
+
+	if (adc_open(ADC_CH_VOLDET_KEY2) != E_OK) {
+		DBG_ERR("Can't open ADC channel for battery voltage detection\r\n");
+		return;
+	}
+	adc_setChConfig(ADC_CH_VOLDET_KEY2, ADC_CH_CONFIG_ID_SAMPLE_FREQ, 10000); //10K Hz, sample once about 100 us for CONTINUOUS mode
+	adc_setChConfig(ADC_CH_VOLDET_KEY2, ADC_CH_CONFIG_ID_SAMPLE_MODE, (VOLDET_ADC_MODE) ? ADC_CH_SAMPLEMODE_CONTINUOUS : ADC_CH_SAMPLEMODE_ONESHOT);
+	adc_setChConfig(ADC_CH_VOLDET_KEY2, ADC_CH_CONFIG_ID_INTEN, FALSE);
 #endif
 
 	// Enable adc control logic
@@ -145,14 +162,35 @@ void IO_InitADC(void)
 	//Delay_DelayMs(15); //wait ADC stable  //for pwr on speed up
 }
 
+void Dx_InitGPS_PWREN(void)
+{
+	gpio_setDir(GPIO_GPS_PWREN, GPIO_DIR_OUTPUT);
+	gpio_setPin(GPIO_GPS_PWREN);
+}
+
+void Dx_InitGPS_NOPWREN(void)
+{
+	gpio_setDir(GPIO_GPS_PWREN, GPIO_DIR_OUTPUT);
+	gpio_clearPin(GPIO_GPS_PWREN);
+}
+
+void Dx_InitAudio_PWREN(void)
+{
+	gpio_setDir(GPIO_AUDIO_AMP_EN, GPIO_DIR_OUTPUT);
+	gpio_setPin(GPIO_AUDIO_AMP_EN);
+}
+
+
 void Dx_InitIO(void)  // Config IO for external device
 {
 
 	//IO_InitIntDir();    //initial interrupt destination
-
+	//Dx_InitGPS_PWREN();
+	Dx_InitAudio_PWREN();
 	//IO_InitPinmux();    //initial PINMUX config
-	//IO_InitGPIO();      //initial GPIO pin status
+	IO_InitGPIO();      //initial GPIO pin status
 	IO_InitADC();       //initial ADC pin status
+	GPIOMap_Sensor2PowerOn(TRUE);
 #if 0//defined(_MCU_ENABLE_)
 	//Open for DxPower operating
 	Dx_Open(Dx_GetObject(DX_CLASS_POWER_EXT));

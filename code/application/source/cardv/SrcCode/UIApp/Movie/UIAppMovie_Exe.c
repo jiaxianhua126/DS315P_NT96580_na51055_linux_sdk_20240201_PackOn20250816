@@ -4439,6 +4439,7 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	MOVIE_SENSOR_INFO sen_cfg = {0};
 
     DBG_FUNC("\r\n");
+	#if defined(_NVT_ETHREARCAM_RX_)
 	//#NT#2023/03/27#HTK ADD -begin
 	if (UI_GetData(FL_VIDEO_FORMAT) == VIDEO_FORMAT_TS){
 	#if 0//for raw 
@@ -4458,6 +4459,7 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		gEthcamRecInfoRecFormat=_CFG_FILE_FORMAT_MP4;
 	}
 	DBG_DUMP("==gEthcamRecInfoAudCodec =====%d======\r\n",gEthcamRecInfoRecFormat);
+	#endif
 
 	switch (SysGetFlag(FL_DATE_FORMAT)) {
     case DATE_FORMAT_DMY:
@@ -6400,12 +6402,14 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			ImageApp_MovieMulti_RecStart(gMovie_Clone_Info[i].rec_id);
 		}
 
-		if (movie_rec_mask & mask) {			
+		if (movie_rec_mask & mask) {
+			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_BSMUX_FAST_PUT, ENABLE);					
 			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_UTC_AUTO_EN,TRUE);//add by haotek.
 			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_FLUSH_SEC, 10);
 			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_WRITE_BLKSIZE, 0x200000);
 			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_BUFRESSEC, uifile_buffer_reserved_sec);
 			ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_BUFRESSEC_EMR, uifile_buffer_reserved_sec + gMovie_Rec_Option.emr_sec);
+			//ImageApp_MovieMulti_SetParam(gMovie_Rec_Info[i].rec_id, MOVIEMULTI_PARAM_FILE_MAX_POP_SIZE, (16*1024*1024));
 			//#NT#2023/03/27#HTK ADD -begin
 			#if (FRONT_MOOV_FUNC==ENABLE)//(_HTK_TODO_==ENABLE)
 			  if(gMovie_Rec_Info[i].file_format==_CFG_FILE_FORMAT_MP4){
@@ -6513,6 +6517,7 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			#endif
 			//#NT#2023/03/27#HTK ADD -end
 			
+			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_BSMUX_FAST_PUT, ENABLE);
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_UTC_AUTO_EN,TRUE);//add by haotek.
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_FLUSH_SEC, 10);
 			ImageApp_MovieMulti_SetParam((_CFG_ETHCAM_ID_1 + j), MOVIEMULTI_PARAM_FILE_WRITE_BLKSIZE, 0x200000);

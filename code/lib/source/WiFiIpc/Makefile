@@ -24,6 +24,7 @@ SRC = \
 OBJ = $(SRC:.c=.o)
 
 FWDIR = $(ROOTFS_DIR)/rootfs/lib/firmware/bcmdhd
+AIC8800_FWDIR = $(ROOTFS_DIR)/rootfs/vendor/etc/firmware
 
 ifeq ("$(wildcard *.c */*.c)","")
 all:
@@ -70,6 +71,11 @@ else ifeq ($(NVT_SDIO_WIFI), NVT_SDIO_WIFI_BRCM)
 		@cp -af scripts/ap6256/nvram_ap6256.txt $(FWDIR)
 		@cp -af scripts/ap6256/config.txt $(FWDIR)
     endif
+else ifeq ($(NVT_SDIO_WIFI), NVT_SDIO_WIFI_AIC8800)
+	@cp -avfr scripts/aic8800/*.sh $(ROOTFS_DIR)/rootfs/usr/share/wifiscripts/
+	@mkdir -p $(AIC8800_FWDIR)
+	@cp -af scripts/aic8800/*.bin $(AIC8800_FWDIR)
+	@cp -af scripts/aic8800/*.txt $(AIC8800_FWDIR)	
 else
 	@cp -avfr scripts/8189ftv/* $(ROOTFS_DIR)/rootfs/usr/share/wifiscripts/
 endif	

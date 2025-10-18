@@ -74,12 +74,12 @@ extern void vio_setpin(UINT32 id, UINT32 v);
 #define LCD_COMM_DUMMY              0
 #define LCD_COMM_BY_GPIO            1
 #define LCD_COMM_BY_SIF             2
-#define LCD_COMM_CTRL               LCD_COMM_BY_SIF
+#define LCD_COMM_CTRL               LCD_COMM_BY_GPIO
 
 #if (LCD_COMM_CTRL == LCD_COMM_BY_GPIO)
-#define GPIO_LCD_SIF_SEN            L_GPIO_21//S_GPIO_4 //FPGA
-#define GPIO_LCD_SIF_SCK            L_GPIO_22//S_GPIO_5 //FPGA
-#define GPIO_LCD_SIF_SDA            L_GPIO_23//S_GPIO_6 //FPGA
+#define GPIO_LCD_SIF_SEN            L_GPIO_22//S_GPIO_4 //FPGA
+#define GPIO_LCD_SIF_SCK            L_GPIO_23//S_GPIO_5 //FPGA
+#define GPIO_LCD_SIF_SDA            L_GPIO_24//S_GPIO_6 //FPGA
 #endif
 #if (LCD_COMM_CTRL == LCD_COMM_BY_SIF)
 #define SIF_LCD_CH                  SIF_CH2
@@ -91,20 +91,20 @@ extern void vio_setpin(UINT32 id, UINT32 v);
 #define DIR_LCD_SIF_SDA             PAD_PULLUP
 #endif
 //#define GPIO_LCD_SLEEP              87 //FPGA not support
-//#define GPIO_LCD_RESET              88 //FPGA not support
+#define GPIO_LCD_RESET             L_GPIO_15
 
 // LCD backlight
 #define LCD_BACKLIGHT_DUMMY         0
 #define LCD_BACKLIGHT_BY_GPIO       1
 #define LCD_BACKLIGHT_BY_PWM        2
 #define LCD_BACKLIGHT_BY_PWRIC      3
-#define LCD_BACKLIGHT_CTRL          LCD_BACKLIGHT_DUMMY //FPGA
+#define LCD_BACKLIGHT_CTRL          LCD_BACKLIGHT_BY_GPIO //FPGA
 #if (LCD_BACKLIGHT_CTRL == LCD_BACKLIGHT_BY_PWM)
 #define GPIO_PWM_LCD_BLG_PCTL       x
 #define PWMID_LCD_BLG_PCTL          PWMID_x
 #elif (LCD_BACKLIGHT_CTRL == LCD_BACKLIGHT_BY_GPIO)
-#define GPIO_LCD_BLG_PCTL           x_GPIO_x
-#define PAD_LCD_BLG_PCTL            PAD_PIN_xGPIOx
+#define GPIO_LCD_BLG_PCTL           D_GPIO_10
+#define PAD_LCD_BLG_PCTL            PAD_PIN_DGPIO10
 #endif
 
 // LCD2 communicate
@@ -177,11 +177,11 @@ extern void vio_setpin(UINT32 id, UINT32 v);
 //--------------------------------------------------------------------
 // CARD
 // card power
-#define GPIO_CARD_POWER             C_GPIO_19
-#define PAD_CARD_POWER              PAD_PIN_CGPIO19
+#define GPIO_CARD_POWER             D_GPIO_1
+#define PAD_CARD_POWER              PAD_PIN_DGPIO1
 // SD card detect
-#define GPIO_CARD_DETECT            P_GPIO_17
-#define PAD_CARD_DETECT             PAD_PIN_PGPIO17
+#define GPIO_CARD_DETECT            C_GPIO_7
+#define PAD_CARD_DETECT             PAD_PIN_CGPIO7
 // SD card write protect
 #define GPIO_CARD_WP                P_GPIO_18
 #define PAD_CARD_WP                 PAD_PIN_PGPIO18
@@ -196,9 +196,17 @@ extern BOOL     SDIO2CardUser_CheckCardWP(void);
 //--------------------------------------------------------------------
 // Audio device
 //--------------------------------------------------------------------
+
+// Audio
+#define GPIO_AUDIO_AMP_EN           L_GPIO_22
+#define PAD_AUDIO_POWER             PAD_PIN_LGPIO22
+
 //Audio
 extern BOOL     GPIOMap_DetAudio(void);
 
+// ACC Det
+#define GPIO_ACC_PLUG               C_GPIO_6
+#define PAD_ACC_PLUG                PAD_PIN_CGPIO6
 
 //--------------------------------------------------------------------
 // Input device
@@ -222,6 +230,7 @@ extern BOOL     GPIOMap_DetAudio(void);
 // <Mapping>  SW1~SW12 = MC22~MC31,DCPIO4,5 = C_GPIO_22~31,DCPIO4,5 (Roy)
 // <Active>   Low (Roy)
 //
+/*
 #define GPIO_KEY_ZOOMOUT            P_GPIO_20           // Key Zoom Out (kzo)
 #define PAD_KEY_ZOOMOUT             PAD_PIN_CGPIO20
 #define GPIO_KEY_SHUTTER2           P_GPIO_21           // Key Shutter2 (ks2)
@@ -246,28 +255,31 @@ extern BOOL     GPIOMap_DetAudio(void);
 #define PAD_KEY_MODE                PAD_PIN_DGPIO4
 #define GPIO_KEY_MENU               D_GPIO_5            // Key Menu (km)
 #define PAD_KEY_MENU                PAD_PIN_DGPIO5
-
+*/
 //#define ADC_CH_VOLDET_MS1           ADC_CHANNEL_1
 //#define ADC_CH_VOLDET_MS2           ADC_CHANNEL_0
-#define ADC_CH_VOLDET_KEY1          ADC_CHANNEL_2
+//#define GPIO_KEY_RIGHT              C_GPIO_5            // Key Menu (km)
+//#define PAD_KEY_RIGHT               PAD_PIN_CGPIO5
+#define ADC_CH_VOLDET_KEY1          ADC_CHANNEL_1
+#define ADC_CH_VOLDET_KEY2          ADC_CHANNEL_2
 
 
 //Touch panel controller
 
 //#define GPIO_TP_BUSY                (2 | GPIO_IS_DGPIO)  //HW TS_INT =DGPIO-02
-#define GPIO_TP_PENIRQ              (7 | GPIO_IS_DGPIO) //HW TS_PENIRQ =DGPIO-12
-#define GPIO_TP_DOUT                P_GPIO_8 //P_GPIO_58 //HW TP_DI  =SBDAT0/AGPIO-26   (FW output = HW input)
-#define GPIO_TP_DIN                 (1 | GPIO_IS_DGPIO) //HW TS_DO  =DGPIO-01  (FW input = HW output)
-#define GPIO_TP_DCLK                P_GPIO_7//P_GPIO_57 //HW TS_CLK =SBCK0/AGPIO-25
+//#define GPIO_TP_PENIRQ              (7 | GPIO_IS_DGPIO) //HW TS_PENIRQ =DGPIO-12
+//#define GPIO_TP_DOUT                P_GPIO_8 //P_GPIO_58 //HW TP_DI  =SBDAT0/AGPIO-26   (FW output = HW input)
+//#define GPIO_TP_DIN                 (1 | GPIO_IS_DGPIO) //HW TS_DO  =DGPIO-01  (FW input = HW output)
+//#define GPIO_TP_DCLK                P_GPIO_7//P_GPIO_57 //HW TS_CLK =SBCK0/AGPIO-25
 //#define GPIO_TP_CS                  28 //HW TS_CS  =SBCS1/AGPIO-28  //SIF channel 1
-#define GPIO_TP_CS                  P_GPIO_6//P_GPIO_56 //HW TS_CS  =SBCS0/AGPIO-27  //SIF channel 0
+//#define GPIO_TP_CS                  P_GPIO_6//P_GPIO_56 //HW TS_CS  =SBCS0/AGPIO-27  //SIF channel 0
 //#define PAD_TP_BUSY                 PAD_PIN_DGPIO2
-#define PAD_TP_PENIRQ               PAD_PIN_DGPIO7
-#define PAD_TP_DOUT                 PAD_PIN_PGPIO58
-#define PAD_TP_DIN                  PAD_PIN_DGPIO1
-#define PAD_TP_DCLK                 PAD_PIN_PGPIO57
+//#define PAD_TP_PENIRQ               PAD_PIN_DGPIO7
+//#define PAD_TP_DOUT                 PAD_PIN_PGPIO58
+//#define PAD_TP_DIN                  PAD_PIN_DGPIO2
+//#define PAD_TP_DCLK                 PAD_PIN_PGPIO57
 //#define PAD_TP_CS                   PAD_PIN_SBCS1  //SIF channel 1
-#define PAD_TP_CS                   PAD_PIN_PGPIO56  //SIF channel 0
+//#define PAD_TP_CS                   PAD_PIN_PGPIO56  //SIF channel 0
 
 
 //G-Sensor
@@ -290,9 +302,9 @@ extern BOOL     GPIOMap_DetPoweroff(void);
 #define LED_RED_DUMMY               0
 #define LED_RED_BY_GPIO             1
 #define LED_RED_BY_MCU              3
-#define LED_RED_CTRL                LED_RED_DUMMY
-#define GPIO_RED_LED                x_GPIO_x  //FPGA
-#define PAD_RED_LED                 PAD_PIN_xGPIOx
+#define LED_RED_CTRL                LED_RED_BY_GPIO
+#define GPIO_RED_LED                L_GPIO_8  //FPGA
+#define PAD_RED_LED                 PAD_PIN_LGPIO20
 
 #define LED_GREEN_DUMMY             0
 #define LED_GREEN_BY_GPIO           1
@@ -322,6 +334,16 @@ extern BOOL     GPIOMap_DetPoweroff(void);
 #define LED_FOCUS_CTRL              LED_FOCUS_BY_MCU
 #endif
 
+
+#define GPIO_REC_LED                L_GPIO_8  //FPGA
+#define PAD_REC_LED                 PAD_PIN_LGPIO8
+
+#define GPIO_WIFI_LED               L_GPIO_7  //FPGA
+#define PAD_WIFI_LED                PAD_PIN_LGPIO7
+
+
+#define GPIO_MIC_LED                L_GPIO_20  //FPGA TBD
+#define PAD_MIC_LED                 PAD_PIN_LGPIO20//PAD_PIN_PGPIO2
 
 //--------------------------------------------------------------------
 // Power device
@@ -359,6 +381,8 @@ extern void     GPIOMap_TurnOffCCDPower(void);
 extern UINT8    GPIOMap_IsCCDPowerOn(void);
 extern void     GPIOMap_SleepCCDPower(void);
 extern void     GPIOMap_WakeUpCCDPower(void);
+extern void Dx_InitGPS_PWREN(void);
+extern void Dx_InitGPS_NOPWREN(void);
 
 //--------------------------------------------------------------------
 // Storbe device
@@ -373,6 +397,9 @@ extern void     GPIOMap_WakeUpCCDPower(void);
 #define PAD_FL_TRIGGER              PAD_PIN_DGPIO7
 */
 
+//GPS
+#define GPIO_GPS_PWREN              D_GPIO_9
+#define PAD_GPS_PWREN               PAD_PIN_DGPIO9
 //--------------------------------------------------------------------
 // Lens device
 //--------------------------------------------------------------------
@@ -389,6 +416,15 @@ extern void     GPIOMap_WakeUpCCDPower(void);
 #define GPIO_LENS_IR_CTRL1          P_GPIO_7       // output
 #define PAD_LENS_IR_CTRL0           PAD_PIN_PGPIO6
 #define PAD_LENS_IR_CTRL1           PAD_PIN_PGPIO7
+
+//WIFI POWER
+#define GPIO_WIFI_PWREN              P_GPIO_11
+#define PAD_WIFI_PWREN               PAD_PIN_PGPIO11
+#define GPIO_ETH1_DET               P_GPIO_2
+#define PAD_PIN_GPIO_ETH1_DET       PAD_PIN_PGPIO2
+
+#define GPIO_EHT_CAM_2_PWR			P_GPIO_0	
+
 
 #endif
 

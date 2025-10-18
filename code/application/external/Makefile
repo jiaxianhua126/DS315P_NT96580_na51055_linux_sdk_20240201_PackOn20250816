@@ -31,6 +31,9 @@ else
 endif
 endif 
 
+_HOSTAPD_ = hostapd-2.11
+_WPA_SUPPLICANT_ = wpa_supplicant-2.5
+
 NTP  := ntp-4.2.8p4
 ISCSI:= open-iscsi-2.0-873
 TZCODE := tzcode
@@ -228,6 +231,17 @@ else ifeq ($(NVT_SDIO_WIFI), NVT_SDIO_WIFI_RTK)
 	
 	cp -arfv ${EXTERNAL}/${INSTALL_DIR}/tmp/* ${EXTERNAL}/${INSTALL_DIR}/
 	@touch ${HOSTAPD}/.nvt_finish
+else
+	@echo ">>>>>>>>>>>>>>>>>>> $@ compiling $(NVT_SDIO_WIFI) WIFI>>>>>>>>>>>>>>>>>>>"
+	@if [ ! -f ${HOSTAPD}/.nvt_finish ]; then \
+		$(call check_exist, ${HOSTAPD}); \
+		cd ${HOSTAPD}/hostapd; make CC=${CC} LD=${LD}; \
+	fi
+	rm -rf ${EXTERNAL}/${INSTALL_DIR}/tmp/
+	cd ${HOSTAPD}/hostapd; make DESTDIR=${EXTERNAL}/${INSTALL_DIR}/tmp BINDIR=/usr/bin install;
+
+	cp -arfv ${EXTERNAL}/${INSTALL_DIR}/tmp/* ${EXTERNAL}/${INSTALL_DIR}/
+	@touch ${HOSTAPD}/.nvt_finish	
 endif
 
 quectel-CM: init

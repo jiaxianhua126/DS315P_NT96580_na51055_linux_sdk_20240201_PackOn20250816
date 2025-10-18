@@ -364,7 +364,7 @@ void System_OnStrgInit_FS(void)
 #if (defined(_EMBMEM_EMMC_) && FS_MULTI_STRG_FUNC==DISABLE && !defined(__FREERTOS))
 	strncpy(mount_path, "/mnt/emmc1", sizeof(mount_path) - 1);
 #else
-	strncpy(mount_path, "/mnt/sd", sizeof(mount_path) - 1);
+	strncpy(mount_path, "/mnt/sd2", sizeof(mount_path) - 1);
 #endif
 
 
@@ -618,9 +618,9 @@ int search_str_in_file(char *path, char *str)
 
 int System_check_mmcblk0p1(void)
 {
-	SysMain_system("ls /dev/mmcblk0p1 > /tmp/lsdev.txt");
+	SysMain_system("ls /dev/mmcblk1p1 > /tmp/lsdev.txt");
     vos_util_delay_ms(100);
-	if (search_str_in_file("/tmp/lsdev.txt", "/dev/mmcblk0p1")) {
+	if (search_str_in_file("/tmp/lsdev.txt", "/dev/mmcblk1p1")) {
 		return 1;
 	} else {
 		return 0;
@@ -640,9 +640,9 @@ int System_mount_storage(char *pMountPath)
 		pDevSrc = "/dev/mmcblk2p5"; //Please cat /proc/nvt_info/emmc to get corrected /dev/mmcblk2pXX
 	#else
 	if (System_check_mmcblk0p1()) {
-		pDevSrc = "/dev/mmcblk0p1";
+		pDevSrc = "/dev/mmcblk1p1";
 	} else {
-		pDevSrc = "/dev/mmcblk0";
+		pDevSrc = "/dev/mmcblk1";
 	}
 	#endif
 
@@ -662,7 +662,7 @@ int System_mount_storage(char *pMountPath)
         if (errno == EBUSY) {
             DBG_ERR("%s is existed, don't need to mount again\r\n", pMountPath);
         } else {
-            DBG_ERR("mount /mnt/sd failed, errno = %d\r\n",errno);
+            DBG_ERR("mount /mnt/sd2 failed, errno = %d\r\n",errno);
         }
 	}
 
@@ -695,7 +695,7 @@ INT32 System_OnStrgInsert(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
     #if (defined(_EMBMEM_EMMC_) && FS_MULTI_STRG_FUNC==DISABLE && !defined(__FREERTOS))
     char *pMountPath = "/mnt/emmc1";
     #else
-    char *pMountPath = "/mnt/sd";
+    char *pMountPath = "/mnt/sd2";
     #endif
 #endif
 
@@ -719,12 +719,12 @@ INT32 System_OnStrgInsert(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
         SysMain_system("fsck.fat -a /dev/mmcblk2p5 > /tmp/fsck.txt"); //Please cat /proc/nvt_info/emmc to get corrected /dev/mmcblk2pXX
     #else
 	if (System_check_mmcblk0p1()) {
-		DBG_IND("fsck /dev/mmcblk0p1\r\n");
-		SysMain_system("fsck.fat -a /dev/mmcblk0p1 > /tmp/fsck.txt"); //Store to /tmp/fsck.txt and use "cat /tmp/fsck.txt".
+		DBG_IND("fsck /dev/mmcblk1p1\r\n");
+		SysMain_system("fsck.fat -a /dev/mmcblk1p1 > /tmp/fsck.txt"); //Store to /tmp/fsck.txt and use "cat /tmp/fsck.txt".
 		//SysMain_system("fsck.fat -a /dev/mmcblk0p1"); //The fsck checking will print the message directly.
 	} else {
-		DBG_IND("no /dev/mmcblk0p1, try to fsck /dev/mmcblk0\r\n");
-		SysMain_system("fsck.fat -a /dev/mmcblk0 > /tmp/fsck.txt"); //Store to /tmp/fsck.txt and use "cat /tmp/fsck.txt".
+		DBG_IND("no /dev/mmcblk0p1, try to fsck /dev/mmcblk1\r\n");
+		SysMain_system("fsck.fat -a /dev/mmcblk1 > /tmp/fsck.txt"); //Store to /tmp/fsck.txt and use "cat /tmp/fsck.txt".
 		//SysMain_system("fsck.fat -a /dev/mmcblk0"); //The fsck checking will print the message directly.
 	}
     #endif
@@ -732,7 +732,7 @@ INT32 System_OnStrgInsert(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
     ret_val = System_mount_storage(pMountPath);
     if (ret_val) {
         GxStrg_SetStrgMountStatus(stg_id, FALSE);
-        DBG_ERR("mount /mnt/sd failed, ret_val is %d; errno = %d\r\n", ret_val, errno);
+        DBG_ERR("mount /mnt/sd2 failed, ret_val is %d; errno = %d\r\n", ret_val, errno);
     } else {
         GxStrg_SetStrgMountStatus(stg_id, TRUE);
     }

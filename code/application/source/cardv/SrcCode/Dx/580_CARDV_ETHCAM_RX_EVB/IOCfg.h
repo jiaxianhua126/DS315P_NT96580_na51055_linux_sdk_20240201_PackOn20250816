@@ -91,7 +91,7 @@ extern void vio_setpin(UINT32 id, UINT32 v);
 #define DIR_LCD_SIF_SDA             PAD_PULLUP
 #endif
 //#define GPIO_LCD_SLEEP              87 //FPGA not support
-#define GPIO_LCD_RESET             L_GPIO_21
+#define GPIO_LCD_RESET             L_GPIO_15
 
 // LCD backlight
 #define LCD_BACKLIGHT_DUMMY         0
@@ -103,8 +103,8 @@ extern void vio_setpin(UINT32 id, UINT32 v);
 #define GPIO_PWM_LCD_BLG_PCTL       x
 #define PWMID_LCD_BLG_PCTL          PWMID_x
 #elif (LCD_BACKLIGHT_CTRL == LCD_BACKLIGHT_BY_GPIO)
-#define GPIO_LCD_BLG_PCTL           S_GPIO_2//P_GPIO_4
-#define PAD_LCD_BLG_PCTL            PAD_PIN_SGPIO2//PAD_PIN_PGPIO4
+#define GPIO_LCD_BLG_PCTL           D_GPIO_10
+#define PAD_LCD_BLG_PCTL            PAD_PIN_DGPIO10
 #endif
 
 // LCD2 communicate
@@ -198,15 +198,15 @@ extern BOOL     SDIO2CardUser_CheckCardWP(void);
 //--------------------------------------------------------------------
 
 // Audio
-#define GPIO_AUDIO_AMP_EN           L_GPIO_17//P_GPIO_9
-#define PAD_AUDIO_POWER             PAD_PIN_LGPIO17//PAD_PIN_PGPIO9
+#define GPIO_AUDIO_AMP_EN           L_GPIO_22
+#define PAD_AUDIO_POWER             PAD_PIN_LGPIO22
 
 //Audio
 extern BOOL     GPIOMap_DetAudio(void);
 
 // ACC Det
-#define GPIO_ACC_PLUG               S_GPIO_6//C_GPIO_6
-#define PAD_ACC_PLUG                PAD_PIN_SGPIO3//PAD_PIN_CGPIO6
+#define GPIO_ACC_PLUG               C_GPIO_6
+#define PAD_ACC_PLUG                PAD_PIN_CGPIO6
 
 //--------------------------------------------------------------------
 // Input device
@@ -303,7 +303,7 @@ extern BOOL     GPIOMap_DetPoweroff(void);
 #define LED_RED_BY_GPIO             1
 #define LED_RED_BY_MCU              3
 #define LED_RED_CTRL                LED_RED_BY_GPIO
-#define GPIO_RED_LED                L_GPIO_20  //FPGA
+#define GPIO_RED_LED                L_GPIO_8  //FPGA
 #define PAD_RED_LED                 PAD_PIN_LGPIO20
 
 #define LED_GREEN_DUMMY             0
@@ -335,11 +335,11 @@ extern BOOL     GPIOMap_DetPoweroff(void);
 #endif
 
 
-#define GPIO_REC_LED                P_GPIO_1  //FPGA
-#define PAD_REC_LED                 PAD_PIN_PGPIO1
+#define GPIO_REC_LED                L_GPIO_8  //FPGA
+#define PAD_REC_LED                 PAD_PIN_LGPIO8
 
-#define GPIO_WIFI_LED               P_GPIO_3  //FPGA
-#define PAD_WIFI_LED                PAD_PIN_PGPIO3
+#define GPIO_WIFI_LED               L_GPIO_7  //FPGA
+#define PAD_WIFI_LED                PAD_PIN_LGPIO7
 
 
 #define GPIO_MIC_LED                L_GPIO_20  //FPGA TBD
