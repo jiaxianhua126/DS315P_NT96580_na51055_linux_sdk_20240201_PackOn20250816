@@ -27,7 +27,7 @@
 		core2entry2 {   reg = <0x1FFC0000 0x00040000>;  };
 	};
 	/* Linux system memory region*/
-	memory { device_type = "memory"; reg = <0x00000000 0x06000000>; };
+	memory { device_type = "memory"; reg = <0x00000000 0x08000000>; };
 
 	/* Linux setup reserved memory */
 	reserved-memory {
@@ -53,8 +53,7 @@
 	hdal-memory {
 		#address-cells = <1>;
 		#size-cells = <1>;
-		/*media { reg = <0x06000000 0x1A000000>; };*/
-		media { reg = <0x06000000 0x1A000000 0x40000000 0x20000000>; };
+		media { reg = <0x08000000 0x18000000>; };
 	};
 
 	hdal-maxpath-cfg {

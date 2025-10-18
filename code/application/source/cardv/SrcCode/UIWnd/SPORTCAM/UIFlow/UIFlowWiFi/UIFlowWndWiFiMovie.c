@@ -473,96 +473,117 @@ INT32 UIFlowWndWiFiMovie_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 
 INT32 UIFlowWndWiFiMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-	UINT32  uiKeyAct;
-	uiKeyAct = paramNum ? paramArray[0] : 0;
+#if 1//(defined(_NVT_ETHREARCAM_RX_))
+	UINT32	uiKeyAct;
+	uiKeyAct = paramArray[0];
+	static	BOOL bEnterKeyPressed = FALSE;
+	UINT32	curStatus = 0;
 
-	switch(uiKeyAct)
-	{
+	switch (uiKeyAct) {
 	case NVTEVT_KEY_PRESS:
+		bEnterKeyPressed = TRUE;
+		break;
+
+	case NVTEVT_KEY_RELEASE:
+		if (!bEnterKeyPressed) {
+			break;
+		}
+		bEnterKeyPressed = FALSE;
+
 		if (FlowMovie_WakeUpLCDBacklight()) {
 			return NVTEVT_CONSUME;
 		}
 
-		if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
-			return NVTEVT_CONSUME;
+    #if 1//(TEST_GPS == ENABLE)
+		//get GPS data...
+		if (SysInit_getintoGPS_mode_getstd()) {
+			Ux_OpenWindow((VControl *)(&UIMenuWndSetupGPSCtrl), 0);
+			break;
 		}
-#if 0
-		if ((System_GetState(SYS_STATE_CARD) == CARD_INSERTED) && (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)) {
-#ifdef AUTO_EVENT_DET_FUNC
-			if ((isACCTrigParkMode) && (isACCTrigPreRecordDet)) {
-				if ((FlowMovie_GetSOSStatusNow() == FALSE) && (ParkingM_PreRecord_EMR == FALSE)) {
-					ImageApp_MovieMulti_TrigEMR(_CFG_REC_ID_1);
-					ParkingM_PreRecord_EMR = TRUE;
-					if(GPIOMap_EthCam1Det()){
-						ImageApp_MovieMulti_TrigEMR(_CFG_ETHCAM_ID_1);
-					}
-					FlowWiFiMovie_IconDrawSOS(TRUE);
-					UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SOS_BigCtrl, TRUE);
-					FlowMovie_SetSOSStatusNow(TRUE);
-					WiFiManualSetSOS = TRUE;
-				}
-				return NVTEVT_CONSUME;
-			}
-#endif
+    #endif
 
-			//if (SysGetFlag(FL_MOVIE_URGENT_PROTECT_AUTO) == MOVIE_URGENT_PROTECT_AUTO_ON)
+#if (ACC_CLOSE_WIFI == ENABLE)		
+		if (isACCTrigParkMode) {
+			if (Voice_Parrecordstart) {
+				Voice_Parrecordstart = FALSE;
+			}
+		}
+#endif	
+		 curStatus = WiFiCmd_GetStatus();
+
+		switch (curStatus) {
+		case WIFI_MOV_ST_IDLE:
+		case WIFI_MOV_ST_LVIEW:
+		case WIFI_MOV_ST_RECORD:
+        #if 1
+			if (FlowMovie_IsEthCamConnectOK()&&(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)){
+				FlowMovie_LCDDimDsiable(0); //reset count
+				FlowMovie_LCDIconDimDsiable(0); //reset count
+				if(GPIOMap_IsLCDBacklightOn()){
+					if(!UxCtrl_IsShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl))
+					{
+						UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
+						return NVTEVT_CONSUME;
+					}
+					if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_BOTH) {
+						SysSetFlag(FL_DUAL_CAM, DUALCAM_FRONT);
+					} else if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_FRONT) {
+						SysSetFlag(FL_DUAL_CAM, DUALCAM_BEHIND);
+					} else //if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_BEHIND) 
+					{
+						GPIOMap_TurnOffLCDBacklight();
+						SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
+					}
+
+					UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM));
+					Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_DUALCAM, 1, SysGetFlag(FL_DUAL_CAM));
+				}
+				else //if (GPIOMap_IsLCDBacklightOn() == FALSE) 
+				{
+					if (FlowMovie_WakeUpLCDBacklight()) {
+						//return NVTEVT_CONSUME;
+					}
+				}
+			}
+			else			
+		#endif
 			{
-			if (GetMovieRecType_2p(UI_GetData(FL_MOVIE_SIZE)) == MOVIE_REC_TYPE_FRONT) {
-#if 0//(defined(_NVT_ETHREARCAM_RX_))
-				ImageApp_MovieMulti_SetCrash(_CFG_REC_ID_1, TRUE);
-				UINT32 i;
-				for (i = 0; i < ETH_REARCAM_CAPS_COUNT; i++) {
-					if(socketCliEthData1_IsRecv(ETHCAM_PATH_ID_1 +i)) {
-						ImageApp_MovieMulti_SetCrash(_CFG_ETHCAM_ID_1+i, TRUE);
-					}
-				}
-#else
-				ImageApp_MovieMulti_TrigEMR(_CFG_REC_ID_1);
-#endif
-			} else {
-				UINT32 i, mask, movie_rec_mask;
+				if (FlowMovie_WakeUpLCDBacklight()) {
 
-				movie_rec_mask = Movie_GetMovieRecMask();
-				mask = 1;
-				for (i = 0; i < SENSOR_CAPS_COUNT; i++) {
-					if (movie_rec_mask & mask) {
-						ImageApp_MovieMulti_SetCrash(_CFG_REC_ID_1 + i, TRUE);
+					//return NVTEVT_CONSUME;
+				} else {
+					if (GPIOMap_IsLCDBacklightOn()) {
+						GPIOMap_TurnOffLCDBacklight();
 					}
-					mask <<= 1;
 				}
 			}
-			//Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);			
-			if (FlowMovie_GetSOSStatusNow() == FALSE) {
-				FlowWiFiMovie_IconDrawSOS(TRUE);
-				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SOS_BigCtrl, TRUE);
-				FlowMovie_SetSOSStatusNow(TRUE);
-				WiFiManualSetSOS = TRUE;
+			break;
+		}
+		break;
+
+	case NVTEVT_KEY_LONG_PRESS:
+		bEnterKeyPressed = FALSE;
+		if(GPIOMap_EthCam1Det()){
+			if(Get_IsRearOK()>WAIT_SECONDS)
+			{
+				//Delay_DelayMs(200);
 			}
+			else
+			{
+				DBG_DUMP("key ignore\r\n");
+				break;
 			}
 		}
+		UIFlowWndWiFiMovie_OnCustom2(pCtrl, paramNum, paramArray);
+		break;
+	}
 #endif
-		Delay_DelayMs(200);
-		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_OFF) {
-			SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_ON);
-			Control_LedTurn(MIC_LED,1);
-			UIVoice_Play(DEMOSOUND_SOUND_MICEN_TONE);
-			Delay_DelayMs(50);
-		} else {
-			SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_OFF);
-			Control_LedTurn(MIC_LED,0);
-			UIVoice_Play(DEMOSOUND_SOUND_MICDIS_TONE);
-			Delay_DelayMs(50);
-		}
-		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_AUDIO, 1, SysGetFlag(FL_MOVIE_AUDIO));
-		FlowWiFiMovie_IconDrawAudio(TRUE);
-    	break;
-    }
-    return NVTEVT_CONSUME;
+	return NVTEVT_CONSUME;
 }
+
 
 INT32 UIFlowWndWiFiMovie_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-#if 1//(defined(_NVT_ETHREARCAM_RX_))
 	UINT32  uiKeyAct;
 	uiKeyAct = paramNum ? paramArray[0] : 0;
 
@@ -607,204 +628,108 @@ INT32 UIFlowWndWiFiMovie_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *pa
 		}
     	break;
     }
-#endif
     return NVTEVT_CONSUME;
 }
 
 INT32 UIFlowWndWiFiMovie_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-#if (defined(_NVT_ETHREARCAM_RX_))
-		UINT32	uiKeyAct;
-		//UINT32  i = 0;
-		uiKeyAct = paramArray[0];
-		static	BOOL bDownKeyPressed = FALSE;
-		BOOL	bShow = FALSE;
-	
-		switch (uiKeyAct) {
-		case NVTEVT_KEY_PRESS:
-			bDownKeyPressed = TRUE;
-			if (FlowMovie_WakeUpLCDBacklight()) {
-				return NVTEVT_CONSUME;
-			}
-			break;
-	
-		case NVTEVT_KEY_RELEASE:
-			if (!bDownKeyPressed) {
-				break;
-			}
-			bDownKeyPressed = FALSE;
-			
-			if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Panel_SSID_KEYCtrl)) {
-				bShow = FALSE;
-			} else {
-				bShow = TRUE;
-			}
-			UIFlowWndWiFiMovie_UpdateWiFiData(bShow);
-			break;
-	
-		case NVTEVT_KEY_LONG_PRESS:
-			bDownKeyPressed = FALSE;
-			if (FlowMovie_WakeUpLCDBacklight()) {
-				return NVTEVT_CONSUME;
-			}
-	
-			if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
-				return NVTEVT_CONSUME;
-			}
-#if 0
-			if (WiFiCmd_GetStatus() == WIFI_MOV_ST_LVIEW) {
-				if (SysGetFlag(FL_MOVIE_CODEC) == MOVIE_CODEC_H264) {
-					for (i = 0; i < 2; i++) {
-						UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
-						Delay_DelayMs(100);
-					}
-					SysSetFlag(FL_MOVIE_CODEC, MOVIE_CODEC_H265);
-				} else {
-					UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
-					Delay_DelayMs(100);
-					SysSetFlag(FL_MOVIE_CODEC, MOVIE_CODEC_H264);
-				}
-				g_uiPreMovieCodec = SysGetFlag(FL_MOVIE_CODEC);
-				Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_CODEC, 1, SysGetFlag(FL_MOVIE_CODEC));
-				Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_BITRATE, 1, SysGetFlag(FL_MOVIE_BITRATE));
-				//g_bMoviecodec_changed = TRUE;
-				Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
-			}
-#endif
-	
-			break;
-		}
-#endif
-    return NVTEVT_CONSUME;
-}
+	UINT32  uiKeyAct;
+	uiKeyAct = paramNum ? paramArray[0] : 0;
 
-INT32 UIFlowWndWiFiMovie_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
-{
-#if (defined(_NVT_ETHREARCAM_RX_))
-		UINT32	uiKeyAct;
-		uiKeyAct = paramArray[0];
-	
-		switch (uiKeyAct) {
-		case NVTEVT_KEY_PRESS:
-			if (FlowMovie_WakeUpLCDBacklight()) {
-				return NVTEVT_CONSUME;
-			}
-			if(GPIOMap_EthCam1Det()){
-				if(Get_IsRearOK()>WAIT_SECONDS)
-				{
-					//Delay_DelayMs(200);
-				}
-				else
-				{
-					DBG_DUMP("key ignore\r\n");
-					return NVTEVT_CONSUME;
-				}
-			}
-			if ((System_GetState(SYS_STATE_CARD) == CARD_INSERTED) && (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)) {
-				FlowWiFiMovie_DrawPIM(TRUE);
-				Delay_DelayMs(150);
-				Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
-				UISound_Play(DEMOSOUND_SOUND_SHUTTER_TONE);
-			}
-			break;
-		}
-#endif
-
-    return NVTEVT_CONSUME;
-}
-
-INT32 UIFlowWndWiFiMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
-{
-#if (defined(_NVT_ETHREARCAM_RX_))
-    UINT32  uiKeyAct;
-    uiKeyAct = paramArray[0];
-    static  BOOL bEnterKeyPressed = FALSE;
-    UINT32  curStatus = 0;
-
-	switch (uiKeyAct) {
+	switch(uiKeyAct)
+	{
 	case NVTEVT_KEY_PRESS:
-		bEnterKeyPressed = TRUE;
-		break;
-
-	case NVTEVT_KEY_RELEASE:
-		if (!bEnterKeyPressed) {
-			break;
-		}
-		bEnterKeyPressed = FALSE;
-
 		if (FlowMovie_WakeUpLCDBacklight()) {
 			return NVTEVT_CONSUME;
 		}
 
-        #if 1//(TEST_GPS == ENABLE)
-        //get GPS data...
-        if (SysInit_getintoGPS_mode_getstd()) {
-            Ux_OpenWindow((VControl *)(&UIMenuWndSetupGPSCtrl), 0);
-            break;
-        }
-        #endif
+		if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+			return NVTEVT_CONSUME;
+		}
+		#if 0
+		if ((System_GetState(SYS_STATE_CARD) == CARD_INSERTED) && (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)) {
+		#ifdef AUTO_EVENT_DET_FUNC
+			if ((isACCTrigParkMode) && (isACCTrigPreRecordDet)) {
+				if ((FlowMovie_GetSOSStatusNow() == FALSE) && (ParkingM_PreRecord_EMR == FALSE)) {
+					ImageApp_MovieMulti_TrigEMR(_CFG_REC_ID_1);
+					ParkingM_PreRecord_EMR = TRUE;
+					if(GPIOMap_EthCam1Det()){
+						ImageApp_MovieMulti_TrigEMR(_CFG_ETHCAM_ID_1);
+					}
+					FlowWiFiMovie_IconDrawSOS(TRUE);
+					UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SOS_BigCtrl, TRUE);
+					FlowMovie_SetSOSStatusNow(TRUE);
+					WiFiManualSetSOS = TRUE;
+				}
+				return NVTEVT_CONSUME;
+			}
+			#endif
 
-#if (ACC_CLOSE_WIFI == ENABLE)		
-		if (isACCTrigParkMode) {
-			if (Voice_Parrecordstart) {
-				Voice_Parrecordstart = FALSE;
+			//if (SysGetFlag(FL_MOVIE_URGENT_PROTECT_AUTO) == MOVIE_URGENT_PROTECT_AUTO_ON)
+			{
+			if (GetMovieRecType_2p(UI_GetData(FL_MOVIE_SIZE)) == MOVIE_REC_TYPE_FRONT) {
+			#if 0//(defined(_NVT_ETHREARCAM_RX_))
+				ImageApp_MovieMulti_SetCrash(_CFG_REC_ID_1, TRUE);
+				UINT32 i;
+				for (i = 0; i < ETH_REARCAM_CAPS_COUNT; i++) {
+					if(socketCliEthData1_IsRecv(ETHCAM_PATH_ID_1 +i)) {
+						ImageApp_MovieMulti_SetCrash(_CFG_ETHCAM_ID_1+i, TRUE);
+					}
+				}
+			#else
+				ImageApp_MovieMulti_TrigEMR(_CFG_REC_ID_1);
+			#endif
+			} else {
+				UINT32 i, mask, movie_rec_mask;
+
+				movie_rec_mask = Movie_GetMovieRecMask();
+				mask = 1;
+				for (i = 0; i < SENSOR_CAPS_COUNT; i++) {
+					if (movie_rec_mask & mask) {
+						ImageApp_MovieMulti_SetCrash(_CFG_REC_ID_1 + i, TRUE);
+					}
+					mask <<= 1;
+				}
+			}
+			//Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);			
+			if (FlowMovie_GetSOSStatusNow() == FALSE) {
+				FlowWiFiMovie_IconDrawSOS(TRUE);
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SOS_BigCtrl, TRUE);
+				FlowMovie_SetSOSStatusNow(TRUE);
+				WiFiManualSetSOS = TRUE;
+			}
 			}
 		}
-#endif	
-		 curStatus = WiFiCmd_GetStatus();
+		#endif
+		Delay_DelayMs(200);
+		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_OFF) {
+			SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_ON);
+			Control_LedTurn(MIC_LED,1);
+			UIVoice_Play(DEMOSOUND_SOUND_MICEN_TONE);
+			Delay_DelayMs(50);
+		} else {
+			SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_OFF);
+			Control_LedTurn(MIC_LED,0);
+			UIVoice_Play(DEMOSOUND_SOUND_MICDIS_TONE);
+			Delay_DelayMs(50);
+		}
+		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_AUDIO, 1, SysGetFlag(FL_MOVIE_AUDIO));
+		FlowWiFiMovie_IconDrawAudio(TRUE);
+		break;
+	}
+	return NVTEVT_CONSUME;
+}
+INT32 UIFlowWndWiFiMovie_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32	uiKeyAct;
+	uiKeyAct = paramArray[0];
 
-        switch (curStatus) {
-        case WIFI_MOV_ST_IDLE:
-        case WIFI_MOV_ST_LVIEW:
-        case WIFI_MOV_ST_RECORD:
-            #if 1
-			if (FlowMovie_IsEthCamConnectOK()&&(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)){
-				FlowMovie_LCDDimDsiable(0); //reset count
-                FlowMovie_LCDIconDimDsiable(0); //reset count
-				if(GPIOMap_IsLCDBacklightOn()){
-					if(!UxCtrl_IsShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl))
-					{
-						UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
-						return NVTEVT_CONSUME;
-					}
-					if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_BOTH) {
-                    	SysSetFlag(FL_DUAL_CAM, DUALCAM_FRONT);
-                    } else if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_FRONT) {
-                    	SysSetFlag(FL_DUAL_CAM, DUALCAM_BEHIND);
-                	} else //if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_BEHIND) 
-                	{
-                    	GPIOMap_TurnOffLCDBacklight();
-                    	SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
-                	}
-
-					UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM));
-					Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_DUALCAM, 1, SysGetFlag(FL_DUAL_CAM));
-				}
-				else //if (GPIOMap_IsLCDBacklightOn() == FALSE) 
-                {
-                    if (FlowMovie_WakeUpLCDBacklight()) {
-                        //return NVTEVT_CONSUME;
-                    }
-                }
-			}
-            else			
-			#endif
-            {
-                if (FlowMovie_WakeUpLCDBacklight()) {
-
-                    //return NVTEVT_CONSUME;
-                } else {
-                    if (GPIOMap_IsLCDBacklightOn()) {
-                        GPIOMap_TurnOffLCDBacklight();
-                    }
-                }
-            }
-            break;
-        }
-        break;
-
-    case NVTEVT_KEY_LONG_PRESS:
-        bEnterKeyPressed = FALSE;
+	switch (uiKeyAct) {
+	case NVTEVT_KEY_PRESS:
+		if (FlowMovie_WakeUpLCDBacklight()) {
+			return NVTEVT_CONSUME;
+		}
+		#if (defined(_NVT_ETHREARCAM_RX_))
 		if(GPIOMap_EthCam1Det()){
 			if(Get_IsRearOK()>WAIT_SECONDS)
 			{
@@ -813,19 +738,88 @@ INT32 UIFlowWndWiFiMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *pa
 			else
 			{
 				DBG_DUMP("key ignore\r\n");
-				break;
+				return NVTEVT_CONSUME;
 			}
 		}
-        UIFlowWndWiFiMovie_OnCustom2(pCtrl, paramNum, paramArray);
-        break;
-    }
+		#endif
+		if ((System_GetState(SYS_STATE_CARD) == CARD_INSERTED) && (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)) {
+			FlowWiFiMovie_DrawPIM(TRUE);
+			Delay_DelayMs(150);
+			Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
+			UISound_Play(DEMOSOUND_SOUND_SHUTTER_TONE);
+		}
+		break;
+	}
+    return NVTEVT_CONSUME;
+}
+
+INT32 UIFlowWndWiFiMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	UINT32	uiKeyAct;
+	//UINT32  i = 0;
+	uiKeyAct = paramArray[0];
+	static	BOOL bDownKeyPressed = FALSE;
+	BOOL	bShow = FALSE;
+
+	switch (uiKeyAct) {
+	case NVTEVT_KEY_PRESS:
+		bDownKeyPressed = TRUE;
+		if (FlowMovie_WakeUpLCDBacklight()) {
+			return NVTEVT_CONSUME;
+		}
+		break;
+
+	case NVTEVT_KEY_RELEASE:
+		if (!bDownKeyPressed) {
+			break;
+		}
+		bDownKeyPressed = FALSE;
+		
+		if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_Panel_SSID_KEYCtrl)) {
+			bShow = FALSE;
+		} else {
+			bShow = TRUE;
+		}
+		UIFlowWndWiFiMovie_UpdateWiFiData(bShow);
+		break;
+
+	case NVTEVT_KEY_LONG_PRESS:
+		bDownKeyPressed = FALSE;
+		if (FlowMovie_WakeUpLCDBacklight()) {
+			return NVTEVT_CONSUME;
+		}
+
+		if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE) {
+			return NVTEVT_CONSUME;
+		}
+#if 0
+		if (WiFiCmd_GetStatus() == WIFI_MOV_ST_LVIEW) {
+			if (SysGetFlag(FL_MOVIE_CODEC) == MOVIE_CODEC_H264) {
+				for (i = 0; i < 2; i++) {
+					UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
+					Delay_DelayMs(100);
+				}
+				SysSetFlag(FL_MOVIE_CODEC, MOVIE_CODEC_H265);
+			} else {
+				UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
+				Delay_DelayMs(100);
+				SysSetFlag(FL_MOVIE_CODEC, MOVIE_CODEC_H264);
+			}
+			g_uiPreMovieCodec = SysGetFlag(FL_MOVIE_CODEC);
+			Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_CODEC, 1, SysGetFlag(FL_MOVIE_CODEC));
+			Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_BITRATE, 1, SysGetFlag(FL_MOVIE_BITRATE));
+			//g_bMoviecodec_changed = TRUE;
+			Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
+		}
 #endif
+
+		break;
+	}
     return NVTEVT_CONSUME;
 }
 
 INT32 UIFlowWndWiFiMovie_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
-#if (defined(_NVT_ETHREARCAM_RX_))
 	UINT32	uiKeyAct;
 
 	uiKeyAct = paramArray[0];
@@ -855,8 +849,6 @@ INT32 UIFlowWndWiFiMovie_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 
 		}
 		break;
 	}
-#endif
-
     return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndWiFiMovie_OnKeyZoomin(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -1508,7 +1500,8 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
             BKG_PostEvent(NVTEVT_BKW_ETHCAM_GET_MOTION_DETECT_INFO);
         }
 		#endif
-        if ((SysGetFlag(FL_MOVIE_TIMELAPSE_REC) != MOVIE_TIMELAPSEREC_OFF)
+        #endif
+		if ((SysGetFlag(FL_MOVIE_TIMELAPSE_REC) != MOVIE_TIMELAPSEREC_OFF)
             || (SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC) != PARKING_MODE_TIMELAPSEREC_OFF))
         {
             UIFlowWndWiFiMovie_OneFrameMovie();
@@ -1532,8 +1525,6 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
             g_AutoSOS_Cnt = 0;
         }
 		FlowMovie_DetLCDIconHide();
-
-        #endif
 
         //when sensor2 insert or remove, record again
         if ((g_bSensorNumChanged == TRUE) 

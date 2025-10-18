@@ -1403,7 +1403,7 @@ void EthCamNet_PortReadyCheck(char* cmd)
 
 void EthCamNet_Ethboot(void)
 {
-	system("udpsvd -vE 0 69 tftpd /mnt/sd/ethcam &");
+	system("udpsvd -vE 0 69 tftpd /mnt/sd2/ethcam &");
 }
 
 #if (defined(_NVT_ETHREARCAM_TX_))

@@ -83,11 +83,11 @@ EVENT_ITEM(NVTEVT_CHILD_CLOSE,UIFlowWndMovie_OnChildClose)
 EVENT_ITEM(NVTEVT_KEY_PREV,UIFlowWndMovie_OnKeyUp)
 //EVENT_ITEM(NVTEVT_KEY_NEXT,UIFlowWndMovie_OnKeyDown)
 EVENT_ITEM(NVTEVT_KEY_SELECT,UIFlowWndMovie_OnKeyMenu)
-EVENT_ITEM(NVTEVT_KEY_DOWN, UIFlowWndMovie_OnKeyLeft)
-EVENT_ITEM(NVTEVT_KEY_RIGHT, UIFlowWndMovie_OnKeyRight)
-EVENT_ITEM(NVTEVT_KEY_UP,UIFlowWndMovie_OnKeyUp)
-EVENT_ITEM(NVTEVT_KEY_LEFT,UIFlowWndMovie_OnKeyMenu) //UIFlowWndMovie_OnKeyDown
-EVENT_ITEM(NVTEVT_KEY_ENTER,UIFlowWndMovie_OnKeyEnter)
+EVENT_ITEM(NVTEVT_KEY_DOWN,UIFlowWndMovie_OnKeyMenu)
+EVENT_ITEM(NVTEVT_KEY_RIGHT,UIFlowWndMovie_OnKeyRight)
+EVENT_ITEM(NVTEVT_KEY_UP,UIFlowWndMovie_OnKeyRight)
+EVENT_ITEM(NVTEVT_KEY_LEFT,UIFlowWndMovie_OnKeyEnter) //UIFlowWndMovie_OnKeyDown
+EVENT_ITEM(NVTEVT_KEY_ENTER,UIFlowWndMovie_OnKeyUp)//playback
 EVENT_ITEM(NVTEVT_KEY_SHUTTER2, UIFlowWndMovie_OnKeySelect)
 //EVENT_ITEM(NVTEVT_KEY_SHUTTER2,UIFlowWndMovie_OnKeyShutter2)
 EVENT_ITEM(NVTEVT_KEY_ZOOMIN,UIFlowWndMovie_OnKeyZoomin)
@@ -1327,8 +1327,10 @@ INT32 UIFlowWndMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 	UINT32	uiKeyAct;
 	uiKeyAct = paramArray[0];
 	static  BOOL bEnterKeyPressed = FALSE;
+	#if (defined(_NVT_ETHREARCAM_RX_))
 	INT32 argc = 1;
 	char *argv[]={"aaa"};
+	#endif
 	FlowMovie_SetGsensorParkingModeStatus(FALSE);
 
 	switch (uiKeyAct) {
@@ -1347,13 +1349,12 @@ INT32 UIFlowWndMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 		if (FlowMovie_WakeUpLCDBacklight()) {
 			return NVTEVT_CONSUME;
 		}
-
-		#if (defined(_NVT_ETHREARCAM_RX_))//(TEST_GPS == ENABLE)
 		//get GPS data...
 		if (SysInit_getintoGPS_mode_getstd()) {
 			Ux_OpenWindow((VControl *)(&UIMenuWndSetupGPSCtrl), 0);
 			break;
 		}
+		#if (defined(_NVT_ETHREARCAM_RX_))//(TEST_GPS == ENABLE)
         if (SysInit_GetEthBootFW_Update_getstd()) {
             
             if ((gMovData.State == MOV_ST_REC)||(gMovData.State == (MOV_ST_REC|MOV_ST_ZOOM))) {
@@ -1414,7 +1415,9 @@ INT32 UIFlowWndMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 					ASR_Uninstall();
 				}
 				#endif
+				#if (defined(_NVT_ETHREARCAM_RX_))
 				Cmd_ethcam_tx_fwupdate(argc,argv);
+				#endif
                 return NVTEVT_CONSUME;
             }
         }

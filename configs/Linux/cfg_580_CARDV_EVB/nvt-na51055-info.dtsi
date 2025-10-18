@@ -8,8 +8,9 @@
 
 / {
 	nvt_info {						/* Get from ModelConfig.txt */
-		BIN_NAME = "FW98528A";
-		BIN_NAME_T = "FW98528T";
+		/*BIN_NAME = "FWT221A";*/
+		BIN_NAME = "FW202WGS";
+		BIN_NAME_T = "FW96580T";
 		RTOS_APP_MAIN = "cardv"; /* Optional, if OS type is Linux, dont care it. */
 		/* EMBMEM_BLK_SIZE, Normally, 2KPageNand=0x20000, 512PageNand=0x4000, SPI=0x10000 */
 		EMBMEM_BLK_SIZE = "0x20000";
@@ -41,8 +42,11 @@
 		 * disp_ifdsi_lcd1_nt35510
 		 * disp_if8b_lcd1_pw35p00
 		 * disp_if8b_lcd1_psd300_ili8961
+		 * disp_if8b_lcd1_t15p
+		 * disp_if8b_lcd1_ili9342c
+		 * disp_if8b_lcd1_ili9341
 		 */
-		LCD1 = "disp_if8b_lcd1_pw35p00";
+		LCD1 = "disp_ifdsi_lcd1_ST7701SN_RZWT32P27";
 
 		/**
 		 * [SENSOR]
@@ -54,8 +58,8 @@
 		 * sen_imx290
 		 * sen_os05a10
 		 */
-		SENSOR1     = "sen_imx415";
-		SENSOR1_CFG = "sen_imx415";
+		SENSOR1     = "sen_imx675";
+		SENSOR1_CFG = "sen_imx675";
 		SENSOR2     = "sen_off";
 		SENSOR2_CFG = "sen_off";
 
@@ -64,14 +68,14 @@
 		 * UI_STYLE_SPORTCAM
 		 * UI_STYLE_LVGL
 		 */
-		UI_STYLE = "UI_STYLE_LVGL";
+		UI_STYLE = "UI_STYLE_SPORTCAM";
 
 		/**
 		 * [TSE]
 		 * enable
 		 * disable
 		 */
-		TSE = "enable";
+		TSE = "disable";
 
 		/**
 		 * ======= Linux common =========
@@ -153,7 +157,7 @@
 		 * NVT_SDIO_WIFI_BRCM
 		 * NVT_SDIO_WIFI_NVT
 		 */
-		NVT_SDIO_WIFI = "NVT_SDIO_WIFI_RTK";
+		NVT_SDIO_WIFI = "NVT_SDIO_WIFI_AIC8800";
 
 		/**
 		 * [NVT_USB_WIFI]

@@ -60,6 +60,8 @@ else
 
 ifeq ($(NVT_SDIO_WIFI), NVT_SDIO_WIFI_BRCM)
 	NET_DIR = bcmdhd.100.10.545.x
+else ifeq ($(NVT_SDIO_WIFI), NVT_SDIO_WIFI_AIC8800)
+	NET_DIR = aic8800
 else
 ifeq ($(WIFI_RTK_MDL), WIFI_RTK_MDL_8189)
 	NET_DIR = rtl8189fs

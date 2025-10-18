@@ -11,30 +11,12 @@
 &i2c0 {
 	#address-cells = <1>;
 	#size-cells = <0>;
-	sen_imx678@0 {
-		compatible = "nvt,sen_imx678";
-		reg = <0x7F>;                       /* dummy addr */
-		path = <0>;
-		PRESET {
-			expt_time = <10000>;            /* 10000us */
-			gain_ratio = <1000>;            /* 1x gain */        
-		};
-		DIRECTION {
-			mirror = <1>;                   /* mirror */
-			flip = <1>;                     /* no flip */
-		};
-		POWER {
-			mclk = <0>;                     /* CTL_SEN_CLK_SEL_SIEMCLK */
-			pwdn_pin = <0xFFFFFFFF>;        /* no pwdn pin */   
-			rst_pin = <S_GPIO(6)>;          /* S_GPIO_6 */
-			rst_time = <1>;                 /* 1ms */
-			stable_time = <1>;              /* 1ms */
-		};
-		I2C {
-			i2c_id = <0>;                   /* SEN_I2C_ID_1 */
-			i2c_addr = <0x1A>;              /* 0x34 >> 1  = 0x1A */
-		};
+
+/*	dummy_i2c_dev: dummy_i2c@1a {
+		compatible = "nvt,dummy_i2c_dev";
+		reg = <0x1a>;
 	};
+*/
 };
 
 &i2c1 {

@@ -73,7 +73,7 @@ static int GxStrgLnx_FindEntryByPrefix(const char *root_pathp, const char *prefi
 static int GxStrgLnx_GetSD1DevByBus(char *out_path, int out_size)
 {
 	#define MMC_SYS_PATH "/sys/bus/mmc/devices"
-	#define MMC0BUS "mmc0"
+	#define MMC0BUS "mmc1"//"mmc0"
 	#define MMCDEV "mmc"
 
 	char find_path[64] = {0};//e.g. /sys/devices/platform/nt96660_mmc.0/mmc_host/mmc0/mmc0:b368/block

@@ -25,6 +25,7 @@
 #define RMC_SENTENCE			0x434D5250 //'C''M''R''P'
 #define GGA_SENTENCE			0x41474750 //'A''G''G''P'
 #define GSV_SENTENCE			0x56534750 //'V''S''G''P'
+#define BDGSV_SENTENCE			0x56534744 //'V''S''G''D'
 #define GLL_SENTENCE			0x4C4C4750 //'L''L''G''P'
 #define VTG_SENTENCE			0x47545650 //'G''T''V''P'
 #define SNR_SENTENCE			0x4F534E45 //'O''S''N''E'
@@ -177,6 +178,7 @@ typedef enum {
 	RMC,
 	GGA,
 	GSV,
+	BDGSV,
 	GLL,
 	VTG
 } NMEATYPE;

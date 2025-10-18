@@ -39,11 +39,8 @@
 #if (ADC_KEY == ENABLE)
 #define VOLDET_KEY_ADC_RANGE            (110)
 #define VOLDET_KEY_ADC_LVL0             (100)
-#define VOLDET_KEY_ADC_LVL1_MIN     	(238)
-#define VOLDET_KEY_ADC_LVL1             (255)//(438)
-#define VOLDET_KEY_ADC_TH               (440)//(470)//(512)
-#define VOLDET_KEY_ADC_LVL2             (380)
-
+#define VOLDET_KEY_ADC_LVL1             (400)
+#define VOLDET_KEY_ADC_TH               (400)//(512)
 
 #define VOLDET_KEY_LVL_UNKNOWN           0xFFFFFFFF
 #define VOLDET_KEY_LVL_0                 0
@@ -69,7 +66,6 @@ static UINT32 VolDet_GetKey1ADC(void)
 	return adc_readData(ADC_CH_VOLDET_KEY1);
 #endif
 }
-#if 0
 static UINT32 VolDet_GetKey2ADC(void)
 {
 #if (VOLDET_ADC_CONT_MODE == DISABLE)
@@ -85,7 +81,7 @@ static UINT32 VolDet_GetKey2ADC(void)
     	return adc_readData(ADC_CH_VOLDET_KEY2);
 #endif
 }
-#endif
+
 /**
   Get ADC key voltage level
 
@@ -106,14 +102,7 @@ static UINT32 VolDet_GetKey1Level(void)
 			uiCurKey1Lvl = VOLDET_KEY_LVL_0;
 		} else if (uiKey1ADC < VOLDET_KEY_ADC_LVL1) {
 			uiCurKey1Lvl = VOLDET_KEY_LVL_1;
-		} else if (uiKey1ADC < VOLDET_KEY_ADC_LVL2) {
-			uiCurKey1Lvl = VOLDET_KEY_LVL_2;
-		} 
-		/*else if (uiKey1ADC < VOLDET_KEY_ADC_LVL4) {
-			uiCurKey2Lvl = VOLDET_KEY_LVL_1;
-		} else {
-			uiCurKey2Lvl = VOLDET_KEY_LVL_0;
-		}*/
+		}
 	} else {
 		uiCurKey1Lvl = VOLDET_KEY_LVL_UNKNOWN;
 	}
@@ -124,7 +113,6 @@ static UINT32 VolDet_GetKey1Level(void)
 }
 
 
-#if 0
 static UINT32 VolDet_GetKey2Level(void)
 {
 	static UINT32   uiRetKey2Lvl = VOLDET_KEY_LVL_UNKNOWN;
@@ -146,7 +134,7 @@ static UINT32 VolDet_GetKey2Level(void)
 
 	return uiRetKey2Lvl;
 }
-#endif
+
 
 /**
   Detect Mode Switch state.
@@ -300,25 +288,34 @@ UINT32 DrvKey_DetNormalKey(void)
 */
 #if (ADC_KEY == ENABLE)
 	UINT32 uiKey1Lvl = VolDet_GetKey1Level();
-	//UINT32 uiKey2Lvl = VolDet_GetKey2Level();
+	UINT32 uiKey2Lvl = VolDet_GetKey2Level();
 	switch (uiKey1Lvl) {
 	case VOLDET_KEY_LVL_UNKNOWN:
 	default:
 		break;
 	case VOLDET_KEY_LVL_0:
-		uiKeyCode |= FLGKEY_ENTER;
-		DBG_IND("CAll FLGKEY_ENTER\r\n");
+		uiKeyCode |= FLGKEY_UP;
+		DBG_DUMP("CAll FLGKEY_UP\r\n");
 		break;
 	case VOLDET_KEY_LVL_1:
-		uiKeyCode |= FLGKEY_UP;
-		DBG_IND("CAll FLGKEY_UP\r\n");
-		break;
-	case VOLDET_KEY_LVL_2:
-		uiKeyCode |= FLGKEY_DOWN;
-		DBG_IND("CAll FLGKEY_DOWN\r\n");
+		uiKeyCode |= FLGKEY_ENTER;//
+		DBG_DUMP("CAll FLGKEY_ENTER\r\n");
 		break;
 	}
 
+	switch (uiKey2Lvl) {
+	case VOLDET_KEY_LVL_UNKNOWN:
+	default:
+		break;
+	case VOLDET_KEY_LVL_0:
+		uiKeyCode |= FLGKEY_DOWN;//
+		DBG_DUMP("CAll FLGKEY_DOWN\r\n");
+		break;
+	case VOLDET_KEY_LVL_1:
+		uiKeyCode |= FLGKEY_LEFT;		
+		DBG_DUMP("CAll FLGKEY_LEFT\r\n");
+		break;
+	}
 #endif
 
 #if (GPIO_KEY == ENABLE)
@@ -339,6 +336,11 @@ UINT32 DrvKey_DetNormalKey(void)
 		uiKeyCode |= FLGKEY_ZOOMOUT;
 	}
 	*/
+	if (!gpio_getPin(GPIO_KEY_RIGHT)) {
+		uiKeyCode |= FLGKEY_RIGHT;
+		//DBG_IND("CAll GPIO_KEY_RIGHT\r\n");
+		//DBG_IND("FLGKEY_ENTER!\n");
+	}
 #endif
     //detect if power-on by press playback key
     if (hwpower_get_power_key(POWER_ID_PSW1))
@@ -429,8 +431,7 @@ void GPIOMap_Sensor2PowerOn(BOOL en)//no useless,gpio.dtsi pull up
 }
 BOOL GPIOMap_EthCam1Det(void)
 {
-	return FALSE;///harrison ds315
-#if (defined(_NVT_ETHREARCAM_RX_)&&(ETH_REARCAM_CAPS_COUNT>=1))
+#if 0//(defined(_NVT_ETHREARCAM_RX_)&&(ETH_REARCAM_CAPS_COUNT>=1))
     if(gpio_getPin(GPIO_ETH1_DET)){
         return FALSE;
     }else {

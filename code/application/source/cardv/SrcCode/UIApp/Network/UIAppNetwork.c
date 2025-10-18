@@ -5,8 +5,18 @@
 #include <kwrap/error_no.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
-
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/file.h>
+#define AP_STA_CONNECTED "AP-STA-CONNECTED "
+#define AP_STA_DISCONNECTED "AP-STA-DISCONNECTED "
+#define WIFI_EVENT_FILE  "/tmp/wifi_usr.txt"
+static int wifi_event_fd;
+extern int SX_TIMER_UI_STATIONSTATUS_DET_ID;
 #if(WIFI_FUNC==ENABLE)
 
 #include "UIWnd/UIFlow.h"
@@ -54,7 +64,7 @@
 #elif defined(_CPU2_LINUX_)
 #define PORT_NUM             80
 #define HTTPS_PORT_NUM       443
-#define MOUNT_FS_ROOT        "/mnt/sd"
+#define MOUNT_FS_ROOT        "/mnt/sd2"
 #define HFS_MAX_CLIENT       6
 #define HFS_TIMEOUT_CNT      40
 #else
@@ -64,7 +74,7 @@
 #define HTTPS_PORT_NUM       443
 //#NT#2016/04/21#Lincy Lin -end
 //#define MOUNT_FS_ROOT        "/sdcard"
-#define MOUNT_FS_ROOT        "/mnt/sd"
+#define MOUNT_FS_ROOT        "/mnt/sd2"
 #define HFS_MAX_CLIENT       6
 #define HFS_TIMEOUT_CNT      40
 #endif
@@ -313,7 +323,7 @@ INT32 UINet_HFSInit(void)
 		// set thread priority
 		hfsObj.threadPriority = 6;//20;
 		// set socket buffer
-		hfsObj.sockbufSize = 51200;//50K speed up get file speed
+		hfsObj.sockbufSize = 2*1024*1024;//50K speed up get file speed
 		// set query callback
 #if(WIFI_AP_FUNC==ENABLE)
 		hfsObj.clientQuery = WifiCmd_getQueryData;
@@ -903,11 +913,60 @@ void UINet_ClearACLTable(void)
 		memset(gRemoveMacAddr, 0, strlen(gRemoveMacAddr));
 	}
 }
+void UINet_StationStatus_CB(char *pIntfName, char *pMacAddr, int status);
+void UINet_StationStatus_Det(void)
+{
+	
+	lseek(wifi_event_fd, 0, SEEK_SET);
+	flock(wifi_event_fd, LOCK_EX);
+
+    char buf[30] = {0};  
+	
+    ssize_t n = read(wifi_event_fd, buf, sizeof(buf) - 1);
+    if (n < 0) {
+        perror("read failed");
+        close(wifi_event_fd);
+        return;
+    }
+    if ((strstr(buf, AP_STA_CONNECTED)) != NULL) {
+		if (ftruncate(wifi_event_fd, 0) < 0) {
+    	    perror("ftruncate failed");
+    	    close(wifi_event_fd);
+    	    return;
+    	}
+		flock(wifi_event_fd, LOCK_UN);
+        goto CONNECTED;
+    }
+
+    if ((strstr(buf, AP_STA_DISCONNECTED)) != NULL) {
+    	if (ftruncate(wifi_event_fd, 0) < 0) {
+    	    perror("ftruncate failed");
+    	    close(wifi_event_fd);
+    	    return;
+    	}
+		flock(wifi_event_fd, LOCK_UN);
+		goto DISCONNECTED;
+    }
+	flock(wifi_event_fd, LOCK_UN);
+	//printf("aaaa==== %s\r\n",buf);
+    return;
+CONNECTED:
+    UINet_StationStatus_CB("NULL","NULL",NVT_WIFI_STA_STATUS_PORT_AUTHORIZED);
+    return;
+
+DISCONNECTED:
+    UINet_StationStatus_CB("NULL","NULL",NVT_WIFI_STA_STATUS_DISASSOCIATED);
+    return;
+
+
+}
 
 void UINet_StationStatus_CB(char *pIntfName, char *pMacAddr, int status)
 {
 	//#NT#2013/12/06#KS Hung -begin
 	//#NT#Post AUTHORIZED_OK event
+	DBG_DUMP("======================%d: A client() is associated\r\n",status);
+
 	if (status == NVT_WIFI_STA_STATUS_ASSOCIATED) {
 
 		DBG_DUMP("%s: A client(%02X:%02X:%02X:%02X:%02X:%02X) is associated\r\n",
@@ -1612,9 +1671,14 @@ INT32 UINet_WifiInit(UINT32 mode, UINT32 security)
 		TM_BOOT_END("network", "poweron");
 	}
 #endif
-
+	wifi_event_fd = open(WIFI_EVENT_FILE, O_RDWR | O_CREAT | O_APPEND, 0666);
+	SxTimer_SetFuncActive(SX_TIMER_UI_STATIONSTATUS_DET_ID, TRUE);
+    if (wifi_event_fd < 0) {
+        perror("open failed");
+        return E_SYS;
+    }
 	memset(pwifi, 0, sizeof(nvt_wifi_settings));
-
+	
 	if (!bInit) {
 		if (_g_bFirstWifi) {
 			TM_BOOT_BEGIN("network", "netdev");
@@ -1828,7 +1892,8 @@ INT32 UINet_WifiUnInit(UINT32 mode)
 	UINet_RtspUnInit();
     //#NT#2018/03/21#Niven Cho -end
 	WiFiIpc_delete_interface_addr("wlan0");
-
+	close(wifi_event_fd);
+	SxTimer_SetFuncActive(SX_TIMER_UI_STATIONSTATUS_DET_ID, FALSE);
 #if 0
 
 	Dhcp_Server_Stop(FALSE);

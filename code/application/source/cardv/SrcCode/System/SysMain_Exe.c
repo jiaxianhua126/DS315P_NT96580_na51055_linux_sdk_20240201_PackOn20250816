@@ -92,10 +92,19 @@ void System_ResetNOW(void)
 }
 void GxSystem_SWResetNOW(void)
 {
-	//DBG_DUMP("GxSystem_SWResetNOW!!\r\n");
+	DBG_DUMP("GxSystem_SWResetNOW!!\r\n");
+	#if 1
+	//设置参数参考watch dog reset.c ==>nvt_trigger_wdt_external
+    DBG_DUMP("WTD reboot now...\r\n");
+	system("modprobe na51055_wdt");
+	system("mem w 0xF0050000 0x5a960112");
+	system("mem w 0xF0050000 0x5a960113");
+	system("mem w 0xf005000C 0x01");
+	#else
 	sync();
 	SwTimer_DelayMs(100);
 	reboot(RB_AUTOBOOT);
+	#endif
 }
 INT32 UIMenuWndSetupDefaultSetting_Menu_Default_Reboot(BOOL std)
 {
@@ -792,8 +801,10 @@ void Update_FW(void)
 	char md5DataFront[64] = {0};
 	char md5DataRear[64] = {0};
 	BOOL isFWok = FALSE;
+	#if (defined(_NVT_ETHREARCAM_RX_))
 	INT32 argc = 1;
 	char *argv[]={"aaa"};
+	#endif
     if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
         return;
     }
@@ -889,7 +900,9 @@ void Update_FW(void)
 				FileSys_CloseFile(hFile);
 				if(0 == memcmp(md5DataRear,gFW_MD5,sizeof(gFW_MD5)))
 				{
+					#if (defined(_NVT_ETHREARCAM_RX_))
 	            	Cmd_ethcam_tx_fwupdate(argc,argv);
+					#endif
 				}
 				else
 				{
@@ -938,7 +951,9 @@ void Update_FW(void)
 				}
 				if(isFWok)
 				{
+					#if (defined(_NVT_ETHREARCAM_RX_))
 	            	Cmd_ethcam_tx_fwupdate(argc,argv);
+					#endif
 				}
 				else
 				{
@@ -950,7 +965,9 @@ void Update_FW(void)
 			}
 			else//no md5 
 			{
+				#if (defined(_NVT_ETHREARCAM_RX_))
 				Cmd_ethcam_tx_fwupdate(argc,argv);
+				#endif
 			}
         } else {
             DBG_DUMP("FileSys_MoveFile fail!!\r\n");
@@ -968,8 +985,8 @@ void Delete_FW(void)
 }
 #if 1
 #define  PS_EDOGDATA1    "EDOGDATA1"
-#define  E_DOG_DATA_PATH  "/mnt/sd/edog_map.bin"
-#define  E_DOG_DATA_TMP_PATH  "/mnt/sd/edogtemp.dat"
+#define  E_DOG_DATA_PATH  "/mnt/sd2/edog_map.bin"
+#define  E_DOG_DATA_TMP_PATH  "/mnt/sd2/edogtemp.dat"
 extern UINT32 XML_GetTempMem(UINT32 uiSize);
 
 PPSTORE_SECTION_HANDLE  EDOGpSection=E_PS_SECHDLER;

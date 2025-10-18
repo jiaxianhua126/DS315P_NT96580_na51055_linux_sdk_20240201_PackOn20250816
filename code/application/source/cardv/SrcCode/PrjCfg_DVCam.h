@@ -31,11 +31,35 @@
 #else
 #endif
 
+#define PRE_RECORD_DET_FUNC  			DISABLE//DISABLE//ENABLE// //     
+#define SEN_EVB_IMX335					0
+#define SEN_EVB_IMX675					1
+#define ACC_CLOSE_WIFI					DISABLE
+#define ASR_FUNCTION					ENABLE//DISABLE
+#define MACHINE_TYPE_S2P  				0
+#define MACHINE_TYPE_T221 				1
+#define MACHINE_TYPE_DS202WGS 			2
+#define MACHINE_TYPE_DS205WGS 			3
+#define MACHINE_TYPE_T222 				4
+#define MACHINE_TYPE 					MACHINE_TYPE_T222//MACHINE_TYPE_DS205WGS//
+
 //..............................................................................
 // FW version and name
-#define FW_UPDATE_NAME                  "A:\\FW98525Z.bin"
-#define FW_VERSION_RELEASE              DISABLE //DISABLE
+#define FW_UPDATE_NAME                  "A:\\FW98529Z.bin"
 #define FW_VERSION_NUM                  "REGULAR_0402_001"
+
+#define FW_VERSION_RELEASE              DISABLE //DISABLE
+#if (MACHINE_TYPE==MACHINE_TYPE_DS205WGS)
+#define FW_CUSTOMER_MODEL               "DS205WGS"
+#define FW_CUSTOMER_VERSION_NUM         "V1.10"
+#elif (MACHINE_TYPE==MACHINE_TYPE_T222)
+#define FW_CUSTOMER_MODEL               "T222"
+#define FW_CUSTOMER_VERSION_NUM         "V1.12"
+#else
+#define FW_CUSTOMER_MODEL               "S2P"
+#define FW_CUSTOMER_VERSION_NUM         "V1.00"
+#endif
+
 
 //..............................................................................
 /**
@@ -79,10 +103,10 @@
 #define POWERON_FAST_CPU2_BOOT          DISABLE
 #define POWERON_FAST_RECORD             DISABLE
 #define POWERON_FAST_WIFI               DISABLE //NOTE: need to enable POWERON_FAST_CPU2_BOOT too
-#define POWERON_WAIT_FS_READY           DISABLE
+#define POWERON_WAIT_FS_READY           ENABLE
 #define WAITPHOTO_FUNCTION              DISABLE
 #define POWERONLOGO_FUNCTION            ENABLE
-#define POWEROFFLOGO_FUNCTION           DISABLE
+#define POWEROFFLOGO_FUNCTION           ENABLE//DISABLE
 #if ((POWERON_FAST_BOOT == DISABLE) || (POWERON_FAST_RECORD == DISABLE))
 #define POWERONSOUND_FUNCTION           ENABLE
 #else
@@ -90,9 +114,7 @@
 #endif
 #define POWEROFFSOUND_FUNCTION          DISABLE
 #define _LOGO_                          _LOGO_NOVATEK_
-#if (defined(_LCDTYPE_ILI9341_IF8B_) || \
-     defined(_LCDTYPE_TG078UW006A0_DSI_)|| \
-     defined(_LCDTYPE_UT35067A0_ILI9488_DSI_))
+#if defined(_disp_if8b_lcd1_ili9341_)
 #define LOGO_DISP_LAYER                 LAYER_VDO1 // VDO2 logo has no rotation
 #else
 #define LOGO_DISP_LAYER                 LAYER_VDO2
@@ -176,16 +198,17 @@
 //auto power-off when battery level = empty
 #define EMPTYPWROFF_FUNCTION            DISABLE
 //auto sleep
-#define AUTOSLEEP_FUNCTION              ENABLE //Auto Detect
+#define AUTOSLEEP_FUNCTION              DISABLE//ENABLE //Auto Detect
 //auto power-off
 #define AUTOPWROFF_FUNCTION             ENABLE //Auto Detect
 
+
 //..............................................................................
 // Date-Time Config
-#define DEF_YEAR                        2021
+#define DEF_YEAR                        2025
 #define DEF_MONTH                       1
 #define DEF_DAY                         1
-#define MIN_YEAR                        2000
+#define MIN_YEAR                        2025
 #define MAX_YEAR                        2050
 
 
@@ -198,8 +221,6 @@
 #define SENSOR_CAPS_COUNT               1
 #define SENSOR_CAPS_MASK                (SENSOR_1)
 
-//#define SENSOR_CAPS_COUNT               4
-//#define SENSOR_CAPS_MASK                (SENSOR_1|SENSOR_2|SENSOR_3|SENSOR_4)
 
 #define SENSOR_MAP_1                    SENSOR_ID_1
 #define SENSOR_MAP_2                    SENSOR_ID_2
@@ -303,7 +324,7 @@
 //LCD2 related
 #define LCD2_INSERT_FUNCTION            LCD2_FUNC //Auto Detect - LCD2 cable insert
 #else
-#define DISPLAY_FUNC                    DISABLE
+#define DISPLAY_FUNC                    ENABLE
 #define DISPLAY2_FUNC                   DISABLE
 #define DISPLAY_CAPS_COUNT              0
 #define DISPLAY_CAPS_MASK               0
@@ -328,19 +349,21 @@
 // Display Config (for UI window, FD window)
 
 // OSD size and format
-#define DISPLAY_OSD_W                   320//640
+#define DISPLAY_OSD_W                   620//640
 #define DISPLAY_OSD_H                   240
 #define DISPLAY_OSD_FMT                 PXLFMT_INDEX8 // 256 colors
 //#define DISPLAY_OSD_FMT                 PXLFMT_RGBA5658_PK // 16bpp-colors
 
 //UI tool layout size setting
-#define TOOL_LAYOUT_W                   320//640
+#define TOOL_LAYOUT_W                   620//640
 #define TOOL_LAYOUT_H                   240//480
 #define OSD_USE_DOUBLE_BUFFER           DISABLE //use double buffer
-#if (defined(_Disp_IF8B_LCD1_ILI9341_))
+#if defined(_disp_if8b_lcd1_ili9341_)
 #define OSD_USE_ROTATE_BUFFER           ENABLE  //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #elif defined(_disp_ifdsi_lcd1_ut35067a0_ili9488_)
 #define OSD_USE_ROTATE_BUFFER           ENABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
+#elif defined(_disp_ifdsi_lcd1_ST7701SN_RZWT32P27_)
+#define OSD_USE_ROTATE_BUFFER           ENABLE  //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #else
 #define OSD_USE_ROTATE_BUFFER           DISABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #endif
@@ -360,11 +383,14 @@
 #define VDO_USE_DOUBLE_BUFFER           DISABLE //use double buffer
 #define VDO2_USE_DOUBLE_BUFFER          DISABLE
 #define VDO_USE_PHOTO_SOURCE            DISABLE  //display photo video streaming
-#if (defined(_Disp_IF8B_LCD1_ILI9341_))
-#define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_90
+#if defined(_disp_if8b_lcd1_ili9341_)
+#define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_270
 #define VDO_USE_ROTATE_BUFFER           ENABLE  //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #elif defined(_disp_ifdsi_lcd1_ut35067a0_ili9488_)
 #define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_270
+#define VDO_USE_ROTATE_BUFFER           ENABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
+#elif defined(_disp_ifdsi_lcd1_ST7701SN_RZWT32P27_)
+#define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_90
 #define VDO_USE_ROTATE_BUFFER           ENABLE //use rotate buffer (enable to support LCD with stripe-type subpixel)
 #else
 #define VDO_ROTATE_DIR                  HD_VIDEO_DIR_ROTATE_0
@@ -396,7 +422,9 @@
 #elif defined(_Disp_IF8B_LCD1_AUCN01_)
 #define LCDMODE                         DISP_LCDMODE_RGBD320 //DISP_LCDMODE_YUV640
 #elif defined(_Disp_IF8B_LCD1_PW35P00_HX8238D_) || \
-      defined(_Disp_IF8B_LCD1_ILI9341_)
+      defined(_disp_if8b_lcd1_ili9341_) || defined(_Disp_IF8B_LCD1_T15P11_)
+#define LCDMODE                         0//DISP_LCDMODE_RGB_SERIAL
+#elif defined(_disp_ifdsi_lcd1_ST7701SN_RZWT32P27_)
 #define LCDMODE                         0//DISP_LCDMODE_RGB_SERIAL
 #else
 #error "Unknown _LCD_"
@@ -414,7 +442,7 @@
 #define HDMIMODE                        DISP_HDMIMODE_MAX
 
 
-#define DUALCAM_PIP_BEHIND_FLIP         DISABLE  //Flip 2nd cam image in PIP view. Need extra 1/2 VDO buffer
+#define DUALCAM_PIP_BEHIND_FLIP         ENABLE//DISABLE  //Flip 2nd cam image in PIP view. Need extra 1/2 VDO buffer
 
 
 
@@ -433,7 +461,47 @@
 //..............................................................................
 // FILEDB Config
 #define USE_FILEDB                      ENABLE //DISABLE
-#define FILEDB_CARDV_ROOT               "Novatek"   // the max length should not exceeds 16
+#if (MACHINE_TYPE==MACHINE_TYPE_S2P)
+#define FILEDB_CARDV_ROOT               "DCIM"//"Novatek"   // the max length should not exceeds 16
+#else
+#define FILEDB_CARDV_ROOT               "PERNIS"//"Novatek"   // the max length should not exceeds 16
+#endif
+#define MOVIE_ROOT_PATH                 "A:\\"FILEDB_CARDV_ROOT"\\" //"A:\\Novatek\\"
+#define MOVIE_ROOT_PATH2                "B:\\"FILEDB_CARDV_ROOT"\\" //"B:\\Novatek\\"
+#define PHOTO_ROOT_PATH                 "A:\\"FILEDB_CARDV_ROOT"\\" //"A:\\Novatek\\"
+#define EDOGDATA_FILE_NAME_SRC 			"/mnt/sd2/"FILEDB_CARDV_ROOT"/edog_map.bin"//"A:\\DCIM\\edog_map_enc.bin"
+#define EDOGDATA_FILE_NAME_DST 			"/mnt/sd2/edog_map.bin"//"A:\\edog_map_enc.bin"
+#define FWBIN_FILE_NAME_SRC  			"A:\\"FILEDB_CARDV_ROOT"\\"_BIN_NAME_".bin"
+#define FWBIN_FILE_NAME_DST 			"A:\\"_BIN_NAME_".bin"
+
+#if (MACHINE_TYPE==MACHINE_TYPE_T221)
+#define ETHCAM_TXFW_UPDATE  			"A:\\RearcamT221.update"
+#define ETHCAM_TXFW_FILE    			"A:\\RearcamT221.bin"
+#define REARBIN_FILE_NAME_SRC  			"A:\\"FILEDB_CARDV_ROOT"\\RearcamT221.bin"
+#define REARBIN_FILE_NAME_DST 			"A:\\RearcamT221.bin"
+#elif (MACHINE_TYPE==MACHINE_TYPE_DS202WGS)
+#define ETHCAM_TXFW_UPDATE  			"A:\\RearcamDS202WGS.update"
+#define ETHCAM_TXFW_FILE    			"A:\\RearcamDS202WGS.bin"
+#define REARBIN_FILE_NAME_SRC  			"A:\\"FILEDB_CARDV_ROOT"\\RearcamDS202WGS.bin"
+#define REARBIN_FILE_NAME_DST 			"A:\\RearcamDS202WGS.bin"
+#elif (MACHINE_TYPE==MACHINE_TYPE_DS205WGS)
+#define ETHCAM_TXFW_UPDATE  			"A:\\RearcamDS205WGS.update"
+#define ETHCAM_TXFW_FILE    			"A:\\RearcamDS205WGS.bin"
+#define REARBIN_FILE_NAME_SRC  			"A:\\"FILEDB_CARDV_ROOT"\\RearcamDS205WGS.bin"
+#define REARBIN_FILE_NAME_DST 			"A:\\RearcamDS205WGS.bin"
+#elif (MACHINE_TYPE==MACHINE_TYPE_T222)
+#define ETHCAM_TXFW_UPDATE  			"A:\\RearcamT222.update"
+#define ETHCAM_TXFW_FILE    			"A:\\RearcamT222.bin"
+#define REARBIN_FILE_NAME_SRC  			"A:\\"FILEDB_CARDV_ROOT"\\RearcamT222.bin"
+#define REARBIN_FILE_NAME_DST 			"A:\\RearcamT222.bin"
+
+#else
+#define ETHCAM_TXFW_UPDATE  			"A:\\RearcamS2P.update"
+#define ETHCAM_TXFW_FILE    			"A:\\RearcamS2P.bin"
+#define REARBIN_FILE_NAME_SRC  			"A:\\"FILEDB_CARDV_ROOT"\\RearcamS2P.bin"
+#define REARBIN_FILE_NAME_DST 			"A:\\RearcamS2P.bin"
+#endif
+
 // DCF Config
 #define USE_DCF                         DISABLE
 #define DCF_SUPPORT_FORMAT              (DCF_FILE_TYPE_JPG|DCF_FILE_TYPE_AVI|DCF_FILE_TYPE_MOV|DCF_FILE_TYPE_MP4)
@@ -445,14 +513,14 @@
 // End string must be '\0', total char must be 31
 #define EXIF_MODEL_NAME                 "96675"
 // End string must be '\0', total char must be 31
-#define EXIF_IMAGE_DESCROPTOIN          "NOVATEK CAMERA"
+#define EXIF_IMAGE_DESCROPTOIN          "PERNIS CAMERA"
 
 #define EXIF_SOFTWARE_VERSION           FW_VERSION_NUM    // <= 20 char (TagSoftVerLen)
 
 //..............................................................................
 // Movie Maker/Model name Config
 // End string must be '\0', total char must plus 1
-#define MOVAPP_COMP_MANU_STRING         "NOVATEK"
+#define MOVAPP_COMP_MANU_STRING         "PERNIS"
 // End string must be '\0', total char must plus 1
 #define MOVAPP_COMP_NAME_STRING         "DEMO1"
 //..............................................................................
@@ -467,25 +535,45 @@
 #define USB_PID_MSDC                    0x8611
 
 #define USB_PRODUCT_REVISION            '1', '.', '0', '0'
-#define USB_VENDER_DESC_STRING          'N', 0x00,'O', 0x00,'V', 0x00,'A', 0x00,'T', 0x00,'E', 0x00,'K', 0x00, 0x20, 0x00,0x00, 0x00 // NULL
+#define USB_VENDER_DESC_STRING          'P', 0x00,'E', 0x00,'R', 0x00,'N', 0x00,'I', 0x00,'S', 0x00, 0x20, 0x00,0x00, 0x00 // NULL
 #define USB_VENDER_DESC_STRING_LEN      0x09
-#define USB_PRODUCT_DESC_STRING         'D', 0x00,'E', 0x00,'M', 0x00,'O', 0x00,'1', 0x00, 0x20, 0x00, 0x00, 0x00 // NULL
+#if (MACHINE_TYPE==MACHINE_TYPE_T221)
+#define USB_PRODUCT_DESC_STRING         'T', 0x00,'2', 0x00,'2', 0x00,'1', 0x00, 0x20, 0x00, 0x00, 0x00 // NULL
+#elif (MACHINE_TYPE==MACHINE_TYPE_DS202WGS)
+#define USB_PRODUCT_DESC_STRING         'D', 0x00,'S', 0x00,'2', 0x00,'0', 0x00,'2', 0x00,'W', 0x00,'G', 0x00, 0x20, 0x00, 0x00, 0x00 // NULL
+#elif (MACHINE_TYPE==MACHINE_TYPE_DS205WGS)
+#define USB_PRODUCT_DESC_STRING         'D', 0x00,'S', 0x00,'2', 0x00,'0', 0x00,'5', 0x00,'W', 0x00,'G', 0x00, 0x20, 0x00, 0x00, 0x00 // NULL
+#elif (MACHINE_TYPE==MACHINE_TYPE_T222)
+#define USB_PRODUCT_DESC_STRING         'T', 0x00,'2', 0x00,'2', 0x00,'2', 0x00, 0x20, 0x00, 0x00, 0x00 // NULL
+#else
+#define USB_PRODUCT_DESC_STRING         'S', 0x00,'2', 0x00,'P', 0x00,'R', 0x00,'O', 0x00, 0x20, 0x00, 0x00, 0x00 // NULL
+#endif
 #define USB_PRODUCT_DESC_STRING_LEN     0x07
 #define USB_PRODUCT_STRING              'N','v','t','-','D','S','C'
 #define USB_SIDC_DESC_STRING            'D', 0x00,'E', 0x00,'M', 0x00,'O', 0x00,'1', 0x00, 0x20, 0x00, 0x00, 0x00 // NULL
 #define USB_SIDC_DESC_STRING_LEN        0x07
 #define USB_MTP_FRIENDNAME_STRING       'D','E','M','O','1',0x00  //maximum length is 253 bytes
 #define USB_MTP_FRIENDNAME_STRING_LEN   0x06                      //maximum length is 253 bytes
-#define USB_VENDER_STRING               'N','O','V','A','T','E','K'
-#define USB_VENDER_SIDC_DESC_STRING     'N', 0x00,'O', 0x00,'V', 0x00,'A', 0x00,'T', 0x00,'E', 0x00,'K', 0x00, 0x20, 0x00,0x00, 0x00 // NULL
+#define USB_VENDER_STRING               'P','E','R','N','I','S'
+#if (MACHINE_TYPE==MACHINE_TYPE_T221)
+#define USB_VENDER_SIDC_DESC_STRING     'T', 0x00,'2', 0x00,'2', 0x00,'1', 0x00, 0x20, 0x00,0x00, 0x00 // NULL
+#elif (MACHINE_TYPE==MACHINE_TYPE_DS202WGS)
+#define USB_VENDER_SIDC_DESC_STRING     'D', 0x00,'S', 0x00,'2', 0x00,'0', 0x00,'2', 0x00,'W', 0x00,'G', 0x00, 0x20, 0x00,0x00, 0x00 // NULL
+#elif (MACHINE_TYPE==MACHINE_TYPE_DS205WGS)
+#define USB_VENDER_SIDC_DESC_STRING     'D', 0x00,'S', 0x00,'2', 0x00,'0', 0x00,'5', 0x00,'W', 0x00,'G', 0x00, 0x20, 0x00,0x00, 0x00 // NULL
+#elif (MACHINE_TYPE==MACHINE_TYPE_T222)
+#define USB_VENDER_SIDC_DESC_STRING     'T', 0x00,'2', 0x00,'2', 0x00,'2', 0x00, 0x20, 0x00,0x00, 0x00 // NULL
+#else
+#define USB_VENDER_SIDC_DESC_STRING     'S', 0x00,'2', 0x00,'P', 0x00,'R', 0x00,'O', 0x00, 0x20, 0x00,0x00, 0x00 // NULL
+#endif
 #define USB_VENDER_SIDC_DESC_STRING_LEN 0x09
 #define USB_SERIAL_NUM_STRING           '5', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '0', '0'
 
 //..............................................................................
 // Other Config
 
-#define GSENSOR_FUNCTION                DISABLE  //G-sensor
-#define GPS_FUNCTION                    DISABLE
+#define GSENSOR_FUNCTION                ENABLE  //G-sensor
+#define GPS_FUNCTION                    ENABLE
 
 #define SHOW_ADC_ON_SCREEN              DISABLE
 #define CALIBRATION_FUNC                DISABLE  // Enable/Disable Calibration
@@ -525,7 +613,7 @@
 #define PIP_VIEW_LR                     DISABLE //(DISABLE: display 2 sensor by PipView in left, right view, side by side, DISABLE: normal pipview)
 
 #define SBS_VIEW_FUNC                   DISABLE // SbsView (DISABLE: display 2 sensor by SbsView, DISABLE: display user selected sensor)
-#define SHDR_FUNC                       DISABLE // DISABLE
+#define SHDR_FUNC                       ENABLE
 #define WDR_FUNC                        ENABLE
 #define DEFOG_FUNC                      ENABLE // DISABLE
 
@@ -563,7 +651,8 @@
 #define MOVIE_DSP_FUNC					DISABLE
 
 #define MOVIE_MAPPING_MULTIREC			DISABLE
-#define MOVIE_DIRECT_FUNC               ENABLE  // direct mode function
+
+#define MOVIE_DIRECT_FUNC               DISABLE  // direct mode function ENABLE
 #define MOVIE_EIS                       DISABLE
 #define MOVIE_EIS_GYRO_LOG              DISABLE
 #define MOVIE_DEWRAP_BY_IMAGEAPP        DISABLE
@@ -630,7 +719,7 @@
 //==============================================================================
 //   MSDCVENDOR_NVT, is required for PC tools to transmit commands and data via USB / NET
 //==============================================================================
-#define MSDCVENDOR_NVT                  DISABLE  //via USB, depend on USBINSERT_FUNCTION and _USB3_INT_CORE1_
+#define MSDCVENDOR_NVT                  DISABLE//ENABLE//DISABLE//  //via USB, depend on USBINSERT_FUNCTION and _USB3_INT_CORE1_
 #define MSDCVENDOR_UPDFW                DISABLE //enable it will cause disalbing MSDC and MTP/PTP/UAVC Mode, MSDCVENDOR_NVT must enable
 #define MSDCVENDOR_IDENTITY_FILE        "A:\\MSDCNVT"
 #if (defined(_MODEL_DVCAM1_EVB_) || defined(_MODEL_DVCAM2_EVB_))
@@ -889,6 +978,19 @@
 #define VIDEO_FUNC_H265            		DISABLE
 #define STOP_REC_BK  DISABLE
 #define NMEDIAPLAY_FUNC                 DISABLE     // switch SMediaPlay and NMediaPlay flow, use NMediaPlay when DISABLE to be set.
+#define USER_PACK_UPDATE				DISABLE
+#define WAV_PLAY_FUNC					DISABLE //ENABLE
+//#define MOVIE_IME_CROP					ENABLE
+#define PLAY_FULL_DISP					DISABLE
+#define FSCK_FUNC                       ENABLE    //fsck is for disk checking (only FAT format),solve the problem of mount sd error.
+#define _HTK_TODO_						DISABLE
+#define MOVIE_YUV_COMPRESS              ENABLE//DISABLE
+#define REBOOT_ETHCAM_FUNC				ENABLE
+#define FRONT_MOOV_FUNC					ENABLE
+#define GDC_POWER_DOWN         			ENABLE //2KP60 IN 60FPS,OUT 53FPS ,DROP 7FPS
+#define _GPS_EDOG_UNIQUE_SKY_			ENABLE
+#define WATCHDOG_FUNC					ENABLE
+//#define COUNTRY_JP						1					//mark this ,disable func
 
 /*******************************************************************************************
  * LVGL UI Style config

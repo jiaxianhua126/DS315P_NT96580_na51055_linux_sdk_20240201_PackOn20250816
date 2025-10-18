@@ -6,6 +6,25 @@
 #include "hdal.h"
 #include "vendor_videoout.h"
 #include "GxVideo.h"
+#include "Utility/SwTimer.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <errno.h>
+#include <string.h>
+#include <signal.h>
+#include <termios.h>
+#define LCD_ROTATE_180  (_IO(0xEE,0x01))
+#define LCD_ROTATE_NONE (_IO(0xEE,0x02))
+int rotate_fd;
+///dev/ili9342
+//const char default_pach[] = "/dev/t15p11";
+const char default_pach[] = "/dev/ili9341";
+
 ///////////////////////////////////////////////////////////////////////////////
 #define __MODULE__          DxDisp
 #define __DBGLVL__          2 // 0=FATAL, 1=ERR, 2=WRN, 3=UNIT, 4=FUNC, 5=IND, 6=MSG, 7=VALUE, 8=USER
@@ -13,11 +32,23 @@
 #include <kwrap/debug.h>
 ///////////////////////////////////////////////////////////////////////////////
 
+#if defined(_disp_if8b_lcd1_ili9341_) // ROTATE panel !!!
+#define LCD_MAX_W                       ALIGN_CEIL_16(720)  //device w of DISP_LCDMODE_xxx, to support rotate, it must align to 16
+#define LCD_MAX_H                       ALIGN_CEIL_16(320)  //device h of DISP_LCDMODE_xxx, to support rotate, it must align to 16
+#define LCD_ASPECT_W                    3//5//20//40 
+#define LCD_ASPECT_H                    4//9//36//72
+#elif defined(_disp_ifdsi_lcd1_ST7701SN_RZWT32P27_)
+#define LCD_MAX_W                       ALIGN_CEIL_16(376)  //device w of DISP_LCDMODE_xxx, to support rotate, it must align to 16
+#define LCD_MAX_H                       ALIGN_CEIL_16(960)  //device h of DISP_LCDMODE_xxx, to support rotate, it must align to 16
+#define LCD_ASPECT_W                    9
+#define LCD_ASPECT_H                    16
+#else
 //EVB default is _Disp_IF8B_LCD1_PW35P00_HX8238D_
 #define LCD_MAX_W                       ALIGN_CEIL_16(960)  //device w of DISP_LCDMODE_xxx, to support rotate, it must align to 16
 #define LCD_MAX_H                       ALIGN_CEIL_16(240)  //device h of DISP_LCDMODE_xxx, to support rotate, it must align to 16
 #define LCD_ASPECT_W                    4
 #define LCD_ASPECT_H                    3
+#endif
 
 #define DISP_DUAL       DISABLE
 
@@ -65,11 +96,11 @@ static void DrvLCD_Dump(void);
 static void DrvLCD_SleepEnter(void);
 static void DrvLCD_SleepLeave(void);
 
-static void     GPIOMap_TurnOnLCDBacklight(void);
-static void     GPIOMap_TurnOffLCDBacklight(void);
+void     GPIOMap_TurnOnLCDBacklight(void);
+void     GPIOMap_TurnOffLCDBacklight(void);
 static void     GPIOMap_SetLCDBacklightBrightLevel(INT32 uiLevel);
 static void     GPIOMap_AdjustLCDBacklight(UINT32 uiAdjValue);
-static BOOL     GPIOMap_IsLCDBacklightOn(void);
+BOOL     GPIOMap_IsLCDBacklightOn(void);
 static void     GPIOMap_DumpBacklight(void);
 
 static void     GPIOMap_TurnOnLCDPower(void);
@@ -182,8 +213,8 @@ static UINT32 DrvLCDInit(void *pInitParam) // Set Init Parameters
 
 static UINT32 DrvLCDOpen(void) // Common Constructor
 {
-	DBG_FUNC_BEGIN("\r\n");
-
+	DBG_FUNC_BEGIN("call DrvLCDOpen!!\r\n");
+	//GPIOMap_TurnOnLCDBacklight();
 #if 0
 	if (!_DrvLCDHookDout(g_LCDDout)) {
 		return DX_NOT_SUPPORT;
@@ -542,7 +573,7 @@ static void DrvLCD_Dump(void)
 static void GPIOMap_LCDReset(void)
 {
 	// Reset LCD
-#if defined(_Disp_IF8B_LCD1_ILI9341_)
+#if 1//defined(_disp_if8b_lcd1_ili9341_)
 	gpio_clearPin(GPIO_LCD_RESET);
 	SwTimer_DelayMs(5);
 	gpio_setPin(GPIO_LCD_RESET);
@@ -620,10 +651,10 @@ static UINT32 g_LCDBacklightLvlPWMDuty[DRVLCD_BRT_LEVEL_MAX] = {
   @param void
   @return void
 */
-static void GPIOMap_TurnOnLCDBacklight(void)
+void GPIOMap_TurnOnLCDBacklight(void)
 {
-	DBG_IND("GPIOMap_TurnOnLCDBacklight: Adjust value %d\r\n", g_LCDBacklightLvl);
-
+	//DBG_IND("GPIOMap_TurnOnLCDBacklight: Adjust value %d\r\n", g_LCDBacklightLvl);
+	
 	if (g_LCDBacklightEn == FALSE) {
 #if (LCD_BACKLIGHT_CTRL == LCD_BACKLIGHT_BY_PWM)
 		g_LCDBacklightPWMInfo.uiRise = g_LCDBacklightLvlPWMDuty[g_LCDBacklightLvl];
@@ -633,6 +664,7 @@ static void GPIOMap_TurnOnLCDBacklight(void)
 		pwm_pwmEnable(PWMID_LCD_BLG_PCTL);
 #elif (LCD_BACKLIGHT_CTRL == LCD_BACKLIGHT_BY_GPIO)
 		gpio_setPin(GPIO_LCD_BLG_PCTL);
+		//gpio_setPin(GPIO_RED_LED);
 #else
 		DrvLCD_TurnOn();
 		DrvLCD_TurnOn_WaitFinish();
@@ -668,10 +700,11 @@ static void GPIOMap_SetLCDBacklightBrightLevel(INT32 uiLevel)
   @param void
   @return void
 */
-static void GPIOMap_TurnOffLCDBacklight(void)
+void GPIOMap_TurnOffLCDBacklight(void)
 {
+	//DBG_DUMP("call GPIOMap_TurnOffLCDBacklight\r\n");
 	DBG_IND("GPIOMap_TurnOffLCDBacklight: Adjust value %d\r\n", g_LCDBacklightLvl);
-
+	g_LCDBacklightEn = TRUE;
 	if (g_LCDBacklightEn == TRUE) {
 #if (LCD_BACKLIGHT_CTRL == LCD_BACKLIGHT_BY_PWM)
 		pwm_pwmDisable(PWMID_LCD_BLG_PCTL);
@@ -718,7 +751,7 @@ static void GPIOMap_AdjustLCDBacklight(UINT32 uiAdjValue)
   @param void
   @return BOOL
 */
-static BOOL GPIOMap_IsLCDBacklightOn(void)
+BOOL GPIOMap_IsLCDBacklightOn(void)
 {
 	return g_LCDBacklightEn;
 }
@@ -732,4 +765,21 @@ static void GPIOMap_DumpBacklight(void)
 }
 
 #endif
+
+
+
+//rotate
+void LCD_Rotate_180(void)
+{
+	rotate_fd = open(default_pach,O_RDWR | O_NOCTTY);
+	ioctl(rotate_fd,LCD_ROTATE_180);
+	close(rotate_fd);
+}
+
+void LCD_Rotate_None(void)
+{
+	rotate_fd = open(default_pach,O_RDWR | O_NOCTTY);
+	ioctl(rotate_fd,LCD_ROTATE_NONE);
+	close(rotate_fd);
+}
 

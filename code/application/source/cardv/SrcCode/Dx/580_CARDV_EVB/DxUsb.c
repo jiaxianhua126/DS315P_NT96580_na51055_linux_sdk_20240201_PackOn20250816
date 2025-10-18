@@ -30,6 +30,7 @@ UINT32 DetUSBClose(void); // Common Destructor
 UINT32 DetUSBState(UINT32 StateID, UINT32 Value); // General Properties
 UINT32 DetUSBControl(UINT32 CtrlID, UINT32 Param1, UINT32 Param2);  // General Methods
 UINT32 DetUSBCommand(CHAR *pcCmdStr); //General Command Console
+extern BOOL g_bUsbRemovePowerOff;
 
 //dx object
 DX_OBJECT gDevUSB = {
@@ -49,7 +50,7 @@ DX_OBJECT gDevUSB = {
 	0,
 };
 
-static BOOL DxUSB_GetIsUSBPlug(void)
+BOOL DxUSB_GetIsUSBPlug(void)
 {
 	return (usb2dev_state_change());
 }
@@ -74,6 +75,9 @@ static UINT32 DxUSB_UpdateConnectType(void)
 		case USB_CHARGER_STS_CHARGER:
 			DBG_DUMP("CONNECT to CHARGER\r\n");
 			uiUSBCurrType = USB_CONNECT_CHARGER;
+		    if (g_bUsbRemovePowerOff) {
+                g_bUsbRemovePowerOff = FALSE;
+            }
 			break;
 		default:
 			DBG_ERR("CONNECTION UNKNOWN!\r\n");

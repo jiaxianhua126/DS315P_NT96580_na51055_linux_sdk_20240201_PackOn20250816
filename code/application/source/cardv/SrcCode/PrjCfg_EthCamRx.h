@@ -492,8 +492,8 @@
 #define MOVIE_ROOT_PATH                 "A:\\"FILEDB_CARDV_ROOT"\\" //"A:\\Novatek\\"
 #define MOVIE_ROOT_PATH2                "B:\\"FILEDB_CARDV_ROOT"\\" //"B:\\Novatek\\"
 #define PHOTO_ROOT_PATH                 "A:\\"FILEDB_CARDV_ROOT"\\" //"A:\\Novatek\\"
-#define EDOGDATA_FILE_NAME_SRC 			"/mnt/sd/"FILEDB_CARDV_ROOT"/edog_map.bin"//"A:\\DCIM\\edog_map_enc.bin"
-#define EDOGDATA_FILE_NAME_DST 			"/mnt/sd/edog_map.bin"//"A:\\edog_map_enc.bin"
+#define EDOGDATA_FILE_NAME_SRC 			"/mnt/sd2/"FILEDB_CARDV_ROOT"/edog_map.bin"//"A:\\DCIM\\edog_map_enc.bin"
+#define EDOGDATA_FILE_NAME_DST 			"/mnt/sd2/edog_map.bin"//"A:\\edog_map_enc.bin"
 #define FWBIN_FILE_NAME_SRC  			"A:\\"FILEDB_CARDV_ROOT"\\"_BIN_NAME_".bin"
 #define FWBIN_FILE_NAME_DST 			"A:\\"_BIN_NAME_".bin"
 
