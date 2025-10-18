@@ -577,7 +577,7 @@
 
 	bcmdhd {
 		compatible = "android,bcmdhd_wlan";
-		gpio_wl_reg_on = <&gpio P_GPIO(5) GPIO_ACTIVE_HIGH>;
+		gpio_wl_reg_on = <&gpio D_GPIO(0) GPIO_ACTIVE_HIGH>;
 	};
 
         pll_preset@0 {

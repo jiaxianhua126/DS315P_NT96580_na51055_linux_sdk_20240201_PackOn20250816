@@ -2,7 +2,7 @@
 sgpio5{pad_config = <0x1000006A 0x10000 0x6A 0x2>;};/*TVI_DET*/
 sgpio12{pad_config = <0x78 0x1 0x78 0x2>;};/*LCD_ID0*/
 lgpio5{pad_config = <0xEA 0x1 0xEA 0x2>;};/*SOS_KEY*/
-cgpio5{gpio_config = <C_GPIO(5) 0>;};/*TVI_PWR*/
+cgpio5{gpio_config = <C_GPIO(5) 1>;};/*TVI_PWR*/
 sgpio6{gpio_config = <S_GPIO(6) 1>;};/*SN1_RESET*/
 pgpio11{gpio_config = <P_GPIO(11) 1>;};/*TVI_REST*/
 pgpio19{gpio_config = <P_GPIO(19) 1>;};/*SN1_18*/

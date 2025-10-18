@@ -261,7 +261,8 @@ UINT32 nvt_hdal_init(void)
     #if (GDC_POWER_DOWN==ENABLE)
     hd_common_sysconfig(HD_VIDEOPROC_CFG, 0, HD_VIDEOPROC_CFG_LL_FAST, 0);
     #else
-    hd_common_sysconfig(HD_VIDEOPROC_CFG, 0, HD_VIDEOPROC_CFG_GDC_BEST, 0);
+    //hd_common_sysconfig(HD_VIDEOPROC_CFG, 0, HD_VIDEOPROC_CFG_GDC_BEST, 0);
+    hd_common_sysconfig(HD_VIDEOPROC_CFG, 0, HD_VIDEOPROC_CFG_STRIP_LV1, 0);
     #endif
 
 #if defined(_UI_STYLE_LVGL_)

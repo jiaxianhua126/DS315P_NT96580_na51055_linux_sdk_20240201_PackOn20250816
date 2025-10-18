@@ -45,7 +45,7 @@ void System_DisableSensor(UINT32 SensorMask)
 
 #if (SENSOR_INSERT_FUNCTION == ENABLE)
 
-
+extern BOOL   GPIOMap_DetTVIPlugIn(void);
 void DetSensor(void)
 {
 
@@ -69,9 +69,11 @@ void DetSensor(void)
 				bChg=1;
 				DBG_ERR("------- SENSOR2_INSERT --------- \r\n");
 			} else if ((cp == 1) && (p == 0)) {
-				uiSensorEnableState_fw &= ~SENSOR_2;
-				bChg=1;
-				DBG_ERR("------- SENSOR2_REMOVE --------- \r\n");
+				if (!GPIOMap_DetTVIPlugIn()) {
+					uiSensorEnableState_fw &= ~SENSOR_2;
+					bChg=1;
+					DBG_ERR("------- SENSOR2_REMOVE --------- \r\n");
+				}
 			}
 			cp = p;
 		}else{
@@ -446,7 +448,7 @@ ER System_GetSensorInfo(UINT32 id, UINT32 param, void *value)
 						ppath->id = id;
 						strncpy(ppath->path, p_str, 31);
 						ppath->addr = (UINT32)p_fdt_app;
-						DBG_DUMP("iq_shading_path %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
+						//DBG_DUMP("iq_shading_path %d=%s, app_addr =%x\r\n", ppath->id, ppath->path, ppath->addr);
 						ret = E_OK;
 					}
 				}

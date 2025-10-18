@@ -412,19 +412,22 @@ extern void Dx_InitGPS_NOPWREN(void);
 #define GPIO_LENS_FOCUS_INTR        0              // input
 #define PAD_LENS_FOCUS_INTR         0
 
-#define GPIO_LENS_IR_CTRL0          P_GPIO_6       // output
-#define GPIO_LENS_IR_CTRL1          P_GPIO_7       // output
-#define PAD_LENS_IR_CTRL0           PAD_PIN_PGPIO6
-#define PAD_LENS_IR_CTRL1           PAD_PIN_PGPIO7
+#define GPIO_LENS_IR_CTRL0          x_GPIO_x       // output
+#define GPIO_LENS_IR_CTRL1          x_GPIO_x       // output
+#define PAD_LENS_IR_CTRL0           PAD_PIN_xGPIOx
+#define PAD_LENS_IR_CTRL1           PAD_PIN_xGPIOx
 
 //WIFI POWER
-#define GPIO_WIFI_PWREN              P_GPIO_11
-#define PAD_WIFI_PWREN               PAD_PIN_PGPIO11
+#define GPIO_WIFI_PWREN              P_GPIO_20
+#define PAD_WIFI_PWREN               PAD_PIN_PGPIO20
 #define GPIO_ETH1_DET               P_GPIO_2
 #define PAD_PIN_GPIO_ETH1_DET       PAD_PIN_PGPIO2
 
 #define GPIO_EHT_CAM_2_PWR			P_GPIO_0	
 
+#define GPIO_TVI_DET				 S_GPIO_5     
+#define PAD_TVI_DET					 PAD_PIN_SGPIO5  
+//#define GPIO_TVI_IRQ				 GPIO_INT_31	    
 
 #endif
 

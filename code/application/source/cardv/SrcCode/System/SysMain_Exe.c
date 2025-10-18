@@ -1603,7 +1603,7 @@ INT32 System_OnShutdown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		//DBG_DUMP("call System_OnShutdown\r\n");
         //stop watchdog
         #if WATCHDOG_FUNC
-        Watchdog_Disable();
+        //Watchdog_Disable();
 		#endif
 		//stop ASR
 		#if (ASR_FUNCTION == ENABLE)
@@ -1613,7 +1613,7 @@ INT32 System_OnShutdown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		}
 		#endif
         //stop recording
-        //FlowMovie_USBRemovePowerOff();
+        FlowMovie_USBRemovePowerOff();
 		bWndWiFiMovieOpenFirst = FALSE;
 		
 		if (UI_MovieSizeChange) {

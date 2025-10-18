@@ -1779,7 +1779,7 @@ int XML_PhotoFileList(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufS
 		pFDBInitObj->u32MemAddr = XML_GetTempMem(POOL_SIZE_FILEDB);
 
 		if (!pFDBInitObj->u32MemAddr) {
-			XML_DefaultFormat(WIFIAPP_CMD_FILELIST, WIFIAPP_RET_NOBUF, bufAddr, bufSize, mimeType);
+			XML_DefaultFormat(WIFIAPP_CMD_PHOTO_FILELIST, WIFIAPP_RET_NOBUF, bufAddr, bufSize, mimeType);
 			return CYG_HFS_CB_GETDATA_RETURN_OK;
 		}
 

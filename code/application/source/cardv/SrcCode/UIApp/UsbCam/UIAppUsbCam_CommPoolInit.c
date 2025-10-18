@@ -6,11 +6,11 @@
 //#define ENABLE      1
 //#define DISABLE     0
 
-#define VDO_SIZE_W                  1920
-#define VDO_SIZE_H                  1080
+#define VDO_SIZE_W                  2560 //1920
+#define VDO_SIZE_H                  1440 //1080
 
-#define VDO_MAIN_SIZE_W             1920
-#define VDO_MAIN_SIZE_H             1080
+#define VDO_MAIN_SIZE_W             2560 //1920
+#define VDO_MAIN_SIZE_H             1440 //1080
 
 #define SEN_OUT_FMT         HD_VIDEO_PXLFMT_RAW12
 #define CAP_OUT_FMT         HD_VIDEO_PXLFMT_RAW12

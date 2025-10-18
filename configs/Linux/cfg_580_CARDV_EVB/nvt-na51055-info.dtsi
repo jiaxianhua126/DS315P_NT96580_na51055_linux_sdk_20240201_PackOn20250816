@@ -60,7 +60,7 @@
 		 */
 		SENSOR1     = "sen_imx675";
 		SENSOR1_CFG = "sen_imx675";
-		SENSOR2     = "sen_off";
+		SENSOR2     = "sen_ad_tp9950";
 		SENSOR2_CFG = "sen_off";
 
 		/**
@@ -75,7 +75,7 @@
 		 * enable
 		 * disable
 		 */
-		TSE = "disable";
+		TSE = "enable";
 
 		/**
 		 * ======= Linux common =========
