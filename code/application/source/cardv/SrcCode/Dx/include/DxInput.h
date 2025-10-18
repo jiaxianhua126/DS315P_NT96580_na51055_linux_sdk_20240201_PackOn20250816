@@ -114,6 +114,7 @@ extern BOOL GPIOMap_IsLCDBacklightOn(void);
 //extern BOOL DxUSB_GetIsUSBPlug(void);
 //extern BOOL GPIOMap_DetACCPlugIn(void);
 //extern void EnterParkingTimer_Set(UINT32 value);
+extern BOOL GPIOMap_DetTVIPlugIn(void);
 extern BOOL GPIOMap_EthCam1Det(void);
 extern BOOL GPIOMap_EthCam2Det(void);
 extern void GPIOMap_SensorPowerOn(BOOL en);

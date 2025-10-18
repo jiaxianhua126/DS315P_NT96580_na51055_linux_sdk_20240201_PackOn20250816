@@ -64,10 +64,10 @@ void FlowWiFiMovie_AutoHDR(void)
 		&& (SysGetFlag(FL_MOVIE_HDR) == MOVIE_HDR_OFF))
 	{
 		if ((WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)||(WiFiCmd_GetStatus() == (WIFI_MOV_ST_RECORD|MOV_ST_ZOOM))) {
-		/*
+		
 		if ((FlowMovie_GetRecCurrTime() <= 1)&&(SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) {
 		Delay_DelayMs(1000);
-		}*/
+		}
 			FlowWiFiMovie_StopRec();
 			Delay_DelayMs(300);
 		}
@@ -84,10 +84,10 @@ void FlowWiFiMovie_AutoHDR(void)
 	else if ((temp >= time_start) && (temp < time_stop) && (SysGetFlag(FL_MOVIE_HDR) == MOVIE_HDR_ON))
 	{
 		if ((WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)||(WiFiCmd_GetStatus() == (WIFI_MOV_ST_RECORD|MOV_ST_ZOOM))) {
-		/*
+		
 		if ((FlowMovie_GetRecCurrTime() <= 1)&&(SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) {
 		Delay_DelayMs(1000);
-		}*/
+		}
 			FlowWiFiMovie_StopRec();
 			Delay_DelayMs(300);
 		}
@@ -1699,13 +1699,13 @@ INT32 WiFiCmd_OnExeMovieCodec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 	return NVTEVT_CONSUME;
 }
 
-#if (defined(_NVT_ETHREARCAM_RX_))
+#if (!defined(_NVT_ETHREARCAM_TX_))
 extern void Update_FW(void);
 #endif
 INT32 WiFiCmd_OnExeCustomFWUpdate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	DBG_IND("%s \r\n", __FUNCTION__);
-#if (defined(_NVT_ETHREARCAM_RX_))
+#if 1//(defined(_NVT_ETHREARCAM_RX_))
 #if (ASR_FUNCTION == ENABLE)
 	if (SysGetFlag(FL_ASR) == ASR_STANDARD) {
 		//printf("call ASR_STANDARD \r\n",SysGetFlag(FL_ASR) );
@@ -1720,7 +1720,7 @@ INT32 WiFiCmd_OnExeCustomFWUpdate(VControl *pCtrl, UINT32 paramNum, UINT32 *para
 INT32 WiFiCmd_OnExeEdogDataUpdate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	DBG_IND("%s \r\n", __FUNCTION__);
-#if (defined(_NVT_ETHREARCAM_RX_))
+#if 1//(defined(_NVT_ETHREARCAM_RX_))
 	FlowMovie_WakeUpLCDBacklight();
 	#if 0
 	if (gUIFlowWndWiFiMotionDetTimerID != NULL_TIMER)

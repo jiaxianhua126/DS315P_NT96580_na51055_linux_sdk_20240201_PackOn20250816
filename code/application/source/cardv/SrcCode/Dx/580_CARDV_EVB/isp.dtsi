@@ -11,10 +11,6 @@
 			iq_path_hdr             = "/isp/iq/imx675_iq_0_hdr";
 		};
 		sensor@1 {
-			ae_path                 = "/isp/ae/imx675_ae_0";
-			awb_path                = "/isp/awb/imx675_awb_0";
-			iq_path                 = "/isp/iq/imx675_iq_0";
-			iq_cap_path				= "/isp/iq/imx675_iq_0";
 		};
 		/* label for ae, awb, iq table */
 		ae: ae {

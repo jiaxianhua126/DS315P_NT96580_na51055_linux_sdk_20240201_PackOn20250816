@@ -6,13 +6,13 @@
 	sensor{pinmux = <0x0>;};
 	sensor2{pinmux = <0x0>;};
 	mipi_lvds{pinmux = <0x0>;};
-	i2c{pinmux = <0x40>;};
-	sif{pinmux = <0x00>;};
+	i2c{pinmux = <0x41>;};
+	sif{pinmux = <0x0>;};
 	uart{pinmux = <0x65>;};
 	spi{pinmux = <0x0>;};
 	sdp{pinmux = <0x0>;};
 	remote{pinmux = <0x0>;};
-	pwm{pinmux = <0x0>;};
+  	pwm{pinmux = <0x0>;};   //PWM1_5(L_GPIO1) 0x200
 	pwm2{pinmux = <0x0>;};
 	ccnt{pinmux = <0x0>;};
 	audio{pinmux = <0x0>;};

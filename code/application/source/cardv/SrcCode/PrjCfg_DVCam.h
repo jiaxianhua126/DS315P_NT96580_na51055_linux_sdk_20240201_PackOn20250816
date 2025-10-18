@@ -216,10 +216,13 @@
 // Sensor Config (for 1,2,4 devices)
 
 
-//#define SENSOR_CAPS_COUNT               2
-//#define SENSOR_CAPS_MASK                (SENSOR_1 | SENSOR_2)
+#if 1// two sensor
+#define SENSOR_CAPS_COUNT               2
+#define SENSOR_CAPS_MASK                (SENSOR_1 | SENSOR_2)
+#else
 #define SENSOR_CAPS_COUNT               1
-#define SENSOR_CAPS_MASK                (SENSOR_1)
+#define SENSOR_CAPS_MASK                SENSOR_1
+#endif
 
 
 #define SENSOR_MAP_1                    SENSOR_ID_1
@@ -243,9 +246,11 @@
 
 
 // Sensor Insert Mask
-//#define SENSOR_INSERT_MASK              (SENSOR_1) // support insert sensor
-//#define SENSOR_INSERT_MASK              (SENSOR_2) // support insert sensor
+#if 1//two sensor
+#define SENSOR_INSERT_MASK              (SENSOR_2) // support insert sensor
+#else
 #define SENSOR_INSERT_MASK              (0) // if NOT support insert sensor, please choose this
+#endif
 
 #define SENSOR_DEFAULT_ATTACH_MASK      (SENSOR_CAPS_MASK & ~(SENSOR_INSERT_MASK)) // hw default attach sensors
 
@@ -324,7 +329,7 @@
 //LCD2 related
 #define LCD2_INSERT_FUNCTION            LCD2_FUNC //Auto Detect - LCD2 cable insert
 #else
-#define DISPLAY_FUNC                    ENABLE
+#define DISPLAY_FUNC                    DISABLE
 #define DISPLAY2_FUNC                   DISABLE
 #define DISPLAY_CAPS_COUNT              0
 #define DISPLAY_CAPS_MASK               0
@@ -643,7 +648,7 @@
 #define MOVIE_SMEAR_R_FUNC              DISABLE
 #define MOVIE_ENSURE_SD_CLASS4          DISABLE
 #define MOVIE_ENSURE_SD_32KCLUSTER      DISABLE
-#define MOVIE_MULTI_RECORD_FUNC         DISABLE
+#define MOVIE_MULTI_RECORD_FUNC         ENABLE  //DISABLE
 #define MOVIE_REC_YUVMERGE              DISABLE // slowly timelapse record mode, frame period >= 1S
 #define MOVIE_AUTOREC_ACPLUG            DISABLE
 #define MOVIE_NET_USE_STREAM_1          DISABLE

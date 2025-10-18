@@ -131,6 +131,122 @@ extern void LCD_Rotate_180(void);
 extern void LCD_Rotate_None(void);
 extern BOOL Gsensor_Sensitivity_Parking;
 //static UINT32 g_HDR_BefRecSize = 0;
+#if (SENSOR_CAPS_COUNT==2)
+//#define DEFAULT_MOVIE_SIZE_SINGLE   MOVIE_SIZE_FRONT_1920x1080P30
+//#define DEFAULT_MOVIE_SIZE_DUAL     MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30
+extern void   System_EnableSensor(UINT32 SensorMask);
+extern UINT32 System_GetEnableSensor(void);
+extern BOOL   GPIOMap_DetTVIPlugIn(void);
+void MovieExe_CheckMovieSizeBySensorConnect(void)
+{
+	static BOOL bFirstTime = TRUE;
+	static BOOL bFirstLink = FALSE;
+	static UINT32 uiPrevSensor = 0; // previous active sensor
+	static UINT32 uiPrevDualCam = 0; // previous DualCam
+	UINT32 uiSensor; // current active sensor
+	UINT32 uiMovieSize;
+	static UINT32 uiPreMovieSize = 0;
+
+	uiMovieSize = SysGetFlag(FL_MOVIE_SIZE);
+	if (GPIOMap_DetTVIPlugIn()) {
+		System_EnableSensor(SENSOR_INSERT_MASK);
+	} else {
+	}
+	uiSensor = System_GetEnableSensor();
+
+    //DBG_DUMP("*** MovieExe_CheckMovieSizeBySensorConnect()  SysGetFlag(FL_MOVIE_SIZE)= %d ***\r\n", uiMovieSize);
+
+	if (bFirstTime) {
+		bFirstTime = FALSE;
+		uiPreMovieSize = SysGetFlag(FL_MOVIE_SIZE);
+
+		if (uiSensor != (SENSOR_1 | SENSOR_2)) {
+			if (GetMovieRecType_2p(uiMovieSize) == MOVIE_REC_TYPE_DUAL) {
+				if (uiMovieSize >= DEFAULT_MOVIE_SIZE_DUAL)
+				{
+					SysSetFlag(FL_MOVIE_SIZE, DEFAULT_MOVIE_SIZE_SINGLE);
+					SysSetFlag(FL_MOVIE_SIZE_MENU, DEFAULT_MOVIE_SIZE_SINGLE);
+				}
+				else
+				{
+					SysSetFlag(FL_MOVIE_SIZE, uiMovieSize);
+					SysSetFlag(FL_MOVIE_SIZE_MENU, uiMovieSize);
+				}
+
+				if (GPIOMap_DetTVIPlugIn()) {
+					bFirstLink = TRUE;
+				}
+				uiPrevDualCam = SysGetFlag(FL_DUAL_CAM);
+				SysSetFlag(FL_DUAL_CAM_MENU, DUALCAM_FRONT);
+				SysSetFlag(FL_DUAL_CAM, DUALCAM_FRONT);
+			}
+		} else if (uiSensor == (SENSOR_1 | SENSOR_2)) {
+			// insert sensor, set movie to dual record
+			if (uiMovieSize < DEFAULT_MOVIE_SIZE_DUAL)
+			{
+				SysSetFlag(FL_MOVIE_SIZE, DEFAULT_MOVIE_SIZE_DUAL);
+				SysSetFlag(FL_MOVIE_SIZE_MENU, DEFAULT_MOVIE_SIZE_DUAL);
+				//SysSetFlag(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+				//SysSetFlag(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+			}
+			else
+			{
+				SysSetFlag(FL_MOVIE_SIZE, uiMovieSize);
+				SysSetFlag(FL_MOVIE_SIZE_MENU, uiMovieSize);
+				//SysSetFlag(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+				//SysSetFlag(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+			}
+			//SysSetFlag(FL_DUAL_CAM_MENU, DUALCAM_BOTH);
+			//SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
+		}
+	} else {
+		if (uiPrevSensor != uiSensor) {
+			if (uiPrevSensor == (SENSOR_1 | SENSOR_2)) {
+				// remove sensor, set movie to single record if necessary
+				if (GetMovieRecType_2p(uiMovieSize) == MOVIE_REC_TYPE_DUAL) 
+				{
+					SysSetFlag(FL_MOVIE_SIZE, DEFAULT_MOVIE_SIZE_SINGLE);
+					SysSetFlag(FL_MOVIE_SIZE_MENU, DEFAULT_MOVIE_SIZE_SINGLE);
+
+					uiPreMovieSize = DEFAULT_MOVIE_SIZE_SINGLE;
+
+					SysSetFlag(FL_DUAL_CAM_MENU, DUALCAM_FRONT);
+					SysSetFlag(FL_DUAL_CAM, DUALCAM_FRONT);
+				}
+			} else if (uiSensor == (SENSOR_1 | SENSOR_2)) {
+				// insert sensor, set movie to dual record
+				if (uiPreMovieSize < DEFAULT_MOVIE_SIZE_DUAL)
+				{
+					SysSetFlag(FL_MOVIE_SIZE, DEFAULT_MOVIE_SIZE_DUAL);
+					SysSetFlag(FL_MOVIE_SIZE_MENU, DEFAULT_MOVIE_SIZE_DUAL);
+					//SysSetFlag(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+					//SysSetFlag(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+				}
+				else
+				{
+					SysSetFlag(FL_MOVIE_SIZE, uiPreMovieSize);
+					SysSetFlag(FL_MOVIE_SIZE_MENU, uiPreMovieSize);
+					//SysSetFlag(FL_MOVIE_HDR, MOVIE_HDR_OFF);
+					//SysSetFlag(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
+				}
+
+				if(bFirstLink)
+				{
+					SysSetFlag(FL_DUAL_CAM_MENU, uiPrevDualCam);
+					SysSetFlag(FL_DUAL_CAM, uiPrevDualCam);
+					bFirstLink = FALSE;
+				}
+				else
+				{
+					SysSetFlag(FL_DUAL_CAM_MENU, DUALCAM_BOTH);
+					SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
+				}
+			}
+		}
+	}
+	uiPrevSensor = uiSensor;
+}
+#endif
 
 
 #if (MOVIE_UVAC_FUNC == ENABLE)
@@ -4476,6 +4592,9 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
         break;
    }
 	//#NT#2023/03/27#HTK ADD -end
+#if (SENSOR_CAPS_COUNT==2)
+	MovieExe_CheckMovieSizeBySensorConnect();
+#endif
 
 	Movie_CommPoolInit();
 	gMovie_InitCommonMemFinish=1;
@@ -4566,9 +4685,14 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			vendor_isp_set_ae(AET_ITEM_SHDR,&shdr);
 		}
 		#endif // (SHDR_FUNC == ENABLE)
+
 		ImageApp_MovieMulti_Config(MOVIE_CONFIG_SENSOR_INFO, (UINT32)&sen_cfg);
 
 		//ImageApp_MovieMulti_Config(MOVIE_CONFIG_AD_MAP, (UINT32)&Movie_AD_Sensor_Map[i]);
+		#if (SENSOR_CAPS_COUNT == 2)
+		UINT32 Movie_Sensor_Mapping[SENSOR_CAPS_COUNT] = {0, 2}; //for FrontRAW HDR
+		ImageApp_MovieMulti_Config(MOVIE_CONFIG_SENSOR_MAPPING, (UINT32)&Movie_Sensor_Mapping[0]);
+		#endif
 
 		#if (MOVIE_IME_CROP == ENABLE)
             #if (MOVIE_EIS == ENABLE)
@@ -4773,6 +4897,16 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
 	//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_VDO_ENC_MAX_FRAME_SIZE, 120*1024);
 #endif
+
+#if 1//defined (_sen_ad_pr2020k_)
+{
+	MOVIEMULTI_IPL_SIZE_INFO ipl_size={{1920,1080},30};
+
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2 , MOVIEMULTI_PARAM_IPL_USER_IMG_SIZE, (UINT32)&ipl_size);
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2 , MOVIEMULTI_PARAM_IPL_FORCED_IMG_SIZE, MOVIE_IPL_SIZE_USER);
+}
+#endif
+
 #if (SENSOR_SIEPATGEN == ENABLE)
 	for (i = 0; i < SENSOR_CAPS_COUNT; i++) {
 		ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 + i, MOVIEMULTI_PARAM_VCAP_PAT_GEN, HD_VIDEOCAP_SEN_PAT_COLORBAR);
@@ -7866,6 +8000,21 @@ INT32 MovieExe_OnSensorHotPlug(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 	}
 
 	MovieExe_Sensor_HotPlug_Rec();
+#if _TODO//TBD
+    if (SysGetFlag(FL_FIRSTPOWERON) == FIRSTPOWERON_TRUE) {
+		return NVTEVT_CONSUME;
+	}
+	if (g_bSensorNumChanged) {
+		g_bSensorNumChanged = FALSE;
+		//Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
+		if (System_GetState(SYS_STATE_CURRSUBMODE)==SYS_SUBMODE_WIFI) {
+			Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 2, System_GetState(SYS_STATE_CURRMODE), SYS_SUBMODE_WIFI);
+			//bWiFiModeChanged = TRUE;
+		} else {
+			Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
+		}
+	}
+#endif
 #endif
 
 	return NVTEVT_CONSUME;

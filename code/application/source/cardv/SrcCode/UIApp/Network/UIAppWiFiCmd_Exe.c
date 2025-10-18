@@ -374,7 +374,7 @@ INT32 WiFiCmd_OnExePipStyle(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 #if (defined(_NVT_ETHREARCAM_RX_))
 	if (FlowMovie_IsEthCamConnectOK())
 #elif (SENSOR_CAPS_COUNT>=2)
-	if (System_GetConnectSensor() == (SENSOR_1 | SENSOR_2)) 
+	if (System_GetEnableSensor() == (SENSOR_1 | SENSOR_2)) 
 #endif
 	{
 	    SysSetFlag(FL_DUAL_CAM, Data);

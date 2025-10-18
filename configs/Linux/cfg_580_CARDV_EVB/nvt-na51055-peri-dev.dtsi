@@ -27,6 +27,48 @@
 &i2c2 {
 	#address-cells = <1>;
 	#size-cells = <0>;
+
+	ad_tp9950@0 {
+		compatible = "nvt,ad_tp9950.0";
+		reg = <0x44>;
+		power_cfg {
+			mclk_sel = "MCLK3";
+
+			///////////////////////////////////////////////////////////////////////////////////////////////////
+			// io control description                                                                        //
+			// io_ctl0@0~19(max) = <io_pin      level   hold time>                                              //
+			//   io_pin - (3 types)                                                                          //
+			//     1. pin name (ex. S_GPIO(4), PGPIO(0), ...)                                                //
+			//     2. 0xfffe: the following commands will only applied on 'power on' sequence (default)      //
+			//     3. 0xfffd: the following commands will only applied on 'power off' sequence               //
+			//   level - 1: pull high, 0: pull low                                                           //
+			//   hold time - delay time (us)                                                                 //
+			///////////////////////////////////////////////////////////////////////////////////////////////////
+		//	rst_pin = "S_GPIO_4";
+		//	pwdn_pin; 
+		//	rst_time = <500000>;
+	   //		stb_time = <500000>;
+			//// power on ////
+			io_ctl0 = <0xfffe		0 0>;			// power on sqeuence indicator
+			// turn on power pin
+			io_ctl1 = <C_GPIO(5)	1 10000>;			// io control description @0~19(max) = <io_pin, level(high(1) or low(0), hold time(us)>
+			//io_ctl2 = <L_GPIO(14)	1 10000>;			// io control description @0~19(max) = <io_pin, level(high(1) or low(0), hold time(us)>
+
+			// reset flow
+			io_ctl3 = <P_GPIO(11)	0 100000>;		// io control description @0~19(max) = <io_pin, level(high(1) or low(0), hold time(us)>
+			io_ctl4 = <P_GPIO(11)   1 100000>;		// io control description @0~19(max) = <io_pin, level(high(1) or low(0), hold time(us)>
+
+			//// power off ////
+			io_ctl5 = <0xfffd		0 0>;			// power off sequence indicator
+			io_ctl6 = <C_GPIO(5)	0 10>;			// turn off AHD5V_EN
+			io_ctl7 = <P_GPIO(11)	0 10>;			// set tp9950 in reset state
+			//io_ctl8 = <L_GPIO(14)	0 10>;
+		};
+		outport@0 {
+		inport = <0>;
+		signal = <0>;/*0:parallel 1:mipi*/
+		};
+	};
 };
 
 &spi0 {

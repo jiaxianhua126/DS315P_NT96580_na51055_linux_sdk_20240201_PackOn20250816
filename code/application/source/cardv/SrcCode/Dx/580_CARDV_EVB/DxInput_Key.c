@@ -171,6 +171,11 @@ void DrvKey_Init(void)
 {
 }
 
+BOOL GPIOMap_DetTVIPlugIn(void)
+{
+    return !gpio_getPin(GPIO_TVI_DET);
+}
+
 #if 1
 static UINT32 uiEnterParkingTimer = 150;//3sec
 void EnterParkingTimer_Set(UINT32 value)
@@ -367,8 +372,8 @@ UINT32 DrvKey_DetNormalKey(void)
 */
 UINT32 DrvKey_DetPowerKey(void)
 {
-    static UINT32 ShutDownCount = 0;
 	UINT32 uiKeyCode = 0;
+    static UINT32 ShutDownCount = 0;
 
 	if (hwpower_get_power_key(POWER_ID_PSW1)) {
         ShutDownCount++;
@@ -380,6 +385,30 @@ UINT32 DrvKey_DetPowerKey(void)
 	    } else {
 	        ShutDownCount = 0;
 		}
+#if (SENSOR_CAPS_COUNT==2)
+	//static UINT32 DetCnt = 0;
+	static BOOL   Sen2PlugIn = FALSE;
+	static BOOL   PreSen2PlugIn = FALSE;
+	extern BOOL   g_bSensorNumChanged;
+
+	//DetCnt++;
+	//if(DetCnt >= 2)
+	{
+		//DetCnt = 0;
+		if (GPIOMap_DetTVIPlugIn()) {
+			Sen2PlugIn = TRUE;
+		} else {
+			Sen2PlugIn = FALSE;
+		}
+
+		if (Sen2PlugIn != PreSen2PlugIn) {
+			g_bSensorNumChanged = TRUE;
+			PreSen2PlugIn = Sen2PlugIn;
+		}
+		//DBG_WRN("^G ----- GPIOMap_DetTVIPlugIn = %d, Sen2PlugIn = %d,  PreSen2PlugIn = %d, g_bSensorNumChanged =%d \r\n", 
+		//		 GPIOMap_DetTVIPlugIn(), Sen2PlugIn, PreSen2PlugIn, g_bSensorNumChanged);
+	}
+#endif
 	return uiKeyCode;
 }
 

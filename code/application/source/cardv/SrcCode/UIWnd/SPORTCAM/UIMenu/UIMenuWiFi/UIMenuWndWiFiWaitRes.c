@@ -10,12 +10,12 @@
 #include "UIDisplayUtil.h"
 //------------------------------------------------------------
 
-SHOW_ITEM_RECT(CMD_Rectangle,Skin1Rect,0,0,319,239,0,0,1,1,0,0,0)
+SHOW_ITEM_RECT(CMD_Rectangle,Skin1Rect,0,0,619,239,0,0,1,1,0,0,0)
 SHOW_MAP_BEGIN(Skin1)
 SHOW_MAP_BODY(Skin1Rect)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group,Skin1,0,0,319,239)
+SHOW_ITEM_GROUP(CMD_Group,Skin1,0,0,619,239)
 
 SHOW_ITEM_RECT(CMD_Rectangle,Skin3Rect,0,0,126,99,0,0,1,1,0,0,0)
 SHOW_MAP_BEGIN(Skin3)
@@ -30,7 +30,7 @@ SHOW_MAP_BODY(Skin3)
 SHOW_MAP_BODY(Icon4)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group,Normal2,96,70,222,169)
+SHOW_ITEM_GROUP(CMD_Group,Normal2,246,70,372,169)
 
 CREATE_STATE_ITEM_DATA(ICON_WIFI_CONNECT5,STRID_NULL,ICON_WIFI_CONNECT,NULL) 
 SHOW_MAP_BEGIN(UIMenuWndWiFiWait_Connect_Icon_Status)
@@ -43,7 +43,7 @@ STATE_LIST_ITEM(ICON_WIFI_CONNECT5)
 STATE_LIST_END
 
 CREATE_STATE_DATA(UIMenuWndWiFiWait_Connect_Icon_Status,0)
-CREATE_STATE_CTRL(UIMenuWndWiFiWait_Connect_Icon_Status,0,96,70,222,169)
+CREATE_STATE_CTRL(UIMenuWndWiFiWait_Connect_Icon_Status,0,246,70,372,169)
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -53,5 +53,5 @@ SHOW_MAP_END
 
 DECLARE_EVENT(UIMenuWndWiFiWait)
 DECLARE_CTRL_LIST(UIMenuWndWiFiWait)
-CREATE_CTRL(UIMenuWndWiFiWait,UIMenuWndWiFiWait,CTRL_WND,NULL,0 ,0,0,319,239)
+CREATE_CTRL(UIMenuWndWiFiWait,UIMenuWndWiFiWait,CTRL_WND,NULL,0 ,0,0,619,239)
 #endif
