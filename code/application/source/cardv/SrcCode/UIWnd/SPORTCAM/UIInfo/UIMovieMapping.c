@@ -474,6 +474,13 @@ static MOVIE_SIZE_ITEM g_MovieSizeTable[] = {
 
 // movie recording table, mapping to movie menu
 static MOVIE_SIZE_MAPPING g_MovieRecMappingTable[MOVIE_SIZE_ID_MAX] = {
+		
+	[MOVIE_SIZE_FRONT_3840x2160P30] = {
+		MOVIE_REC_TYPE_FRONT,
+		{MOVIE_SIZE_3840x2160P30, 0, 0, 0},
+		{0, 0, 0, 0},
+	},
+
 	[MOVIE_SIZE_FRONT_2560x1440P60] = {
 		MOVIE_REC_TYPE_FRONT,
 		{MOVIE_SIZE_2560x1440P60, 0, 0, 0},
@@ -507,13 +514,6 @@ static MOVIE_SIZE_MAPPING g_MovieRecMappingTable[MOVIE_SIZE_ID_MAX] = {
 	[MOVIE_SIZE_FRONT_1920x1080P30] = {
 		MOVIE_REC_TYPE_FRONT,
 		{MOVIE_SIZE_1920x1080P30, 0, 0, 0},
-		{0, 0, 0, 0},
-	},
-
-		
-	[MOVIE_SIZE_FRONT_3840x2160P30] = {
-		MOVIE_REC_TYPE_FRONT,
-		{MOVIE_SIZE_3840x2160P30, 0, 0, 0},
 		{0, 0, 0, 0},
 	},
 

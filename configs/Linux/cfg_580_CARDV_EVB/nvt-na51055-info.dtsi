@@ -9,7 +9,7 @@
 / {
 	nvt_info {						/* Get from ModelConfig.txt */
 		/*BIN_NAME = "FWT221A";*/
-		BIN_NAME = "FW202WGS";
+		BIN_NAME = "FWDS315P";
 		BIN_NAME_T = "FW96580T";
 		RTOS_APP_MAIN = "cardv"; /* Optional, if OS type is Linux, dont care it. */
 		/* EMBMEM_BLK_SIZE, Normally, 2KPageNand=0x20000, 512PageNand=0x4000, SPI=0x10000 */

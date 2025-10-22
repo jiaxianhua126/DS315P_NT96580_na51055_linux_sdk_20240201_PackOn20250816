@@ -273,12 +273,8 @@ char gUICarNo_StrBuf[13] = {""};
 char gUICustomize_StrBuf[13] = {""};
 
 char gUIDateTime_NullStrBuf[20] = {"                   "};
-#if ((MACHINE_TYPE==MACHINE_TYPE_T221)||(MACHINE_TYPE==MACHINE_TYPE_T222))
-char gUICustomer_Model[20]  = {"PERNIS T221"};
-#elif (MACHINE_TYPE==MACHINE_TYPE_DS202WGS)
-char gUICustomer_Model[20]  = {"PERNIS DS202WGS"};
-#elif (MACHINE_TYPE==MACHINE_TYPE_DS205WGS)
-char gUICustomer_Model[20]  = {"PERNIS DS202WGS"};
+#if (MACHINE_TYPE==MACHINE_TYPE_DS315P)
+char gUICustomer_Model[20]  = {"PERNIS DS315P"};
 #else
 char gUICustomer_Model[20]  = {"PERNIS S2P"};
 #endif

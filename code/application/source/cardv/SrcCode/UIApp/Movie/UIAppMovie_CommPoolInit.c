@@ -43,11 +43,11 @@
 
 #define VDO2_CLONE_SIZE_W            848
 #else
-    #define VDO_SIZE_W                  2592
-    #define VDO_SIZE_H                  1944
+    #define VDO_SIZE_W                  3840
+    #define VDO_SIZE_H                  2160
 
-    #define VDO_MAIN_SIZE_W             2592
-    #define VDO_MAIN_SIZE_H             1944
+    #define VDO_MAIN_SIZE_W             3840
+    #define VDO_MAIN_SIZE_H             2160
 
 #define VDO_CLONE_SIZE_W            848
 #define VDO_CLONE_SIZE_H            480

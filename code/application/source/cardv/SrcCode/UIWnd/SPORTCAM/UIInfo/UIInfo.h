@@ -885,13 +885,13 @@ enum _DUALCAM_SETTING {
 //-----------------------------------------------------------------------------
 //MOVIE_SIZE_TAG
 enum _MOVIE_MENU_SIZE {
+	MOVIE_SIZE_FRONT_3840x2160P30,                  /// UHD P30
 	MOVIE_SIZE_FRONT_2560x1440P60,                  /// QHD P60
 	MOVIE_SIZE_FRONT_2560x1440P30,                  /// QHD P30
 	MOVIE_SIZE_FRONT_2304x1296P60,                  /// 3MHD P60
 	MOVIE_SIZE_FRONT_2304x1296P30,                  /// 3MHD P30
 	MOVIE_SIZE_FRONT_1920x1080P60,                  /// FHD P60
 	MOVIE_SIZE_FRONT_1920x1080P30,                  /// FHD P30
-	MOVIE_SIZE_FRONT_3840x2160P30,                  /// UHD P30
 	MOVIE_SIZE_DUAL_2560x1440P30_1920x1080P30,		/// QHD FHD
 	MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30,      /// FHD FHD
 	MOVIE_SIZE_FRONT_1280x720P240,                  /// HD P240
