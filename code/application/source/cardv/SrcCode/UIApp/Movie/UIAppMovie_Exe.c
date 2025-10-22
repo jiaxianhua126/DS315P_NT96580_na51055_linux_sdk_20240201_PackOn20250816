@@ -4845,6 +4845,11 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	//DBG_DUMP("call _sen_evb_imx335_\r\n");
 	MOVIEMULTI_IPL_SIZE_INFO ipl_size2={{2560,1440},30};
 	switch(UI_GetData(FL_MOVIE_SIZE)) {
+	case MOVIE_SIZE_FRONT_3840x2160P30:
+		ipl_size2.size.w = 2560;
+        ipl_size2.size.h = 1440;
+        ipl_size2.fps = 30;
+		break;
 	case MOVIE_SIZE_FRONT_2560x1440P60:
 		ipl_size2.size.w = 2560;
         ipl_size2.size.h = 1440;

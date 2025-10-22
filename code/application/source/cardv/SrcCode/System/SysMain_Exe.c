@@ -1261,7 +1261,7 @@ UINT32 ReadPstore_EDogDate_Fun(UINT8 *buffer,UINT32 offset,UINT32 count)
 	}
     return len;
 }
-#define PS_FORMAT_CHECK_FILE    "/mnt/sd/PStore.plc"//"A:\\PStore.plc"
+#define PS_FORMAT_CHECK_FILE    "/mnt/sd2/PStore.plc"//"A:\\PStore.plc"
 
 void SystemBoot_PS_Format(void)
 {
