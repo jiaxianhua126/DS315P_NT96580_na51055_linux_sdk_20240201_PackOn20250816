@@ -4727,6 +4727,7 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_VCAP_OUTFUNC, HD_VIDEOCAP_OUTFUNC_DIRECT);
 #endif
 
+
 #if (MOVIE_YUV_COMPRESS)
     ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_YUV_COMPRESS, TRUE);
 #endif
@@ -8062,7 +8063,7 @@ INT32 MovieExe_OnMovieBitrate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 	switch (UI_GetData(FL_MOVIE_BITRATE)) {
 	case MOVIE_BITRATE_LOW:
 		if (UI_GetData(FL_MOVIE_CODEC) == MOVIE_CODEC_H265) {
-			//SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3150*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3150*1024);
 			//DBG_DUMP("call MOVIE_BITRATE_LOW MOVIE_CODEC_H265\r\n");
 			SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 1750*1024);
 			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 1750*1024);
@@ -8079,7 +8080,7 @@ INT32 MovieExe_OnMovieBitrate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P30,  500*1024);
 		} else {
 			//DBG_DUMP("call MOVIE_BITRATE_LOW\r\n");
-			// SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3150*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3150*1024);
 			SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 2250*1024);
 			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 2250*1024);
 			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 2250*1024);
@@ -8117,7 +8118,7 @@ INT32 MovieExe_OnMovieBitrate(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 			SetMovieTargetBitrate(0, MOVIE_SIZE_1280x720P30,  1024*1024);
 		} else {
 			//DBG_DUMP("call MOVIE_BITRATE_MED\r\n");
-			//SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3450*1024);
+			SetMovieTargetBitrate(0, MOVIE_SIZE_3840x2160P30, 3450*1024);
 			SetMovieTargetBitrate(0, MOVIE_SIZE_2880x2160P24, 3150*1024);
 			SetMovieTargetBitrate(0, MOVIE_SIZE_2592x1944P30, 3150*1024);
 			SetMovieTargetBitrate(0, MOVIE_SIZE_2560x1600P30, 3150*1024);

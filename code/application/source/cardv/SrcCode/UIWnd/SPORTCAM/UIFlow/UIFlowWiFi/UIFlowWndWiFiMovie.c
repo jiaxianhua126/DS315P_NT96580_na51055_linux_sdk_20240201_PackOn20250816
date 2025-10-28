@@ -516,7 +516,7 @@ INT32 UIFlowWndWiFiMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 		case WIFI_MOV_ST_LVIEW:
 		case WIFI_MOV_ST_RECORD:
         #if 1
-			if (FlowMovie_IsEthCamConnectOK()&&(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)){
+			if ((System_GetEnableSensor() == (SENSOR_1|SENSOR_2))&&(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)){
 				FlowMovie_LCDDimDsiable(0); //reset count
 				FlowMovie_LCDIconDimDsiable(0); //reset count
 				if(GPIOMap_IsLCDBacklightOn()){
@@ -1491,16 +1491,6 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 		FlowWiFiMovie_IconDrawGPSSignal(TRUE);
         #endif
 
-        #if (defined(_NVT_ETHREARCAM_RX_))
-        if (GPIOMap_EthCam1Det() && (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)&&(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)) {
-            BKG_PostEvent(NVTEVT_BKW_ETHCAM_SYNC_GPS_INFO);
-        }
-		#if 0
-        if (GPIOMap_EthCam1Det() && (g_uiWiFiRecordIngMotionDet||g_uiWiFiParkingModeMotionDet) && (System_GetState(SYS_STATE_CARD) == CARD_INSERTED)) {
-            BKG_PostEvent(NVTEVT_BKW_ETHCAM_GET_MOTION_DETECT_INFO);
-        }
-		#endif
-        #endif
 		if ((SysGetFlag(FL_MOVIE_TIMELAPSE_REC) != MOVIE_TIMELAPSEREC_OFF)
             || (SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC) != PARKING_MODE_TIMELAPSEREC_OFF))
         {
@@ -1608,87 +1598,18 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
         #endif
         if(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)
         {
-			UIFlowWndMovie_OnTXStatusDet();
-			FlowMovie_DetTxDisconnected();
-			FlowMovie_SyncTimeToRear();
+			//UIFlowWndMovie_OnTXStatusDet();
+			//FlowMovie_DetTxDisconnected();
+			//FlowMovie_SyncTimeToRear();
 			if (g_bSensorNumChanged) {
 				g_bSensorNumChanged = FALSE;
 				FlowWiFiMovie_IconDrawSize(TRUE);
 			}
     	}
-		#if 1//DUALCAM_BOTH2 delay show ,avoid lcd flicker
-		if (!GPIOMap_EthCam1Det()) 
-		{
-			if(!FlowMovie_IsEthCamConnectOK())
-			{
-				if (UI_GetData(FL_DUAL_CAM) != DUALCAM_FRONT) 
-				{
-					SysSetFlag(FL_DUAL_CAM, DUALCAM_FRONT);
-					SysSetFlag(FL_DUAL_CAM_MENU, DUALCAM_FRONT);
-				}
-			}
-		}
-		else
-		{
-			if(UI_GetData(FL_DUAL_CAM)!=UI_GetData(FL_DUAL_CAM_MENU))
-			{
-				UI_SetData(FL_DUAL_CAM, UI_GetData(FL_DUAL_CAM_MENU));
-			}
-		}
-		#endif  
 
         //check GPS status
         //UIFlowWndWiFiMovie_CheckGPSStatus();
-        
-		//DBG_DUMP("G^g_bWiFiSlowCard=%d====beepCntTimeout=%d=link=%d=g_NotRecordWrn=%d==TRUE=%d==\r\n",g_bWiFiSlowCard,beepCntTimeout,FlowMovie_IsEthCamConnectOK(),g_NotRecordWrn,TRUE);
-		
-		if(System_GetState(SYS_STATE_CURRMODE)==PRIMARY_MODE_MOVIE)
-		{
-			if(GPIOMap_EthCam1Det())
-			{
-				if(!FlowMovie_IsEthCamConnectOK()&&!SysInit_GetEthTxFW_Update_getstd())
-				{
-					beepCntTimeout++;
-					if(beepCntTimeout >= 8)
-					{
-					
-						beepCntTimeout = 0;
-						g_RearErr = TRUE;
-						g_RearRebootCnt++;
-						if(g_RearRebootCnt<=2)
-						{
-						
-							g_NotRecordWrn = FALSE; //Temp-R 20240703
-							//FlowMovie_DrawFolderCheck(TRUE);
-							//FlowMovie_WakeUpLCDBacklight();
-							Set_IsRearOK(0);//reset the flag,just in case ,when changing mode,start record.
-							BKG_PostEvent(NVTEVT_BKW_STOPREC_PROCESS);//restart rear
-						}
-						else
-						{
-							if(!UxCtrl_IsShow(&UIFlowWndWiFiMovie_FolderCheck_StatusTxtCtrl))
-							{
-								FlowWiFiMovie_DrawFolderCheck(TRUE);
-								FlowMovie_WakeUpLCDBacklight();
-								bWiFiRec_AutoStart = TRUE;
-								g_NotRecordWrn = TRUE;
-	
-								DBG_ERR("1-------77777\r\n");
-								Ux_PostEvent(NVTEVT_WIFI_EXE_MOVIE_REC, 1, 1);
-							}
-						}
-					}
-				}
-				else
-				{
-					FlowMovie_DrawFolderCheck(FALSE);
-					beepCntTimeout = 0;
-					g_RearErr = FALSE;
-				}
-			}
-		}	
-		//debug_msg("beepCntTimeout=%d %d %d\r\n",beepCntTimeout,FlowMovie_IsEthCamConnectOK(),g_NotRecordWrn);
-        break;
+       	break;
     }
 
     Ux_DefaultEvent(pCtrl,NVTEVT_TIMER,paramNum,paramArray);
