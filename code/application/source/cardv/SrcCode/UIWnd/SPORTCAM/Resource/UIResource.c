@@ -16,7 +16,8 @@ char *gUserStr[STRID_USER_END - STRID_USER_START] = {
 	"12800",
 	//single
 	"4K P50",//"UHD P50",
-	"3840x2160P 30fps",//"UHD P30",
+	"3840x2160P 30fps",//"UHD P30",	
+	"3840x2160P 25fps",//"UHD P25",
 	"4K P24",//"UHD P24",
 	"2.7K P60",
 	"2592x1944P 30fps",
@@ -41,7 +42,7 @@ char *gUserStr[STRID_USER_END - STRID_USER_START] = {
 	"VGA P30",
 	"QVGA P30",
 	//dual
-	"UHD P30+FHD P30",
+	"2160P30+1080P30",
 	"QHD P30+HD P30",
 	"1440P30+1080P30",
 	"3MHD P30+HD P30",
@@ -93,6 +94,7 @@ char *gUserStr[STRID_USER_END - STRID_USER_START] = {
 	//single
 	"4K P50",//"UHD P50",
 	"3840x2160P 27.5fps",//"UHD P30",
+	"3840x2160P 25fps",//"UHD P25",
 	"4K P24",//"UHD P24",
 	"2.7K P55",
 	"2592x1944P 27.5fps",

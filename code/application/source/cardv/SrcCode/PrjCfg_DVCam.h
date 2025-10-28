@@ -205,7 +205,7 @@
 // Sensor Config (for 1,2,4 devices)
 
 
-#if 0// two sensor
+#if 1// two sensor
 #define SENSOR_CAPS_COUNT               2
 #define SENSOR_CAPS_MASK                (SENSOR_1 | SENSOR_2)
 #else
@@ -235,7 +235,7 @@
 
 
 // Sensor Insert Mask
-#if 0//two sensor
+#if 1//two sensor
 #define SENSOR_INSERT_MASK              (SENSOR_2) // support insert sensor
 #else
 #define SENSOR_INSERT_MASK              (0) // if NOT support insert sensor, please choose this
@@ -609,7 +609,7 @@
 #define MOVIE_SMEAR_R_FUNC              DISABLE
 #define MOVIE_ENSURE_SD_CLASS4          DISABLE
 #define MOVIE_ENSURE_SD_32KCLUSTER      DISABLE
-#define MOVIE_MULTI_RECORD_FUNC         DISABLE//ENABLE  //
+#define MOVIE_MULTI_RECORD_FUNC         ENABLE  //
 #define MOVIE_REC_YUVMERGE              DISABLE // slowly timelapse record mode, frame period >= 1S
 #define MOVIE_AUTOREC_ACPLUG            DISABLE
 #define MOVIE_NET_USE_STREAM_1          DISABLE

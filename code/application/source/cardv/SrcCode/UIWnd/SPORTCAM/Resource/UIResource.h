@@ -150,7 +150,8 @@ enum _STRID_USER_ {
 	STRID_ISO12800,
 	//single
 	STRID_FRONT_2880x2160P50,                   /// UHD P50 (DAR)
-	STRID_FRONT_3840x2160P30,                   /// UHD P30
+	STRID_FRONT_3840x2160P30,                   /// UHD P30	
+	STRID_FRONT_3840x2160P25,                   /// UHD P25
 	STRID_FRONT_2880x2160P24,                   /// UHD P24 (DAR)
 	STRID_FRONT_2704x2032P60,                   /// 2.7K P60
 	STRID_FRONT_2592x1944P30,                   /// 1600 P30
