@@ -81,6 +81,7 @@ void MenuCommonOption_CalcPageInfo(VControl *pCtrl,UINT32 Sel)
 void MenuCommonOption_UpdateContent(TM_MENU* pMenu)
 {
     UINT32      i;
+    UINT32      j;
     TM_PAGE*    pPage;
     TM_ITEM*    pItem;
     TM_OPTION*  pOption;
@@ -90,113 +91,66 @@ void MenuCommonOption_UpdateContent(TM_MENU* pMenu)
 
     UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_TOTITM, pItem->Count);
     for (i = 0; i < pItem->Count; i++) {
-        pOption = &pItem->pOptions[i];
+    pOption = &pItem->pOptions[i];
 
-        //tab option status to menu status
-        if ((pOption->Status & TM_OPTION_STATUS_MASK) == TM_OPTION_ENABLE) {
-            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-        } else {
-            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
-        }
+    //tab option status to menu status
+    if ((pOption->Status & TM_OPTION_STATUS_MASK) == TM_OPTION_ENABLE) {
+        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+    } else {
+        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
+    }
 
-      if (pItem->ItemId == IDM_MOVIE_SIZE) 
-	  {
-            if (GPIOMap_EthCam1Det()) 
-			{
-                UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);//|STATUS_FOCUS_DISABLE
-				#if (!defined(COUNTRY_JP))	
-				switch (i) {
-                case MOVIE_SIZE_FRONT_3840x2160P30:
-                    if (SysGetFlag(FL_MOVIE_CODEC) == MOVIE_CODEC_H265) {
-                        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
-                    } else {
-                        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
-                    }
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("4KP30 + 1440P30"));
-                    break;
-                case MOVIE_SIZE_FRONT_2560x1440P60:
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1440P60 + 1440P30"));
-                    break;
-                case MOVIE_SIZE_FRONT_2560x1440P30:
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1440P30 + 1440P30"));
-                    break;
-				case MOVIE_SIZE_FRONT_2304x1296P60:
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1296P60 + 1440P30"));
-                    break;
-                case MOVIE_SIZE_FRONT_2304x1296P30:
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1296P30 + 1440P30"));
-                    break;
-                case MOVIE_SIZE_FRONT_1920x1080P60:
-                	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1080P60 + 1440P30"));
-                break;
-                case MOVIE_SIZE_FRONT_1920x1080P30:
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1080P30 + 1440P30"));
-                    break;
-                }
-				#else
-		 		switch (i) {
-                case MOVIE_SIZE_FRONT_3840x2160P30:
-                    if (SysGetFlag(FL_MOVIE_CODEC) == MOVIE_CODEC_H265) {
-                        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
-                    } else {
-                        UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
-                    }
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("4KP27.5 + 1080P27.5"));
-                    break;
-                case MOVIE_SIZE_FRONT_2560x1440P60:
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1440P55 + 1080P27.5"));
-                    break;
-                case MOVIE_SIZE_FRONT_2560x1440P30:
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1440P27.5 + 1080P27.5"));
-                    break;
-				case MOVIE_SIZE_FRONT_2304x1296P60:
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1296P55 + 1080P27.5"));
-                    break;
-                case MOVIE_SIZE_FRONT_2304x1296P30:
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1296P27.5 + 1080P27.5"));
-                    break;
-                case MOVIE_SIZE_FRONT_1920x1080P60:
-                	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                	UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1080P55 + 1080P27.5"));
-                break;
-                case MOVIE_SIZE_FRONT_1920x1080P30:
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
-                    UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer("1080P27.5 + 1080P27.5"));
-                    break;
-                }
-				#endif
+	#if (SENSOR_CAPS_COUNT==2)
+    if (pItem->ItemId == IDM_MOVIE_SIZE) {
+        if (System_GetEnableSensor() == (SENSOR_1|SENSOR_2)) {
+            for (j = 0; j < MOVIE_SIZE_ID_MAX; j++)
+            {
+                UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, j, MNUITM_STATUS, STATUS_DISABLE);//|STATUS_FOCUS_DISABLE
             }
-			else
-			{
-				 //display user define string
-		        if (pOption->TextId & STRID_USER_START) 
-				{
-		            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer(UIRes_GetUserString(pOption->TextId)));
-					//printf("pOption->TextId=0x%x\r\n",pOption->TextId);
-		        } 
-				else 
-				{
-					//printf("pOption->TextId=0x%x\r\n",pOption->TextId);
-		            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  pOption->TextId);
-		        }
+            for (j = MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30; j < MOVIE_SIZE_ID_MAX; j++)
+            {
+                UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, j, MNUITM_STATUS, STATUS_ENABLE);
+            }                
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer(UIRes_GetUserString(pOption->TextId)));
+            UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, pOption->IconId);
+        } 
+		else
+        {
+            //g_uiMenuCommonOption_Sel = 0;  //for display show
+            for (j = 0; j < MOVIE_SIZE_ID_MAX; j++)
+            {
+                UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, j, MNUITM_STATUS, STATUS_DISABLE);//|STATUS_FOCUS_DISABLE
+            }
+            for (j = 0; j < MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30; j++)
+            {
+                UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, j, MNUITM_STATUS, STATUS_ENABLE);
+            }                
+			//UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer(UIRes_GetUserString(pOption->TextId)));
+			//UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, pOption->IconId);
 
+			//H.265 support 4K
+			/*
+			if (SysGetFlag(FL_MOVIE_CODEC) == MOVIE_CODEC_H265) {
+				UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, 0, MNUITM_STATUS, STATUS_ENABLE);
+			} else {
+				UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, 0, MNUITM_STATUS, STATUS_DISABLE);//|STATUS_FOCUS_DISABLE
 			}
-  	}
-	else if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) 
+			//HDR not support 2KP60,2KP60 21:9
+			if (SysGetFlag(FL_MOVIE_HDR_MENU) == MOVIE_HDR_ON) {
+				UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, MOVIE_SIZE_FRONT_2560x1440P60, MNUITM_STATUS, STATUS_DISABLE);//|STATUS_FOCUS_DISABLE
+				//UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, MOVIE_SIZE_FRONT_2560x1080P60, MNUITM_STATUS, STATUS_DISABLE);//|STATUS_FOCUS_DISABLE
+				UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, MOVIE_SIZE_FRONT_1920x1080P60, MNUITM_STATUS, STATUS_DISABLE);//|STATUS_FOCUS_DISABLE 
+				UI_SetData(FL_MOVIE_HDR_STATECHANGE, MOVIE_HDR_STATE_DISCHANGE);
+			}*/
+			UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  Txt_Pointer(UIRes_GetUserString(pOption->TextId)));
+			UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, pOption->IconId);
+        }
+    } else 
+    #endif
+	if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) 
 	{
-		if(GPIOMap_EthCam1Det())
-		{ 
-        //if (System_GetEnableSensor() == (SENSOR_1|SENSOR_2)) {
+		//if(GPIOMap_EthCam1Det()){ 
+        if (System_GetEnableSensor() == (SENSOR_1|SENSOR_2)) {
             UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);//|STATUS_NORMAL_BIT
             UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  pOption->TextId);
         } 
@@ -263,8 +217,8 @@ INT32 MenuCommonOption_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
     UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, g_uiMenuCommonOption_Sel);
 
     if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) {
-		if (!GPIOMap_EthCam1Det()) {
-        //if (System_GetEnableSensor() == SENSOR_1) {
+		//if (!GPIOMap_EthCam1Det()) {
+        if (System_GetEnableSensor() == SENSOR_1) {
             UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, 0);		
         } else {
             UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, SysGetFlag(pItem->SysFlag));
@@ -357,8 +311,8 @@ INT32 MenuCommonOption_Menu_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *pa
         uiSelOption = SysGetFlag(pItem->SysFlag);
 
         if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) {
-            if (GPIOMap_EthCam1Det()) {
-            //if (System_GetEnableSensor() == SENSOR_1) {
+            //if (GPIOMap_EthCam1Det()) {
+            if (System_GetEnableSensor() == (SENSOR_1|SENSOR_2)) {
                 Ux_SendEvent(pCtrl,NVTEVT_PREVIOUS_ITEM,0);
             } else {
                 return NVTEVT_CONSUME;
@@ -392,8 +346,8 @@ INT32 MenuCommonOption_Menu_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *
         uiSelOption = SysGetFlag(pItem->SysFlag);
 
         if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) {
-            if (GPIOMap_EthCam1Det()) {
-            //if (System_GetEnableSensor() == SENSOR_1) {
+            //if (GPIOMap_EthCam1Det()) {
+            if (System_GetEnableSensor() == (SENSOR_1|SENSOR_2)) {
                 Ux_SendEvent(pCtrl,NVTEVT_NEXT_ITEM,0);
             } else {
                 return NVTEVT_CONSUME;
@@ -425,8 +379,8 @@ INT32 MenuCommonOption_Menu_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 
         pItem = &pPage->pItems[pPage->SelItem];
 
         if (pItem->ItemId == IDM_MOVIE_DUAL_CAM) {
-            if (!GPIOMap_EthCam1Det()) {
-            //if (System_GetEnableSensor() == SENSOR_1) {
+            //if (!GPIOMap_EthCam1Det()) {
+            if (System_GetEnableSensor() == SENSOR_1) {
                 Ux_CloseWindow(&MenuCommonOptionCtrl, 0);
                 return NVTEVT_CONSUME;
             }
