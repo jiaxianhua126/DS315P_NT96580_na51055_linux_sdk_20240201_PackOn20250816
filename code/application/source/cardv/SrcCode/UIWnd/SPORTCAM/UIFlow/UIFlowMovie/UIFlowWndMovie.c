@@ -1423,7 +1423,7 @@ INT32 UIFlowWndMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
         }
 		#endif
 		#if 1
-		if (FlowMovie_IsEthCamConnectOK()){
+		if (System_GetEnableSensor() == (SENSOR_1|SENSOR_2)) {
 			FlowMovie_LCDDimDsiable(0); //reset count
 			FlowMovie_LCDIconDimDsiable(0); //reset count
 			if(GPIOMap_IsLCDBacklightOn()){
@@ -2414,10 +2414,10 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 			//FlowMovie_AutoHDR();
 		}
 
-		UIFlowWndMovie_OnTXStatusDet();
+		//UIFlowWndMovie_OnTXStatusDet();
 		UIFlowWndMovie_OnAutoStartRec();
-		FlowMovie_DetTxDisconnected();
-		FlowMovie_SyncTimeToRear();
+		//FlowMovie_DetTxDisconnected();
+		//FlowMovie_SyncTimeToRear();
 		FlowMovie_DetLCDIconHide();
 
 		if (g_bSensorNumChanged) {
@@ -2460,85 +2460,6 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 			}
 		} else {
 			g_PM_ShutdownCnt = 0;
-		}
-		
-		#if (defined(_NVT_ETHREARCAM_RX_))
-		if (FlowMovie_IsEthCamConnectOK() && (gMovData.State == MOV_ST_REC))
-		{
-			if(!BKG_GetTskBusy()&&(GetGPSSignalStatus()!=-1))
-			{
-				BKG_PostEvent(NVTEVT_BKW_ETHCAM_SYNC_GPS_INFO);
-			}
-		}
-		#if 0
-		if (((g_uiRecordIngMotionDet == TRUE)||(g_uiParkingModeMotionDet == TRUE)) 
-			&&(System_GetState(SYS_STATE_CARD) == CARD_INSERTED)
-			&&(FlowMovie_IsEthCamConnectOK()))
-		{
-			 if(!BKG_GetTskBusy())
-			 {
-				BKG_PostEvent(NVTEVT_BKW_ETHCAM_GET_MOTION_DETECT_INFO);
-			 }
-		}
-		#endif	
-		if (!GPIOMap_EthCam1Det()) 
-		{
-			if(!FlowMovie_IsEthCamConnectOK())
-			{
-				if (UI_GetData(FL_DUAL_CAM) != DUALCAM_FRONT) 
-				{
-					SysSetFlag(FL_DUAL_CAM, DUALCAM_FRONT);
-					SysSetFlag(FL_DUAL_CAM_MENU, DUALCAM_FRONT);
-				}
-			}
-		}
-		else
-		{
-			if(UI_GetData(FL_DUAL_CAM)!=UI_GetData(FL_DUAL_CAM_MENU))
-			{
-				UI_SetData(FL_DUAL_CAM, UI_GetData(FL_DUAL_CAM_MENU));
-			}
-		}
-		#endif
-		//debug_msg("G^g_bSlowCard=%d====beepCntTimeout=%d=lin=%d=g_NotRecordWrn=%d=TRUE=%d\r\n",g_bSlowCard,beepCntTimeout,FlowMovie_IsEthCamConnectOK(),g_NotRecordWrn,TRUE);
-		if(GPIOMap_EthCam1Det())
-		{
-			if(!FlowMovie_IsEthCamConnectOK()&&!SysInit_GetEthTxFW_Update_getstd())
-			{
-				beepCntTimeout++;
-				if(beepCntTimeout >= 8)
-				{
-				
-					beepCntTimeout = 0;
-					g_RearErr = TRUE;
-					g_RearRebootCnt++;
-					if(g_RearRebootCnt<=2)
-					{
-					
-						g_NotRecordWrn = FALSE; //Temp-R 20240703
-						Set_IsRearOK(0);//reset the flag,just in case ,when changing mode,start record.
-						BKG_PostEvent(NVTEVT_BKW_STOPREC_PROCESS);//restart rear
-					}
-					else
-					{
-						if(!UxCtrl_IsShow(&UIFlowWndMovie_FolderCheck_StatusTxtCtrl))
-						{
-							FlowMovie_DrawFolderCheck(TRUE);
-							FlowMovie_WakeUpLCDBacklight();
-							g_NotRecordWrn = TRUE;
-							
-							DBG_ERR("1-------66666\r\n");
-							Ux_PostEvent(NVTEVT_KEY_SHUTTER2, 1, NVTEVT_KEY_PRESS);
-						}
-					}
-				}
-			}
-			else
-			{
-				FlowMovie_DrawFolderCheck(FALSE);
-				beepCntTimeout = 0;
-				g_RearErr = FALSE;
-			}
 		}
 		break;
 	}
