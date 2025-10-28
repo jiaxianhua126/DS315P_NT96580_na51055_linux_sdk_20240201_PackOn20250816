@@ -3413,10 +3413,10 @@ int XML_GetGPS_DB(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize,
 {
     char buf[64] = {0};
 
-    snprintf(buf, sizeof(buf), "%c,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d", RMCInfo.Status, g_Edog_satellie_DB.satellie_DB_GSM_1, 
-        g_Edog_satellie_DB.satellie_DB_GSM_2, g_Edog_satellie_DB.satellie_DB_GSM_3, g_Edog_satellie_DB.satellie_DB_GSM_4, g_Edog_satellie_DB.satellie_DB_GSM_5,
-        g_Edog_satellie_DB.satellie_DB_GSM_6, g_Edog_satellie_DB.satellie_DB_GSM_7, g_Edog_satellie_DB.satellie_DB_GSM_8, g_Edog_satellie_DB.satellie_DB_GSM_9,
-        g_Edog_satellie_DB.satellie_DB_GSM_10, g_Edog_satellie_DB.satellie_DB_GSM_11, g_Edog_satellie_DB.satellie_DB_GSM_12);
+    snprintf(buf, sizeof(buf), "%c,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d", RMCInfo.Status, g_Edog_satellie_DB.satellie_DB_GSM_BD[0], 
+        g_Edog_satellie_DB.satellie_DB_GSM_BD[1], g_Edog_satellie_DB.satellie_DB_GSM_BD[2], g_Edog_satellie_DB.satellie_DB_GSM_BD[3], g_Edog_satellie_DB.satellie_DB_GSM_BD[4],
+        g_Edog_satellie_DB.satellie_DB_GSM_BD[5], g_Edog_satellie_DB.satellie_DB_GSM_BD[6], g_Edog_satellie_DB.satellie_DB_GSM_BD[7], g_Edog_satellie_DB.satellie_DB_GSM_BD[8],
+        g_Edog_satellie_DB.satellie_DB_GSM_BD[9], g_Edog_satellie_DB.satellie_DB_GSM_BD[10], g_Edog_satellie_DB.satellie_DB_GSM_BD[11]);
     DBG_DUMP("^G *** buf= %s ***\r\n", buf);
     XML_StringResult(WIFIAPP_CMD_GET_GPS_DB, buf, bufAddr, bufSize, mimeType);
 

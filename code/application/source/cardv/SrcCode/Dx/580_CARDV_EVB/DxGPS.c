@@ -120,6 +120,8 @@ BOOL GPSRec_CheckSum(CHAR *NMEA_str, UINT32 Len, UINT32 CheckSum);
 BOOL GPSRec_GetUTCDate(UINT32 *Year, UINT32 *Month, UINT32 *Day);
 BOOL GPSRec_GetUTCTime(UINT32 *Hour, UINT32 *Minute, UINT32 *Second);
 THREAD_RETTYPE GPS_TASK(void *pvParameters);
+void InsertSort_gps(char a[], int n);
+
 
 //#HTK#2023/08/30#add edog -start
 void GPSGetData_Lock(void);
@@ -1284,52 +1286,48 @@ void GPSRec_NMEAParser(CHAR *NMEA_str, UINT32 Len, NMEATYPE NMEAtype)
         #if (_GPS_CheckSum_Enable)
             GPSRec_CheckSum(NMEA_str, Len, CheckSum);
         #endif
+		GPS_debug(("GPS Saterlite  Num:%d  %d\r\n",NumOfSen,SenNum));
 
         if(NumOfSen == 0)
         {
-            g_Edog_satellie_DB.satellie_DB_GSM_1 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_2 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_3 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_4 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_5 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_6 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_7 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_8 = 0;
-			#if 1//BDGSV Mark
-            g_Edog_satellie_DB.satellie_DB_GSM_9 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_10 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_11 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_12 = 0;
-            #endif
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[0] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[1] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[2] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[3] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[4] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[5] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[6] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[7] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[8] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[9] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[10] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[11] = 0;
         }
         else if(NumOfSen == 1)
         {
-            g_Edog_satellie_DB.satellie_DB_GSM_5 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_6 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_7 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_8 = 0;
-			#if 1//BDGSV Mark
-            g_Edog_satellie_DB.satellie_DB_GSM_9 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_10 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_11 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_12 = 0;
-            #endif
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[4] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[5] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[6] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[7] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[8] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[9] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[10] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[11] = 0;
+
         }
         else if(NumOfSen == 2)
         {
-			#if 1//BDGSV Mark
-            g_Edog_satellie_DB.satellie_DB_GSM_9 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_10 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_11 = 0;
-            g_Edog_satellie_DB.satellie_DB_GSM_12 = 0;
-            #endif
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[8] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[9] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[10] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[11] = 0;
         }
         else
         {
             ;
         }
 
-        //debug_msg("GPS Saterlite  Num:%d  %d\r\n",NumOfSen,SenNum);
+        GPS_debug(("GPS Saterlite  Num:%d  %d\r\n",NumOfSen,SenNum));
         if (SenNum == 1)   //GSV1
         {
             GSVInfo.NumOfSen =     NumOfSen;
@@ -1356,10 +1354,10 @@ void GPSRec_NMEAParser(CHAR *NMEA_str, UINT32 Len, NMEATYPE NMEAtype)
             GPS_debug(("#GSV%d Sat3 = %d, %d, %d, %d, Sat4 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
             GPS_debug(("\x1b[30m"));      //Black
 
-            g_Edog_satellie_DB.satellie_DB_GSM_1 = SNR1;
-            g_Edog_satellie_DB.satellie_DB_GSM_2 = SNR2;
-            g_Edog_satellie_DB.satellie_DB_GSM_3 = SNR3;
-            g_Edog_satellie_DB.satellie_DB_GSM_4 = SNR4;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[0]= SNR1;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[1]= SNR2;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[2]= SNR3;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[3]= SNR4;
         }
         else if (SenNum == 2)   //GSV2
         {
@@ -1387,12 +1385,11 @@ void GPSRec_NMEAParser(CHAR *NMEA_str, UINT32 Len, NMEATYPE NMEAtype)
             GPS_debug(("#GSV%d Sat7 = %d, %d, %d, %d, Sat8 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
             GPS_debug(("\x1b[30m"));      //Black
 
-            g_Edog_satellie_DB.satellie_DB_GSM_5 = SNR1;
-            g_Edog_satellie_DB.satellie_DB_GSM_6 = SNR2;
-            g_Edog_satellie_DB.satellie_DB_GSM_7 = SNR3;
-            g_Edog_satellie_DB.satellie_DB_GSM_8 = SNR4;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[4] = SNR1;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[5] = SNR2;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[6] = SNR3;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[7] = SNR4;
         }
-        #if 1//BDGSV Mark
         else if (SenNum == 3)   //GSV3
         {
             GSVInfo.NumOfSen =     NumOfSen;
@@ -1419,17 +1416,34 @@ void GPSRec_NMEAParser(CHAR *NMEA_str, UINT32 Len, NMEATYPE NMEAtype)
             GPS_debug(("#GSV%d Sat11 = %d, %d, %d, %d, Sat12 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
             GPS_debug(("\x1b[30m"));      //Black
 
-            g_Edog_satellie_DB.satellie_DB_GSM_9 = SNR1;
-            g_Edog_satellie_DB.satellie_DB_GSM_10 = SNR2;
-            g_Edog_satellie_DB.satellie_DB_GSM_11 = SNR3;
-            g_Edog_satellie_DB.satellie_DB_GSM_12 = SNR4;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[8] = SNR1;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[9]  = SNR2;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[10] = SNR3;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[11] = SNR4;
         }
-        #endif
         else
         {
             //DBG_ERR("GPS: Invalid number of GSV");
         }
-
+		#if 0
+		DBG_DUMP("%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[0],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[1],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[2],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[3],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[4],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[5],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[6],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[7],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[8],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[9],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[10],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[11],
+																	g_Edog_satellie_DB.satellie_DB_GSM_BD[12]);
+		#endif
+		if (NumOfSen == SenNum){
+			InsertSort_gps(&g_Edog_satellie_DB.satellie_DB_GSM_BD[0],12);//always GSV BDGSV sequence
+		}
         g_bEdogSatelliteDBMSG = TRUE;
 
         NMEA_debug(("\x1b[35m"));   //Violet
@@ -1452,7 +1466,6 @@ void GPSRec_NMEAParser(CHAR *NMEA_str, UINT32 Len, NMEATYPE NMEAtype)
         break;
 	case BDGSV:
 		sscanf(pPostPrt, "%s %lu %lu %lu %s\n", type, &NumOfSen, &SenNum, &SatInView, RemainStr);
-		#if 0
 		if (NumOfSen == SenNum)
 		{
 			if ((SatInView % 4) == 1)
@@ -1465,7 +1478,6 @@ void GPSRec_NMEAParser(CHAR *NMEA_str, UINT32 Len, NMEATYPE NMEAtype)
 				sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &SatNum4, &Elev4, &Azi4, &SNR4, &CheckSum);
 		}
 		else
-		#endif
 		{
 //			  sscanf_s(pPostPrt, "%s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %X\n", type, NMEA_TYPE_SIZE, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &SatNum4, &Elev4, &Azi4, &SNR4, &CheckSum);
 			sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &SatNum4, &Elev4, &Azi4, &SNR4, &CheckSum);
@@ -1477,39 +1489,40 @@ void GPSRec_NMEAParser(CHAR *NMEA_str, UINT32 Len, NMEATYPE NMEAtype)
 		
 		if(NumOfSen == 0)
 		{	
-#if 0
-			g_Edog_satellie_DB.satellie_DB_GSM_1 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_2 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_3 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_4 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_5 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_6 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_7 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_8 = 0;
-#endif
-			g_Edog_satellie_DB.satellie_DB_GSM_9 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_10 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_11 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_12 = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+0] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+1] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+2] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+3] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+4] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+5] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+6] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+7] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+8] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+9] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+10] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+11] = 0;
+
 		}
-		/*else if(NumOfSen == 1)
+		else if(NumOfSen == 1)
 		{
-			g_Edog_satellie_DB.satellie_DB_GSM_5 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_6 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_7 = 0;
-			g_Edog_satellie_DB.satellie_DB_GSM_8 = 0;
-			//g_Edog_satellie_DB.satellie_DB_GSM_9 = 0;
-			//g_Edog_satellie_DB.satellie_DB_GSM_10 = 0;
-			//g_Edog_satellie_DB.satellie_DB_GSM_11 = 0;
-			//g_Edog_satellie_DB.satellie_DB_GSM_12 = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+4]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+5]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+6]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+7]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+8]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+9]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+10] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+11] = 0;
+
 		}
 		else if(NumOfSen == 2)
 		{
-			//g_Edog_satellie_DB.satellie_DB_GSM_9 = 0;
-			//g_Edog_satellie_DB.satellie_DB_GSM_10 = 0;
-			//g_Edog_satellie_DB.satellie_DB_GSM_11 = 0;
-			//g_Edog_satellie_DB.satellie_DB_GSM_12 = 0;
-		}*/
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+8]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+9]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+10] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+11] = 0;
+
+		}
 		else
 		{
 			;
@@ -1541,12 +1554,11 @@ void GPSRec_NMEAParser(CHAR *NMEA_str, UINT32 Len, NMEATYPE NMEAtype)
 			//DBG_DUMP(("#GSV%d Sat11 = %d, %d, %d, %d, Sat12 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
 			//DBG_DUMP(("\x1b[30m"));	   //Black
 
-			g_Edog_satellie_DB.satellie_DB_GSM_9 = SNR1;
-			g_Edog_satellie_DB.satellie_DB_GSM_10 = SNR2;
-			g_Edog_satellie_DB.satellie_DB_GSM_11 = SNR3;
-			g_Edog_satellie_DB.satellie_DB_GSM_12 = SNR4;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+0] = SNR1;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+1]  = SNR2;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+2]  = SNR3;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+3]  = SNR4;
 		}
-#if 0
 		else if (SenNum == 2)	//GSV2
 		{
 			GSVInfo.NumOfSen =	   NumOfSen;
@@ -1573,10 +1585,10 @@ void GPSRec_NMEAParser(CHAR *NMEA_str, UINT32 Len, NMEATYPE NMEAtype)
 			//DBG_DUMP(("#GSV%d Sat7 = %d, %d, %d, %d, Sat8 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
 			//DBG_DUMP(("\x1b[30m"));	   //Black
 
-			g_Edog_satellie_DB.satellie_DB_GSM_5 = SNR1;
-			g_Edog_satellie_DB.satellie_DB_GSM_6 = SNR2;
-			g_Edog_satellie_DB.satellie_DB_GSM_7 = SNR3;
-			g_Edog_satellie_DB.satellie_DB_GSM_8 = SNR4;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+4] = SNR1;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+5] = SNR2;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+6] = SNR3;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+7] = SNR4;
 		}
 		else if (SenNum == 3)	//GSV3
 		{
@@ -1604,17 +1616,387 @@ void GPSRec_NMEAParser(CHAR *NMEA_str, UINT32 Len, NMEATYPE NMEAtype)
 			//DBG_DUMP(("#GSV%d Sat11 = %d, %d, %d, %d, Sat12 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
 			//DBG_DUMP(("\x1b[30m"));	   //Black
 
-			g_Edog_satellie_DB.satellie_DB_GSM_9 = SNR1;
-			g_Edog_satellie_DB.satellie_DB_GSM_10 = SNR2;
-			g_Edog_satellie_DB.satellie_DB_GSM_11 = SNR3;
-			g_Edog_satellie_DB.satellie_DB_GSM_12 = SNR4;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+8] = SNR1;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+9]  = SNR2;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+10] = SNR3;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_BEIDOU_INDEX_START+11] = SNR4;
 		}
-#endif
 		else
 		{
 			//DBG_ERR("GPS: Invalid number of GSV");
 		}
+		if (NumOfSen == SenNum){
+			InsertSort_gps(&g_Edog_satellie_DB.satellie_DB_GSM_BD[0],sizeof(g_Edog_satellie_DB.satellie_DB_GSM_BD)/sizeof(g_Edog_satellie_DB.satellie_DB_GSM_BD[0]));//always GSV BDGSV sequence
+		}
+		g_bEdogSatelliteDBMSG = TRUE;
 
+		DBG_IND(("\x1b[35m"));	 //Violet
+		if (Len)
+		{
+			for (i = 0; i < Len; i++)
+				DBG_IND(("%c",*NMEA_str++));
+		}
+		DBG_IND(("\r\n"));
+		//Check processed sentence
+		/*
+		if (PostPtrLen)
+		{
+			for (i = 0; i < PostPtrLen; i++)
+				DBG_WRN(("%c",*pPostPrt++));
+		}
+		DBG_WRN(("\r\n"));
+		*/
+		DBG_IND(("\x1b[30m"));		//Black
+		break;
+	case GLGSV:
+		sscanf(pPostPrt, "%s %lu %lu %lu %s\n", type, &NumOfSen, &SenNum, &SatInView, RemainStr);
+		if (NumOfSen == SenNum)
+		{
+			if ((SatInView % 4) == 1)
+				sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &CheckSum);
+			else if ((SatInView % 4) == 2)
+				sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &CheckSum);
+			else if ((SatInView % 4) == 3)
+				sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &CheckSum);
+			else
+				sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &SatNum4, &Elev4, &Azi4, &SNR4, &CheckSum);
+		}
+		else
+		{
+//			  sscanf_s(pPostPrt, "%s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %X\n", type, NMEA_TYPE_SIZE, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &SatNum4, &Elev4, &Azi4, &SNR4, &CheckSum);
+			sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &SatNum4, &Elev4, &Azi4, &SNR4, &CheckSum);
+		}
+		
+#if (_GPS_CheckSum_Enable)
+		//GPSRec_CheckSum(NMEA_str, Len, CheckSum);
+#endif
+		
+		if(NumOfSen == 0)
+		{	
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+0] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+1] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+2] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+3] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+4] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+5] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+6] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+7] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+8] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+9] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+10] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+11] = 0;
+
+		}
+		else if(NumOfSen == 1)
+		{
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+4]	= 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+5]	= 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+6]	= 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+7]	= 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+8]	= 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+9]	= 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+10] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+11] = 0;
+
+		}
+		else if(NumOfSen == 2)
+		{
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+8]	= 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+9]	= 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+10] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+11] = 0;
+
+		}
+		else
+		{
+			;
+		}
+
+		if (SenNum == 1)   //GSV1
+		{
+			GSVInfo.NumOfSen =	   NumOfSen;
+			GSVInfo.SatInView =    SatInView;
+			GSVInfo.SAT09.SatNum = SatNum1;
+			GSVInfo.SAT09.Elev =   Elev1;
+			GSVInfo.SAT09.Azi =    Azi1;
+			GSVInfo.SAT09.SNR =    SNR1;
+			GSVInfo.SAT10.SatNum = SatNum2;
+			GSVInfo.SAT10.Elev =   Elev2;
+			GSVInfo.SAT10.Azi =    Azi2;
+			GSVInfo.SAT10.SNR =    SNR2;
+			GSVInfo.SAT11.SatNum = SatNum3;
+			GSVInfo.SAT11.Elev =   Elev3;
+			GSVInfo.SAT11.Azi =    Azi3;
+			GSVInfo.SAT11.SNR =    SNR3;
+			GSVInfo.SAT12.SatNum = SatNum4;
+			GSVInfo.SAT12.Elev =   Elev4;
+			GSVInfo.SAT12.Azi =    Azi4;
+			GSVInfo.SAT12.SNR =    SNR4;
+			//DBG_DUMP(("\x1b[35m"));	//Violet
+			//DBG_DUMP(("#GSV%d SatInView = %d, CheckSum = %X\r\n",SenNum, SatInView, CheckSum));
+			//DBG_WRN("#GSV%d Sat9 = %d, %d, %d, %d,  Sat10 = %d, %d, %d, %d\r\n",SenNum, SatNum1, Elev1, Azi1, SNR1, SatNum2, Elev2, Azi2, SNR2);
+			//DBG_DUMP(("#GSV%d Sat11 = %d, %d, %d, %d, Sat12 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
+			//DBG_DUMP(("\x1b[30m"));	   //Black
+
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+0] = SNR1;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+1]	= SNR2;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+2]	= SNR3;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+3]	= SNR4;
+		}
+		else if (SenNum == 2)	//GSV2
+		{
+			GSVInfo.NumOfSen =	   NumOfSen;
+			GSVInfo.SatInView =    SatInView;
+			GSVInfo.SAT05.SatNum = SatNum1;
+			GSVInfo.SAT05.Elev =   Elev1;
+			GSVInfo.SAT05.Azi =    Azi1;
+			GSVInfo.SAT05.SNR =    SNR1;
+			GSVInfo.SAT06.SatNum = SatNum2;
+			GSVInfo.SAT06.Elev =   Elev2;
+			GSVInfo.SAT06.Azi =    Azi2;
+			GSVInfo.SAT06.SNR =    SNR2;
+			GSVInfo.SAT07.SatNum = SatNum3;
+			GSVInfo.SAT07.Elev =   Elev3;
+			GSVInfo.SAT07.Azi =    Azi3;
+			GSVInfo.SAT07.SNR =    SNR3;
+			GSVInfo.SAT08.SatNum = SatNum4;
+			GSVInfo.SAT08.Elev =   Elev4;
+			GSVInfo.SAT08.Azi =    Azi4;
+			GSVInfo.SAT08.SNR =    SNR4;
+			//DBG_DUMP(("\x1b[35m"));	//Violet
+			//DBG_DUMP(("#GSV%d SatInView = %d, CheckSum = %X\r\n",SenNum, SatInView, CheckSum));
+			//DBG_DUMP(("#GSV%d Sat5 = %d, %d, %d, %d, Sat6 = %d, %d, %d, %d\r\n",SenNum, SatNum1, Elev1, Azi1, SNR1, SatNum2, Elev2, Azi2, SNR2));
+			//DBG_DUMP(("#GSV%d Sat7 = %d, %d, %d, %d, Sat8 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
+			//DBG_DUMP(("\x1b[30m"));	   //Black
+
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+4] = SNR1;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+5] = SNR2;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+6] = SNR3;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+7] = SNR4;
+		}
+		else if (SenNum == 3)	//GSV3
+		{
+			GSVInfo.NumOfSen =	   NumOfSen;
+			GSVInfo.SatInView =    SatInView;
+			GSVInfo.SAT09.SatNum = SatNum1;
+			GSVInfo.SAT09.Elev =   Elev1;
+			GSVInfo.SAT09.Azi =    Azi1;
+			GSVInfo.SAT09.SNR =    SNR1;
+			GSVInfo.SAT10.SatNum = SatNum2;
+			GSVInfo.SAT10.Elev =   Elev2;
+			GSVInfo.SAT10.Azi =    Azi2;
+			GSVInfo.SAT10.SNR =    SNR2;
+			GSVInfo.SAT11.SatNum = SatNum3;
+			GSVInfo.SAT11.Elev =   Elev3;
+			GSVInfo.SAT11.Azi =    Azi3;
+			GSVInfo.SAT11.SNR =    SNR3;
+			GSVInfo.SAT12.SatNum = SatNum4;
+			GSVInfo.SAT12.Elev =   Elev4;
+			GSVInfo.SAT12.Azi =    Azi4;
+			GSVInfo.SAT12.SNR =    SNR4;
+			//DBG_DUMP(("\x1b[35m"));	//Violet
+			//DBG_DUMP(("#GSV%d SatInView = %d, CheckSum = %X\r\n",SenNum, SatInView, CheckSum));
+			//DBG_DUMP(("#GSV%d Sat9 = %d, %d, %d, %d,	Sat10 = %d, %d, %d, %d\r\n",SenNum, SatNum1, Elev1, Azi1, SNR1, SatNum2, Elev2, Azi2, SNR2));
+			//DBG_DUMP(("#GSV%d Sat11 = %d, %d, %d, %d, Sat12 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
+			//DBG_DUMP(("\x1b[30m"));	   //Black
+
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+8] = SNR1;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+9]	= SNR2;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+10] = SNR3;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GLONASS_INDEX_START+11] = SNR4;
+		}
+		else
+		{
+			//DBG_ERR("GPS: Invalid number of GSV");
+		}
+		if (NumOfSen == SenNum){
+			InsertSort_gps(&g_Edog_satellie_DB.satellie_DB_GSM_BD[0],sizeof(g_Edog_satellie_DB.satellie_DB_GSM_BD)/sizeof(g_Edog_satellie_DB.satellie_DB_GSM_BD[0]));//always GSV BDGSV sequence
+		}
+
+		g_bEdogSatelliteDBMSG = TRUE;
+
+		DBG_IND(("\x1b[35m"));	 //Violet
+		if (Len)
+		{
+			for (i = 0; i < Len; i++)
+				DBG_IND(("%c",*NMEA_str++));
+		}
+		DBG_IND(("\r\n"));
+		//Check processed sentence
+		/*
+		if (PostPtrLen)
+		{
+			for (i = 0; i < PostPtrLen; i++)
+				DBG_WRN(("%c",*pPostPrt++));
+		}
+		DBG_WRN(("\r\n"));
+		*/
+		DBG_IND(("\x1b[30m"));		//Black
+		break;
+	case GAGSV:
+		sscanf(pPostPrt, "%s %lu %lu %lu %s\n", type, &NumOfSen, &SenNum, &SatInView, RemainStr);
+		if (NumOfSen == SenNum)
+		{
+			if ((SatInView % 4) == 1)
+				sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &CheckSum);
+			else if ((SatInView % 4) == 2)
+				sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &CheckSum);
+			else if ((SatInView % 4) == 3)
+				sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &CheckSum);
+			else
+				sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &SatNum4, &Elev4, &Azi4, &SNR4, &CheckSum);
+		}
+		else
+		{
+//			  sscanf_s(pPostPrt, "%s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %X\n", type, NMEA_TYPE_SIZE, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &SatNum4, &Elev4, &Azi4, &SNR4, &CheckSum);
+			sscanf(pPostPrt, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lX\n", type, &NumOfSen, &SenNum, &SatInView, &SatNum1, &Elev1, &Azi1, &SNR1, &SatNum2, &Elev2, &Azi2, &SNR2, &SatNum3, &Elev3, &Azi3, &SNR3, &SatNum4, &Elev4, &Azi4, &SNR4, &CheckSum);
+		}
+		
+    #if (_GPS_CheckSum_Enable)
+		//GPSRec_CheckSum(NMEA_str, Len, CheckSum);
+    #endif
+		
+		if(NumOfSen == 0)
+		{	
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+0] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+1] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+2] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+3] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+4] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+5] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+6] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+7] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+8] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+9] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+10] = 0;
+            g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+11] = 0;
+
+		}
+		else if(NumOfSen == 1)
+		{
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+4]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+5]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+6]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+7]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+8]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+9]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+10] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+11] = 0;
+
+		}
+		else if(NumOfSen == 2)
+		{
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+8]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+9]  = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+10] = 0;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+11] = 0;
+
+		}
+		else
+		{
+			;
+		}
+
+		if (SenNum == 1)   //GSV1
+		{
+			GSVInfo.NumOfSen =	   NumOfSen;
+			GSVInfo.SatInView =    SatInView;
+			GSVInfo.SAT09.SatNum = SatNum1;
+			GSVInfo.SAT09.Elev =   Elev1;
+			GSVInfo.SAT09.Azi =    Azi1;
+			GSVInfo.SAT09.SNR =    SNR1;
+			GSVInfo.SAT10.SatNum = SatNum2;
+			GSVInfo.SAT10.Elev =   Elev2;
+			GSVInfo.SAT10.Azi =    Azi2;
+			GSVInfo.SAT10.SNR =    SNR2;
+			GSVInfo.SAT11.SatNum = SatNum3;
+			GSVInfo.SAT11.Elev =   Elev3;
+			GSVInfo.SAT11.Azi =    Azi3;
+			GSVInfo.SAT11.SNR =    SNR3;
+			GSVInfo.SAT12.SatNum = SatNum4;
+			GSVInfo.SAT12.Elev =   Elev4;
+			GSVInfo.SAT12.Azi =    Azi4;
+			GSVInfo.SAT12.SNR =    SNR4;
+			//DBG_DUMP(("\x1b[35m"));	//Violet
+			//DBG_DUMP(("#GSV%d SatInView = %d, CheckSum = %X\r\n",SenNum, SatInView, CheckSum));
+			//DBG_WRN("#GSV%d Sat9 = %d, %d, %d, %d,  Sat10 = %d, %d, %d, %d\r\n",SenNum, SatNum1, Elev1, Azi1, SNR1, SatNum2, Elev2, Azi2, SNR2);
+			//DBG_DUMP(("#GSV%d Sat11 = %d, %d, %d, %d, Sat12 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
+			//DBG_DUMP(("\x1b[30m"));	   //Black
+
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+0] = SNR1;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+1]  = SNR2;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+2]  = SNR3;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+3]  = SNR4;
+		}
+		else if (SenNum == 2)	//GSV2
+		{
+			GSVInfo.NumOfSen =	   NumOfSen;
+			GSVInfo.SatInView =    SatInView;
+			GSVInfo.SAT05.SatNum = SatNum1;
+			GSVInfo.SAT05.Elev =   Elev1;
+			GSVInfo.SAT05.Azi =    Azi1;
+			GSVInfo.SAT05.SNR =    SNR1;
+			GSVInfo.SAT06.SatNum = SatNum2;
+			GSVInfo.SAT06.Elev =   Elev2;
+			GSVInfo.SAT06.Azi =    Azi2;
+			GSVInfo.SAT06.SNR =    SNR2;
+			GSVInfo.SAT07.SatNum = SatNum3;
+			GSVInfo.SAT07.Elev =   Elev3;
+			GSVInfo.SAT07.Azi =    Azi3;
+			GSVInfo.SAT07.SNR =    SNR3;
+			GSVInfo.SAT08.SatNum = SatNum4;
+			GSVInfo.SAT08.Elev =   Elev4;
+			GSVInfo.SAT08.Azi =    Azi4;
+			GSVInfo.SAT08.SNR =    SNR4;
+			//DBG_DUMP(("\x1b[35m"));	//Violet
+			//DBG_DUMP(("#GSV%d SatInView = %d, CheckSum = %X\r\n",SenNum, SatInView, CheckSum));
+			//DBG_DUMP(("#GSV%d Sat5 = %d, %d, %d, %d, Sat6 = %d, %d, %d, %d\r\n",SenNum, SatNum1, Elev1, Azi1, SNR1, SatNum2, Elev2, Azi2, SNR2));
+			//DBG_DUMP(("#GSV%d Sat7 = %d, %d, %d, %d, Sat8 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
+			//DBG_DUMP(("\x1b[30m"));	   //Black
+
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+4] = SNR1;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+5] = SNR2;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+6] = SNR3;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+7] = SNR4;
+		}
+		else if (SenNum == 3)	//GSV3
+		{
+			GSVInfo.NumOfSen =	   NumOfSen;
+			GSVInfo.SatInView =    SatInView;
+			GSVInfo.SAT09.SatNum = SatNum1;
+			GSVInfo.SAT09.Elev =   Elev1;
+			GSVInfo.SAT09.Azi =    Azi1;
+			GSVInfo.SAT09.SNR =    SNR1;
+			GSVInfo.SAT10.SatNum = SatNum2;
+			GSVInfo.SAT10.Elev =   Elev2;
+			GSVInfo.SAT10.Azi =    Azi2;
+			GSVInfo.SAT10.SNR =    SNR2;
+			GSVInfo.SAT11.SatNum = SatNum3;
+			GSVInfo.SAT11.Elev =   Elev3;
+			GSVInfo.SAT11.Azi =    Azi3;
+			GSVInfo.SAT11.SNR =    SNR3;
+			GSVInfo.SAT12.SatNum = SatNum4;
+			GSVInfo.SAT12.Elev =   Elev4;
+			GSVInfo.SAT12.Azi =    Azi4;
+			GSVInfo.SAT12.SNR =    SNR4;
+			//DBG_DUMP(("\x1b[35m"));	//Violet
+			//DBG_DUMP(("#GSV%d SatInView = %d, CheckSum = %X\r\n",SenNum, SatInView, CheckSum));
+			//DBG_DUMP(("#GSV%d Sat9 = %d, %d, %d, %d,	Sat10 = %d, %d, %d, %d\r\n",SenNum, SatNum1, Elev1, Azi1, SNR1, SatNum2, Elev2, Azi2, SNR2));
+			//DBG_DUMP(("#GSV%d Sat11 = %d, %d, %d, %d, Sat12 = %d, %d, %d, %d\r\n",SenNum, SatNum3, Elev3, Azi3, SNR3, SatNum4, Elev4, Azi4, SNR4));
+			//DBG_DUMP(("\x1b[30m"));	   //Black
+
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+8] = SNR1;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+9]  = SNR2;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+10] = SNR3;
+			g_Edog_satellie_DB.satellie_DB_GSM_BD[DB_GALILEO_INDEX_START+11] = SNR4;
+		}
+		else
+		{
+			//DBG_ERR("GPS: Invalid number of GSV");
+		}
+		if (NumOfSen == SenNum){
+			InsertSort_gps(&g_Edog_satellie_DB.satellie_DB_GSM_BD[0],sizeof(g_Edog_satellie_DB.satellie_DB_GSM_BD)/sizeof(g_Edog_satellie_DB.satellie_DB_GSM_BD[0]));//always GSV BDGSV sequence
+		}
 		g_bEdogSatelliteDBMSG = TRUE;
 
 		DBG_IND(("\x1b[35m"));	 //Violet
@@ -1963,7 +2345,23 @@ void InsertSort(Satellite_Info a[], int n)
 			a[j+1].Valid= temp.Valid; 
         }
 }
-
+void InsertSort_gps(char a[], int n)
+{
+    int i, j;
+	char temp;
+    for(i=1; i<n; i++)
+	{
+        if(a[i] > a[i-1])   
+        {
+            temp = a[i];    
+            for(j=i-1; j>=0 && a[j] < temp; j--)  
+            {
+                a[j+1]= a[j]; 
+			}
+            a[j+1]= temp;
+        }
+    }
+}
 THREAD_RETTYPE GPS_TASK(void *pvParameters)
 {
     CHAR    RecSentences[800] = {0};
@@ -2017,7 +2415,7 @@ THREAD_RETTYPE GPS_TASK(void *pvParameters)
 
                 switch(CheckSentenceType3) {
                 case GSV_SENTENCE:
-                    //DBG_DUMP("GSV\n");
+                    //DBG_DUMP("%s\n",RecSentence);
                     NMEASentence.GSV = RecSentence;
                     GPSRec_NMEAParser(RecSentence, uiLen, GSV);
                     break;
@@ -2028,7 +2426,7 @@ THREAD_RETTYPE GPS_TASK(void *pvParameters)
 					GPSRec_NMEAParser(RecSentence, uiLen, GSA);
 					break;
 				case BDGSV_SENTENCE:
-					//DBG_WRN("%s\r\n", RecSentence);
+					//DBG_DUMP("%s\r\n", RecSentence);
 					NMEASentence.GSV = RecSentence;
 					GPSRec_NMEAParser(RecSentence, uiLen, BDGSV);
 					break;
@@ -2387,73 +2785,73 @@ void 	edog_location_notify_cb_t(PST_GPSRADAR_GPSINFO gpsinfo)//location notify
     RMCInfo.Angle       = (UINT16)gpsinfo->course;	
 	edogCBdata_update_ok = TRUE;
 	if(gps_info[0].Valid == 1){//valid
-		g_Edog_satellie_DB.satellie_DB_GSM_1 = gps_info[0].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[0] = gps_info[0].Cn;
 	}else{//invalid
-		g_Edog_satellie_DB.satellie_DB_GSM_1 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[0] = 0;
 	}
 	
 	if(gps_info[1].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_2 = gps_info[1].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[1] = gps_info[1].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_2 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[1] = 0;
 	}
 	
 	if(gps_info[2].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_3 = gps_info[2].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[2] = gps_info[2].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_3 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[2] = 0;
 	}
 	
 	if(gps_info[3].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_4 = gps_info[3].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[3] = gps_info[3].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_4 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[3] = 0;
 	}
 	if(gps_info[4].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_5 = gps_info[4].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[4] = gps_info[4].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_5 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[4] = 0;
 	}
 	
 	if(gps_info[5].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_6 = gps_info[5].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[5] = gps_info[5].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_6 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[5] = 0;
 	}
 	
 	if(gps_info[6].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_7 = gps_info[6].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[6] = gps_info[6].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_7 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[6] = 0;
 	}
 	
 	if(gps_info[7].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_8 = gps_info[7].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[7] = gps_info[7].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_8 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[7] = 0;
 	}
 	if(gps_info[8].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_9 = gps_info[8].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[8] = gps_info[8].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_9 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[8] = 0;
 	}
 	
 	if(gps_info[9].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_10 = gps_info[9].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[9] = gps_info[9].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_10 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[9] = 0;
 	}
 	
 	if(gps_info[10].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_11 = gps_info[10].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[10] = gps_info[10].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_11 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[10] = 0;
 	}
 	
 	if(gps_info[11].Valid == 1){
-		g_Edog_satellie_DB.satellie_DB_GSM_12 = gps_info[11].Cn;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[11] = gps_info[11].Cn;
 	}else{
-		g_Edog_satellie_DB.satellie_DB_GSM_12 = 0;
+		g_Edog_satellie_DB.satellie_DB_GSM_BD[11] = 0;
 	}
 
 	

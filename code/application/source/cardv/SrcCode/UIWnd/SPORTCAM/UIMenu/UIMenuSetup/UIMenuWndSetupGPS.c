@@ -9,6 +9,8 @@
 #include "NVTToolCommand.h"
 #include "UIWnd/SPORTCAM/UIInfo/UICfgDefault.h"
 #include <kwrap/debug.h>
+#include "DxGPS.h"
+
 
 //---------------------UIMenuWndSetupGPSCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIMenuWndSetupGPS)
@@ -133,51 +135,51 @@ static void UIMenuWndSetupGPS_OnUpdateGpsVal(void)
     UIMenuWndSetupGPS_HideAllGpsVal();
 
     {
-        sprintf(sGPSVal1,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_1);
+        sprintf(sGPSVal1,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[0]);
         UxStatic_SetData(&GPS_Signal_1_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal1));
         UxCtrl_SetShow(&GPS_Signal_1_ValCtrl, TRUE);
 
-        sprintf(sGPSVal2,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_2);
+        sprintf(sGPSVal2,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[1]);
         UxStatic_SetData(&GPS_Signal_2_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal2));
         UxCtrl_SetShow(&GPS_Signal_2_ValCtrl, TRUE);
 
-        sprintf(sGPSVal3,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_3);
+        sprintf(sGPSVal3,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[2]);
         UxStatic_SetData(&GPS_Signal_3_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal3));
         UxCtrl_SetShow(&GPS_Signal_3_ValCtrl, TRUE);
 
-        sprintf(sGPSVal4,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_4);
+        sprintf(sGPSVal4,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[3]);
         UxStatic_SetData(&GPS_Signal_4_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal4));
         UxCtrl_SetShow(&GPS_Signal_4_ValCtrl, TRUE);
 
-        sprintf(sGPSVal5,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_5);
+        sprintf(sGPSVal5,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[4]);
         UxStatic_SetData(&GPS_Signal_5_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal5));
         UxCtrl_SetShow(&GPS_Signal_5_ValCtrl, TRUE);
 
-        sprintf(sGPSVal6,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_6);
+        sprintf(sGPSVal6,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[5]);
         UxStatic_SetData(&GPS_Signal_6_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal6));
         UxCtrl_SetShow(&GPS_Signal_6_ValCtrl, TRUE);
 
-        sprintf(sGPSVal7,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_7);
+        sprintf(sGPSVal7,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[6]);
         UxStatic_SetData(&GPS_Signal_7_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal7));
         UxCtrl_SetShow(&GPS_Signal_7_ValCtrl, TRUE);
 
-        sprintf(sGPSVal8,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_8);
+        sprintf(sGPSVal8,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[7]);
         UxStatic_SetData(&GPS_Signal_8_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal8));
         UxCtrl_SetShow(&GPS_Signal_8_ValCtrl, TRUE);
 
-        sprintf(sGPSVal9,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_9);
+        sprintf(sGPSVal9,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[8]);
         UxStatic_SetData(&GPS_Signal_9_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal9));
         UxCtrl_SetShow(&GPS_Signal_9_ValCtrl, TRUE);
 
-        sprintf(sGPSVal10,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_10);
+        sprintf(sGPSVal10,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[9]);
         UxStatic_SetData(&GPS_Signal_10_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal10));
         UxCtrl_SetShow(&GPS_Signal_10_ValCtrl, TRUE);
 
-        sprintf(sGPSVal11,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_11);
+        sprintf(sGPSVal11,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[10]);
         UxStatic_SetData(&GPS_Signal_11_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal11));
         UxCtrl_SetShow(&GPS_Signal_11_ValCtrl, TRUE);
 
-        sprintf(sGPSVal12,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_12);
+        sprintf(sGPSVal12,"%02d",g_Edog_satellie_DB.satellie_DB_GSM_BD[11]);
         UxStatic_SetData(&GPS_Signal_12_ValCtrl, STATIC_VALUE, Txt_Pointer(sGPSVal12));
         UxCtrl_SetShow(&GPS_Signal_12_ValCtrl, TRUE);
     }
@@ -224,173 +226,173 @@ static void UIMenuWndSetupGPS_OnUpdateGpsVa_ICON(void)
         UxProgressBar_SetData(&GPS_Signal_Red_1Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_1Ctrl, TRUE);
 
-        if(g_Edog_satellie_DB.satellie_DB_GSM_1 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[0] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_1Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_1Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_1);
+            UxProgressBar_SetData(&GPS_Signal_Red_1Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[0]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_2Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_2Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_2 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[1] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_2Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_2Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_2);
+            UxProgressBar_SetData(&GPS_Signal_Red_2Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[1]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_3Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_3Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_3 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[2] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_3Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_3Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_3);
+            UxProgressBar_SetData(&GPS_Signal_Red_3Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[2]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_4Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_4Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_4 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[3] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_4Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_4Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_4);
+            UxProgressBar_SetData(&GPS_Signal_Red_4Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[3]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_5Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_5Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_5 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[4] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_5Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_5Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_5);
+            UxProgressBar_SetData(&GPS_Signal_Red_5Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[4]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_6Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_6Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_6 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[5] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_6Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_6Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_6);
+            UxProgressBar_SetData(&GPS_Signal_Red_6Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[5]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_7Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_7Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_7 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[6] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_7Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_7Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_7);
+            UxProgressBar_SetData(&GPS_Signal_Red_7Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[6]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_8Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_8Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_8 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[7] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_8Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_8Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_8);
+            UxProgressBar_SetData(&GPS_Signal_Red_8Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[7]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_9Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_9Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_9 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[8] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_9Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_9Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_9);
+            UxProgressBar_SetData(&GPS_Signal_Red_9Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[8]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_10Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_10Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_10 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[9] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_10Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_10Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_10);
+            UxProgressBar_SetData(&GPS_Signal_Red_10Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[9]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_11Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_11Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_11 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[10] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_11Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_11Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_11);
+            UxProgressBar_SetData(&GPS_Signal_Red_11Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[10]);
 
         UxProgressBar_SetData(&GPS_Signal_Red_12Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Red_12Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_12 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[11] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Red_12Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Red_12Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_12);
+            UxProgressBar_SetData(&GPS_Signal_Red_12Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[11]);
 
     } else {
         UxProgressBar_SetData(&GPS_Signal_Green_1Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_1Ctrl, TRUE);
 
-        if(g_Edog_satellie_DB.satellie_DB_GSM_1 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[0] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_1Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_1Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_1);
+            UxProgressBar_SetData(&GPS_Signal_Green_1Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[0]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_2Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_2Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_2 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[1] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_2Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_2Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_2);
+            UxProgressBar_SetData(&GPS_Signal_Green_2Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[1]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_3Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_3Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_3 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[2] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_3Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_3Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_3);
+            UxProgressBar_SetData(&GPS_Signal_Green_3Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[2]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_4Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_4Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_4 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[3] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_4Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_4Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_4);
+            UxProgressBar_SetData(&GPS_Signal_Green_4Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[3]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_5Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_5Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_5 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[4] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_5Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_5Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_5);
+            UxProgressBar_SetData(&GPS_Signal_Green_5Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[4]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_6Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_6Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_6 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[5] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_6Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_6Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_6);
+            UxProgressBar_SetData(&GPS_Signal_Green_6Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[5]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_7Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_7Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_7 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[6] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_7Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_7Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_7);
+            UxProgressBar_SetData(&GPS_Signal_Green_7Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[6]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_8Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_8Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_8 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[7] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_8Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_8Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_8);
+            UxProgressBar_SetData(&GPS_Signal_Green_8Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[7]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_9Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_9Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_9 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[8] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_9Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_9Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_9);
+            UxProgressBar_SetData(&GPS_Signal_Green_9Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[8]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_10Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_10Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_10 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[9] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_10Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_10Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_10);
+            UxProgressBar_SetData(&GPS_Signal_Green_10Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[9]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_11Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_11Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_11 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[10] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_11Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_11Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_11);
+            UxProgressBar_SetData(&GPS_Signal_Green_11Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[10]);
 
         UxProgressBar_SetData(&GPS_Signal_Green_12Ctrl,PROBAR_TOTSTP,uiTotalStep);
         UxCtrl_SetShow(&GPS_Signal_Green_12Ctrl, TRUE);
-        if(g_Edog_satellie_DB.satellie_DB_GSM_12 > GPS_DB_VAL)
+        if(g_Edog_satellie_DB.satellie_DB_GSM_BD[11] > GPS_DB_VAL)
             UxProgressBar_SetData(&GPS_Signal_Green_12Ctrl,PROBAR_CURSTP,uiTotalStep);
         else
-            UxProgressBar_SetData(&GPS_Signal_Green_12Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_12);
+            UxProgressBar_SetData(&GPS_Signal_Green_12Ctrl,PROBAR_CURSTP,uiTotalStep - g_Edog_satellie_DB.satellie_DB_GSM_BD[11]);
 
     }
 

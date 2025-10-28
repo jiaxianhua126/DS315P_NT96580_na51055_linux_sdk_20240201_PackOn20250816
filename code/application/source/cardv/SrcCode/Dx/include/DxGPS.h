@@ -21,6 +21,7 @@
 #define NMEA_BUFFER_RESERVED	128
 #define NMEA_SENTENCE_SIZE		240
 #define NMEA_TYPE_SIZE			7
+//$GPGGA
 #define GSA_SENTENCE			0x41534750 //'A''S''G''P'
 #define RMC_SENTENCE			0x434D5250 //'C''M''R''P'
 #define GGA_SENTENCE			0x41474750 //'A''G''G''P'
@@ -28,13 +29,25 @@
 #define BDGSV_SENTENCE			0x56534744 //'V''S''G''D'
 #define GLL_SENTENCE			0x4C4C4750 //'L''L''G''P'
 #define VTG_SENTENCE			0x47545650 //'G''T''V''P'
+//GNxxx
+#define NGSA_SENTENCE           0x4153474E //'A''S''G''N'
+#define NRMC_SENTENCE           0x434D524E //'C''M''R''N'
+#define NGGA_SENTENCE           0x4147474E //'A''G''G''N'
+#define NGSV_SENTENCE           0x5653474E //'V''S''G''N'
+#define NGLL_SENTENCE           0x4C4C474E //'L''L''G''N'
+#define NVTG_SENTENCE           0x4754564E //'G''T''V''N'
+//$GNGGA
 #define SNR_SENTENCE			0x4F534E45 //'O''S''N''E'
 #define ROS_SENTENCE			0x534F5259 //'S''O''R''Y'
 #define NRMC_SENTENCE			0x434D524E //'C''M''R''N'  //beidou
 #define DGGA_SENTENCE			0x41474744 //'A''G''G''D'  //beidou
-#define DGSV_SENTENCE			0x56534744 //'V''S''G''D'  //beidou
+#define GBGSV_SENTENCE			0x56534742 //'V''S''G''B'  //beidou
 #define TXT_SENTENCE			0x54585450 //'T''X''T''P'//Unique Sky
 
+//$GLGSV Glonass
+#define GLGSV_SENTENCE           0x5653474C //'V''S''G''L'
+//$GAGSV GALILEO
+#define GAGSV_SENTENCE           0x56534741 //'V''S''G''A'
 
 #define GPS_FLAG_DATAVALID		0x00000001
 #define GPS_FLAG_LOG			0x00000002
@@ -179,6 +192,8 @@ typedef enum {
 	GGA,
 	GSV,
 	BDGSV,
+	GLGSV,
+	GAGSV,
 	GLL,
 	VTG
 } NMEATYPE;
@@ -221,22 +236,15 @@ typedef enum {
 } GPSGMT_TYPE;
 
 //EDOG_MSG_TPYE_SATELLITE_DB	17bytes
+#define DB_BEIDOU_INDEX_START	12
+#define DB_GLONASS_INDEX_START	24
+#define DB_GALILEO_INDEX_START	36
+
 typedef struct {
     char satellie_DB_header;
     char satellie_DB_cmdtype;
     char satellie_DB_GSM_Signal;
-    char satellie_DB_GSM_1;
-    char satellie_DB_GSM_2;
-    char satellie_DB_GSM_3;
-    char satellie_DB_GSM_4;
-    char satellie_DB_GSM_5;
-    char satellie_DB_GSM_6;
-    char satellie_DB_GSM_7;
-    char satellie_DB_GSM_8;
-    char satellie_DB_GSM_9;
-    char satellie_DB_GSM_10;
-    char satellie_DB_GSM_11;
-    char satellie_DB_GSM_12;
+    char satellie_DB_GSM_BD[48];
     char satellie_DB_end[2];
 } EDOG_SATELLITE_DB;
 extern EDOG_SATELLITE_DB g_Edog_satellie_DB;
