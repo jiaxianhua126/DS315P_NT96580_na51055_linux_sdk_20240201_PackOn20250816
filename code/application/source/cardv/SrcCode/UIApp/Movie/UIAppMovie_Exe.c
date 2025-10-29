@@ -8006,10 +8006,12 @@ INT32 MovieExe_OnSensorHotPlug(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 	}
 
 	MovieExe_Sensor_HotPlug_Rec();
-#if _TODO//TBD
+#if 1//TBD
     if (SysGetFlag(FL_FIRSTPOWERON) == FIRSTPOWERON_TRUE) {
+		DBG_DUMP("g_bSensorNumChanged=%d===================\r\n",g_bSensorNumChanged);
 		return NVTEVT_CONSUME;
-	}
+	}		
+	DBG_DUMP("==================g_bSensorNumChanged=%d\r\n",g_bSensorNumChanged);
 	if (g_bSensorNumChanged) {
 		g_bSensorNumChanged = FALSE;
 		//Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));

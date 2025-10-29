@@ -1561,7 +1561,7 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 			//FlowMovie_DetTxDisconnected();
 			//FlowMovie_SyncTimeToRear();
 			if (g_bSensorNumChanged) {
-				g_bSensorNumChanged = FALSE;
+				//g_bSensorNumChanged = FALSE;
 				FlowWiFiMovie_IconDrawSize(TRUE);
 			}
     	}
