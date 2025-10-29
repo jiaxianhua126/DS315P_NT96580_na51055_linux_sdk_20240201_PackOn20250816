@@ -598,7 +598,8 @@ INT32 UIMenuWndSetupDateTime_Tab_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UI
             break;
         case DATE_FORMAT_YMD:
             switch (UxTab_GetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS)) {
-            case UI_DATETIME_IDX_SWITCH:
+            //case UI_DATETIME_IDX_SWITCH:
+            case UI_DATETIME_IDX_SEC:
                 //UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_Y);
                 UIMenuWndSetupDateTime_Confirm();
                 break;

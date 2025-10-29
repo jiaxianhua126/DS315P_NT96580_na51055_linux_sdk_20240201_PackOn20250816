@@ -173,6 +173,7 @@ void DrvKey_Init(void)
 
 BOOL GPIOMap_DetTVIPlugIn(void)
 {
+	//DBG_DUMP("==gpio_getPin(GPIO_TVI_DET)================\r\n",gpio_getPin(GPIO_TVI_DET));
     return !gpio_getPin(GPIO_TVI_DET);
 }
 
@@ -341,8 +342,8 @@ UINT32 DrvKey_DetNormalKey(void)
 		uiKeyCode |= FLGKEY_ZOOMOUT;
 	}
 	*/
-	if (!gpio_getPin(GPIO_KEY_RIGHT)) {
-		uiKeyCode |= FLGKEY_RIGHT;
+	if (!gpio_getPin(GPIO_KEY_SOS)) {
+		uiKeyCode |= FLGKEY_KEY_SOS;
 		//DBG_IND("CAll GPIO_KEY_RIGHT\r\n");
 		//DBG_IND("FLGKEY_ENTER!\n");
 	}
@@ -405,8 +406,8 @@ UINT32 DrvKey_DetPowerKey(void)
 			g_bSensorNumChanged = TRUE;
 			PreSen2PlugIn = Sen2PlugIn;
 		}
-		//DBG_WRN("^G ----- GPIOMap_DetTVIPlugIn = %d, Sen2PlugIn = %d,  PreSen2PlugIn = %d, g_bSensorNumChanged =%d \r\n", 
-		//		 GPIOMap_DetTVIPlugIn(), Sen2PlugIn, PreSen2PlugIn, g_bSensorNumChanged);
+		//DBG_DUMP("^G ----- GPIOMap_DetTVIPlugIn = %d, Sen2PlugIn = %d,  PreSen2PlugIn = %d, g_bSensorNumChanged =%d \r\n", 
+				 //GPIOMap_DetTVIPlugIn(), Sen2PlugIn, PreSen2PlugIn, g_bSensorNumChanged);
 	}
 #endif
 	return uiKeyCode;

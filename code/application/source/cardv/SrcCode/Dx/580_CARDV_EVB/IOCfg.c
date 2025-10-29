@@ -164,14 +164,14 @@ void IO_InitADC(void)
 
 void Dx_InitGPS_PWREN(void)
 {
-	gpio_setDir(GPIO_GPS_PWREN, GPIO_DIR_OUTPUT);
-	gpio_setPin(GPIO_GPS_PWREN);
+	//gpio_setDir(GPIO_GPS_PWREN, GPIO_DIR_OUTPUT);
+	//gpio_setPin(GPIO_GPS_PWREN);
 }
 
 void Dx_InitGPS_NOPWREN(void)
 {
-	gpio_setDir(GPIO_GPS_PWREN, GPIO_DIR_OUTPUT);
-	gpio_clearPin(GPIO_GPS_PWREN);
+	//gpio_setDir(GPIO_GPS_PWREN, GPIO_DIR_OUTPUT);
+	//gpio_clearPin(GPIO_GPS_PWREN);
 }
 
 void Dx_InitAudio_PWREN(void)

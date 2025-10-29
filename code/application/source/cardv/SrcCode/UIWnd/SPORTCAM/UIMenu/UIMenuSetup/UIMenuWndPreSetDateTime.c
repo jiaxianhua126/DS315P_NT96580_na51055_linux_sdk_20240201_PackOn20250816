@@ -28,7 +28,7 @@
 #define DATETIME_DEFAULT_SECOND    0
 
 /* (57, 53) is the parent's start (x,y). */
-#define DATETIME_START_X        57
+#define DATETIME_START_X        62
 #define DATETIME_START_Y        53
 
 #define DATETIME_SHIFT_X        20
@@ -602,9 +602,9 @@ INT32 UIMenuWndPreSetDateTime_Tab_OnKeyRight(VControl *pCtrl, UINT32 paramNum, U
             }
             break;
         case DATE_FORMAT_YMD:
-            switch(UxTab_GetData(&UIMenuWndPreSetDateTime_TabCtrl, TAB_FOCUS))
-            {
-            case UI_DATETIME_IDX_SWITCH:
+            switch (UxTab_GetData(&UIMenuWndPreSetDateTime_TabCtrl, TAB_FOCUS)) {
+            //case UI_DATETIME_IDX_SWITCH:
+            case UI_DATETIME_IDX_SEC:
                 //UxTab_SetData(&UIMenuWndPreSetDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_Y);	rtc_setDate(g_year, g_month, g_day);
                 UIMenuWndPreSetDateTime_Confirm();
                 break;

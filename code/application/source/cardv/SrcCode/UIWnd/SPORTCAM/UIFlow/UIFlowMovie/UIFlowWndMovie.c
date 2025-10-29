@@ -2424,7 +2424,7 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 		FlowMovie_DetLCDIconHide();
 
 		if (g_bSensorNumChanged) {
-			g_bSensorNumChanged = FALSE;
+			//g_bSensorNumChanged = FALSE;
 			FlowMovie_IconDrawSize(&UIFlowWndMovie_Static_resolutionCtrl);
 		}
 		
