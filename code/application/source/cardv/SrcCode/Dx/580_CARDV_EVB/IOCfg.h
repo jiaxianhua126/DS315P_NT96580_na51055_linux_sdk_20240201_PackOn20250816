@@ -258,8 +258,8 @@ extern BOOL     GPIOMap_DetAudio(void);
 */
 //#define ADC_CH_VOLDET_MS1           ADC_CHANNEL_1
 //#define ADC_CH_VOLDET_MS2           ADC_CHANNEL_0
-#define GPIO_KEY_RIGHT              C_GPIO_5            // Key Menu (km)
-#define PAD_KEY_RIGHT               PAD_PIN_CGPIO5
+#define GPIO_KEY_RIGHT              L_GPIO_5            // Key Menu (km)
+#define PAD_KEY_RIGHT               PAD_PIN_LGPIO5
 #define ADC_CH_VOLDET_KEY1          ADC_CHANNEL_1
 #define ADC_CH_VOLDET_KEY2          ADC_CHANNEL_2
 

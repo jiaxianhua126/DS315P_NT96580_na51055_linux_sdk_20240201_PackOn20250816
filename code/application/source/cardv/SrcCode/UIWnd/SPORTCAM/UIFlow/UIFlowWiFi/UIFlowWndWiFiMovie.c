@@ -108,7 +108,7 @@ INT32 UIFlowWndWiFiMovie_OnClose(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndWiFiMovie_OnChildClose(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndWiFiMovie_OnKeyMenu(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndWiFiMovie_OnKeyLeft(VControl *, UINT32, UINT32 *);
-INT32 UIFlowWndWiFiMovie_OnKeyRight(VControl *, UINT32, UINT32 *);
+INT32 UIFlowWndWiFiMovie_OnKeySos(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndWiFiMovie_OnKeyUp(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndWiFiMovie_OnKeyDown(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndWiFiMovie_OnKeyEnter(VControl *, UINT32, UINT32 *);
@@ -145,7 +145,7 @@ EVENT_ITEM(NVTEVT_CLOSE_WINDOW,UIFlowWndWiFiMovie_OnClose)
 EVENT_ITEM(NVTEVT_CHILD_CLOSE,UIFlowWndWiFiMovie_OnChildClose)
 //EVENT_ITEM(NVTEVT_KEY_MENU,UIFlowWndWiFiMovie_OnKeyMenu)
 EVENT_ITEM(NVTEVT_KEY_LEFT,UIFlowWndWiFiMovie_OnKeyLeft)
-EVENT_ITEM(NVTEVT_KEY_RIGHT,UIFlowWndWiFiMovie_OnKeyRight)
+EVENT_ITEM(NVTEVT_KEY_SOS,UIFlowWndWiFiMovie_OnKeySos)
 EVENT_ITEM(NVTEVT_KEY_UP,UIFlowWndWiFiMovie_OnKeyUp)
 EVENT_ITEM(NVTEVT_KEY_DOWN,UIFlowWndWiFiMovie_OnKeyDown)
 EVENT_ITEM(NVTEVT_KEY_ENTER,UIFlowWndWiFiMovie_OnKeyEnter)
@@ -457,7 +457,7 @@ INT32 UIFlowWndWiFiMovie_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 
         if ((System_GetState(SYS_STATE_CARD) == CARD_INSERTED) && (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)) {
             FlowWiFiMovie_DrawPIM(TRUE);
-	   Delay_DelayMs(100);
+	   		Delay_DelayMs(100);
             Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
             UISound_Play(DEMOSOUND_SOUND_SHUTTER_TONE);
         }
@@ -582,7 +582,7 @@ INT32 UIFlowWndWiFiMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 }
 
 
-INT32 UIFlowWndWiFiMovie_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIFlowWndWiFiMovie_OnKeySos(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32  uiKeyAct;
 	uiKeyAct = paramNum ? paramArray[0] : 0;
@@ -729,19 +729,6 @@ INT32 UIFlowWndWiFiMovie_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 		if (FlowMovie_WakeUpLCDBacklight()) {
 			return NVTEVT_CONSUME;
 		}
-		#if (defined(_NVT_ETHREARCAM_RX_))
-		if(GPIOMap_EthCam1Det()){
-			if(Get_IsRearOK()>WAIT_SECONDS)
-			{
-				//Delay_DelayMs(200);
-			}
-			else
-			{
-				DBG_DUMP("key ignore\r\n");
-				return NVTEVT_CONSUME;
-			}
-		}
-		#endif
 		if ((System_GetState(SYS_STATE_CARD) == CARD_INSERTED) && (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)) {
 			FlowWiFiMovie_DrawPIM(TRUE);
 			Delay_DelayMs(150);
@@ -1357,24 +1344,12 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
         #endif  // #if (GPS_FUNCTION == ENABLE)
         //#NT#2013/3/20#Philex Lin-end
         if ((g_uiWiFiRecordIngMotionDet == TRUE) && (System_GetState(SYS_STATE_CARD) == CARD_INSERTED)) {
-            if(GPIOMap_EthCam1Det()){
-                if(Get_IsRearOK()>=2){
-				    WiFiCmd_OnMotionDetect();
-                }
-			}else{
-                WiFiCmd_OnMotionDetect();
-            }
+        	WiFiCmd_OnMotionDetect();
         }
 
 		if ((g_uiWiFiParkingModeMotionDet == TRUE) && (System_GetState(SYS_STATE_CARD) == CARD_INSERTED)) {
             if (isACCTrigParkMode) {
-                if(GPIOMap_EthCam1Det()){
-                    if(Get_IsRearOK()>=2){
-    				    WiFiCmd_OnMotionDetect();
-                    }
-    			}else{
-                    WiFiCmd_OnMotionDetect();
-                }
+            	WiFiCmd_OnMotionDetect();
             }
 		}
         #if 0//(defined(_NVT_ETHREARCAM_RX_))
@@ -1526,30 +1501,14 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 				&&(WiFiCmd_GetStatus() == WIFI_MOV_ST_LVIEW)
 				/*&&(System_GetState(SYS_STATE_CARD) == CARD_INSERTED)*/)
 			{
-                if(GPIOMap_EthCam1Det())
-				{
-                    if(Get_IsRearOK()>=2)
-					{
-						DBG_DUMP("11start rec %d %d %d ,\r\n",g_bSensorNumChanged,bWiFiModeChanged,g_bTVStatusChanged);
-                        bWiFiRec_AutoStart = TRUE;
-                        Ux_PostEvent(NVTEVT_WIFI_EXE_MOVIE_REC, 1, 1);
-                        g_bSensorNumChanged = FALSE;
-            			bWiFiModeChanged = FALSE;
-           				g_bTVStatusChanged = FALSE;
-
-                    }
-                }
-				else
-				{
 				
-					DBG_DUMP("22start rec %d %d %d ,\r\n",g_bSensorNumChanged,bWiFiModeChanged,g_bTVStatusChanged);
-                    bWiFiRec_AutoStart = TRUE;
-                    Ux_PostEvent(NVTEVT_WIFI_EXE_MOVIE_REC, 1, 1);
-					g_bSensorNumChanged = FALSE;
-            		bWiFiModeChanged = FALSE;
-           			g_bTVStatusChanged = FALSE;
+				DBG_DUMP("22start rec %d %d %d ,\r\n",g_bSensorNumChanged,bWiFiModeChanged,g_bTVStatusChanged);
+                bWiFiRec_AutoStart = TRUE;
+                Ux_PostEvent(NVTEVT_WIFI_EXE_MOVIE_REC, 1, 1);
+				g_bSensorNumChanged = FALSE;
+        		bWiFiModeChanged = FALSE;
+       			g_bTVStatusChanged = FALSE;
            			
-                }
             }
         }
         // IR rear sensor color auto det

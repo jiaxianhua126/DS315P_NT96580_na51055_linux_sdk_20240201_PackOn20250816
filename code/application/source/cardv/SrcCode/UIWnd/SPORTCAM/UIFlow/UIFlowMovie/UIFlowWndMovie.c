@@ -50,7 +50,7 @@ INT32 UIFlowWndMovie_OnChildClose(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnKeySelect(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnKeyMenu(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnKeyLeft(VControl *, UINT32, UINT32 *);
-INT32 UIFlowWndMovie_OnKeyRight(VControl *, UINT32, UINT32 *);
+INT32 UIFlowWndMovie_OnKeySos(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnKeyUp(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnKeyDown(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnKeyEnter(VControl *, UINT32, UINT32 *);
@@ -84,10 +84,10 @@ EVENT_ITEM(NVTEVT_KEY_PREV,UIFlowWndMovie_OnKeyUp)
 //EVENT_ITEM(NVTEVT_KEY_NEXT,UIFlowWndMovie_OnKeyDown)
 EVENT_ITEM(NVTEVT_KEY_SELECT,UIFlowWndMovie_OnKeyMenu)
 EVENT_ITEM(NVTEVT_KEY_DOWN,UIFlowWndMovie_OnKeyMenu)
-EVENT_ITEM(NVTEVT_KEY_RIGHT,UIFlowWndMovie_OnKeyRight)
-EVENT_ITEM(NVTEVT_KEY_UP,UIFlowWndMovie_OnKeyRight)
-EVENT_ITEM(NVTEVT_KEY_LEFT,UIFlowWndMovie_OnKeyEnter) //UIFlowWndMovie_OnKeyDown
-EVENT_ITEM(NVTEVT_KEY_ENTER,UIFlowWndMovie_OnKeyUp)//playback
+EVENT_ITEM(NVTEVT_KEY_SOS,UIFlowWndMovie_OnKeySos)
+EVENT_ITEM(NVTEVT_KEY_UP,UIFlowWndMovie_OnKeyLeft)
+EVENT_ITEM(NVTEVT_KEY_LEFT,UIFlowWndMovie_OnKeyEnter) //UIFlowWndMovie_OnKeyDown--OK
+EVENT_ITEM(NVTEVT_KEY_ENTER,UIFlowWndMovie_OnKeyUp)//playback----OK
 EVENT_ITEM(NVTEVT_KEY_SHUTTER2, UIFlowWndMovie_OnKeySelect)
 //EVENT_ITEM(NVTEVT_KEY_SHUTTER2,UIFlowWndMovie_OnKeyShutter2)
 EVENT_ITEM(NVTEVT_KEY_ZOOMIN,UIFlowWndMovie_OnKeyZoomin)
@@ -1038,9 +1038,22 @@ INT32 UIFlowWndMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 		bLeftKeyPressed = FALSE;
 
 		if (FlowMovie_WakeUpLCDBacklight()) {
-			return NVTEVT_CONSUME;
+			//return NVTEVT_CONSUME;
 		}
-
+		#if 1
+		Delay_DelayMs(200);
+		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_OFF) {
+            SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_ON);
+			UIVoice_Play(DEMOSOUND_SOUND_MICEN_TONE);
+			Delay_DelayMs(50);
+        } else {
+            SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_OFF);
+			UIVoice_Play(DEMOSOUND_SOUND_MICDIS_TONE);
+			Delay_DelayMs(50);
+        }
+        Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_AUDIO, 1, SysGetFlag(FL_MOVIE_AUDIO));
+        FlowMovie_IconDrawAudio(&UIFlowWndMovie_Status_AudioCtrl);
+		#else
         switch (gMovData.State) {
 		case MOV_ST_REC:
 		case MOV_ST_REC|MOV_ST_ZOOM:
@@ -1056,6 +1069,7 @@ INT32 UIFlowWndMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 			DBG_DUMP("==========NVTEVT_EXE_MOVIE_REC_RAWENC==========\r\n");;
 			break;
 		}
+		#endif
         break;
 
 	case NVTEVT_KEY_LONG_PRESS:		
@@ -1069,7 +1083,7 @@ INT32 UIFlowWndMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 	return NVTEVT_CONSUME;
 }
 
-INT32 UIFlowWndMovie_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIFlowWndMovie_OnKeySos(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32	uiKeyAct;
 	uiKeyAct = paramArray[0];
@@ -1188,18 +1202,6 @@ INT32 UIFlowWndMovie_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 		case MOV_ST_REC_WAIT:
 			if (FlowMovie_WakeUpLCDBacklight()) {
 				return NVTEVT_CONSUME;
-			}
-
-			if(GPIOMap_EthCam1Det()){
-				if(Get_IsRearOK()>WAIT_SECONDS)
-				{
-					//Delay_DelayMs(200);
-				}
-				else
-				{
-					DBG_DUMP("key ignore\r\n");
-					return NVTEVT_CONSUME;
-				}
 			}
 			
 			if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
@@ -2275,6 +2277,7 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 				//DBG_DUMP("call g_uiParkingModeMotionDet!\n");
 			}
 		}
+		#if 0
 		if (((g_uiRecordIngMotionDet == TRUE)||(g_uiParkingModeMotionDet == TRUE)) && 
 			(System_GetState(SYS_STATE_CARD) == CARD_INSERTED)&&
 			 (FlowMovie_IsEthCamConnectOK())){
@@ -2282,7 +2285,7 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
             	BKG_PostEvent(NVTEVT_BKW_ETHCAM_GET_MOTION_DETECT_INFO);
 			 }
         }
-
+		#endif
 		#if 0
 		// Parking Mode
 		if ((!isACCTrigPowerOn) && (System_GetState(SYS_STATE_CARD) == CARD_INSERTED) && (FlowMovie_GetSOSStatusNow() == FALSE)) {
