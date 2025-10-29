@@ -32,6 +32,7 @@
 #define FLGKEY_CUSTOM1                  0x00010000
 //#define FLGKEY_EMERG                    0x00020000
 #define FLGKEY_KEY_POWER_ACC            0x00020000
+#define FLGKEY_KEY_SOS                  0x00040000
 
 
 //special normal key
