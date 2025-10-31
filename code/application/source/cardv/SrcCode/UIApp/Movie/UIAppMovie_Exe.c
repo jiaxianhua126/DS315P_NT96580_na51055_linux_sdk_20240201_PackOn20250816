@@ -4857,6 +4857,7 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
         ipl_size2.fps = 60;
 		break;
 	//case MOVIE_SIZE_FRONT_2560x1600P30:
+	case MOVIE_SIZE_DUAL_2560x1440P30_1920x1080P30:
 	case MOVIE_SIZE_FRONT_2560x1440P30:
 		ipl_size2.size.w = 2560;
         ipl_size2.size.h = 1440;
@@ -4877,12 +4878,18 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
         ipl_size2.size.h = 1080;
         ipl_size2.fps = 60;
 		break;
+		
+	case MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30:  
 	case MOVIE_SIZE_FRONT_1920x1080P30:
 		ipl_size2.size.w = 1920;
         ipl_size2.size.h = 1080;
         ipl_size2.fps = 30;
 		break;
+	case MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30:
 	default:
+		ipl_size2.size.w = 2560;
+        ipl_size2.size.h = 1440;
+        ipl_size2.fps = 25;
 		break;
 	}
 	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_USER_IMG_SIZE, (UINT32)&ipl_size2);
