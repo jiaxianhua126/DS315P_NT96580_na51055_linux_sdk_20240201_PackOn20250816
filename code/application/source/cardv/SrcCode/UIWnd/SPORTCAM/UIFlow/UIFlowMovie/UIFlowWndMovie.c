@@ -1161,7 +1161,7 @@ INT32 UIFlowWndMovie_OnKeySos(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 				FlowMovie_SetCrash();
 				//Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
 				if (FlowMovie_GetSOSStatusNow() == FALSE) {
-					//FlowMovie_IconDrawSOS();
+					FlowMovie_IconDrawSOS();
 					FlowMovie_SetSOSStatusNow(TRUE);
 					ManualSetSOS = TRUE;
 				}
@@ -1558,9 +1558,9 @@ INT32 UIFlowWndMovie_OnCustom1(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
             }
 #endif
 			FlowMovie_SetCrash();
-			Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
 			if (FlowMovie_GetSOSStatusNow() == FALSE) {
-				/////FlowMovie_IconDrawSOS();
+				Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
+				FlowMovie_IconDrawSOS();
 				FlowMovie_SetSOSStatusNow(TRUE);
 			}
 		}
