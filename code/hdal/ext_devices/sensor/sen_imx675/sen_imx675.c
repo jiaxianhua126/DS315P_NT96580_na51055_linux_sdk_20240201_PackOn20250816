@@ -43,7 +43,7 @@ VOS_MODULE_VERSION(nvt_sen_imx675, 1, 56, 000, 00);
 // information
 //=============================================================================
 #define SEN_IMX675_MODULE_NAME     "sen_imx675"
-#define SEN_MAX_MODE               7//5
+#define SEN_MAX_MODE               8//5
 #define MAX_VD_PERIOD              0xFFFFF
 #define MAX_EXPOSURE_LINE          0xFFFFF
 #define BRL_ALL_PIXEL              1984
@@ -228,6 +228,13 @@ static CTL_SENDRV_GET_SPEED_PARAM speed_param[SEN_MAX_MODE] = {
 		74250000,
 		237600000
 	},
+	{
+		CTL_SEN_MODE_8,
+		CTL_SEN_SIEMCLK_SRC_DFT,
+		27000000,
+		74250000,
+		223600000
+	},
 };
 
 static CTL_SENDRV_GET_MODE_MIPI_PARAM mipi_param[SEN_MAX_MODE] = {
@@ -293,6 +300,15 @@ static CTL_SENDRV_GET_MODE_MIPI_PARAM mipi_param[SEN_MAX_MODE] = {
 		0,
 		{1, 0, 0, 0},
 		SEN_BIT_OFS_0|SEN_BIT_OFS_1
+	},
+	{
+		CTL_SEN_MODE_8,
+		CTL_SEN_CLKLANE_1,
+		CTL_SEN_DATALANE_4,
+		{ {CTL_SEN_MIPI_MANUAL_NONE, 0}, {CTL_SEN_MIPI_MANUAL_NONE, 0}, {CTL_SEN_MIPI_MANUAL_NONE, 0} },
+		0,
+		{0, 0, 0, 0},
+		SEN_BIT_OFS_NONE
 	},
 };
 
@@ -479,7 +495,34 @@ static CTL_SENDRV_GET_MODE_BASIC_PARAM mode_basic_param[SEN_MAX_MODE] = {
 		CTL_SEN_RATIO(4, 3),
 		{1000, 10350000},
 		100
+	},
+	{
+		CTL_SEN_MODE_4,
+		CTL_SEN_IF_TYPE_MIPI,
+		CTL_SEN_DATA_FMT_RGB,
+		CTL_SEN_MODE_LINEAR,
+#if (COUNTRY_JP==0) 
+		3000,
+#else//jp
+		2800,
+#endif
+		1,
+		CTL_SEN_STPIX_R,
+		CTL_SEN_PIXDEPTH_10BIT,
+		CTL_SEN_FMT_POGRESSIVE,
+		{2608, 1964},
+		{{8, 12, 2592, 1944}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+		{2592, 1944},
+#if (COUNTRY_JP==0) 
+		{0, 550, 0, 3750},//signal_info get from HMAX VMAX
+#else
+		{0, 550, 0, 4200/*4909*/},//signal_info get from HMAX VMAX 0x1068
+#endif
+		CTL_SEN_RATIO(4, 3),
+		{1000, 10350000},
+		100
 	}
+
 };
 
 static CTL_SEN_CMD imx675_mode_1[] = {
@@ -1629,6 +1672,160 @@ static CTL_SEN_CMD imx675_mode_7[] = {
 	{SEN_CMD_DELAY, 1, {25, 0x0}},
 	{0x3002, 1, {0x00, 0x0}},  //Master mode start
 };
+static CTL_SEN_CMD imx675_mode_8[] = {
+	{0x3000, 1, {0x01, 0x0}}, // standby
+	{0x3002, 1, {0x01, 0x0}}, //Master mode stop
+	{0x3014, 1, {0x03, 0x0}},
+	{0x3022, 1, {0x00, 0x0}},
+	{0x3023, 1, {0x00, 0x0}},
+#if (COUNTRY_JP==0) //30fps
+	//{0x3028, 1, {0x94, 0x0}},//VMAX[19:0]
+	//{0x3029, 1, {0x11, 0x0}},//VMAX[19:0]
+	{0x3028, 1, {0xA6, 0x0}},//VMAX[19:0]
+	{0x3029, 1, {0x0E, 0x0}},//VMAX[19:0]
+#else //27.5
+	{0x3028, 1, {0x68, 0x0}},
+	{0x3029, 1, {0x10, 0x0}},
+#endif
+	{0x302C, 1, {0x26, 0x0}},
+	{0x302D, 1, {0x02, 0x0}},
+	{0x3050, 1, {0x04, 0x0}},
+	{0x30A6, 1, {0x00, 0x0}},
+	{0x30CE, 1, {0x02, 0x0}},
+	{0x3148, 1, {0x00, 0x0}},
+	{0x3460, 1, {0x22, 0x0}},
+	{0x3492, 1, {0x08, 0x0}},
+	{0x3B1D, 1, {0x17, 0x0}},
+	{0x3B44, 1, {0x3F, 0x0}},
+	{0x3B60, 1, {0x03, 0x0}},
+	{0x3C03, 1, {0x04, 0x0}},
+	{0x3C04, 1, {0x04, 0x0}},
+	{0x3C0A, 1, {0x04, 0x0}},
+	{0x3C0B, 1, {0x04, 0x0}},
+	{0x3C0C, 1, {0x04, 0x0}},
+	{0x3C0D, 1, {0x04, 0x0}},
+	{0x3C0E, 1, {0x04, 0x0}},
+	{0x3C0F, 1, {0x04, 0x0}},
+	{0x3C30, 1, {0x73, 0x0}},
+	{0x3C3C, 1, {0x20, 0x0}},
+	{0x3C7C, 1, {0xB9, 0x0}},
+	{0x3C7D, 1, {0x01, 0x0}},
+	{0x3C7E, 1, {0xB7, 0x0}},
+	{0x3C7F, 1, {0x01, 0x0}},
+	{0x3CB0, 1, {0x00, 0x0}},
+	{0x3CB2, 1, {0xFF, 0x0}},
+	{0x3CB3, 1, {0x03, 0x0}},
+	{0x3CB4, 1, {0xFF, 0x0}},
+	{0x3CB5, 1, {0x03, 0x0}},
+	{0x3CBA, 1, {0xFF, 0x0}},
+	{0x3CBB, 1, {0x03, 0x0}},
+	{0x3CC0, 1, {0xFF, 0x0}},
+	{0x3CC1, 1, {0x03, 0x0}},
+	{0x3CC2, 1, {0x00, 0x0}},
+	{0x3CC6, 1, {0xFF, 0x0}},
+	{0x3CC7, 1, {0x03, 0x0}},
+	{0x3CC8, 1, {0xFF, 0x0}},
+	{0x3CC9, 1, {0x03, 0x0}},
+	{0x3E00, 1, {0x1E, 0x0}},
+	{0x3E02, 1, {0x04, 0x0}},
+	{0x3E03, 1, {0x00, 0x0}},
+	{0x3E20, 1, {0x04, 0x0}},
+	{0x3E21, 1, {0x00, 0x0}},
+	{0x3E22, 1, {0x1E, 0x0}},
+	{0x3E24, 1, {0xBA, 0x0}},
+	{0x3E72, 1, {0x85, 0x0}},
+	{0x3E76, 1, {0x0C, 0x0}},
+	{0x3E77, 1, {0x01, 0x0}},
+	{0x3E7A, 1, {0x85, 0x0}},
+	{0x3E7E, 1, {0x1F, 0x0}},
+	{0x3E82, 1, {0xA6, 0x0}},
+	{0x3E86, 1, {0x2D, 0x0}},
+	{0x3EE2, 1, {0x33, 0x0}},
+	{0x3EE3, 1, {0x03, 0x0}},
+	{0x4490, 1, {0x07, 0x0}},
+	{0x4494, 1, {0x19, 0x0}},
+	{0x4495, 1, {0x00, 0x0}},
+	{0x4496, 1, {0xBB, 0x0}},
+	{0x4497, 1, {0x00, 0x0}},
+	{0x4498, 1, {0x55, 0x0}},
+	{0x449A, 1, {0x50, 0x0}},
+	{0x449C, 1, {0x50, 0x0}},
+	{0x449E, 1, {0x50, 0x0}},
+	{0x44A0, 1, {0x3C, 0x0}},
+	{0x44A2, 1, {0x19, 0x0}},
+	{0x44A4, 1, {0x19, 0x0}},
+	{0x44A6, 1, {0x19, 0x0}},
+	{0x44A8, 1, {0x4B, 0x0}},
+	{0x44AA, 1, {0x4B, 0x0}},
+	{0x44AC, 1, {0x4B, 0x0}},
+	{0x44AE, 1, {0x4B, 0x0}},
+	{0x44B0, 1, {0x3C, 0x0}},
+	{0x44B2, 1, {0x19, 0x0}},
+	{0x44B4, 1, {0x19, 0x0}},
+	{0x44B6, 1, {0x19, 0x0}},
+	{0x44B8, 1, {0x4B, 0x0}},
+	{0x44BA, 1, {0x4B, 0x0}},
+	{0x44BC, 1, {0x4B, 0x0}},
+	{0x44BE, 1, {0x4B, 0x0}},
+	{0x44C0, 1, {0x3C, 0x0}},
+	{0x44C2, 1, {0x19, 0x0}},
+	{0x44C4, 1, {0x19, 0x0}},
+	{0x44C6, 1, {0x19, 0x0}},
+	{0x44C8, 1, {0xF0, 0x0}},
+	{0x44CA, 1, {0xEB, 0x0}},
+	{0x44CC, 1, {0xEB, 0x0}},
+	{0x44CE, 1, {0xE6, 0x0}},
+	{0x44D0, 1, {0xE6, 0x0}},
+	{0x44D2, 1, {0xBB, 0x0}},
+	{0x44D4, 1, {0xBB, 0x0}},
+	{0x44D6, 1, {0xBB, 0x0}},
+	{0x44D8, 1, {0xE6, 0x0}},
+	{0x44DA, 1, {0xE6, 0x0}},
+	{0x44DC, 1, {0xE6, 0x0}},
+	{0x44DE, 1, {0xE6, 0x0}},
+	{0x44E0, 1, {0xE6, 0x0}},
+	{0x44E2, 1, {0xBB, 0x0}},
+	{0x44E4, 1, {0xBB, 0x0}},
+	{0x44E6, 1, {0xBB, 0x0}},
+	{0x44E8, 1, {0xE6, 0x0}},
+	{0x44EA, 1, {0xE6, 0x0}},
+	{0x44EC, 1, {0xE6, 0x0}},
+	{0x44EE, 1, {0xE6, 0x0}},
+	{0x44F0, 1, {0xE6, 0x0}},
+	{0x44F2, 1, {0xBB, 0x0}},
+	{0x44F4, 1, {0xBB, 0x0}},
+	{0x44F6, 1, {0xBB, 0x0}},
+	{0x4538, 1, {0x15, 0x0}},
+	{0x4539, 1, {0x15, 0x0}},
+	{0x453A, 1, {0x15, 0x0}},
+	{0x4544, 1, {0x15, 0x0}},
+	{0x4545, 1, {0x15, 0x0}},
+	{0x4546, 1, {0x15, 0x0}},
+	{0x4550, 1, {0x11, 0x0}},
+	{0x4551, 1, {0x11, 0x0}},
+	{0x4552, 1, {0x11, 0x0}},
+	{0x4553, 1, {0x11, 0x0}},
+	{0x4554, 1, {0x11, 0x0}},
+	{0x4555, 1, {0x11, 0x0}},
+	{0x4556, 1, {0x11, 0x0}},
+	{0x4557, 1, {0x11, 0x0}},
+	{0x4558, 1, {0x11, 0x0}},
+	{0x455C, 1, {0x11, 0x0}},
+	{0x455D, 1, {0x11, 0x0}},
+	{0x455E, 1, {0x11, 0x0}},
+	{0x455F, 1, {0x11, 0x0}},
+	{0x4560, 1, {0x11, 0x0}},
+	{0x4561, 1, {0x11, 0x0}},
+	{0x4562, 1, {0x11, 0x0}},
+	{0x4563, 1, {0x11, 0x0}},
+	{0x4564, 1, {0x11, 0x0}},
+	{SEN_CMD_SETVD, 1, {0x0, 0x0}},
+	{SEN_CMD_PRESET, 1, {0x0, 0x0}},
+	{SEN_CMD_DIRECTION, 1, {0x0, 0x0}},
+	{0x3000, 1, {0x00, 0x0}},  // standby cancel
+	{SEN_CMD_DELAY, 1, {25, 0x0}},
+	{0x3002, 1, {0x00, 0x0}},  //Master mode start
+};
 
 static UINT32 cur_sen_mode[CTL_SEN_ID_MAX] = {CTL_SEN_MODE_1, CTL_SEN_MODE_1, CTL_SEN_MODE_1, CTL_SEN_MODE_1, CTL_SEN_MODE_1, CTL_SEN_MODE_1, CTL_SEN_MODE_1, CTL_SEN_MODE_1};
 static UINT32 cur_fps[CTL_SEN_ID_MAX] = {0};
@@ -1955,6 +2152,10 @@ static UINT32 sen_get_cmd_tab_imx675(CTL_SEN_MODE mode, CTL_SEN_CMD **cmd_tab)
 	case CTL_SEN_MODE_7:
 		*cmd_tab = imx675_mode_7;
 		return sizeof(imx675_mode_7) / sizeof(CTL_SEN_CMD);
+
+	case CTL_SEN_MODE_8:
+		*cmd_tab = imx675_mode_8;
+		return sizeof(imx675_mode_8) / sizeof(CTL_SEN_CMD);
 
 	default:
 		DBG_ERR("sensor mode %d no cmd table\r\n", mode);
@@ -2385,7 +2586,8 @@ static ER sen_get_min_shr_imx675(CTL_SEN_MODE mode, UINT32 *min_shr, UINT32 *min
     case CTL_SEN_MODE_1:
     case CTL_SEN_MODE_3:
     case CTL_SEN_MODE_4:
-    case CTL_SEN_MODE_5:    	
+    case CTL_SEN_MODE_5: 
+	case CTL_SEN_MODE_8: 
         *min_shr = 4;
         *min_exp = 1;
         break;
@@ -2833,15 +3035,22 @@ static void sen_get_modesel_imx675(CTL_SENDRV_GET_MODESEL_PARAM *data)
 			if ((data->size.w <= 2592) && (data->size.h <= 1944)) {
 				if (data->pixdepth == CTL_SEN_PIXDEPTH_12BIT) {
 					if (data->frame_rate <= 3000) {
-						data->mode = CTL_SEN_MODE_3;
+						data->mode = CTL_SEN_MODE_3;						
+						DBG_ERR("###=11111===%d\r\n",data->mode);
 						return;
 					}
 				} else if (data->pixdepth == CTL_SEN_PIXDEPTH_10BIT) {
-					if (data->frame_rate <= 3000) {
-						data->mode = CTL_SEN_MODE_4;
+					if (data->frame_rate <= 2500) {
+						data->mode = CTL_SEN_MODE_8;
+						DBG_ERR("###=11111===%d\r\n",data->mode);
+						return;
+					}	else if (data->frame_rate <= 3000) {
+						data->mode = CTL_SEN_MODE_4;						
+						DBG_ERR("###=11111===%d\r\n",data->mode);
 						return;
 					}	else if (data->frame_rate <= 6000) {
-						data->mode = CTL_SEN_MODE_1;
+						data->mode = CTL_SEN_MODE_1;						
+						DBG_ERR("###=11111===%d\r\n",data->mode);
 						return;
 					}
 				}
@@ -2849,16 +3058,16 @@ static void sen_get_modesel_imx675(CTL_SENDRV_GET_MODESEL_PARAM *data)
 		} else if (data->frame_num == 2) {
 			if ((data->size.w <= 2592) && (data->size.h <= 1944)) {
 				if (data->frame_rate <= 2500) {
-					DBG_ERR("###=11111===%d\r\n",data->frame_rate);
 					data->mode = CTL_SEN_MODE_7;
+					DBG_ERR("###=11111===%d\r\n",data->mode);
 					return;
 				}else if (data->frame_rate <= 3000) {
-					DBG_ERR("###=11111===%d\r\n",data->frame_rate);
 					data->mode = CTL_SEN_MODE_2;
+					DBG_ERR("###=11111===%d\r\n",data->mode);
 					return;
 				} else if(data->frame_rate <= 6000){
 					data->mode = CTL_SEN_MODE_6;
-					DBG_ERR("###=2222===%d\r\n",data->frame_rate);
+					DBG_ERR("###=11111===%d\r\n",data->mode);
 					return;
 				}
 			}
