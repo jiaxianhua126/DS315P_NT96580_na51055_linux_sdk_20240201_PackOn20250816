@@ -1849,8 +1849,8 @@ INT32 UIFlowWndWiFiMovie_OnCustom1(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 			//if (SysGetFlag(FL_MOVIE_URGENT_PROTECT_AUTO) == MOVIE_URGENT_PROTECT_AUTO_ON)
             {
 				FlowMovie_SetCrash();
-	       		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);				
-                if (FlowMovie_GetSOSStatusNow() == FALSE) {
+                if (FlowMovie_GetSOSStatusNow() == FALSE) {					
+					Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);				
                     FlowWiFiMovie_IconDrawSOS(TRUE);
                     //UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_SOS_BigCtrl, TRUE);
                     FlowMovie_SetSOSStatusNow(TRUE);
