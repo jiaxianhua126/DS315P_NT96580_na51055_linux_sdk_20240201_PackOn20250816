@@ -193,8 +193,8 @@ static void UIMenuWndPreSetDateTime_UpdateInfo(void)
     UxStatic_SetData(&UIMenuWndPreSetDateTime_YMD_VALUE_Other4Ctrl, STATIC_VALUE, Txt_Pointer(itemOther4_Buf));
     Ux_SendEvent(&UISetupObjCtrl,NVTEVT_EXE_DATEFORMAT,    1,  SysGetFlag(FL_DATE_FORMAT));
 
-    UxCtrl_SetShow(&UIMenuWndPreSetDateTime_YMD_SwitchCtrl, FALSE);
-    UxCtrl_SetShow(&UIMenuWndPreSetDateTime_YMD_VALUE_Other4Ctrl, FALSE);
+    //UxCtrl_SetShow(&UIMenuWndPreSetDateTime_YMD_SwitchCtrl, FALSE);
+    //UxCtrl_SetShow(&UIMenuWndPreSetDateTime_YMD_VALUE_Other4Ctrl, FALSE);
 }
 //#NT#2010/06/01#Chris Chung -end
 
@@ -602,9 +602,9 @@ INT32 UIMenuWndPreSetDateTime_Tab_OnKeyRight(VControl *pCtrl, UINT32 paramNum, U
             }
             break;
         case DATE_FORMAT_YMD:
-            switch (UxTab_GetData(&UIMenuWndPreSetDateTime_TabCtrl, TAB_FOCUS)) {
-            //case UI_DATETIME_IDX_SWITCH:
-            case UI_DATETIME_IDX_SEC:
+            switch(UxTab_GetData(&UIMenuWndPreSetDateTime_TabCtrl, TAB_FOCUS))
+            {
+            case UI_DATETIME_IDX_SWITCH:
                 //UxTab_SetData(&UIMenuWndPreSetDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_Y);	rtc_setDate(g_year, g_month, g_day);
                 UIMenuWndPreSetDateTime_Confirm();
                 break;

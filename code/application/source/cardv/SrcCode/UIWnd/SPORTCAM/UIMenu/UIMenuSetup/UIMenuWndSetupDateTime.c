@@ -209,8 +209,8 @@ static void UIMenuWndSetupDateTime_UpdateInfo(void)
     UxStatic_SetData(&UIMenuWndSetupDateTime_YMD_VALUE_Other4Ctrl, STATIC_VALUE, Txt_Pointer(itemOther4_Buf));
     Ux_SendEvent(&UISetupObjCtrl,NVTEVT_EXE_DATEFORMAT,    1,  SysGetFlag(FL_DATE_FORMAT));
 
-    UxCtrl_SetShow(&UIMenuWndSetupDateTime_YMD_SwitchCtrl, FALSE);
-    UxCtrl_SetShow(&UIMenuWndSetupDateTime_YMD_VALUE_Other4Ctrl, FALSE);
+    //UxCtrl_SetShow(&UIMenuWndSetupDateTime_YMD_SwitchCtrl, FALSE);
+    //UxCtrl_SetShow(&UIMenuWndSetupDateTime_YMD_VALUE_Other4Ctrl, FALSE);
 }
 //#NT#2010/06/01#Chris Chung -end
 
@@ -598,8 +598,7 @@ INT32 UIMenuWndSetupDateTime_Tab_OnKeyRight(VControl *pCtrl, UINT32 paramNum, UI
             break;
         case DATE_FORMAT_YMD:
             switch (UxTab_GetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS)) {
-            //case UI_DATETIME_IDX_SWITCH:
-            case UI_DATETIME_IDX_SEC:
+            case UI_DATETIME_IDX_SWITCH:
                 //UxTab_SetData(&UIMenuWndSetupDateTime_TabCtrl, TAB_FOCUS, UI_DATETIME_IDX_Y);
                 UIMenuWndSetupDateTime_Confirm();
                 break;
