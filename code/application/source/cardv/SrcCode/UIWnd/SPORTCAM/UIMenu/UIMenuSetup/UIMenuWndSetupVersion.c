@@ -40,7 +40,7 @@ EVENT_END
 INT32 UIMenuWndSetupVersion_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UxStatic_SetData(&UIMenuSetupVersionTextCtrl, STATIC_VALUE, Txt_Pointer(Prj_GetVersionString()));
-#if 0//harrison ds315//defined(_NVT_ETHREARCAM_RX_)
+#if defined(_NVT_ETHREARCAM_RX_)
 	if(FlowMovie_IsEthCamConnectOK())
 	{
     	UxStatic_SetData(&UIMenuSetupVersionText2Ctrl, STATIC_VALUE, Txt_Pointer(Prj_GetEthCamVersionString()));
@@ -49,9 +49,12 @@ INT32 UIMenuWndSetupVersion_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 	{
 		UxCtrl_SetShow(&UIMenuSetupVersionText2Ctrl,FALSE);
 	}
+#else 
+	UxCtrl_SetShow(&UIMenuSetupVersionText2Ctrl,FALSE);
 #endif
 #if defined(_GPS_EDOG_UNIQUE_SKY_)
 	UxStatic_SetData(&UIMenuSetupVersionText3Ctrl, STATIC_VALUE, Txt_Pointer(GPSRec_GetEdogVersion()));
+	UxCtrl_SetShow(&UIMenuSetupVersionText3Ctrl,FALSE);
 #else
 	UxCtrl_SetShow(&UIMenuSetupVersionText3Ctrl,FALSE);
 #endif
