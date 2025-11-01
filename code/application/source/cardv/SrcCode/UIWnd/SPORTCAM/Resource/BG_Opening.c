@@ -2,7 +2,7 @@
 #include "PrjCfg.h"
 
 //开机logo
-#if (MACHINE_TYPE==MACHINE_TYPE_S2P)
+#if 0//(MACHINE_TYPE==MACHINE_TYPE_S2P)
 #include "welcome.c"
 #include "Goodbye.c"
 #elif 0
