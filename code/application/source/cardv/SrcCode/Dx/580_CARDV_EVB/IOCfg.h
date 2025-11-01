@@ -303,8 +303,8 @@ extern BOOL     GPIOMap_DetPoweroff(void);
 #define LED_RED_BY_GPIO             1
 #define LED_RED_BY_MCU              3
 #define LED_RED_CTRL                LED_RED_BY_GPIO
-#define GPIO_RED_LED                L_GPIO_8  //FPGA
-#define PAD_RED_LED                 PAD_PIN_LGPIO20
+#define GPIO_RED_LED                L_GPIO_7  //FPGA
+#define PAD_RED_LED                 PAD_PIN_LGPIO7
 
 #define LED_GREEN_DUMMY             0
 #define LED_GREEN_BY_GPIO           1
@@ -335,11 +335,11 @@ extern BOOL     GPIOMap_DetPoweroff(void);
 #endif
 
 
-#define GPIO_REC_LED                L_GPIO_8  //FPGA
-#define PAD_REC_LED                 PAD_PIN_LGPIO8
+#define GPIO_REC_LED                L_GPIO_7  //FPGA
+#define PAD_REC_LED                 PAD_PIN_LGPIO7
 
-#define GPIO_WIFI_LED               L_GPIO_7  //FPGA
-#define PAD_WIFI_LED                PAD_PIN_LGPIO7
+#define GPIO_WIFI_LED               L_GPIO_8  //FPGA
+#define PAD_WIFI_LED                PAD_PIN_LGPIO8
 
 
 #define GPIO_MIC_LED                L_GPIO_20  //FPGA TBD
