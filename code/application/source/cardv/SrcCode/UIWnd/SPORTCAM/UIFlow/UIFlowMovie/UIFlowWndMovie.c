@@ -1551,7 +1551,7 @@ INT32 UIFlowWndMovie_OnCustom1(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
                         ImageApp_MovieMulti_TrigEMR(_CFG_ETHCAM_ID_1);
                     }
                     ParkingM_PreRecord_EMR = TRUE;
-                    //FlowMovie_IconDrawSOS(&UIFlowWndMovie_SOSCtrl);//harrison ds315
+                    FlowMovie_IconDrawSOS();
                     FlowMovie_SetSOSStatusNow(TRUE);
                 }
                 return NVTEVT_CONSUME;
@@ -1755,7 +1755,7 @@ INT32 UIFlowWndMovie_OnMovieOneSec(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 				uiRecSecond = paramArray[0];
 				uiCyclicRecTime = Movie_GetCyclicRecTime() - 1;
 				if (uiRecSecond == uiCyclicRecTime) {
-					//FlowMovie_IconHideSOS();///harrison ds315
+					FlowMovie_IconHideSOS();
 				}
 				if (!UxCtrl_IsShow(&UIFlowWndMovie_PanelCtrl)) {
 					UxCtrl_SetShow(&UIFlowWndMovie_PanelCtrl,TRUE);
