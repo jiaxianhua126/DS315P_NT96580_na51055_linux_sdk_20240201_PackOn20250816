@@ -4869,20 +4869,20 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
         ipl_size2.fps = 60;
 		break;
 	case MOVIE_SIZE_FRONT_2304x1296P30:
-		ipl_size2.size.w = 2304;
-        ipl_size2.size.h = 1296;
+		ipl_size2.size.w = 2560;
+        ipl_size2.size.h = 1440;
         ipl_size2.fps = 30;
 		break;
 	case MOVIE_SIZE_FRONT_1920x1080P60:
-		ipl_size2.size.w = 1920;
-        ipl_size2.size.h = 1080;
+		ipl_size2.size.w = 2560;
+        ipl_size2.size.h = 1440;
         ipl_size2.fps = 60;
 		break;
 		
 	case MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30:  
 	case MOVIE_SIZE_FRONT_1920x1080P30:
-		ipl_size2.size.w = 1920;
-        ipl_size2.size.h = 1080;
+		ipl_size2.size.w = 2560;
+        ipl_size2.size.h = 1440;
         ipl_size2.fps = 30;
 		break;
 	case MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30:

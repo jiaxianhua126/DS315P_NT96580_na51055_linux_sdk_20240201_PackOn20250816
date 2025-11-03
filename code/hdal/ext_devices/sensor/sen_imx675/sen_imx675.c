@@ -497,12 +497,12 @@ static CTL_SENDRV_GET_MODE_BASIC_PARAM mode_basic_param[SEN_MAX_MODE] = {
 		100
 	},
 	{
-		CTL_SEN_MODE_4,
+		CTL_SEN_MODE_8,
 		CTL_SEN_IF_TYPE_MIPI,
 		CTL_SEN_DATA_FMT_RGB,
 		CTL_SEN_MODE_LINEAR,
 #if (COUNTRY_JP==0) 
-		3000,
+		2500,
 #else//jp
 		2800,
 #endif
@@ -514,7 +514,7 @@ static CTL_SENDRV_GET_MODE_BASIC_PARAM mode_basic_param[SEN_MAX_MODE] = {
 		{{8, 12, 2592, 1944}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},
 		{2592, 1944},
 #if (COUNTRY_JP==0) 
-		{0, 550, 0, 3750},//signal_info get from HMAX VMAX
+		{0, 550, 0, 5400},//signal_info get from HMAX VMAX
 #else
 		{0, 550, 0, 4200/*4909*/},//signal_info get from HMAX VMAX 0x1068
 #endif
@@ -1681,8 +1681,8 @@ static CTL_SEN_CMD imx675_mode_8[] = {
 #if (COUNTRY_JP==0) //30fps
 	//{0x3028, 1, {0x94, 0x0}},//VMAX[19:0]
 	//{0x3029, 1, {0x11, 0x0}},//VMAX[19:0]
-	{0x3028, 1, {0xA6, 0x0}},//VMAX[19:0]
-	{0x3029, 1, {0x0E, 0x0}},//VMAX[19:0]
+	{0x3028, 1, {0x18, 0x0}},//VMAX[19:0]
+	{0x3029, 1, {0x15, 0x0}},//VMAX[19:0]
 #else //27.5
 	{0x3028, 1, {0x68, 0x0}},
 	{0x3029, 1, {0x10, 0x0}},
@@ -3036,21 +3036,21 @@ static void sen_get_modesel_imx675(CTL_SENDRV_GET_MODESEL_PARAM *data)
 				if (data->pixdepth == CTL_SEN_PIXDEPTH_12BIT) {
 					if (data->frame_rate <= 3000) {
 						data->mode = CTL_SEN_MODE_3;						
-						DBG_ERR("###=11111===%d\r\n",data->mode);
+						DBG_ERR("###=NO HDR===%d\r\n",data->mode);
 						return;
 					}
 				} else if (data->pixdepth == CTL_SEN_PIXDEPTH_10BIT) {
 					if (data->frame_rate <= 2500) {
 						data->mode = CTL_SEN_MODE_8;
-						DBG_ERR("###=11111===%d\r\n",data->mode);
+						DBG_ERR("###=NO HDR===%d\r\n",data->mode);
 						return;
 					}	else if (data->frame_rate <= 3000) {
 						data->mode = CTL_SEN_MODE_4;						
-						DBG_ERR("###=11111===%d\r\n",data->mode);
+						DBG_ERR("###=NO HDR===%d\r\n",data->mode);
 						return;
 					}	else if (data->frame_rate <= 6000) {
 						data->mode = CTL_SEN_MODE_1;						
-						DBG_ERR("###=11111===%d\r\n",data->mode);
+						DBG_ERR("###=NO HDR===%d\r\n",data->mode);
 						return;
 					}
 				}
@@ -3059,15 +3059,15 @@ static void sen_get_modesel_imx675(CTL_SENDRV_GET_MODESEL_PARAM *data)
 			if ((data->size.w <= 2592) && (data->size.h <= 1944)) {
 				if (data->frame_rate <= 2500) {
 					data->mode = CTL_SEN_MODE_7;
-					DBG_ERR("###=11111===%d\r\n",data->mode);
+					DBG_ERR("###=HDR===%d\r\n",data->mode);
 					return;
 				}else if (data->frame_rate <= 3000) {
 					data->mode = CTL_SEN_MODE_2;
-					DBG_ERR("###=11111===%d\r\n",data->mode);
+					DBG_ERR("###=HDR===%d\r\n",data->mode);
 					return;
 				} else if(data->frame_rate <= 6000){
 					data->mode = CTL_SEN_MODE_6;
-					DBG_ERR("###=11111===%d\r\n",data->mode);
+					DBG_ERR("###=HDR===%d\r\n",data->mode);
 					return;
 				}
 			}
