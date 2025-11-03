@@ -212,7 +212,7 @@
 #define DEFAULT_TIME_START              700//07:00
 #define DEFAULT_TIME_STOP               1900//19:00
 #define DEFAULT_PARKING_OFF_GPS  		PGPS_FALSE
-#define DEFAULT_EDOG_OVERSPEED_ALARM    EDOG_OVERSPEED_ALARM_ON
+#define DEFAULT_EDOG_OVERSPEED_ALARM    EDOG_OVERSPEED_ALARM_OFF//EDOG_OVERSPEED_ALARM_ON
 
 //-----------------------------------------------------------------------------
 // System
