@@ -349,11 +349,11 @@ UINT32 DrvKey_DetNormalKey(void)
 	}
 #endif
     //detect if power-on by press playback key
-    if (hwpower_get_power_key(POWER_ID_PSW1))
+    /*if (hwpower_get_power_key(POWER_ID_PSW1))
     {
         uiKeyCode |= FLGKEY_LEFT;
 		//DBG_IND("CAll FLGKEY_LEFT\r\n");
-    }
+    }*/
 	
 	temp = DrvKey_DetACCPower();
     uiKeyCode |= temp;

@@ -103,7 +103,9 @@
 #endif
 #define POWEROFFSOUND_FUNCTION          DISABLE
 #define _LOGO_                          _LOGO_NOVATEK_
-#if defined(_disp_if8b_lcd1_ili9341_)
+#if 1 /*(defined(_LCDTYPE_ILI9341_IF8B_) || \
+     defined(_LCDTYPE_TG078UW006A0_DSI_)|| \
+     defined(_LCDTYPE_UT35067A0_ILI9488_DSI_))*/
 #define LOGO_DISP_LAYER                 LAYER_VDO1 // VDO2 logo has no rotation
 #else
 #define LOGO_DISP_LAYER                 LAYER_VDO2
