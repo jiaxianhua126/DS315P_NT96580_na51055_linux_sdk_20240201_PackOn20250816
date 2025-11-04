@@ -1164,13 +1164,11 @@ INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 
 				g_PlbData.State = PLB_ST_PLAY_MOV;
 				FlowPB_IconDrawMovPlay(TRUE);
-			   	FlowPB_IconDrawMovStop(TRUE);
+			   	//FlowPB_IconDrawMovStop(TRUE);
 			   	FlowPB_IconDrawMovPlayTime(TRUE);
-			   	//FlowPB_IconDrawMovBwd(TRUE);
-			   	//FlowPB_IconDrawMovFwd(TRUE);
-			   	////////////FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
-                //harrison ds315 FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
-
+			   	FlowPB_IconDrawMovBwd(TRUE);
+			   	FlowPB_IconDrawMovFwd(TRUE);
+                FlowPB_IconDrawMovPlay_HideShowIcon(FALSE);
 			} else {
 				g_PlbData.State = PLB_ST_MAGNIFY;
 				//FlowPB_UpdateIcons(0);
@@ -1190,11 +1188,9 @@ INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 			Ux_SendEvent(0, NVTEVT_EXE_PAUSEPLAY, 0);
             g_PlbData.State = PLB_ST_PAUSE_MOV;
             FlowPB_IconDrawMovPlay(TRUE);
-            FlowPB_IconDrawMovStop(TRUE);
+            //FlowPB_IconDrawMovStop(TRUE);
             //FlowPB_IconDrawMovBwd(TRUE);
             //FlowPB_IconDrawMovFwd(TRUE);
-            //harrison ds315 FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
-            //////////////////////////FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
             //#NT#2012/10/23#Philex Lin - begin
             // enable auto power off/USB detect timer
             // enable sound key tone flag
@@ -1214,11 +1210,7 @@ INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 			Ux_SendEvent(0, NVTEVT_EXE_RESUMEPLAY, 0);
             g_PlbData.State = PLB_ST_PLAY_MOV;
             FlowPB_IconDrawMovPlay(TRUE);
-            FlowPB_IconDrawMovStop(TRUE);
-            //FlowPB_IconDrawMovBwd(TRUE);
-            //FlowPB_IconDrawMovFwd(TRUE);
-            //harrison ds315   FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_PLAY_FF_B);
-            //////////////////FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_PLAY_FF_F);
+            FlowPB_IconDrawMovPlay_HideShowIcon(FALSE);
             break;
         }
 		break;
@@ -1275,6 +1267,7 @@ INT32 UIFlowWndPlay_OnMovieFinish(VControl *pCtrl, UINT32 paramNum, UINT32 *para
     	// Play 1st video frame image
     	UIPlay_PlaySingle(PB_SINGLE_CURR);
 
+    	FlowPB_IconDrawMovPlay_HideShowIcon(TRUE);
     	FlowPB_UpdateIcons(1);
 
     	#if FLOW_MOV_PLAY_REAET // Repeat play test only. To be removed.

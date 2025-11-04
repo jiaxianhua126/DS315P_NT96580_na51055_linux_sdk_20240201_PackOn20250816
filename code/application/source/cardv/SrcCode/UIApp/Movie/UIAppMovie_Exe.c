@@ -154,7 +154,7 @@ void MovieExe_CheckMovieSizeBySensorConnect(void)
 	}
 	uiSensor = System_GetEnableSensor();
 
-    //DBG_DUMP("*** MovieExe_CheckMovieSizeBySensorConnect()  SysGetFlag(FL_MOVIE_SIZE)= %d ***\r\n", uiMovieSize);
+    DBG_DUMP("*** MovieExe_CheckMovieSizeBySensorConnect()  SysGetFlag(FL_MOVIE_SIZE)= %d ***\r\n", uiMovieSize);
 
 	if (bFirstTime) {
 		bFirstTime = FALSE;
@@ -4521,11 +4521,11 @@ static IQT_LDC_PARAM ldc = {0};
 BOOL MovieExe_GetMovieTMNREn(void)
 {
 #if 0
-    if ((UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_2560x1440P60)
-		||(UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_1920x1080P60)){
+	DBG_DUMP("=========%d=========\r\n",UI_GetData(FL_MOVIE_SIZE));
+    if (UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30){
         return FALSE;
     } else {
-        return FALSE;
+        return TRUE;
     }
 #else
     return TRUE;

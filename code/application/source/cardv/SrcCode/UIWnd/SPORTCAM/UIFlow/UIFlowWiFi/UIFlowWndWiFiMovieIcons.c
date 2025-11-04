@@ -666,22 +666,22 @@ void FlowWiFiMovie_DrawCustomerType(BOOL bShow)
 
 extern CHAR *Get_GpsSpeedString(void);
 extern CHAR Speed1[32];
-//static UINT32 g_year = DEF_YEAR;
+static UINT32 g_year = DEF_YEAR;
 static UINT32 g_Count = 0;
 extern INT8 uitpmsstatus;
 extern BOOL GPS_UpdateDateTime;
 #if defined(_GPS_EDOG_)
 extern BOOL EdogFstCnetd;
-//extern BOOL g_GPS_PlaySound_onetime;
+extern BOOL g_GPS_PlaySound_onetime;
 #elif defined(_GPS_EDOG_UNIQUE_SKY_)
 extern BOOL EdogFstCnetd;
-//extern BOOL g_GPS_PlaySound_onetime;
+extern BOOL g_GPS_PlaySound_onetime;
 #endif
 void FlowWiFiMovie_IconDrawGPSSignal(BOOL bShow)
 {
     INT8 gpsstatus = 0;
     RMCINFO RMCInfo;
-    //struct tm Curr_DateTime = {0};
+    struct tm Curr_DateTime = {0};
 
     if (bShow == FALSE)
     {
@@ -741,7 +741,6 @@ void FlowWiFiMovie_IconDrawGPSSignal(BOOL bShow)
                     if (GPS_UpdateDateTime == FALSE)
                     {
                         g_Count++;
-						#if 0 //harrison ds315
 						#if defined(_GPS_EDOG_)
 						if ((g_Count == 1) && !g_GPS_PlaySound_onetime)
                         {
@@ -759,10 +758,12 @@ void FlowWiFiMovie_IconDrawGPSSignal(BOOL bShow)
                         //rtc_waitCSETDone();
                         //debug_err(("FlowMovie_GPS= %d %d %d %d \r\n",RMCInfo.Year,RMCInfo.Hour,RMCInfo.Day,g_Count));
                         g_year = 2000 + RMCInfo.Year;
+						#if 0
                         if ((g_year < MIN_YEAR)||(g_year > MAX_YEAR))
                         {
                             g_year = DEF_YEAR;
                         }
+						#endif
 
                         //rtc_setDate(RMCInfo.Year, RMCInfo.Month, RMCInfo.Day);
                         if (g_Count%10 == 0)
@@ -773,30 +774,19 @@ void FlowWiFiMovie_IconDrawGPSSignal(BOOL bShow)
                             Curr_DateTime.tm_hour = RMCInfo.Hour;
                             Curr_DateTime.tm_min = RMCInfo.Minute;
                             Curr_DateTime.tm_sec = RMCInfo.Second;
-                            HwClock_SetTime(TIME_ID_CURRENT, Curr_DateTime, 0);
+                            hwclock_set_time(TIME_ID_CURRENT, Curr_DateTime, 0);
                             g_Count = 0;
-                            //GPS_UpdateDateTime = TRUE;
                             //debug_err(("FlowMovie_GPS##= %d %d %d \r\n",g_year,RMCInfo.Hour,RMCInfo.Day));
 
                             #if(defined(_NVT_ETHREARCAM_RX_))                  
-							#if 0
-                            UINT32 i;
-                            for (i=0; i<ETH_REARCAM_CAPS_COUNT; i++){
-                                if(EthCamNet_GetEthLinkStatus(i)==ETHCAM_LINK_UP){
-                                    //sync time
-									EthCam_SendXMLCmdData(i, ETHCAM_PORT_DEFAULT , ETHCAM_CMD_SYNC_TIME, 0, (UINT8 *)&Curr_DateTime, sizeof(struct tm));
-
-                                }
-                            }
-							#else
 							if(!BKG_GetTskBusy()){
 								GPS_UpdateDateTime = TRUE;
 								BKG_PostEvent(NVTEVT_BKW_ETHCAM_SYNC_TIME_ONLY);
 							}
-							#endif
+							#else
+                            GPS_UpdateDateTime = TRUE;							
                             #endif
                         }
-						#endif
                     }
                 }
             }
