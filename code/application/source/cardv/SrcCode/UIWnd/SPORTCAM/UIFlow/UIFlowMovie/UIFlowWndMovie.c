@@ -730,17 +730,6 @@ INT32 UIFlowWndMovie_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 			return NVTEVT_CONSUME;
 		}
 
-		if(GPIOMap_EthCam1Det()){
-			/*if(Get_IsRearOK()>WAIT_SECONDS)
-			{
-				//Delay_DelayMs(200);
-			}
-			else
-			{
-				DBG_DUMP("key ignore\r\n");
-				return NVTEVT_CONSUME;
-			}*///harrison ds315
-		}
 		switch (gMovData.State) {
 		case MOV_ST_VIEW:
 		case MOV_ST_VIEW|MOV_ST_ZOOM:
@@ -795,7 +784,6 @@ INT32 UIFlowWndMovie_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 			#endif
 			gMovData.State = MOV_ST_MENU;
 			break;
-
 #if 0
 		case MOV_ST_REC:
 		case MOV_ST_REC|MOV_ST_ZOOM:
@@ -847,7 +835,6 @@ INT32 UIFlowWndMovie_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 
 	case NVTEVT_KEY_LONG_PRESS:
 		bMenuKeyPressed = FALSE;
-		#if 0
 		//Manual_PowerOff = TRUE;
 		//System_PowerOff(SYS_POWEROFF_NORMAL);
 		//Ux_PostEvent(NVTEVT_KEY_POWER, 1, NVTEVT_KEY_PRESS);
@@ -865,7 +852,6 @@ INT32 UIFlowWndMovie_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 			}
 			break;
 		}
-		#endif
 		break;
 	}
 
@@ -2066,9 +2052,9 @@ void UIFlowWndMovie_GetASR_Flag(void)
 	case ASR_PHOTO :
 		printf("call MovieGetAsr_Flag = %d\r\n",MovieGetAsr_Flag);
 		if (gMovData.State == MOV_ST_REC) {
-			FlowMovie_WakeUpLCDBacklight();
+			FlowMovie_WakeUpLCDBacklight();			
 			Ux_PostEvent(NVTEVT_KEY_DOWN, 1, NVTEVT_KEY_PRESS);
-			Ux_PostEvent(NVTEVT_KEY_DOWN, 1, NVTEVT_KEY_RELEASE);
+			Ux_PostEvent(NVTEVT_KEY_DOWN, 1, NVTEVT_KEY_LONG_PRESS);
 		}
 		Dx_SetASR_Flag(0);
 	break;
