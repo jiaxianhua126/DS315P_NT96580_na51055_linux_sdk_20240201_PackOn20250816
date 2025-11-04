@@ -595,88 +595,86 @@ static void FlowPB_IconDrawSharpness(BOOL bShow)
 static void FlowPB_IconDrawStorage(BOOL bShow)
 {
     #if 0
-    if (bShow==FALSE)
-    {
-       UxCtrl_SetShow(&UIFlowWndPlay_StatusICN_StorageCtrl, FALSE);
-       return;
-    }
-	switch (System_GetState(SYS_STATE_CARD)) 
-    {
-    case CARD_REMOVED:
-        UxState_SetData(&UIFlowWndPlay_StatusICN_StorageCtrl,STATE_CURITEM,UIFlowWndPlay_StatusICN_Storage_ICON_INTERNAL_FLASH);
-        break;
-    default:
-        UxState_SetData(&UIFlowWndPlay_StatusICN_StorageCtrl,STATE_CURITEM,UIFlowWndPlay_StatusICN_Storage_ICON_SD_CARD);
-        break;
-    }
+	if (bShow == FALSE) {
+		UxCtrl_SetShow(&UIFlowWndPlay_StatusICN_StorageCtrl, FALSE);
+		return;
+	}
+	switch (System_GetState(SYS_STATE_CARD)) {
+	case CARD_REMOVED:
+		UxState_SetData(&UIFlowWndPlay_StatusICN_StorageCtrl, STATE_CURITEM, UIFlowWndPlay_StatusICN_Storage_ICON_INTERNAL_FLASH);
+		break;
+	default:
+		UxState_SetData(&UIFlowWndPlay_StatusICN_StorageCtrl, STATE_CURITEM, UIFlowWndPlay_StatusICN_Storage_ICON_SD_CARD);
+		break;
+	}
 
-    UxCtrl_SetShow(&UIFlowWndPlay_StatusICN_StorageCtrl, TRUE);
+	UxCtrl_SetShow(&UIFlowWndPlay_StatusICN_StorageCtrl, TRUE);
     #endif
 }
 
 static void FlowPB_IconDrawBattery(BOOL bShow)
 {
-    if (bShow==FALSE)
-    {
-        UxCtrl_SetShow(&UIFlowWndPlay_StatusICN_BatteryCtrl, FALSE);
-        return;
-    }
+	if (bShow == FALSE) {
+		UxCtrl_SetShow(&UIFlowWndPlay_StatusICN_BatteryCtrl, FALSE);
+		return;
+	}
 
-    UxState_SetData(&UIFlowWndPlay_StatusICN_BatteryCtrl,STATE_CURITEM,GetBatteryLevel());
-    UxCtrl_SetShow(&UIFlowWndPlay_StatusICN_BatteryCtrl, TRUE);
+	UxState_SetData(&UIFlowWndPlay_StatusICN_BatteryCtrl, STATE_CURITEM, GetBatteryLevel());
+	UxCtrl_SetShow(&UIFlowWndPlay_StatusICN_BatteryCtrl, TRUE);
 }
 
 static void FlowPB_IconDrawFileLock(BOOL bShow)
 {
-#if 0 ///harrison ds315
 	UINT32 uiLockStatus;
 	if (bShow == FALSE) {
 		UxCtrl_SetShow(&UIFlowWndPlay_StaticICN_ProtectCtrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndPlay_StaticICN_UnProtectCtrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_ProtectCtrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_LockStdCtrl, FALSE);
 		return;
 	}
 	PB_GetParam(PBPRMID_FILE_ATTR_LOCK, &uiLockStatus);
 	if (uiLockStatus) {
-        UxStatic_SetData(&UIFlowWndPlay_StaticICN_ProtectCtrl, STATIC_VALUE, ICON_FILE_LOCK);
-        UxCtrl_SetShow(&UIFlowWndPlay_StaticICN_ProtectCtrl, TRUE);
-        FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_SET_LOCK);
-		DBG_DUMP("file locked\r\n");
+		UxCtrl_SetShow(&UIFlowWndPlay_StaticICN_ProtectCtrl, TRUE);
+        UxCtrl_SetShow(&UIFlowWndPlay_StaticICN_UnProtectCtrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_LockStdCtrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_ProtectCtrl, TRUE);
+		//DBG_TEST("file locked\r\n");
 		//#NT#2016/11/10#Niven Cho -begin
 		//#NT#AUTO_TEST
-		exam_msg("file locked\r\n");
+		//exam_msg("file locked\r\n");
 		//#NT#2016/11/10#Niven Cho -end
 	} else {
-    	UxStatic_SetData(&UIFlowWndPlay_StaticICN_ProtectCtrl, STATIC_VALUE, ICON_SET_LOCK);
-		UxCtrl_SetShow(&UIFlowWndPlay_StaticICN_ProtectCtrl, TRUE);
-		FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_FILE_LOCK);
+		UxCtrl_SetShow(&UIFlowWndPlay_StaticICN_ProtectCtrl, FALSE);
+        UxCtrl_SetShow(&UIFlowWndPlay_StaticICN_UnProtectCtrl, TRUE);
+        UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_LockStdCtrl, TRUE);
+        UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_ProtectCtrl, FALSE);
 	}
-#endif
 }
 
 void FlowPB_IconDrawDate(BOOL bShow)
 {
-    UINT32  creDateTime[6],modDateTime[6]={0};
-    //UINT32  uiDirNum,uiFileNum,uiFileType,index;
+	UINT32  creDateTime[6], modDateTime[6] = {0};
+	//UINT32  uiDirNum,uiFileNum,uiFileType,index;
 //    CHAR    chaFullName[34] = { 0 };
-    static char item1_Buf[34];
+	static char item1_Buf[34];
 
-    if (bShow==FALSE)
-    {
-        UxCtrl_SetShow(&UIFlowWndPlay_StaticTXT_DateCtrl, FALSE);
-        return;
-    }
+	if (bShow == FALSE) {
+		UxCtrl_SetShow(&UIFlowWndPlay_StaticTXT_DateCtrl, FALSE);
+		return;
+	}
 
-    FileSys_WaitFinish();
+	FileSys_WaitFinish();
 #if 0
-    PB_GetParam(PBPRMID_NAMEID_DIR, &uiDirNum);
-    PB_GetParam(PBPRMID_NAMEID_FILE, &uiFileNum);
-    index = DCF_GetIndexByID(uiDirNum,uiFileNum);
-    DCF_GetObjInfo(index, &uiDirNum, &uiFileNum, &uiFileType);
-    DCF_GetObjPath(index,uiFileType,chaFullName);
+	PB_GetParam(PBPRMID_NAMEID_DIR, &uiDirNum);
+	PB_GetParam(PBPRMID_NAMEID_FILE, &uiFileNum);
+	index = DCF_GetIndexByID(uiDirNum, uiFileNum);
+	DCF_GetObjInfo(index, &uiDirNum, &uiFileNum, &uiFileType);
+	DCF_GetObjPath(index, uiFileType, chaFullName);
 #endif
-    PB_GetParam(PBPRMID_CURR_FILEPATH, (UINT32 *)&gchaFullName);
-    if(FST_STA_OK == FileSys_GetDateTime(gchaFullName,creDateTime,modDateTime))
-    {
-        modDateTime[0] %= 100;
+	PB_GetParam(PBPRMID_CURR_FILEPATH, (UINT32 *)&gchaFullName);
+	if (FST_STA_OK == FileSys_GetDateTime(gchaFullName, creDateTime, modDateTime)) {
+		modDateTime[0] %= 100;
 
 		if (modDateTime[0] > 50) {
 			modDateTime[0] = 50;
@@ -687,11 +685,11 @@ void FlowPB_IconDrawDate(BOOL bShow)
 		if (modDateTime[2] > 31) {
 			modDateTime[2] = 31;
 		}
-        snprintf(item1_Buf,20,"%02lu/%02lu/%02lu",modDateTime[0],modDateTime[1],modDateTime[2]);
+		snprintf(item1_Buf, 20, "%02lu/%02lu/%02lu", modDateTime[0], modDateTime[1], modDateTime[2]);
 
-        UxStatic_SetData(&UIFlowWndPlay_StaticTXT_DateCtrl,STATIC_VALUE,Txt_Pointer(item1_Buf));
-        UxCtrl_SetShow(&UIFlowWndPlay_StaticTXT_DateCtrl, TRUE);
-    }
+		UxStatic_SetData(&UIFlowWndPlay_StaticTXT_DateCtrl, STATIC_VALUE, Txt_Pointer(item1_Buf));
+		UxCtrl_SetShow(&UIFlowWndPlay_StaticTXT_DateCtrl, TRUE);
+	}
 }
 
 
@@ -741,7 +739,7 @@ static void FlowPB_IconDrawThumbSeq(BOOL bShow)
 	static char item1_Buf[32];
 	UINT32  *pThumbSeqID;
 	UINT32 uiFileNum = 0;
-	UINT32 uiBrowseIdx=0, uiParamVal;
+	UINT32 uiBrowseIdx, uiParamVal;
 	if (bShow == FALSE) {
 		UxCtrl_SetShow(&UIFlowWndPlayThumb_ThumbIDCtrl, FALSE);
 		return;
@@ -755,7 +753,7 @@ static void FlowPB_IconDrawThumbSeq(BOOL bShow)
 	UxStatic_SetData(&UIFlowWndPlayThumb_ThumbIDCtrl, STATIC_VALUE, Txt_Pointer(item1_Buf));
 	UxCtrl_SetShow(&UIFlowWndPlayThumb_ThumbIDCtrl, TRUE);
     #else
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_ThumbIDCtrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_ThumbIDCtrl, FALSE);
     #endif
 }
 
@@ -765,11 +763,9 @@ void FlowPB_IconDrawMovPlay_HideShowIcon(BOOL bShow)
     //UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_COLN1Ctrl, bShow);
     //UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_UPCtrl, bShow);
     //UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_DownCtrl, bShow);
-    //UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_LockStdCtrl, bShow);
-    //UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_ProtectCtrl, bShow);
-    //UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_DELCtrl, bShow);
-    //FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_DELETE);
-	//FlowPB_IconDrawMovFwd(TRUE,UIFlowWndPlay_TipsIconLock_ICON_FILE_LOCK);
+    UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_LockStdCtrl, bShow);
+    UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_ProtectCtrl, bShow);
+    UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_DELCtrl, bShow);
 }
 
 /*
@@ -785,71 +781,45 @@ void FlowPB_IconDrawMovPlay_FBShowIcon(BOOL bShow)
 
 void FlowPB_IconDrawMovPlay(BOOL bShow)
 {
-#if 0///harrison ds315
-    if (bShow==FALSE)
-    {
-        UxCtrl_SetShow(&UIFlowWndPlay_TipsIconPlayCtrl, FALSE);
+    if (bShow == FALSE) {
+        UxCtrl_SetShow(&UIFlowWndPlay_StatusIcon_PlayCtrl, FALSE);
         return;
     }
-	
-    UxCtrl_SetShow(&UIFlowWndPlay_TipsIconPlayCtrl, FALSE);
-    if(g_PlbData.State == PLB_ST_PLAY_MOV)
-    {
-        UxState_SetData(&UIFlowWndPlay_TipsIconPlayCtrl,STATE_CURITEM,UIFlowWndPlay_TipsIconPlay_ICON_PAUSE);
+    if (g_PlbData.State == PLB_ST_PLAY_MOV) {
+        UxState_SetData(&UIFlowWndPlay_StatusIcon_PlayCtrl, STATE_CURITEM, UIFlowWndPlay_StatusIcon_Play_ICON_PAUSE);
+    } else {
+        UxState_SetData(&UIFlowWndPlay_StatusIcon_PlayCtrl, STATE_CURITEM, UIFlowWndPlay_StatusIcon_Play_ICON_DIR_R);
     }
-    else
-    {
-        UxState_SetData(&UIFlowWndPlay_TipsIconPlayCtrl,STATE_CURITEM,UIFlowWndPlay_TipsIconPlay_ICON_DIR_R);
-    }
-    UxCtrl_SetShow(&UIFlowWndPlay_TipsIconPlayCtrl, TRUE);
-	
-#endif
+    UxCtrl_SetShow(&UIFlowWndPlay_StatusIcon_PlayCtrl, TRUE);
 }
 
 void FlowPB_IconDrawMovStop(BOOL bShow)
 {
     #if 0
-    if (bShow==TRUE)
+    if (bShow == TRUE){
         UxCtrl_SetShow(&UIFlowWndPlay_StatusICN_MovStopCtrl, TRUE);
-    else
+    } else {
         UxCtrl_SetShow(&UIFlowWndPlay_StatusICN_MovStopCtrl, FALSE);
+    }
     #endif
 }
 
-void FlowPB_IconDrawMovBwd(BOOL bShow,UINT32 iconID)
+void FlowPB_IconDrawMovBwd(BOOL bShow)
 {
-#if 0 ////harrison ds315
-    if (bShow==FALSE)
-    {
-        UxCtrl_SetShow(&UIFlowWndPlay_TipsIconDelCtrl, FALSE);
-        return;
+    if (bShow == TRUE) {
+        UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_PLAY_FF_BCtrl, TRUE);
+    } else {
+        UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_PLAY_FF_BCtrl, FALSE);
     }
-
-    if (bShow==TRUE)
-    {
-    	UxCtrl_SetShow(&UIFlowWndPlay_TipsIconDelCtrl, FALSE);
-    	UxState_SetData(&UIFlowWndPlay_TipsIconDelCtrl,STATE_CURITEM,iconID);
-        UxCtrl_SetShow(&UIFlowWndPlay_TipsIconDelCtrl, TRUE);
-    }
-#endif
 }
 
-void FlowPB_IconDrawMovFwd(BOOL bShow,UINT32 iconID)
+void FlowPB_IconDrawMovFwd(BOOL bShow)
 {
-#if 0 //harrison ds315
-    if (bShow==FALSE)
-    {
-        UxCtrl_SetShow(&UIFlowWndPlay_TipsIconLockCtrl, FALSE);
-        return;
+    if (bShow == TRUE) {
+        UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_PLAY_FF_FCtrl, TRUE);
+    } else {
+        UxCtrl_SetShow(&UIFlowWndPlay_OptionStaticIcon_PLAY_FF_FCtrl, FALSE);
     }
-
-    if (bShow==TRUE)
-    {
-		UxCtrl_SetShow(&UIFlowWndPlay_TipsIconLockCtrl, FALSE);
-    	UxState_SetData(&UIFlowWndPlay_TipsIconLockCtrl,STATE_CURITEM,iconID);
-        UxCtrl_SetShow(&UIFlowWndPlay_TipsIconLockCtrl, TRUE);
-    }
-#endif
 }
 
 void FlowPB_IconDrawMovSpeed(void)
@@ -867,9 +837,10 @@ void FlowPB_IconDrawMovSpeed(void)
     case PLB_FWD_MOV_8x:
         sprintf(VideoSpeedStr,"8X");
         break;
+    /*
     case PLB_BWD_MOV_1x:
         sprintf(VideoSpeedStr,"-1X");
-        break;
+        break;*/
     case PLB_BWD_MOV_2x:
         sprintf(VideoSpeedStr,"-2X");
         break;
@@ -885,14 +856,13 @@ void FlowPB_IconDrawMovSpeed(void)
     }
 
     /*
-    if (g_PlbData.VideoPBSpeed==PLB_FWD_MOV_1x)
-    {
+    if (g_PlbData.VideoPBSpeed == PLB_FWD_MOV_1x) {
         bShow = FALSE;
         UxCtrl_SetShow(&UIFlowWndPlay_Static_SpeedCtrl, bShow);
-    }
+    } 
     else*/
     {
-        UxStatic_SetData(&UIFlowWndPlay_Static_SpeedCtrl,STATIC_VALUE,Txt_Pointer(VideoSpeedStr));
+        UxStatic_SetData(&UIFlowWndPlay_Static_SpeedCtrl, STATIC_VALUE, Txt_Pointer(VideoSpeedStr));
         UxCtrl_SetShow(&UIFlowWndPlay_Static_SpeedCtrl, bShow);
     }
 }
@@ -904,14 +874,13 @@ void FlowPB_IconHideMovSpeed(VControl *pCtrl)
 
 void FlowPB_IconDrawMovPlayTime(BOOL bShow)
 {
-    static char item1_Buf[32];
-    UINT32 uiPlayTimeSecs;
+	static char item1_Buf[32];
+	UINT32 uiPlayTimeSecs;
 
-    if (bShow==FALSE)
-    {
-        UxCtrl_SetShow(&UIFlowWndPlay_StaticTXT_MovPlayTimeCtrl, FALSE);
-        return;
-    }
+	if (bShow == FALSE) {
+		UxCtrl_SetShow(&UIFlowWndPlay_StaticTXT_MovPlayTimeCtrl, FALSE);
+		return;
+	}
 	uiPlayTimeSecs = FlowPB_GetMovPlayTime();
 
     //snprintf(item1_Buf, 32, "%02ld:%02ld:%02ld", uiPlayTimeSecs/3600, (uiPlayTimeSecs%3600)/60, (uiPlayTimeSecs%3600)%60);
@@ -928,8 +897,7 @@ void FlowPB_IconDrawVideoTotalTime(BOOL bShow)
     static char item1_Buf[32];
     UINT32 uiPlayTimeTotalSecs;
 
-    if (bShow==FALSE)
-    {
+    if (bShow == FALSE) {
         UxCtrl_SetShow(&UIFlowWndPlay_StaticTXT_VideoTotalTimeCtrl, FALSE);
         return;
     }
@@ -941,6 +909,35 @@ void FlowPB_IconDrawVideoTotalTime(BOOL bShow)
     UxStatic_SetData(&UIFlowWndPlay_StaticTXT_VideoTotalTimeCtrl,STATIC_VALUE,Txt_Pointer(item1_Buf));
     UxCtrl_SetShow(&UIFlowWndPlay_StaticTXT_VideoTotalTimeCtrl, TRUE);
 }
+
+static void FlowPB_IconDrawOptionOK(BOOL bShow)
+{
+    static char item1_Buf[32];
+
+    if (bShow == FALSE) {
+        UxCtrl_SetShow(&UIFlowWndPlay_Option_StaticOKCtrl, FALSE);
+        return;
+    }
+
+    sprintf(item1_Buf, "OK :");
+    UxStatic_SetData(&UIFlowWndPlay_Option_StaticOKCtrl, STATIC_VALUE, Txt_Pointer(item1_Buf));
+    UxCtrl_SetShow(&UIFlowWndPlay_Option_StaticOKCtrl, TRUE);
+}
+
+static void FlowPB_IconDrawOptionREC(BOOL bShow)
+{
+    static char item1_Buf[32];
+
+    if (bShow == FALSE) {
+        UxCtrl_SetShow(&UIFlowWndPlay_Option_StaticReturnCtrl, FALSE);
+        return;
+    }
+
+    sprintf(item1_Buf, "REC :");
+    UxStatic_SetData(&UIFlowWndPlay_Option_StaticReturnCtrl, STATIC_VALUE, Txt_Pointer(item1_Buf));
+    UxCtrl_SetShow(&UIFlowWndPlay_Option_StaticReturnCtrl, TRUE);
+}
+
 void FlowPB_UpdateIcons(BOOL bShow)
 {
 	if (bShow == FALSE) {
@@ -961,42 +958,46 @@ void FlowPB_UpdateIcons(BOOL bShow)
         FlowPB_IconDrawVideoTotalTime(FALSE);
         FlowPB_IconDrawMovPlay(FALSE);
         FlowPB_IconDrawMovStop(FALSE);
-        FlowPB_IconDrawMovBwd(FALSE,0);
-        FlowPB_IconDrawMovFwd(FALSE,0);
+        FlowPB_IconDrawMovBwd(FALSE);
+        FlowPB_IconDrawMovFwd(FALSE);
+        FlowPB_IconDrawOptionOK(FALSE);
+        FlowPB_IconDrawOptionREC(FALSE);
         FlowPB_IconHideMovSpeed(&UIFlowWndPlay_Static_SpeedCtrl);
 	} else {
-        UINT32 uiCurrMode;
-        PB_GetParam(PBPRMID_PLAYBACK_MODE, &uiCurrMode);
-        FlowPB_IconDrawDSCMode(FALSE);
-        FlowPB_IconDrawDCFFileID(TRUE);
-        FlowPB_IconDrawImageSize(FALSE);
-        FlowPB_IconDrawWB(FALSE);
-        FlowPB_IconDrawImageQuality(FALSE);
-        FlowPB_IconDrawSharpness(FALSE);
-        FlowPB_IconDrawFlash(FALSE);
-        FlowPB_IconDrawEVIcon(FALSE);
-        FlowPB_IconDrawStorage(FALSE);
-        FlowPB_IconDrawBattery(FALSE);
-        FlowPB_IconDrawFileLock(TRUE);
-        FlowPB_IconDrawDate(FALSE);
-        FlowPB_IconDrawTime(FALSE);
-        FlowPB_IconDrawMovPlayTime(FALSE);
-        if(uiCurrMode == PLAYMODE_PRIMARY)
-        {
+		UINT32 uiCurrMode;
+		PB_GetParam(PBPRMID_PLAYBACK_MODE, &uiCurrMode);
+		FlowPB_IconDrawDSCMode(FALSE);
+		FlowPB_IconDrawDCFFileID(TRUE);
+		FlowPB_IconDrawImageSize(FALSE);
+		FlowPB_IconDrawWB(FALSE);
+		FlowPB_IconDrawImageQuality(FALSE);
+		FlowPB_IconDrawSharpness(FALSE);
+		FlowPB_IconDrawFlash(FALSE);
+		FlowPB_IconDrawEVIcon(FALSE);
+		FlowPB_IconDrawStorage(FALSE);
+		FlowPB_IconDrawBattery(FALSE);
+		FlowPB_IconDrawFileLock(TRUE);
+		FlowPB_IconDrawDate(FALSE);
+		FlowPB_IconDrawTime(FALSE);
+		FlowPB_IconDrawMovPlayTime(FALSE);
+        FlowPB_IconDrawOptionOK(TRUE);
+        FlowPB_IconDrawOptionREC(TRUE);
+		if (uiCurrMode == PLAYMODE_PRIMARY) {
             FlowPB_IconDrawMovPlay(FALSE);
             FlowPB_IconDrawMovStop(FALSE);
+            FlowPB_IconDrawMovBwd(FALSE);
+            FlowPB_IconDrawMovFwd(FALSE);
             FlowPB_IconHideMovSpeed(&UIFlowWndPlay_Static_SpeedCtrl);
             FlowPB_IconDrawVideoTotalTime(FALSE);
-        }
-        else
-        {
+		} else {
             FlowPB_IconDrawMovPlay(TRUE);
             FlowPB_IconDrawMovStop(FALSE);
+            FlowPB_IconDrawMovBwd(FALSE);
+            FlowPB_IconDrawMovFwd(FALSE);
             FlowPB_IconDrawMovSpeed();
             FlowPB_IconDrawVideoTotalTime(TRUE);
-        }
-		//FlowPB_IconDrawMovBwd(TRUE,UIFlowWndPlay_TipsIconDel_ICON_DELETE);
-    }
+		}
+	}
 }
 
 static void FlowPB_IconDrawThumbFileType(BOOL bShow)
@@ -1010,194 +1011,168 @@ static void FlowPB_IconDrawThumbFileType(BOOL bShow)
 
     PB_GetParam(PBPRMID_CURR_FILEFMT, &uiFileFmt);
     //show icon
-    if(uiFileFmt & (PBFMT_MOVMJPG | PBFMT_AVI | PBFMT_MP4 | PBFMT_TS))
-    {
-        UxStatic_SetData(&UIFlowWndPlayThumb_StaticFileListCtrl,STATIC_VALUE,STRID_VIDEO_FILE_LIST);
-    }
-    else
-    {
-        UxStatic_SetData(&UIFlowWndPlayThumb_StaticFileListCtrl,STATIC_VALUE,STRID_PHOTO_FILE_LIST);
+    if (uiFileFmt & (PBFMT_MOVMJPG | PBFMT_AVI | PBFMT_MP4 | PBFMT_TS)) {
+        UxStatic_SetData(&UIFlowWndPlayThumb_StaticFileListCtrl, STATIC_VALUE, STRID_VIDEO_FILE_LIST);
+    } else {
+        UxStatic_SetData(&UIFlowWndPlayThumb_StaticFileListCtrl, STATIC_VALUE, STRID_PHOTO_FILE_LIST);
     }
     UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticFileListCtrl, TRUE);
-}
-
-static void FlowPB_IconDrawThumbOptionOK(BOOL bShow)
-{
-#if 0
-    static char item1_Buf[32];
-
-    if (bShow == FALSE) {
-        UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticOKCtrl, FALSE);
-        return;
-    }
-    sprintf(item1_Buf, "OK");
-    UxStatic_SetData(&UIFlowWndPlayThumb_StaticOKCtrl,STATIC_VALUE,Txt_Pointer(item1_Buf));
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticOKCtrl, TRUE);
-#endif
 }
 
 //#NT#2012/7/4#Philex - begin
 void FlowPB_DrawThumbRect(BOOL bShow)
 {
-    UINT32 uiBrowseIdx;
-    PB_GetParam(PBPRMID_THUMB_CURR_IDX, &uiBrowseIdx);
-    switch(uiBrowseIdx)
-    {
-    //Playback fileIndex starts from 1.
-    case 1:
-        UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel0Ctrl,bShow);
-        break;
-    case 2:
-        UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel1Ctrl,bShow);
-        break;
-    case 3:
-        UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel2Ctrl,bShow);
-        break;
-    case 4:
-        UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel3Ctrl,bShow);
-        break;
-    case 5:
-        UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel4Ctrl,bShow);
-        break;
-    case 6:
-        UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel5Ctrl,bShow);
-        break;
-    case 7:
-        UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel6Ctrl,bShow);
-        break;
-    case 8:
-        UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel7Ctrl,bShow);
-        break;
-    case 9:
-        UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel8Ctrl,bShow);
-        break;
-    }
+	UINT32 uiBrowseIdx;
+	PB_GetParam(PBPRMID_THUMB_CURR_IDX, &uiBrowseIdx);
+	switch (uiBrowseIdx) {
+	//Playback fileIndex starts from 1.
+	case 1:
+		UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel0Ctrl, bShow);
+		break;
+	case 2:
+		UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel1Ctrl, bShow);
+		break;
+	case 3:
+		UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel2Ctrl, bShow);
+		break;
+	case 4:
+		UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel3Ctrl, bShow);
+		break;
+	case 5:
+		UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel4Ctrl, bShow);
+		break;
+	case 6:
+		UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel5Ctrl, bShow);
+		break;
+	case 7:
+		UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel6Ctrl, bShow);
+		break;
+	case 8:
+		UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel7Ctrl, bShow);
+		break;
+	case 9:
+		UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel8Ctrl, bShow);
+		break;
+	}
 }
 
 
 void FlowPB_ClearAllThumbIcon(void)
 {
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel0Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel1Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel2Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel3Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel4Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel5Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel6Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel7Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel8Ctrl,FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel0Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel1Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel2Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel3Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel4Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel5Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel6Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel7Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_Panel8Ctrl, FALSE);
 
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect0Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect1Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect2Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect3Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect4Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect5Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect6Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect7Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect8Ctrl,FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect0Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect1Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect2Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect3Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect4Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect5Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect6Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect7Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect8Ctrl, FALSE);
 
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm0Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm1Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm2Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm3Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm4Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm5Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm6Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm7Ctrl,FALSE);
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm8Ctrl,FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm0Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm1Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm2Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm3Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm4Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm5Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm6Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm7Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm8Ctrl, FALSE);
 
-    UxCtrl_SetShow(&UIFlowWndPlayThumb_ThumbIDCtrl,FALSE);
+	UxCtrl_SetShow(&UIFlowWndPlayThumb_ThumbIDCtrl, FALSE);
     FlowPB_IconDrawThumbFileType(FALSE);
-    FlowPB_IconDrawThumbOptionOK(FALSE);
 }
 
 
 void FlowPB_ShowAllThumbIcon(void)
 {
-    UINT32  i, loopcnts,CurrFileFormat, uiParamVal;
-    UINT16  *pCurrFileFormat;   // Hideo@0503: variable type should be UINT16
+	UINT32  i, loopcnts, CurrFileFormat, uiParamVal;
+	UINT16  *pCurrFileFormat;   // Hideo@0503: variable type should be UINT16
 
-    FlowPB_DrawThumbRect(TRUE);
+	FlowPB_DrawThumbRect(TRUE);
     FlowPB_IconDrawThumbFileType(TRUE);
-    FlowPB_IconDrawThumbSeq(TRUE);
-    FlowPB_IconDrawThumbOptionOK(TRUE);
-    PB_GetParam(PBPRMID_THUMB_FMT_ARRAY, &uiParamVal);
-    pCurrFileFormat = (UINT16 *)uiParamVal;
+	FlowPB_IconDrawThumbSeq(TRUE);
+	PB_GetParam(PBPRMID_THUMB_FMT_ARRAY, &uiParamVal);
+	pCurrFileFormat = (UINT16 *)uiParamVal;
 
-    PB_GetParam(PBPRMID_THUMB_CURR_NUM, &loopcnts);
-    for (i=0; i<loopcnts; i++)
-    {
-        CurrFileFormat  = *pCurrFileFormat++;
+	PB_GetParam(PBPRMID_THUMB_CURR_NUM, &loopcnts);
+	for (i = 0; i < loopcnts; i++) {
+		CurrFileFormat  = *pCurrFileFormat++;
 
-        if (CurrFileFormat & PBFMT_READONLY)
-        {
-            switch(i)
-            {
-            case 0:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect0Ctrl,TRUE);
-                break;
-            case 1:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect1Ctrl,TRUE);
-                break;
-            case 2:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect2Ctrl,TRUE);
-                break;
-            case 3:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect3Ctrl,TRUE);
-                break;
-            case 4:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect4Ctrl,TRUE);
-                break;
-            case 5:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect5Ctrl,TRUE);
-                break;
-            case 6:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect6Ctrl,TRUE);
-                break;
-            case 7:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect7Ctrl,TRUE);
-                break;
-            case 8:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect8Ctrl,TRUE);
-                break;
-            }
-        }
+		if (CurrFileFormat & PBFMT_READONLY) {
+			switch (i) {
+			case 0:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect0Ctrl, TRUE);
+				break;
+			case 1:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect1Ctrl, TRUE);
+				break;
+			case 2:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect2Ctrl, TRUE);
+				break;
+			case 3:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect3Ctrl, TRUE);
+				break;
+			case 4:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect4Ctrl, TRUE);
+				break;
+			case 5:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect5Ctrl, TRUE);
+				break;
+			case 6:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect6Ctrl, TRUE);
+				break;
+			case 7:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect7Ctrl, TRUE);
+				break;
+			case 8:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_Protect8Ctrl, TRUE);
+				break;
+			}
+		}
 
-        if (CurrFileFormat & (PBFMT_MOVMJPG | PBFMT_AVI | PBFMT_MP4 | PBFMT_TS))
-        {
-            switch(i)
-            {
-            case 0:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm0Ctrl,TRUE);
-                break;
-            case 1:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm1Ctrl,TRUE);
-                break;
-            case 2:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm2Ctrl,TRUE);
-                break;
-            case 3:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm3Ctrl,TRUE);
-                break;
-            case 4:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm4Ctrl,TRUE);
-                break;
-            case 5:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm5Ctrl,TRUE);
-                break;
-            case 6:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm6Ctrl,TRUE);
-                break;
-            case 7:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm7Ctrl,TRUE);
-                break;
-            case 8:
-                UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm8Ctrl,TRUE);
-                break;
-            }
-        }
-    }
+		if (CurrFileFormat & (PBFMT_MOVMJPG | PBFMT_AVI | PBFMT_MP4 | PBFMT_TS)) {
+			switch (i) {
+			case 0:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm0Ctrl, TRUE);
+				break;
+			case 1:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm1Ctrl, TRUE);
+				break;
+			case 2:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm2Ctrl, TRUE);
+				break;
+			case 3:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm3Ctrl, TRUE);
+				break;
+			case 4:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm4Ctrl, TRUE);
+				break;
+			case 5:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm5Ctrl, TRUE);
+				break;
+			case 6:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm6Ctrl, TRUE);
+				break;
+			case 7:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm7Ctrl, TRUE);
+				break;
+			case 8:
+				UxCtrl_SetShow(&UIFlowWndPlayThumb_StaticICN_FileFilm8Ctrl, TRUE);
+				break;
+			}
+		}
+	}
 }
 
 
