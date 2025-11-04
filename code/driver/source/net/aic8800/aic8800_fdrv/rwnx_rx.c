@@ -2353,10 +2353,10 @@ check_len_update:
 			if (is_amsdu) {
 				
 //Check NETGEAR R7000 router's AMSDU packet format for compliance. start
-                AICWFDBG(LOGDEBUG, "%s is amsdu pkt pull_len:%d %x %x %x\r\n", __func__,
-                    pull_len, skb->data[pull_len - 8],
-                    skb->data[pull_len - 7],
-                    skb->data[pull_len - 2]);
+                // AICWFDBG(LOGDEBUG, "%s is amsdu pkt pull_len:%d %x %x %x\r\n", __func__,
+                //     pull_len, skb->data[pull_len - 8],
+                //     skb->data[pull_len - 7],
+                //     skb->data[pull_len - 2]);
                   if (skb->data[pull_len - 8] == 0xAA &&
                         skb->data[pull_len - 7] == 0xAA && 
                         skb->data[pull_len - 2] > 0x06){

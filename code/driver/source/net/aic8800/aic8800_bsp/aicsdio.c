@@ -1802,7 +1802,7 @@ int aicwf_sdiov3_func_init(struct aic_sdio_dev *sdiodev)
 	struct mmc_host *host;
 	u8 byte_mode_disable = 0x1;//1: no byte mode
 	int ret = 0;
-    //u8 val;
+    u8 val;
 	struct aicbsp_feature_t feature;
 
 	aicbsp_get_feature(&feature, NULL);
@@ -1832,8 +1832,8 @@ int aicwf_sdiov3_func_init(struct aic_sdio_dev *sdiodev)
         sdio_release_host(sdiodev->func);
         return ret;
     }
-#if 0
-    if (host->ios.timing == MMC_TIMING_UHS_DDR50) {
+#if 1
+    if (0) {
         val = 0x21;//0x1D;//0x5;
     } else {
         val = 0x01;//0x19;//0x1;
@@ -1845,13 +1845,15 @@ int aicwf_sdiov3_func_init(struct aic_sdio_dev *sdiodev)
         sdio_release_host(sdiodev->func);
         return ret;
     }
-    sdio_f0_writeb(sdiodev->func, 0x0, 0xF8, &ret);
+	//不可以CMD5380  程序崩溃0xB0 
+	//90 17MA A0 16.5 0x88 18M 0x84 16.5M 0x8A 19M
+    sdio_f0_writeb(sdiodev->func, 0x8A, 0xF8, &ret);
     if (ret) {
         sdio_err("set iopad delay2 fail %d\n", ret);
         sdio_release_host(sdiodev->func);
         return ret;
     }
-    sdio_f0_writeb(sdiodev->func, 0x40, 0xF1, &ret);
+    sdio_f0_writeb(sdiodev->func, 0x00, 0xF1, &ret);
     if (ret) {
         sdio_err("set iopad delay1 fail %d\n", ret);
         sdio_release_host(sdiodev->func);
@@ -1859,7 +1861,7 @@ int aicwf_sdiov3_func_init(struct aic_sdio_dev *sdiodev)
     }
     msleep(1);
 #if 1//SDIO CLOCK SETTING
-	if ((feature.sdio_clock > 0) && (host->ios.timing != MMC_TIMING_UHS_DDR50)) {
+	if ((feature.sdio_clock > 0) && (0)) {
 		host->ios.clock = feature.sdio_clock;
 		host->ops->set_ios(host, &host->ios);
 		sdio_dbg("Set SDIO Clock %d MHz\n", host->ios.clock/1000000);

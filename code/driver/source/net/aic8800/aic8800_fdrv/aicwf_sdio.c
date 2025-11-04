@@ -3186,7 +3186,7 @@ int aicwf_sdiov3_func_init(struct aic_sdio_dev *sdiodev)
         return ret;
     }
 #if 0
-    if (host->ios.timing == MMC_TIMING_UHS_DDR50) {
+    if (1) {
         val = 0x21;//0x1D;//0x5;
     } else {
         val = 0x01;//0x19;//0x1;
@@ -3198,7 +3198,7 @@ int aicwf_sdiov3_func_init(struct aic_sdio_dev *sdiodev)
         sdio_release_host(sdiodev->func);
         return ret;
     }
-    sdio_f0_writeb(sdiodev->func, 0x0, 0xF8, &ret);
+    sdio_f0_writeb(sdiodev->func, 0x48, 0xF8, &ret);
     if (ret) {
         sdio_err("set iopad delay2 fail %d\n", ret);
         sdio_release_host(sdiodev->func);
@@ -3211,8 +3211,8 @@ int aicwf_sdiov3_func_init(struct aic_sdio_dev *sdiodev)
         return ret;
     }
     msleep(1);
-#if 1//SDIO CLOCK SETTING
-	if ((feature.sdio_clock > 0) && (host->ios.timing != MMC_TIMING_UHS_DDR50)) {
+#if 0//SDIO CLOCK SETTING
+	if ((feature.sdio_clock > 0) && (0)) {
 		host->ios.clock = feature.sdio_clock;
 		host->ops->set_ios(host, &host->ios);
 		AICWFDBG(LOGINFO, "Set SDIO Clock %d MHz\n", host->ios.clock/1000000);
