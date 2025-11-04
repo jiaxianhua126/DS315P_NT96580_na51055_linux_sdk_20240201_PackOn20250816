@@ -60,6 +60,7 @@ INT32 UIFlowWndMovie_OnKeyZoomout(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnBattery(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnKeyMode(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnCustom1(VControl *, UINT32, UINT32 *);
+INT32 UIFlowWndMovie_OnCustom2(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnMovieFinish(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnMovieOneSec(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnMovieFull(VControl *, UINT32, UINT32 *);
@@ -142,8 +143,6 @@ extern BOOL g_GPSStatus;
 
 _ALIGNED(4)  GPSDATA gpsdata = {0};
 
-static BOOL Open_WiFi(void);
-
 BOOL ManualSetSOS = FALSE;
 BOOL ParkingM_PreRecord_EMR = FALSE; //ParkingM_MotionDet_EMR
 static BOOL    g_uiParkingModeMotionDet = FALSE;
@@ -154,6 +153,7 @@ UINT32 g_uiPreMovieCodec = 0;
 BOOL Manual_PowerOff = FALSE;
 static BOOL g_beep_init = FALSE;
 BOOL MotionLed_EN = FALSE;
+BOOL WifiStarting = FALSE;
 
 extern MOVIE_RECODE_INFO gMovie_Rec_Info[SENSOR_MAX_NUM];
 BOOL g_bMovieHDR_changed = FALSE;
@@ -1510,7 +1510,7 @@ INT32 UIFlowWndMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 			ASR_Uninstall();
 		}
 		#endif
-		Open_WiFi();
+		UIFlowWndMovie_OnCustom2(pCtrl, paramNum, paramArray);
 		#endif
 	}
 
@@ -1570,9 +1570,10 @@ INT32 UIFlowWndMovie_OnCustom1(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 }
 #if(WIFI_AP_FUNC==ENABLE)
 #include "UIWnd/UIFlow.h"
-static BOOL Open_WiFi(void)
+INT32 UIFlowWndMovie_OnCustom2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	//DBG_DUMP("OpenWi_Fi\r\n");
+	WifiStarting = TRUE;
     if ((gMovData.State == MOV_ST_REC)||(gMovData.State == (MOV_ST_REC|MOV_ST_ZOOM))) {
         if (FlowMovie_GetRecCurrTime() <= 1) {
             Delay_DelayMs(1000);
@@ -2110,7 +2111,8 @@ void UIFlowWndMovie_GetASR_Flag(void)
 		printf("call MovieGetAsr_Flag = %d\r\n",MovieGetAsr_Flag);
 		FlowMovie_WakeUpLCDBacklight();
 		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_OFF) {
-			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_LONG_PRESS);
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_PRESS);
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_RELEASE);
 		}		
 		Dx_SetASR_Flag(0);
 
@@ -2120,7 +2122,8 @@ void UIFlowWndMovie_GetASR_Flag(void)
 		printf("call MovieGetAsr_Flag = %d\r\n",MovieGetAsr_Flag);
 		FlowMovie_WakeUpLCDBacklight();
 		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_ON) {
-			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_LONG_PRESS);
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_PRESS);
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_RELEASE);
 		}		
 		Dx_SetASR_Flag(0);
 	break;
@@ -2139,7 +2142,7 @@ void UIFlowWndMovie_GetASR_Flag(void)
 	case ASR_OPENWIFI :
 		printf("call MovieGetAsr_Flag = %d\r\n",MovieGetAsr_Flag);
 		FlowMovie_WakeUpLCDBacklight();
-		Ux_PostEvent(NVTEVT_KEY_ENTER, 1, NVTEVT_KEY_LONG_PRESS);	
+		Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_LONG_PRESS);	
 		Dx_SetASR_Flag(0);
 	break;
 	

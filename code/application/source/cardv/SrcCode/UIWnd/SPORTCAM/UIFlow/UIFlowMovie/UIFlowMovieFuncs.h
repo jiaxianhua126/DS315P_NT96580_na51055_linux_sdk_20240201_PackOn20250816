@@ -99,6 +99,7 @@ extern UINT8 g_FileRecoveryFlag;
 extern BOOL g_NotRecordWrn;
 extern BOOL g_RearErr;
 extern UINT8 g_RearRebootCnt;
+extern BOOL WifiStarting;
 
 //Callback function
 extern void FlowMovie_RawEncCB(UINT32 uiEventID);

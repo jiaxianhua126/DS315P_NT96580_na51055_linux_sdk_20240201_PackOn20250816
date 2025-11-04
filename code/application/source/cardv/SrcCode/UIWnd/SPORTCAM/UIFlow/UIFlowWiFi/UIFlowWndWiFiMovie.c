@@ -369,6 +369,7 @@ INT32 UIFlowWndWiFiMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
         //Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_WIFI_CONTROL_TIP, FLOWWRNMSG_TIMER_3SEC);
     }
     bWndWiFiMovieOpenFirst = TRUE;
+	WifiStarting = FALSE;
     Display_SetEnable(LAYER_VDO1, TRUE);
     FlowMovie_WakeUpLCDBacklight();
 // test wifi need shield
@@ -1163,8 +1164,8 @@ void UIFlowWndWiFiMovie_GetASR_Flag(void)
 		printf("call MovieWiFiGetAsr_Flag = %d\r\n",MovieWiFiGetAsr_Flag);
 		FlowMovie_WakeUpLCDBacklight();
 		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_OFF) {
-			Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_PRESS);
-			Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_RELEASE);
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_PRESS);
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_RELEASE);
 		}		
 		Dx_SetASR_Flag(0);
 
@@ -1174,8 +1175,8 @@ void UIFlowWndWiFiMovie_GetASR_Flag(void)
 		printf("call MovieWiFiGetAsr_Flag = %d\r\n",MovieWiFiGetAsr_Flag);
 		FlowMovie_WakeUpLCDBacklight();
 		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_ON) {
-			Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_PRESS);
-			Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_RELEASE);
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_PRESS);
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_RELEASE);
 		}		
 		Dx_SetASR_Flag(0);
 	break;
@@ -1193,7 +1194,7 @@ void UIFlowWndWiFiMovie_GetASR_Flag(void)
 	case ASR_CLOSEWIFI:
 		printf("call MovieWiFiGetAsr_Flag = %d\r\n",MovieWiFiGetAsr_Flag);
 		FlowMovie_WakeUpLCDBacklight();
-		Ux_PostEvent(NVTEVT_KEY_ENTER, 1, NVTEVT_KEY_LONG_PRESS);	
+		Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_LONG_PRESS);	
 		Dx_SetASR_Flag(0);
 	break;
 	

@@ -11,7 +11,7 @@
 #if (SENSOR_INSERT_FUNCTION == ENABLE)
 void DetSensor(void);
 int SX_TIMER_DET_SENSOR_ID = -1;
-SX_TIMER_ITEM(DetSensor, DetSensor, 25, FALSE)
+SX_TIMER_ITEM(DetSensor, DetSensor, 5, FALSE)
 #endif
 extern BOOL SysInit_getintopcc_mode_getstd(void);
 static UINT32 uiSensorEnableState_fw = SENSOR_DEFAULT_DISPLAY_MASK; //fw attach sensor
@@ -44,11 +44,59 @@ void System_DisableSensor(UINT32 SensorMask)
 }
 
 #if (SENSOR_INSERT_FUNCTION == ENABLE)
-
 extern BOOL   GPIOMap_DetTVIPlugIn(void);
 void DetSensor(void)
 {
+#if (SENSOR_CAPS_COUNT==2)
+	static BOOL cp = 0;
+	BOOL p;
+	INT iCurrMode = System_GetState(SYS_STATE_CURRMODE);
 
+	if (iCurrMode == PRIMARY_MODE_MOVIE) {
+		if (MovieExe_DetSensor(&p) != HD_OK) {
+			return;
+		}
+
+		if ((cp == 0) && (p == 1)) {
+			System_EnableSensor(SENSOR_INSERT_MASK);
+			UI_SetData(FL_DUAL_CAM, UI_GetData(FL_DUAL_CAM_MENU)); // sensor plug, set PIP style by menu setting
+			DBG_ERR("------- SENSOR2_INSERT --------- \r\n");
+			Ux_PostEvent(NVTEVT_EXE_MOVIE_SENSORHOTPLUG, 0);
+		} else if ((cp == 1) && (p == 0)) {
+			if (!GPIOMap_DetTVIPlugIn()) {
+				System_DisableSensor(SENSOR_INSERT_MASK);
+				#if (MOVIE_IME_CROP == ENABLE)
+					UI_SetData(FL_DUAL_CAM, DUALCAM_LR_FRONT_FULL); // sensor unplug, set PIP style to front
+				#else
+					UI_SetData(FL_DUAL_CAM, DUALCAM_FRONT); // sensor unplug, set PIP style to front
+				#endif
+				DBG_ERR("------- SENSOR2_REMOVE --------- \r\n");
+				Ux_PostEvent(NVTEVT_EXE_MOVIE_SENSORHOTPLUG, 0);
+			}
+		}
+		cp = p;
+	}else if (iCurrMode == PRIMARY_MODE_PHOTO){
+		if (PhotoExe_DetSensor(&p) != HD_OK) {
+			return;
+		}
+
+		if ((cp == 0) && (p == 1)) {
+			System_EnableSensor(SENSOR_INSERT_MASK);
+			UI_SetData(FL_DUAL_CAM, UI_GetData(FL_DUAL_CAM_MENU)); // sensor plug, set PIP style by menu setting
+			Ux_PostEvent(NVTEVT_EXE_SENSORHOTPLUG, 0);
+		} else if ((cp == 1) && (p == 0)) {
+			System_DisableSensor(SENSOR_INSERT_MASK);
+			#if (PHOTO_IME_CROP == ENABLE)
+				UI_SetData(FL_DUAL_CAM, DUALCAM_LR_FRONT_FULL); // sensor unplug, set PIP style to front
+			#else
+				UI_SetData(FL_DUAL_CAM, DUALCAM_FRONT); // sensor unplug, set PIP style to front
+			#endif
+			Ux_PostEvent(NVTEVT_EXE_SENSORHOTPLUG, 0);
+		}
+		cp = p;
+	}
+
+#else
 	INT iCurrMode = System_GetState(SYS_STATE_CURRMODE);
 
 	if (iCurrMode == PRIMARY_MODE_MOVIE) {
@@ -58,6 +106,33 @@ void DetSensor(void)
 		BOOL bChg=0;
 
 		uiSensorEnableState_prev_fw=uiSensorEnableState_fw;
+#if (SENSOR_INSERT_MASK & SENSOR_1)
+		static BOOL cp3 = 0;
+		BOOL p3;
+		path_id = ImageApp_MovieMulti_GetVcapCtrlPort(_CFG_REC_ID_1);
+		result = vendor_videocap_get(path_id, VENDOR_VIDEOCAP_PARAM_GET_PLUG, &p3);
+		//DBG_DUMP("_CFG_REC_ID_1  result=%d, plug=%d\r\n", result, p3);
+		if (result== HD_OK) {
+			if ((cp3 == 0) && (p3 == 1)) {
+				uiSensorEnableState_fw |= SENSOR_1;
+				bChg=1;
+				UI_SetData(FL_DUAL_CAM, UI_GetData(FL_DUAL_CAM_MENU)); // sensor plug, set PIP style by menu setting
+				Ux_PostEvent(NVTEVT_EXE_MOVIE_SENSORHOTPLUG, 0);
+			} else if ((cp3 == 1) && (p3 == 0)) {
+				uiSensorEnableState_fw &= ~SENSOR_1;
+				bChg=1;
+			#if (MOVIE_IME_CROP == ENABLE)
+					UI_SetData(FL_DUAL_CAM, DUALCAM_LR_FRONT_FULL); // sensor unplug, set PIP style to front
+			#else
+					UI_SetData(FL_DUAL_CAM, DUALCAM_FRONT); // sensor unplug, set PIP style to front
+			#endif
+			}
+			cp3 = p3;
+		}else{
+			DBG_ERR("s2 result = %d, path_id=0x%x\r\n", result, path_id);
+		}
+#endif
+
 #if (SENSOR_INSERT_MASK & SENSOR_2)
 		static BOOL cp = 0;
 		BOOL p;
@@ -104,7 +179,7 @@ void DetSensor(void)
 			Ux_PostEvent(NVTEVT_EXE_MOVIE_SENSORHOTPLUG, 0);
 		}
 	}
-
+#endif
 }
 
 void System_EnableSensorDet(void)

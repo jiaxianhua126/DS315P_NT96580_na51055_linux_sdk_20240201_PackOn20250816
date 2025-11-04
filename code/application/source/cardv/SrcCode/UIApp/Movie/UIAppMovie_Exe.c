@@ -245,6 +245,8 @@ void MovieExe_CheckMovieSizeBySensorConnect(void)
 		}
 	}
 	uiPrevSensor = uiSensor;
+	
+    DBG_WRN("*** End  SysGetFlag(FL_MOVIE_SIZE)= %d ***\r\n", SysGetFlag(FL_MOVIE_SIZE));
 }
 #endif
 
@@ -1360,7 +1362,6 @@ void MovieExe_PipCB(void)
 }
 #endif
 
-extern BOOL g_bSensorNumChanged;
 void MovieExe_EthCam_ChgDispCB(UINT32 DualCam)
 {
 #if defined(_NVT_ETHREARCAM_RX_)
@@ -1377,7 +1378,6 @@ void MovieExe_EthCam_ChgDispCB(UINT32 DualCam)
 	if((socketCliEthData1_IsRecv(ETHCAM_PATH_ID_1) || socketCliEthData1_IsRecv(ETHCAM_PATH_ID_2))&& (DualCam==DualCamChk))
 #endif
 	{
-		g_bSensorNumChanged = TRUE;
 		#if(ETH_REARCAM_CLONE_FOR_DISPLAY == ENABLE)
 		if(socketCliEthData1_IsRecv(ETHCAM_PATH_ID_1)==0){
 			BKG_PostEvent(NVTEVT_BKW_ETHCAM_SYNC_TIME);
@@ -1400,7 +1400,6 @@ void MovieExe_EthCam_ChgDispCB(UINT32 DualCam)
 		if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
 			WifiApp_SendCmd(WIFIAPP_CMD_NOTIFY_STATUS, WIFIAPP_RET_SENSOR2_INSERT);
 		}
-        g_bSensorNumChanged = TRUE;
 		DBG_DUMP("^G---connected--UI_SetData(FL_DUAL_CAM)=%d\r\n",UI_GetData(FL_DUAL_CAM));
 		#endif
 		
@@ -1409,7 +1408,6 @@ void MovieExe_EthCam_ChgDispCB(UINT32 DualCam)
 		UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_BOTH);
 #endif
 	}else{
-		g_bSensorNumChanged = TRUE;
 #if((ETH_REARCAM_CAPS_COUNT+SENSOR_CAPS_COUNT)  == 2)//#if(ETH_REARCAM_CAPS_COUNT == 1)
 		#if(defined(_NVT_ETHREARCAM_RX_))
 		if(!System_GetShutdownBegin()){
@@ -1423,7 +1421,6 @@ void MovieExe_EthCam_ChgDispCB(UINT32 DualCam)
 				UI_SetData(FL_DUAL_CAM_MENU, DUALCAM_FRONT);
 			}
 		}
-        g_bSensorNumChanged = TRUE;
 
 		if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
 			WifiApp_SendCmd(WIFIAPP_CMD_NOTIFY_STATUS, WIFIAPP_RET_SENSOR2_REMOVE); 
@@ -7888,7 +7885,7 @@ HD_RESULT MovieExe_DetSensor(BOOL *plug)
 
 static void MovieExe_Sensor_HotPlug_Disp(void)
 {
-#if 1
+#if (SENSOR_CAPS_COUNT>=3)
 	UINT32 u32CurrSensorEn = System_GetEnableSensor();
 	UINT32 u32PrevSensorEn = System_GetPrevEnableSensor();
 	UINT32 u32Mask;
@@ -7934,7 +7931,7 @@ static void MovieExe_Sensor_HotPlug_Disp(void)
 
 static void MovieExe_Sensor_HotPlug_WiFi(void)
 {
-#if 1
+#if (SENSOR_CAPS_COUNT>=3)
 	UINT32 u32CurrSensorEn = System_GetEnableSensor();
 	UINT32 u32PrevSensorEn = System_GetPrevEnableSensor();
 	UINT32 u32Mask;
@@ -8013,8 +8010,9 @@ INT32 MovieExe_OnSensorHotPlug(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 	}
 
 	MovieExe_Sensor_HotPlug_Rec();
-#if 1//TBD
-    if (SysGetFlag(FL_FIRSTPOWERON) == FIRSTPOWERON_TRUE) {
+
+#if (SENSOR_CAPS_COUNT == 2)
+    if (WifiStarting || SysGetFlag(FL_FIRSTPOWERON) == FIRSTPOWERON_TRUE) {
 		DBG_DUMP("g_bSensorNumChanged=%d===================\r\n",g_bSensorNumChanged);
 		return NVTEVT_CONSUME;
 	}		

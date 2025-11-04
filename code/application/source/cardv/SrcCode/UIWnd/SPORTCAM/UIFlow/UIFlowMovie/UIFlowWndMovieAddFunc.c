@@ -92,9 +92,9 @@ void UIFlowWndMovie_OnAutoStartRec(void)
 {
 	if (Get_PreviewStable_Record() == TRUE) 
 	{
-		if(GPIOMap_EthCam1Det())
+		if(GPIOMap_DetTVIPlugIn())
 		{
-			if (g_isRearOK >= 2)
+			if (System_GetEnableSensor() == (SENSOR_1 | SENSOR_2))
 			{
 				Set_PreviewStable_Record(FALSE);
 				if (gMovData.State != MOV_ST_REC) 
@@ -144,6 +144,7 @@ void UIFlowMoive_AutoStartWiFi(void)
 			}
 			//debug_msg("AutoWiFiCnt=%d\r\n",AutoWiFiCnt);
             if ((AutoWiFiCnt >= 4)) {
+				WifiStarting = TRUE;
                 if ((gMovData.State == MOV_ST_REC)||(gMovData.State == (MOV_ST_REC|MOV_ST_ZOOM))) {
                     if ((FlowMovie_GetRecCurrTime() <= 1)&&(SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) {
                         Delay_DelayMs(1000);
@@ -181,6 +182,7 @@ void UIFlowMoive_AutoStartWiFi(void)
 					return ;
 				}
 			}
+		    WifiStarting = TRUE;
             if ((gMovData.State == MOV_ST_REC)||(gMovData.State == (MOV_ST_REC|MOV_ST_ZOOM))) {
                 if ((FlowMovie_GetRecCurrTime() <= 1)&&(SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) {
                     Delay_DelayMs(1000);
