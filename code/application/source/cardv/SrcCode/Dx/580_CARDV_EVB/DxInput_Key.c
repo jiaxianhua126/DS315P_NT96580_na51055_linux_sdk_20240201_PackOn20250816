@@ -391,6 +391,7 @@ UINT32 DrvKey_DetPowerKey(void)
 	static BOOL   Sen2PlugIn = FALSE;
 	static BOOL   PreSen2PlugIn = FALSE;
 	extern BOOL   g_bSensorNumChanged;
+	static BOOL   firstTime = TRUE;
 
 	//DetCnt++;
 	//if(DetCnt >= 2)
@@ -403,8 +404,16 @@ UINT32 DrvKey_DetPowerKey(void)
 		}
 
 		if (Sen2PlugIn != PreSen2PlugIn) {
-			g_bSensorNumChanged = TRUE;
+			if(firstTime){//just sync status 
+				firstTime = FALSE;
+			}else{
+				g_bSensorNumChanged = TRUE;
+			}
 			PreSen2PlugIn = Sen2PlugIn;
+		}else{
+			if(firstTime){//just sync status 
+				firstTime = FALSE;
+			}
 		}
 		//DBG_DUMP("^G ----- GPIOMap_DetTVIPlugIn = %d, Sen2PlugIn = %d,  PreSen2PlugIn = %d, g_bSensorNumChanged =%d \r\n", 
 				 //GPIOMap_DetTVIPlugIn(), Sen2PlugIn, PreSen2PlugIn, g_bSensorNumChanged);
