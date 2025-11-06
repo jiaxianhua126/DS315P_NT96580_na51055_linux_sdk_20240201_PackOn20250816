@@ -1798,10 +1798,10 @@ enum _ENTER_PARKING_TIMER {
 enum _WIFI {
 	WIFI_OFF,
 	WIFI_ON_24G,
+	WIFI_ON_52G,
 	WIFI_ON_58G,
 	WIFI_ID_MAX,
 	WIFI_ON,
-	WIFI_ON_52G,
 };
 
 //-----------------------------------------------------------------------------
@@ -1817,10 +1817,10 @@ enum _WIFI_AUTO {
 // Wi-Fi Band
 //-----------------------------------------------------------------------------
 enum _WIFI_BAND {
-    WIFI_BAND_24G,
+    WIFI_BAND_24G,		
+    WIFI_BAND_52G,
     WIFI_BAND_58G,
     WIFI_BAND_ID_MAX,
-    WIFI_BAND_52G,
 };
 
 //-----------------------------------------------------------------------------

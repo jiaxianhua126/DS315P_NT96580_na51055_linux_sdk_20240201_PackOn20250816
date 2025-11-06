@@ -1612,12 +1612,8 @@ int XML_GetRawEncJpg(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSi
 int XML_GetVersion(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
 {
     char buf[128] = {0};
-#if (defined(_NVT_ETHREARCAM_RX_))
-    snprintf(buf,sizeof(buf),"%s %s",Prj_GetVersionString(),Prj_GetEthCam1VersionString());
-    //snprintf(buf,sizeof(buf),"%s %s","S2P.V0.70.20220101","Rear:V1.00_20220101");
-#elif (defined(_NVT_ETHERNET_NONE_))
+    //snprintf(buf,sizeof(buf),"%s %s",Prj_GetVersionString(),Prj_GetEthCam1VersionString());
 	snprintf(buf,sizeof(buf),"%s",Prj_GetVersionString());
-#endif
 	XML_StringResult(WIFIAPP_CMD_VERSION,buf, bufAddr, bufSize, mimeType);
 	return CYG_HFS_CB_GETDATA_RETURN_OK;
 }

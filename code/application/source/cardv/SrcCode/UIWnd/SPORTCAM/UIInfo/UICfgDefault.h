@@ -157,7 +157,7 @@
 #if defined(COUNTRY_JP)
 #define DEFAULT_LANGUAGE                LANG_JP
 #else
-#define DEFAULT_LANGUAGE                LANG_TC
+#define DEFAULT_LANGUAGE                LANG_EN
 #endif
 
 #define DEFAULT_FREQUENCY               FREQUENCY_60HZ
@@ -188,7 +188,7 @@
 #if defined(COUNTRY_JP)
 #define DEFAULT_TIME_ZONE               GMT_P9
 #else
-#define DEFAULT_TIME_ZONE               GMT_P8
+#define DEFAULT_TIME_ZONE               GMT_0
 #endif
 #define DEFAULT_SPEED_UNIT              SPEED_UNIT_KPH
 #define DEFAULT_GPS_STAMP               GPS_STAMP_BOTH
