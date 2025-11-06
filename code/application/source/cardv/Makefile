@@ -19,6 +19,13 @@ KFLOW_DIR = $(NVT_HDAL_DIR)/drivers/k_flow
 OUTPUT_DIR = ./output
 INSTALL_DIR = ../../output
 
+# ky_adas
+EXTRA_INCLUDE += \
+	-I$(LIBRARY_DIR)/include/KyAdas \
+	-I$(LIBRARY_DIR)/include/KyAdas/adas \
+	-I$(LIBRARY_DIR)/include/KyAdas/common \
+	-I$(LIBRARY_DIR)/include/KyAdas/rcw \
+
 # public includes
 EXTRA_INCLUDE += \
 	-I$(NVT_VOS_DIR)/include \
@@ -103,6 +110,7 @@ SRC = \
 	./SrcCode/UIApp/Movie/UIAppMovie_CommPoolInit.c \
 	./SrcCode/UIApp/Movie/UIAppMovie_RecSetting.c \
 	./SrcCode/UIApp/Movie/UIAppMovie_AlgFunc_MD.c \
+	./SrcCode/UIApp/Movie/UIAppMovie_AlgFunc_ADAS_RCW.c \
 	./SrcCode/UIApp/Movie/UIAppMovie_LiveStream.c \
 	./SrcCode/UIApp/Movie/UIAppMovie_cmd.c \
 	./SrcCode/UIApp/Movie/UIAppMovie_SetUserData.c \

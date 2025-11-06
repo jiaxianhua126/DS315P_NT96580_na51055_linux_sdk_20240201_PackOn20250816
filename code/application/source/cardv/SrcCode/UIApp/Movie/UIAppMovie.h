@@ -260,10 +260,20 @@ typedef struct {
 //#NT#2016/03/25#KCHong -begin
 //#NT#New ADAS
 typedef enum _ADAS_ALARM {
-	ADAS_ALARM_FC = 0,
-	ADAS_ALARM_LD = 1,
-	ADAS_ALARM_STOP = 2,
-	ADAS_ALARM_GO = 3,
+	ADAS_ALARM_FC = 0,           // Ã¶¾Ù³£Á¿ 0£ºÇ°ÏòÅö×²Ô¤¾¯£¨Forward Collision£©
+    ADAS_ALARM_LD = 1,           // Ã¶¾Ù³£Á¿ 1£º³µµÀÆ«ÀëÔ¤¾¯£¨Lane Departure£©
+    ADAS_ALARM_STOP = 2,         // Ã¶¾Ù³£Á¿ 2£ºÍ£³µÌáÐÑ£¨Èç³µÁ¾¾²Ö¹³¬Ê±£©
+    ADAS_ALARM_GO = 3,           // Ã¶¾Ù³£Á¿ 3£ºÆð²½ÌáÐÑ£¨ÀýÈçÇ°·½³µÁ¾ÒÆ¶¯£©
+    ADAS_ALARM_LD_RIGHT = 4,     // Ã¶¾Ù³£Á¿ 5£ºÓÒ²à³µµÀÆ«Àë
+	ADAS_ALARM_LD_LEFT = 5,      // Ã¶¾Ù³£Á¿ 6£º×ó²à³µµÀÆ«Àë
+	ADAS_ALARM_FPW,
+	ADAS_ALARM_VIRTUAL_BUMPERS,
+	ADAS_ALARM_RCW_REAR,
+	ADAS_ALARM_LCA_LEFT,
+	ADAS_ALARM_LCA_RIGHT,
+	ADAS_ALARM_PD,
+
+
 	ADAS_ALARM_MAX_CNT,
 	ENUM_DUMMY4WORD(_ADAS_ALARM)
 } ADAS_ALARM;
@@ -351,6 +361,12 @@ extern ER MovieAlgFunc_MD_InstallID(void);
 extern ER MovieAlgFunc_MD_UninstallID(void);
 extern UINT32 MovieAlgFunc_MD_GetResult(void);
 extern UINT32 MovieExe_GetCommonMemInitFinish(void);
+#if (_ADAS_FUNC_ == ENABLE)
+//extern ER MovieAlgFunc_ADAS_InstallID(void);
+//extern ER MovieAlgFunc_ADAS_UninstallID(void);
+extern ER MovieAlgFunc_ADAS_RCW_InstallID(void);
+extern ER MovieAlgFunc_ADAS_RCW_UninstallID(void);
+#endif
 
 extern void Movie_SetUserData(UINT32 rec_id);
 extern void MovieExe_PipCB(void);
