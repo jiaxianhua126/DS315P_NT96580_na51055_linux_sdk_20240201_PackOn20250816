@@ -150,6 +150,11 @@ typedef enum {
 	FL_MOVIE_PIM,               // Movie PIM
 	FL_MOVIE_FCW,               // Movie FCW
 	FL_MOVIE_LDWS,              // Movie LDWS
+	FL_ADAS_LCAWS,               //Lane change assist
+	FL_ADAS_STOP_GO,			
+	FL_ADAS_PCWS, 		//Pedestrian Collision Warning               
+	FL_ADAS_RCWS, 		//Rear Collision Warning             
+	FL_ADAS_VIRTUAL_BUMPER,
 	FL_MOVIE_DDD,               // Movie DDD
 	FL_MOVIE_ADAS_CAL,          // Movie ADAS CAL
 	//#NT#2016/06/14#Charlie Chang -begin
@@ -1254,6 +1259,53 @@ enum {
 	MOVIE_LDWS_ON,
 	MOVIE_LDWS_ID_MAX,
 };
+
+//-----------------------------------------------------------------------------
+// ADAS Lane change assist option
+//-----------------------------------------------------------------------------
+enum {
+	ADAS_LCAWS_OFF = 0,
+	ADAS_LCAWS_ON,
+	ADAS_LCAWS_ID_MAX,
+};
+
+//-----------------------------------------------------------------------------
+// ADAS STOP && GO option
+//-----------------------------------------------------------------------------
+enum {
+	ADAS_STOP_GO_OFF = 0,
+	ADAS_STOP_GO_ON,
+	ADAS_STOP_GO_ID_MAX,
+};
+
+//-----------------------------------------------------------------------------
+// ADAS Pedestrian Collision Warning option
+//-----------------------------------------------------------------------------
+enum {
+	ADAS_PCWS_OFF = 0,
+	ADAS_PCWS_ON,
+	ADAS_PCWS_ID_MAX,
+};
+
+
+//-----------------------------------------------------------------------------
+// ADAS Rear Collision Warning	 option 
+//-----------------------------------------------------------------------------
+enum {
+	ADAS_RCWS_OFF = 0,
+	ADAS_RCWS_ON,
+	ADAS_RCWS_ID_MAX,
+};
+
+//-----------------------------------------------------------------------------
+// ADAS PCWS option
+//-----------------------------------------------------------------------------
+enum {
+	ADAS_VIRTUAL_BUMPER_OFF = 0,
+	ADAS_VIRTUAL_BUMPER_ON,
+	ADAS_VIRTUAL_BUMPER_ID_MAX,
+};
+
 
 //-----------------------------------------------------------------------------
 // Movie DDD option

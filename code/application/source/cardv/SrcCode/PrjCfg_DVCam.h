@@ -46,7 +46,7 @@
 #define FW_VERSION_NUM                  "REGULAR_0402_001"
 
 #define FW_VERSION_RELEASE              DISABLE //DISABLE
-#define FW_CUSTOMER_MODEL               "DS315WG"
+#define FW_CUSTOMER_MODEL               "DS315P"
 #define FW_CUSTOMER_VERSION_NUM         "V0.35"
 
 

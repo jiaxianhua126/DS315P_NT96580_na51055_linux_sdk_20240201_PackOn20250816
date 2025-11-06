@@ -7707,7 +7707,7 @@ BOOL FlowMovie_CheckReOpenItem(void)
 			bReOpen = FALSE;    // because in NVTEVT_EXE_DUALCAM, NVTEVT_EXE_MOVIE_DUALCAM will invoke ReOpen
 		}
 	}
-
+	#if 0//not use
 	if (UI_GetData(FL_MOVIE_LDWS) != UI_GetData(FL_MOVIE_LDWS_MENU)) {
 		UI_SetData(FL_MOVIE_LDWS, UI_GetData(FL_MOVIE_LDWS_MENU));
 		bReOpen = TRUE;
@@ -7717,6 +7717,7 @@ BOOL FlowMovie_CheckReOpenItem(void)
 		UI_SetData(FL_MOVIE_FCW, UI_GetData(FL_MOVIE_FCW_MENU));
 		bReOpen = TRUE;
 	}
+	#endif
 
 	if (UI_GetData(FL_MOVIE_TIMELAPSE_REC) != UI_GetData(FL_MOVIE_TIMELAPSE_REC_MENU)) {
 		if ((UI_GetData(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF) &&
