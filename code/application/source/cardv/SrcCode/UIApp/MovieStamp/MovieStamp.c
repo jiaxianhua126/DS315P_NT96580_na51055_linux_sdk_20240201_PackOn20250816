@@ -274,7 +274,7 @@ char gUICustomize_StrBuf[13] = {""};
 
 char gUIDateTime_NullStrBuf[20] = {"                   "};
 #if (MACHINE_TYPE==MACHINE_TYPE_DS315P)
-char gUICustomer_Model[20]  = {"PERNIS DS315P"};
+char gUICustomer_Model[20]  = {"PERNIS DS315WG"};
 #else
 char gUICustomer_Model[20]  = {"PERNIS S2P"};
 #endif
