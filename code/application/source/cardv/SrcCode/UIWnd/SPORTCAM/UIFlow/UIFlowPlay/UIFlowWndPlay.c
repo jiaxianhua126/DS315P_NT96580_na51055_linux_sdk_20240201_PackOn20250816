@@ -245,6 +245,16 @@ static void UIFlowWndPlay_CheckStatus(void)
 	}
 }
 
+static BOOL uiShowFileType = TRUE;
+void UIFlowPlayShowFileTypeEnable(BOOL En)
+{
+    uiShowFileType = En;
+}
+BOOL UIPlayGet_FileType(void)
+{
+    return uiShowFileType;
+}
+
 #if PLAY_THUMB_AND_MOVIE // play thumbnail and movie together
 INT32 UIFlowWndPlay_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -287,16 +297,6 @@ INT32 UIFlowWndPlay_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	return NVTEVT_CONSUME;
 }
 #else // normal mode
-static BOOL uiShowFileType = TRUE;
-void UIFlowPlayShowFileTypeEnable(BOOL En)
-{
-    uiShowFileType = En;
-}
-BOOL UIPlayGet_FileType(void)
-{
-    return uiShowFileType;
-}
-
 INT32 UIFlowWndPlay_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	UINT32  uiStatus;
@@ -309,7 +309,7 @@ INT32 UIFlowWndPlay_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 #endif
 	g_bUIFlowWndPlayNoImgWndOpened = FALSE;
 #if (BOOT_RECOVERY_FILE==ENABLE)
-    if(g_FileRecoveryFlag == TRUE)
+    if (g_FileRecoveryFlag)
     {
         PB_WaitCommandFinish(PB_WAIT_INFINITE);
         //After playback ready, point to the last file
@@ -383,7 +383,7 @@ INT32 UIFlowWndPlay_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
         if (uiStatus & PB_STA_NOIMAGE)
             //if(DCF_GetDBInfo(DCF_INFO_TOL_FILE_COUNT) == 0)
         {
-            if (UIMenuWndPlayFileType_GetFileType()) {
+            if (UIMenuWndPlayFileType_GetFileType() == 1) {
                 Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_3SEC);
             } else {
                 Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_VIDEO, FLOWWRNMSG_TIMER_3SEC);
@@ -458,7 +458,7 @@ INT32 UIFlowWndPlay_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 INT32 UIFlowWndPlay_OnKeyNext(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     #if 0//_TODO
-	UINT32 vdo_idx = 0;
+	INT32 vdo_idx = -1;
 
 	if (NVTEVT_KEY_RELEASE == paramArray[0]) {
 		return NVTEVT_CONSUME;
@@ -531,7 +531,7 @@ INT32 UIFlowWndPlay_OnKeyNext(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 INT32 UIFlowWndPlay_OnKeyPrev(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	#if 0//_TODO
-		UINT32 vdo_idx = 0;
+	INT32 vdo_idx = -1;
 
 	if (NVTEVT_KEY_RELEASE == paramArray[0]) {
 		return NVTEVT_CONSUME;
@@ -724,10 +724,11 @@ INT32 UIFlowWndPlay_OnKeySelect(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 #endif
 	return NVTEVT_CONSUME;
 }
+
+INT32	vdo_idx = -1;
 INT32 UIFlowWndPlay_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  uiKeyAct;
-	UINT32	vdo_idx = 0;
 
     uiKeyAct = paramArray[0];
 
@@ -784,6 +785,11 @@ INT32 UIFlowWndPlay_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
                 Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
             }
             break;
+
+		case PLB_ST_PAUSE_MOV:
+	        break;
+		default:
+			break;
         }
         break;
     }
@@ -793,7 +799,7 @@ INT32 UIFlowWndPlay_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 {
     UINT32  uiKeyAct;
     UINT32  uiLockStatus;
-	UINT32  vdo_idx = 0;
+	//INT32 vdo_idx = -1;
 
     uiKeyAct = paramArray[0];
 
@@ -817,12 +823,7 @@ INT32 UIFlowWndPlay_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
         case PLB_ST_BWD_MOV:
             if (g_PlbData.VideoPBSpeed < PLB_FWD_MOV_4x)//PLB_FWD_MOV_8x
             {
-                //g_PlbData.VideoPBSpeed ++;
-				if (g_PlbData.VideoPBSpeed == PLB_BWD_MOV_2x) {
-					g_PlbData.VideoPBSpeed += 2;
-				} else {
-					g_PlbData.VideoPBSpeed++;
-				}
+                g_PlbData.VideoPBSpeed ++;
 
                 Ux_FlushEventByRange(NVTEVT_KEY_EVT_START,NVTEVT_KEY_EVT_END);
                 Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_NULL);
@@ -834,9 +835,15 @@ INT32 UIFlowWndPlay_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
                 }
                 else if(g_PlbData.VideoPBSpeed < PLB_FWD_MOV_1x)
                 {
-                    g_PlbData.State = PLB_ST_BWD_MOV;
-                    g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_BACKWARD;
-                }
+	                if (g_PlbData.VideoPBSpeed == PLB_BWD_MOV_1x) {
+	                    g_PlbData.VideoPBSpeed = PLB_FWD_MOV_1x;
+	                    g_PlbData.State = PLB_ST_PLAY_MOV;
+	                    g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
+	                } else {
+	                    g_PlbData.State = PLB_ST_BWD_MOV;
+	                    g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_BACKWARD;
+	                }
+            	}
                 else   //uiCurrSpeedIndex == PLAYMOV_SPEED_FWD_1X
                 {
                     g_PlbData.State = PLB_ST_PLAY_MOV;
@@ -851,13 +858,18 @@ INT32 UIFlowWndPlay_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
                 ImageApp_MoviePlay_UpdateAll();
                 #else //(NMEDIAPLAY_FUNC == ENABLE)
                 //UINT32 vdo_idx = AppDisp_MoviePlayView_GetDispIdx(); // get current display video index
-                ImageApp_MoviePlay_FilePlay_UpdateSpeedDirect(g_uiUIFlowWndPlayCurrenSpeed, g_uiUIFlowWndPlayCurrenDirection,vdo_idx);
+                ImageApp_MoviePlay_FilePlay_UpdateSpeedDirect(g_uiUIFlowWndPlayCurrenSpeed, g_uiUIFlowWndPlayCurrenDirection, vdo_idx);
                 #endif
 
                 FlowPB_IconDrawMovSpeed();
                 Input_SetKeyMask(KEY_PRESS, FLGKEY_KEY_MASK_DEFAULT);
             }
             break;
+
+		case PLB_ST_PAUSE_MOV:
+	        break;
+		default:
+			break;
         }
         break;
     }
@@ -965,7 +977,7 @@ INT32 UIFlowWndPlay_OnChildClose(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 				//if(DCF_GetDBInfo(DCF_INFO_TOL_FILE_COUNT)==0)
 			{
 				if (!g_bUIFlowWndPlayNoImgWndOpened) {
-                    if (UIMenuWndPlayFileType_GetFileType()) {
+                    if (UIMenuWndPlayFileType_GetFileType() == 1) {
                         Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_3SEC);
                     } else {
                         Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_VIDEO, FLOWWRNMSG_TIMER_3SEC);
@@ -998,7 +1010,7 @@ INT32 UIFlowWndPlay_OnChildClose(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 			//if(DCF_GetDBInfo(DCF_INFO_TOL_FILE_COUNT)==0)
 		{
 			if (!g_bUIFlowWndPlayNoImgWndOpened) {
-                if (UIMenuWndPlayFileType_GetFileType()) {
+                if (UIMenuWndPlayFileType_GetFileType() == 1) {
                     Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_IMAGE, FLOWWRNMSG_TIMER_3SEC);
                 } else {
                     Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_VIDEO, FLOWWRNMSG_TIMER_3SEC);
@@ -1059,6 +1071,7 @@ INT32 UIFlowWndPlay_OnBatteryLow(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 }
 INT32 UIFlowWndPlay_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
+#if 0
 	if (NVTEVT_KEY_RELEASE == paramArray[0]) {
 		return NVTEVT_CONSUME;
 	}
@@ -1079,7 +1092,7 @@ INT32 UIFlowWndPlay_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *para
 
 		// Start to Play
 		//set movie volumn again to avoid volumn changed by beep sound
-		Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2,GetMovieAudioVolumeValue(SysGetFlag(FL_BEEP)+2), 1);
+		Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, UI_GetData(FL_MovieAudioPlayIndex), 1);
 		Ux_SendEvent(0, NVTEVT_EXE_RESUMEPLAY, 0);
 		g_PlbData.State = PLB_ST_PLAY_MOV;
 		//FlowPB_IconDrawRightBtn(TRUE);
@@ -1093,6 +1106,7 @@ INT32 UIFlowWndPlay_OnKeyShutter2(VControl *pCtrl, UINT32 paramNum, UINT32 *para
 	default:
 		break;
 	}
+#endif
 	return NVTEVT_CONSUME;
 }
 INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -1206,9 +1220,33 @@ INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
             //#NT#2012/10/23#Philex Lin - end
             // Start to Play
             //set movie volumn again to avoid volumn changed by beep sound
-            Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, GetMovieAudioVolumeValue(SysGetFlag(FL_BEEP)+2), 1);
+            //Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, GetMovieAudioVolumeValue(SysGetFlag(FL_BEEP)+2), 1);
 			Ux_SendEvent(0, NVTEVT_EXE_RESUMEPLAY, 0);
-            g_PlbData.State = PLB_ST_PLAY_MOV;
+			//g_PlbData.State = PLB_ST_PLAY_MOV;
+
+			if(g_PlbData.VideoPBSpeed > PLB_FWD_MOV_1x)
+			{
+				g_PlbData.State = PLB_ST_FWD_MOV;
+				g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
+                UIFlowMoviePlay_SetSpeed(g_PlbData.VideoPBSpeed);
+                ImageApp_MoviePlay_FilePlay_UpdateSpeedDirect(g_uiUIFlowWndPlayCurrenSpeed, g_uiUIFlowWndPlayCurrenDirection, vdo_idx);
+			}
+			else if(g_PlbData.VideoPBSpeed < PLB_FWD_MOV_1x)
+			{
+				g_PlbData.State = PLB_ST_BWD_MOV;
+				g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_BACKWARD;
+                UIFlowMoviePlay_SetSpeed(g_PlbData.VideoPBSpeed);
+                ImageApp_MoviePlay_FilePlay_UpdateSpeedDirect(g_uiUIFlowWndPlayCurrenSpeed, g_uiUIFlowWndPlayCurrenDirection, vdo_idx);
+				
+			}
+			else   //uiCurrSpeedIndex == PLAYMOV_SPEED_FWD_1X
+			{
+				//Ux_SendEvent(0, NVTEVT_EXE_RESUMEPLAY, 0);
+				g_PlbData.State = PLB_ST_PLAY_MOV;
+				g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
+				Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, UI_GetData(FL_MovieAudioPlayIndex), 1); 		
+			}
+			//DBG_DUMP("======%d=====\r\n",g_PlbData.State);
             FlowPB_IconDrawMovPlay(TRUE);
             FlowPB_IconDrawMovPlay_HideShowIcon(FALSE);
             break;

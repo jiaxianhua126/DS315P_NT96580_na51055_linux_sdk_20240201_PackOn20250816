@@ -1598,8 +1598,8 @@ void SysSetFixedFlagSysInit(void)
 	SysSetFlag(FL_WIFI_LINK,		WIFI_LINK_NG);
 	SysSetFlag(FL_DUAL_CAM,			SysGetFlag(FL_DUAL_CAM_MENU));
 	SysSetFlag(FL_MOVIE_SIZE,		SysGetFlag(FL_MOVIE_SIZE_MENU));
-	SysSetFlag(FL_MOVIE_HDR_MENU,       DEFAULT_MOVIE_WDR);
-	SysSetFlag(FL_MOVIE_WDR,		DEFAULT_MOVIE_WDR);
+	SysSetFlag(FL_MOVIE_HDR,       SysGetFlag(FL_MOVIE_HDR_MENU));
+	SysSetFlag(FL_MOVIE_WDR,		SysGetFlag(FL_MOVIE_WDR_MENU));
 	//SysSetFlag(FL_MOVIE_DEFOG,     SysGetFlag(FL_MOVIE_DEFOG_MENU));
 	//SysSetFlag(FL_MovieRSCIndex,   SysGetFlag(FL_MovieRSCIndex_MENU));
 	SysSetFlag(FL_NetWorkMode,		DEFAULT_WIFI_MODE);  // Reset Wi-Fi mode to AP mode.

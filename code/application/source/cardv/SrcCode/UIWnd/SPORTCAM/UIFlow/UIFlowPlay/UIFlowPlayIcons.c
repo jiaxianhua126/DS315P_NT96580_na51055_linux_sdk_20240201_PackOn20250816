@@ -968,7 +968,7 @@ void FlowPB_UpdateIcons(BOOL bShow)
 		PB_GetParam(PBPRMID_PLAYBACK_MODE, &uiCurrMode);
 		FlowPB_IconDrawDSCMode(FALSE);
 		FlowPB_IconDrawDCFFileID(TRUE);
-		FlowPB_IconDrawImageSize(FALSE);
+		FlowPB_IconDrawImageSize(TRUE);
 		FlowPB_IconDrawWB(FALSE);
 		FlowPB_IconDrawImageQuality(FALSE);
 		FlowPB_IconDrawSharpness(FALSE);
