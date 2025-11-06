@@ -2971,8 +2971,14 @@ static void MovieExe_InitAlgFunc(void)
 
 	// install alg functions here
 #if 1//((!defined(_MODEL_580_SDV_SJ10_)) && (!defined(_MODEL_580_SDV_SJ10_FAST_BT_)))
-	MovieAlgFunc_MD_InstallID();
+	//MovieAlgFunc_MD_InstallID();
 #endif
+
+#if (_ADAS_FUNC_ == ENABLE)
+	//MovieAlgFunc_ADAS_InstallID();
+	MovieAlgFunc_ADAS_RCW_InstallID();
+#endif
+
 }
 
 static void MovieExe_UninitAlgFunc(void)
@@ -2984,6 +2990,11 @@ static void MovieExe_UninitAlgFunc(void)
 	MovieAlgFunc_MD_UninstallID();
 #endif
 
+#if (_ADAS_FUNC_ == ENABLE)
+	//MovieAlgFunc_ADAS_UninstallID();
+	MovieAlgFunc_ADAS_RCW_UninstallID();
+#endif
+
 	// stop alg image path
 	for (i = 0; i < SENSOR_CAPS_COUNT; i++) {
 		if (gMovie_Alg_Info[_CFG_REC_ID_1 + i].path13.ImgSize.w && gMovie_Alg_Info[_CFG_REC_ID_1 + i].path13.ImgSize.h) {
@@ -2993,6 +3004,18 @@ static void MovieExe_UninitAlgFunc(void)
 			ImageApp_MovieMulti_ImgLinkForAlg((_CFG_REC_ID_1 + i), _CFG_ALG_PATH4, DISABLE, TRUE);
 		}
 	}
+	
+	#if 0//defined(_NVT_ETHREARCAM_RX_)
+	// stop ehtcam alg image path
+	for (i = 0; i < ETH_REARCAM_CAPS_COUNT; i++) {
+		if (gMovie_Alg_Info[_CFG_ETHCAM_ID_1 + i].path13.ImgSize.w && gMovie_Alg_Info[_CFG_ETHCAM_ID_1 + i].path13.ImgSize.h) {
+			ImageApp_MovieMulti_ImgLinkForAlg((_CFG_ETHCAM_ID_1 + i), _CFG_ALG_PATH3, DISABLE, TRUE);
+		}
+		if (gMovie_Alg_Info[_CFG_ETHCAM_ID_1 + i].path14.ImgSize.w && gMovie_Alg_Info[_CFG_ETHCAM_ID_1 + i].path14.ImgSize.h) {
+			ImageApp_MovieMulti_ImgLinkForAlg((_CFG_ETHCAM_ID_1 + i), _CFG_ALG_PATH4, DISABLE, TRUE);
+		}
+	}
+	#endif
 }
 UINT32 MovieExe_GetCommonMemInitFinish(void)
 {
@@ -5672,6 +5695,7 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	MovieExe_InitExif();
 #endif
 
+	//system("chmod 777 /data/adas/active_file");
     MovieExe_InitAlgFunc();
 
 #if (_QRCODE_FUNC_ == ENABLE)

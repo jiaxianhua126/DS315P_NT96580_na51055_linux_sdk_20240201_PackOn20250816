@@ -22,6 +22,7 @@ LIB_DEPENDENCY = \
 	$(wildcard $(EXT_DIR)/sensor/output/*.a) \
 	$(wildcard $(KFLOW_DIR)/output/*.a) \
 	$(wildcard $(EXT_DIR)/audio/output/*.a) \
+	$(wildcard $(LIBRARY_DIR)/kyadas/*.a) \
 
 #LIB DIRs for C_LDFLAGS
 EXTRA_LIB_DIR += \
@@ -43,6 +44,7 @@ EXTRA_LIB_DIR += \
 	-L$(VOS_DRIVER_DIR)/output \
 	-L$(NVT_VOS_DIR)/output \
 	-L$(NVT_DRIVER_DIR)/output \
+	-L$(LIBRARY_DIR)/kyadas/ \
 
 #C_CFLAGS = $(PLATFORM_CFLAGS) $(EXTRA_INCLUDE) $(C_PREDEFINED) $(COMPILE_OPTS) $(WARNING) -Wno-format -g -O0
 C_CFLAGS = $(PLATFORM_CFLAGS) $(EXTRA_INCLUDE) $(C_PREDEFINED) $(COMPILE_OPTS) $(WARNING) -Wno-format
@@ -130,7 +132,15 @@ EXTRA_LIB += \
 	
 endif
 
-
+# ky_adas--libkyalgo_sdk_static.a
+EXTRA_LIB += \
+	-l:libkyalgo_sdk_static.a \
+	-l:libprebuilt_ai.a \
+	-l:libvendor_ai2.a \
+	-l:libvendor_ai2_pub.a \
+	-l:libzlib.a \
+	-lz \
+	
 # vos
 EXTRA_LIB += \
 	-l:libvos.a \

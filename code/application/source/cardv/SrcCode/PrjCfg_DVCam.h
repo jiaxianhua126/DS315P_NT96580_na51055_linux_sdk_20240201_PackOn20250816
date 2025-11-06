@@ -643,7 +643,7 @@
 #define MEDIA_VASTREAM                  DISABLE
 #define IR_CUT_FUNC                     DISABLE
 #define LOGFILE_FUNC                    DISABLE
-#define _ADAS_FUNC_                     DISABLE
+#define _ADAS_FUNC_                     ENABLE//DISABLE
 //..............................................................................
 // ADAS subsetting (The following sub-functions are available only if _ADAS_FUNC_ = DISABLE
 #define _AUTOVP_FUNC_                   DISABLE

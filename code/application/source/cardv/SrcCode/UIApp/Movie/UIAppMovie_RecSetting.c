@@ -124,7 +124,7 @@ MOVIE_RECODE_INFO gMovie_Clone_Info[SENSOR_MAX_NUM] = {
 	{
 		_CFG_CLONE_ID_1,		//MOVIE_CFG_REC_ID
 		_CFG_VID_IN_1,			//MOVIE_CFG_VID_IN
-		{848, 480},				//MOVIE_CFG_IMG_SIZE
+		{640, 360},				//MOVIE_CFG_IMG_SIZE //{848, 480},
 		30,						//MOVIE_CFG_FRAME_RATE
 		250 * 1024,				//MOVIE_CFG_TARGET_RATE
 		_CFG_CODEC_H264,		//MOVIE_CFG_CODEC
@@ -132,7 +132,7 @@ MOVIE_RECODE_INFO gMovie_Clone_Info[SENSOR_MAX_NUM] = {
 		_CFG_REC_TYPE_AV,		//MOVIE_CFG_REC_MODE
 		_CFG_FILE_FORMAT_MP4,	//MOVIE_CFG_FILE_FORMAT
 		{16, 9},				//MOVIE_CFG_IMG_RATIO
-		{848, 480},				//MOVIE_CFG_RAWENC_SIZE
+		{640, 360},				//MOVIE_CFG_RAWENC_SIZE //{848, 480},
 		0,						//MOVIE_CFG_VCAP_FUNC (N/A, only refer to Rec_Info setting)
 		ENABLE,					//MOVIE_CFG_DISP_ENABLE
 		TRUE,					//ipl_set_enable,  FALSE: can not set sensor info, TRUE: can set sensor info
@@ -147,7 +147,7 @@ MOVIE_RECODE_INFO gMovie_Clone_Info[SENSOR_MAX_NUM] = {
  	{
 		_CFG_CLONE_ID_2,		//MOVIE_CFG_REC_ID
 		_CFG_VID_IN_1,			//MOVIE_CFG_VID_IN
-		{848, 480}, 			//MOVIE_CFG_IMG_SIZE
+		{640, 360}, 			//MOVIE_CFG_IMG_SIZE //{848, 480},
 		30, 					//MOVIE_CFG_FRAME_RATE
 		250 * 1024, 			//MOVIE_CFG_TARGET_RATE
 		_CFG_CODEC_H264,		//MOVIE_CFG_CODEC
@@ -155,7 +155,7 @@ MOVIE_RECODE_INFO gMovie_Clone_Info[SENSOR_MAX_NUM] = {
 		_CFG_REC_TYPE_AV,		//MOVIE_CFG_REC_MODE
 		_CFG_FILE_FORMAT_MP4,	//MOVIE_CFG_FILE_FORMAT
 		{16, 9},				//MOVIE_CFG_IMG_RATIO
-		{848, 480}, 			//MOVIE_CFG_RAWENC_SIZE
+		{640, 360}, 			//MOVIE_CFG_RAWENC_SIZE //{848, 480},
 		0,						//MOVIE_CFG_VCAP_FUNC (N/A, only refer to Rec_Info setting)
 		ENABLE, 				//MOVIE_CFG_DISP_ENABLE
 		TRUE,					//ipl_set_enable,  FALSE: can not set sensor info, TRUE: can set sensor info
@@ -240,10 +240,10 @@ MOVIE_ALG_INFO gMovie_Alg_Info[] = {
 		#if ((SENSOR_CAPS_COUNT& SENSOR_ON_MASK)==0)
 		{0,  0},                            // image size
 		#else
-		{848,  480},                            // image size
+		{640,  360}, //{848,  480},                           // image size
 		#endif
 		{0, 0, 0, 0},                           // window size
-		30,                                     // fps
+		10,//30,                                     // fps
 		// path 4
 		HD_VIDEO_PXLFMT_Y8,                     // format
 		{0, 0},                                 // image size
@@ -256,9 +256,13 @@ MOVIE_ALG_INFO gMovie_Alg_Info[] = {
 	{
 		// path 3
 		HD_VIDEO_PXLFMT_YUV420,                 // format
-		{0, 0},                                 // image size
+		#if ((SENSOR_CAPS_COUNT& SENSOR_ON_MASK)==0)
+		{0,  0},                            // image size
+		#else
+		{640,  360}, //{848,  480},                            // image size
+		#endif
 		{0, 0, 0, 0},                           // window size (N/A)
-		0,                                      // fps
+		8,//0,                                      // fps
 		// path 4
 		HD_VIDEO_PXLFMT_Y8,                     // format
 		{0, 0},                                 // image size
