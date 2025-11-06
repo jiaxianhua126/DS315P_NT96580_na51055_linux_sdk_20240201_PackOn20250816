@@ -1126,8 +1126,8 @@ enum _MENU_IDF {
 	IDF_MOVIE_PIM                        = FL_MOVIE_PIM,
 	//#NT#2016/08/15#KCHong#[0106941] -begin
 	//#NT#Fixed FCW/LDWS/Timelapse cannot reset to default
-	IDF_MOVIE_LDWS                       = FL_MOVIE_LDWS_MENU,
-	IDF_MOVIE_FCW                        = FL_MOVIE_FCW_MENU,
+	IDF_MOVIE_LDWS                       = FL_MOVIE_LDWS,//FL_MOVIE_LDWS_MENU
+	IDF_MOVIE_FCW                        = FL_MOVIE_FCW,//FL_MOVIE_FCW_MENU
 	//#NT#2016/08/15#KCHong -end
 	IDF_MOVIE_DDD                        = FL_MOVIE_DDD,
 	IDF_MOVIE_ADAS_CAL                   = FL_MOVIE_ADAS_CAL,
