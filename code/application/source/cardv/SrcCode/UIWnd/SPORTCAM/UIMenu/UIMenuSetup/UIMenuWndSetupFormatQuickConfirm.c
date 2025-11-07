@@ -15,9 +15,9 @@ BOOL g_FmtCardBeep = FALSE;
 
 //---------------------UIMenuWndSetupFormatQuickConfirmCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIMenuWndSetupFormatQuickConfirm)
+CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_List_Text)
 CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_Static_Text)
-CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_Static_Title)
-CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_Menu)
+CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_TitleBar)
 CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_TipsBar)
 CTRL_LIST_END
 
@@ -44,7 +44,7 @@ EVENT_END
 INT32 UIMenuWndSetupFormatQuickConfirm_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     g_FmtCardBeep = TRUE;
-    UxMenu_SetData(&UIMenuWndSetupFormatQuickConfirmCtrl, MNU_CURITM, 1);
+    UxList_SetData(&UIMenuWndSetupFormatQuickConfirm_List_TextCtrl, LST_CURITM, 0);
     Ux_DefaultEvent(pCtrl,NVTEVT_OPEN_WINDOW,paramNum,paramArray);
     return NVTEVT_CONSUME;
 }
@@ -71,9 +71,9 @@ INT32 UIMenuWndSetupFormatQuickConfirm_OnKeyLeft(VControl *pCtrl, UINT32 paramNu
 
     switch (state) {
     case NVTEVT_KEY_PRESS:
-        //if (FlowMovie_WakeUpLCDBacklight()) {
-        //    return NVTEVT_CONSUME;
-        //}
+        if (FlowMovie_WakeUpLCDBacklight()) {
+            return NVTEVT_CONSUME;
+        }
         Ux_CloseWindow(&UIMenuWndSetupFormatQuickConfirmCtrl, 0);
         break;
     }
@@ -89,9 +89,9 @@ INT32 UIMenuWndSetupFormatQuickConfirm_OnKeyMenu(VControl *pCtrl, UINT32 paramNu
 
     switch (state) {
     case NVTEVT_KEY_PRESS:
-       // if (FlowMovie_WakeUpLCDBacklight()) {
-       //     return NVTEVT_CONSUME;
-       //  }
+        if (FlowMovie_WakeUpLCDBacklight()) {
+            return NVTEVT_CONSUME;
+        }
         break;
     }
     return NVTEVT_CONSUME;
@@ -130,25 +130,17 @@ INT32 UIMenuWndSetupFormatQuickConfirm_OnTimer(VControl *pCtrl, UINT32 paramNum,
     //Ux_DefaultEvent(pCtrl, NVTEVT_TIMER, paramNum, paramArray);
     return NVTEVT_CONSUME;
 }
-//----------------------UIMenuWndSetupFormatQuickConfirm_Static_TextCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_Static_Text)
+//----------------------UIMenuWndSetupFormatQuickConfirm_List_TextCtrl Event---------------------------
+INT32 UIMenuWndSetupFormatQuickConfirm_List_Text_OnKeyUp(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupFormatQuickConfirm_List_Text_OnKeyDown(VControl *, UINT32, UINT32 *);
+INT32 UIMenuWndSetupFormatQuickConfirm_List_Text_OnKeyEnter(VControl *, UINT32, UINT32 *);
+EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_List_Text)
+EVENT_ITEM(NVTEVT_KEY_UP,UIMenuWndSetupFormatQuickConfirm_List_Text_OnKeyUp)
+EVENT_ITEM(NVTEVT_KEY_DOWN,UIMenuWndSetupFormatQuickConfirm_List_Text_OnKeyDown)
+EVENT_ITEM(NVTEVT_KEY_ENTER,UIMenuWndSetupFormatQuickConfirm_List_Text_OnKeyEnter)
 EVENT_END
 
-//----------------------UIMenuWndSetupFormatQuickConfirm_Static_TitleCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_Static_Title)
-EVENT_END
-
-//----------------------UIMenuWndSetupFormatQuickConfirm_MenuCtrl Event---------------------------
-INT32 UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyUp(VControl *, UINT32, UINT32 *);
-INT32 UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyDown(VControl *, UINT32, UINT32 *);
-INT32 UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyEnter(VControl *, UINT32, UINT32 *);
-EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_Menu)
-EVENT_ITEM(NVTEVT_KEY_UP,UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyUp)
-EVENT_ITEM(NVTEVT_KEY_DOWN,UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyDown)
-EVENT_ITEM(NVTEVT_KEY_ENTER,UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyEnter)
-EVENT_END
-
-INT32 UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupFormatQuickConfirm_List_Text_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  state = 0;
 
@@ -158,15 +150,15 @@ INT32 UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyUp(VControl *pCtrl, UINT32 para
 
     switch (state) {
     case NVTEVT_KEY_PRESS:
-        //if (FlowMovie_WakeUpLCDBacklight()) {
-        //    return NVTEVT_CONSUME;
-        //}
+        if (FlowMovie_WakeUpLCDBacklight()) {
+            return NVTEVT_CONSUME;
+        }
         Ux_SendEvent(pCtrl,NVTEVT_PREVIOUS_ITEM,0);
         break;
     }
     return NVTEVT_CONSUME;
 }
-INT32 UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupFormatQuickConfirm_List_Text_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  state = 0;
 
@@ -176,15 +168,15 @@ INT32 UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyDown(VControl *pCtrl, UINT32 pa
 
     switch (state) {
     case NVTEVT_KEY_PRESS:
-        //if (FlowMovie_WakeUpLCDBacklight()) {
-        //    return NVTEVT_CONSUME;
-       // }
+        if (FlowMovie_WakeUpLCDBacklight()) {
+            return NVTEVT_CONSUME;
+        }
         Ux_SendEvent(pCtrl,NVTEVT_NEXT_ITEM,0);
         break;
     }
     return NVTEVT_CONSUME;
 }
-INT32 UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+INT32 UIMenuWndSetupFormatQuickConfirm_List_Text_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  state = 0;
 
@@ -194,11 +186,11 @@ INT32 UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyEnter(VControl *pCtrl, UINT32 p
 
     switch (state) {
     case NVTEVT_KEY_RELEASE:
-        //if (FlowMovie_WakeUpLCDBacklight()) {
-        //    return NVTEVT_CONSUME;
-        //}
+        if (FlowMovie_WakeUpLCDBacklight()) {
+            return NVTEVT_CONSUME;
+        }
 
-        if (UxMenu_GetData(pCtrl,MNU_CURITM) == UIMenuWndSetupFormatQuickConfirm_Menu_STRID_OK) {
+        if (UxList_GetData(pCtrl,LST_CURITM) == UIMenuWndSetupFormatQuickConfirm_List_Text_STRID_OK) {
             if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
                 Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, FLOWWRNMSG_ISSUE_NO_CARD, FLOWWRNMSG_TIMER_2SEC);
                 return NVTEVT_CONSUME;
@@ -225,12 +217,30 @@ INT32 UIMenuWndSetupFormatQuickConfirm_Menu_OnKeyEnter(VControl *pCtrl, UINT32 p
     }
     return NVTEVT_CONSUME;
 }
+//----------------------UIMenuWndSetupFormatQuickConfirm_Static_TextCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_Static_Text)
+EVENT_END
+
+//---------------------UIMenuWndSetupFormatQuickConfirm_TitleBarCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndSetupFormatQuickConfirm_TitleBar)
+CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_TitleText)
+CTRL_LIST_END
+
+//----------------------UIMenuWndSetupFormatQuickConfirm_TitleBarCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_TitleBar)
+EVENT_END
+
+//----------------------UIMenuWndSetupFormatQuickConfirm_TitleTextCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_TitleText)
+EVENT_END
+
 //---------------------UIMenuWndSetupFormatQuickConfirm_TipsBarCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsBar)
 CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_TipsIconReturn)
 CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_TipsIconUp)
 CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_TipsIconDown)
-CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_TipsIconOK)
+CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_TipsIconLUDOK)
+CTRL_LIST_ITEM(UIMenuWndSetupFormatQuickConfirm_TipsIconPower)
 CTRL_LIST_END
 
 //----------------------UIMenuWndSetupFormatQuickConfirm_TipsBarCtrl Event---------------------------
@@ -241,15 +251,35 @@ EVENT_END
 EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsIconReturn)
 EVENT_END
 
+//---------------------UIMenuWndSetupFormatQuickConfirm_TipsIconUpCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsIconUp)
+CTRL_LIST_END
+
 //----------------------UIMenuWndSetupFormatQuickConfirm_TipsIconUpCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsIconUp)
 EVENT_END
+
+//---------------------UIMenuWndSetupFormatQuickConfirm_TipsIconDownCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsIconDown)
+CTRL_LIST_END
 
 //----------------------UIMenuWndSetupFormatQuickConfirm_TipsIconDownCtrl Event---------------------------
 EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsIconDown)
 EVENT_END
 
-//----------------------UIMenuWndSetupFormatQuickConfirm_TipsIconOKCtrl Event---------------------------
-EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsIconOK)
+//---------------------UIMenuWndSetupFormatQuickConfirm_TipsIconLUDOKCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsIconLUDOK)
+CTRL_LIST_END
+
+//----------------------UIMenuWndSetupFormatQuickConfirm_TipsIconLUDOKCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsIconLUDOK)
+EVENT_END
+
+//---------------------UIMenuWndSetupFormatQuickConfirm_TipsIconPowerCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsIconPower)
+CTRL_LIST_END
+
+//----------------------UIMenuWndSetupFormatQuickConfirm_TipsIconPowerCtrl Event---------------------------
+EVENT_BEGIN(UIMenuWndSetupFormatQuickConfirm_TipsIconPower)
 EVENT_END
 

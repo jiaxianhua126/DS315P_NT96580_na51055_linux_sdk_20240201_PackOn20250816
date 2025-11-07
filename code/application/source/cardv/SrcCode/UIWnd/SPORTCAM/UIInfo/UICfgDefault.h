@@ -235,9 +235,9 @@
 #define DEFAULT_MOVIE_WIFI_APP_PREVIEW_SIZE    WIFI_MOVIE_APP_PREVIEW_SIZE_VGA_16_9
 #endif
 #endif
-#define DEFAULT_WIFI                    WIFI_OFF
+#define DEFAULT_WIFI                    WIFI_ON_52G//WIFI_OFF
 #define DEFAULT_WIFI_AUTO               WIFI_AUTO_OFF
-#define DEFAULT_WIFI_BAND               WIFI_BAND_58G
+#define DEFAULT_WIFI_BAND               WIFI_BAND_52G
 #define DEFAULT_CLONE_REC               CLONE_REC_OFF
 
 //fw_ui_reset

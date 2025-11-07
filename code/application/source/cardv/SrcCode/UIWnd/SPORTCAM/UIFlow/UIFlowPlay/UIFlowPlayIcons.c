@@ -785,7 +785,10 @@ void FlowPB_IconDrawMovPlay(BOOL bShow)
         UxCtrl_SetShow(&UIFlowWndPlay_StatusIcon_PlayCtrl, FALSE);
         return;
     }
-    if (g_PlbData.State == PLB_ST_PLAY_MOV) {
+    if((g_PlbData.State == PLB_ST_PLAY_MOV)
+		||(g_PlbData.State == PLB_ST_FWD_MOV)
+		||(g_PlbData.State == PLB_ST_BWD_MOV))
+	{
         UxState_SetData(&UIFlowWndPlay_StatusIcon_PlayCtrl, STATE_CURITEM, UIFlowWndPlay_StatusIcon_Play_ICON_PAUSE);
     } else {
         UxState_SetData(&UIFlowWndPlay_StatusIcon_PlayCtrl, STATE_CURITEM, UIFlowWndPlay_StatusIcon_Play_ICON_DIR_R);
