@@ -7,28 +7,32 @@
 
 extern VControl UIMenuWndSetupFormatQuickConfirmCtrl;//Panel type 
 
-extern VControl UIMenuWndSetupFormatQuickConfirm_Static_TextCtrl;//Static type 
-
-extern VControl UIMenuWndSetupFormatQuickConfirm_Static_TitleCtrl;//Static type 
-
-extern VControl UIMenuWndSetupFormatQuickConfirm_MenuCtrl;//Menu type 
+extern VControl UIMenuWndSetupFormatQuickConfirm_List_TextCtrl;//List type 
 
 typedef enum
 {
-UIMenuWndSetupFormatQuickConfirm_Menu_STRID_OK,
-UIMenuWndSetupFormatQuickConfirm_Menu_STRID_CANCEL,
-UIMenuWndSetupFormatQuickConfirm_Menu_MAX
-}UIMenuWndSetupFormatQuickConfirm_Menu_Setting;
+UIMenuWndSetupFormatQuickConfirm_List_Text_STRID_CANCEL,
+UIMenuWndSetupFormatQuickConfirm_List_Text_STRID_OK,
+UIMenuWndSetupFormatQuickConfirm_List_Text_MAX
+}UIMenuWndSetupFormatQuickConfirm_List_Text_Setting;
+
+extern VControl UIMenuWndSetupFormatQuickConfirm_Static_TextCtrl;//Static type 
+
+extern VControl UIMenuWndSetupFormatQuickConfirm_TitleBarCtrl;//Panel type 
+
+extern VControl UIMenuWndSetupFormatQuickConfirm_TitleTextCtrl;//Static type 
 
 extern VControl UIMenuWndSetupFormatQuickConfirm_TipsBarCtrl;//Panel type 
 
 extern VControl UIMenuWndSetupFormatQuickConfirm_TipsIconReturnCtrl;//Static type 
 
-extern VControl UIMenuWndSetupFormatQuickConfirm_TipsIconUpCtrl;//Static type 
+extern VControl UIMenuWndSetupFormatQuickConfirm_TipsIconUpCtrl;//Panel type 
 
-extern VControl UIMenuWndSetupFormatQuickConfirm_TipsIconDownCtrl;//Static type 
+extern VControl UIMenuWndSetupFormatQuickConfirm_TipsIconDownCtrl;//Panel type 
 
-extern VControl UIMenuWndSetupFormatQuickConfirm_TipsIconOKCtrl;//Static type 
+extern VControl UIMenuWndSetupFormatQuickConfirm_TipsIconLUDOKCtrl;//Panel type 
+
+extern VControl UIMenuWndSetupFormatQuickConfirm_TipsIconPowerCtrl;//Panel type 
 
 //---------------------UIMenuWndSetupFormatQuickConfirmCtrl User Export---------------------------
 #endif

@@ -176,7 +176,7 @@ void MenuCommonOption_UpdateContent(TM_MENU* pMenu)
             UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_STRID,  pOption->TextId);
         }
     }
-		
+	#if 0//R-for viofo 20241206
 	if (pItem->ItemId == IDM_ASR_CONTENT) 
 	{
 		switch(SysGetFlag(FL_LANGUAGE)) 
@@ -187,6 +187,7 @@ void MenuCommonOption_UpdateContent(TM_MENU* pMenu)
 		break;
 		}
 	}
+	#endif
     if (SysGetFlag(pItem->SysFlag)==i){
 		if(pItem->ItemId != IDM_ASR_CONTENT){
 			UxMenu_SetItemData(&MenuCommonOption_MenuCtrl, i, MNUITM_ICONID, ICON_SEL_FOCUS);

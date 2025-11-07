@@ -99,7 +99,7 @@ void UIFlowWndMovie_OnAutoStartRec(void)
 				Set_PreviewStable_Record(FALSE);
 				if (gMovData.State != MOV_ST_REC) 
 				{
-					if((!autoWifi) && ((SysGetFlag(FL_WIFI) != WIFI_OFF)/*||(SysGetFlag(FL_WIFI_AUTO) == WIFI_AUTO_ON)*/)
+					if((!autoWifi) && (/*(SysGetFlag(FL_WIFI) != WIFI_OFF)||*/(SysGetFlag(FL_WIFI_AUTO) == WIFI_AUTO_ON))
 						&&isFirstPowerOn)
 					{
 						//do not start rec,it starts to wifi
@@ -116,7 +116,7 @@ void UIFlowWndMovie_OnAutoStartRec(void)
 			Set_PreviewStable_Record(FALSE);
 			if (gMovData.State != MOV_ST_REC) 
 			{
-				if((!autoWifi) && ((SysGetFlag(FL_WIFI) != WIFI_OFF)/*||(SysGetFlag(FL_WIFI_AUTO) == WIFI_AUTO_ON)*/)
+				if((!autoWifi) && (/*(SysGetFlag(FL_WIFI) != WIFI_OFF)||*/(SysGetFlag(FL_WIFI_AUTO) == WIFI_AUTO_ON))
 					&&isFirstPowerOn)
 				{
 					//do not start rec,it starts to wifi
@@ -133,15 +133,9 @@ void UIFlowWndMovie_OnAutoStartRec(void)
 void UIFlowMoive_AutoStartWiFi(void)
 {
 #if (!defined(_NVT_ETHREARCAM_TX_))//(AUTO_WIFI==ENABLE)
-	if ((!autoWifi) && ((SysGetFlag(FL_WIFI) != WIFI_OFF)||(SysGetFlag(FL_WIFI_AUTO) == WIFI_AUTO_ON))) {
+	if ((!autoWifi) && (/*(SysGetFlag(FL_WIFI) != WIFI_OFF)||*/(SysGetFlag(FL_WIFI_AUTO) == WIFI_AUTO_ON))) {
         if (isFirstPowerOn/* && GPIOMap_DetTV()*/) {
-			if(GPIOMap_EthCam1Det()||GPIOMap_EthCam2Det()){
-				if(g_isRearOK>0){
-            		AutoWiFiCnt++;
-				}
-			}else {
-				AutoWiFiCnt++;
-			}
+			AutoWiFiCnt++;
 			//debug_msg("AutoWiFiCnt=%d\r\n",AutoWiFiCnt);
             if ((AutoWiFiCnt >= 4)) {
 				WifiStarting = TRUE;
@@ -177,11 +171,6 @@ void UIFlowMoive_AutoStartWiFi(void)
                 AutoWiFiCnt = 0;
             }
         } else {
-	       if(GPIOMap_EthCam1Det()){
-				if(g_isRearOK<=0){
-					return ;
-				}
-			}
 		    WifiStarting = TRUE;
             if ((gMovData.State == MOV_ST_REC)||(gMovData.State == (MOV_ST_REC|MOV_ST_ZOOM))) {
                 if ((FlowMovie_GetRecCurrTime() <= 1)&&(SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) {

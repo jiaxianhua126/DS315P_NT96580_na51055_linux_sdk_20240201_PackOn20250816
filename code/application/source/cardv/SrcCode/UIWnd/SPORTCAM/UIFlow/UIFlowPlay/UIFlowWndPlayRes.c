@@ -145,7 +145,7 @@ SHOW_MAP_BODY(Skin26)
 SHOW_MAP_BODY(Icon27)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group,Normal25,577,35,604,62)
+SHOW_ITEM_GROUP(CMD_Group,Normal25,577,61,604,88)
 
 SHOW_MAP_BEGIN(UIFlowWndPlay_StaticICN_Protect)
 SHOW_MAP_BODY(Normal25)
@@ -153,7 +153,7 @@ SHOW_MAP_END
 
 DECLARE_EVENT(UIFlowWndPlay_StaticICN_Protect)
 CREATE_STATIC_DATA(UIFlowWndPlay_StaticICN_Protect,ICON_FILE_LOCK)
-CREATE_STATIC_CTRL(UIFlowWndPlay_StaticICN_Protect,0,577,35,604,62)
+CREATE_STATIC_CTRL(UIFlowWndPlay_StaticICN_Protect,0,577,61,604,88)
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -269,7 +269,7 @@ SHOW_MAP_BODY(Skin56)
 SHOW_MAP_BODY(Icon57)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group,Normal55,577,35,604,62)
+SHOW_ITEM_GROUP(CMD_Group,Normal55,577,61,604,88)
 
 SHOW_MAP_BEGIN(UIFlowWndPlay_StaticICN_UnProtect)
 SHOW_MAP_BODY(Normal55)
@@ -277,7 +277,7 @@ SHOW_MAP_END
 
 DECLARE_EVENT(UIFlowWndPlay_StaticICN_UnProtect)
 CREATE_STATIC_DATA(UIFlowWndPlay_StaticICN_UnProtect,ICON_SET_LOCK)
-CREATE_STATIC_CTRL(UIFlowWndPlay_StaticICN_UnProtect,0,577,35,604,62)
+CREATE_STATIC_CTRL(UIFlowWndPlay_StaticICN_UnProtect,0,577,61,604,88)
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
