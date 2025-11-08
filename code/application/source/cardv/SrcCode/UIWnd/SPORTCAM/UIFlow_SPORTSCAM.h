@@ -67,6 +67,8 @@
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndPreSetLanguage.h"
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndPreSetDateTime.h"
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupHDRTime.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupADASCordon.h"
+
 
 /****************************************************************************
  * Movie mode headers

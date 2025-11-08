@@ -538,6 +538,13 @@ static int MenuCustom_GPSStatus(UINT32 uiMessage, UINT32 uiParam)
     Ux_OpenWindow(&UIMenuWndSetupGPSCtrl, 0);
     return TMF_PROCESSED;
 }
+#if 1
+static int MenuCustom_ADASCordon(UINT32 uiMessage, UINT32 uiParam)
+{
+    Ux_OpenWindow(&UIMenuWndSetupADASCordonCtrl, 0);
+    return TMF_PROCESSED;
+}
+#endif
 /*
 static int MenuCustom_CarNo(UINT32 uiMessage, UINT32 uiParam)
 {
@@ -567,7 +574,8 @@ TMDEF_BEGIN_ITEMS(MOVIE)
 	TMDEF_ITEM_CUSTOM(DATE_TIME, MenuCustom_DateTime)
     TMDEF_ITEM_TEXTID(WIFI)
     TMDEF_ITEM_TEXTID(MOVIE_AUDIO)
-    TMDEF_ITEM_TEXTID(VOLUME)//TBD_HTK
+    TMDEF_ITEM_TEXTID(VOLUME)
+    TMDEF_ITEM_CUSTOM(MOVIE_ADAS_CORDON,MenuCustom_ADASCordon)
     //TMDEF_ITEM_TEXTID(MOVIE_WDR)
     TMDEF_ITEM_TEXTID(PARKING_MODE)
     //TMDEF_ITEM_TEXTID(ENTER_PARKING_TIMER)
