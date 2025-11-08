@@ -363,6 +363,7 @@ typedef enum {
     //TPMS_END
     FL_AMBIANCE_LIGHT,
     FL_EDOG_OVERSPEED_ALARM,
+    FL_MOVIE_ADAS_CORDON,
 	FL_IndexInfoMAX
 } UI_IndexInfo;
 
@@ -1333,6 +1334,16 @@ enum {
 	MOVIE_ADAS_CAL_OFF = 0,
 	MOVIE_ADAS_CAL_ON,
 	MOVIE_ADAS_CAL_ID_MAX,
+};
+
+//-----------------------------------------------------------------------------
+// Movie CORDON option
+//-----------------------------------------------------------------------------
+enum {
+	MOVIE_CORDON_LOW = 0,
+	MOVIE_CORDON_MED,
+	MOVIE_CORDON_HIGH,
+	MOVIE_CORDON_MAX,
 };
 
 //-----------------------------------------------------------------------------
