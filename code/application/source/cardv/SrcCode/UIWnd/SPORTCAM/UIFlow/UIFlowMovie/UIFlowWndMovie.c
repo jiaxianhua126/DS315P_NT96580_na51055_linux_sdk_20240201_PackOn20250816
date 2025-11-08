@@ -75,7 +75,7 @@ INT32 UIFlowWndMovie_OnEdogAlarm(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnBackgroundDone(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndMovie_OnStorageInit(VControl *, UINT32, UINT32 *);
 void UIFlowWndMovie_GetASR_Flag(void);
-
+INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *, UINT32, UINT32 *);        //#NT#2016/03/25#New ADAS#KCHong
 EVENT_BEGIN(UIFlowWndMovie)
 EVENT_ITEM(NVTEVT_OPEN_WINDOW,UIFlowWndMovie_OnOpen)
 EVENT_ITEM(NVTEVT_CLOSE_WINDOW,UIFlowWndMovie_OnClose)
@@ -109,6 +109,7 @@ EVENT_ITEM(NVTEVT_TIMER,UIFlowWndMovie_OnTimer)
 EVENT_ITEM(NVTEVT_KEY_EDOG_ALARM, UIFlowWndMovie_OnEdogAlarm) //Add
 EVENT_ITEM(NVTEVT_BACKGROUND_DONE, UIFlowWndMovie_OnBackgroundDone)
 EVENT_ITEM(NVTEVT_STORAGE_INIT, UIFlowWndMovie_OnStorageInit)
+EVENT_ITEM(NVTEVT_CB_ADAS_SHOWALARM, UIFlowWndMovie_OnADASShowAlarm)	  //#NT#2016/03/25#New ADAS#KCHong
 EVENT_END
 
 
@@ -165,6 +166,10 @@ extern BOOL ASR_GetPCMData_EN;
 BOOL g_RearErr = FALSE;
 UINT8 g_RearRebootCnt = 0;
 static UINT32 beepCntTimeout = 0; 
+#if (_ADAS_FUNC_ == ENABLE)
+UINT32 g_uiAdasAlertSecCnt = 0;
+UINT8 g_AdasSensitivity = 1;
+#endif  // #if (_ADAS_FUNC_ == ENABLE)
 
 INT32 UIFlowWndMovie_OnExeRecord(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -317,6 +322,11 @@ INT32 UIFlowWndMovie_OnExeRecord(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 
 		case MOV_ST_REC:
 		case MOV_ST_REC | MOV_ST_ZOOM:	
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);			
+			DBG_ERR("======222222222===========\r\n");
+			#if (_ADAS_FUNC_ == ENABLE)
+			g_uiAdasAlertSecCnt = 0;
+			#endif  // #if (_ADAS_FUNC_ == ENABLE)
 #if (STOP_REC_BK == ENABLE)
 			//bBK_StopRec =TRUE;
 			//gMovData.State = MOV_ST_WARNING_MENU;
@@ -437,6 +447,8 @@ INT32 UIFlowWndMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 	ASR_GetPCMData_EN = FALSE;
 #endif
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+	DBG_ERR("======3333===========\r\n");
+
 	UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 	//UxCtrl_SetShow(&UIFlowWndMovie_Status_WIFICtrl, FALSE);
     ////////UxCtrl_SetShow(&UIFlowWndMovie_GPS_INFOCtrl, FALSE);
@@ -1417,6 +1429,7 @@ INT32 UIFlowWndMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 			if(GPIOMap_IsLCDBacklightOn()){
 				if(!UxCtrl_IsShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl))
 				{
+					DBG_ERR("======3333===========\r\n");
 					UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 					return NVTEVT_CONSUME;
 				}
@@ -2453,6 +2466,21 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 		} else {
 			g_PM_ShutdownCnt = 0;
 		}
+		#if (_ADAS_FUNC_ == ENABLE)
+		DBG_ERR("======g_uiAdasAlertSecCnt=%d==========\r\n",g_uiAdasAlertSecCnt);
+		if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+			g_uiAdasAlertSecCnt++;
+			if (g_uiAdasAlertSecCnt >=2) {
+				UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+				
+				DBG_ERR("======4444===========\r\n");
+				g_uiAdasAlertSecCnt = 0;
+			} else {
+				return NVTEVT_CONSUME;
+			}
+		}
+		#endif  // #if (_ADAS_FUNC_ == ENABLE)
 		break;
 	}
 
@@ -2554,7 +2582,185 @@ INT32 UIFlowWndMovie_OnStorageInit(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 {
 	return NVTEVT_CONSUME;
 }
+INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+#if (_ADAS_FUNC_ == ENABLE)
+	UINT32 AlarmType;
+	//ADAS_APPS_RESULT_INFO *pAdasRlt = MovieExe_GetAdasRltOSD();
 
+	Ux_FlushEventByRange(NVTEVT_CB_ADAS_SHOWALARM, NVTEVT_CB_ADAS_SHOWALARM);
+	AlarmType = paramArray[0];
+
+	switch (AlarmType) {
+	case ADAS_ALARM_LD_LEFT:
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 0;
+		UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
+		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+			UxState_SetData(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, STATE_CURITEM, UIFlowWndMovie_StatusICN_LDWS_Alert_ICON_ADAS_LANE_LEFT);
+		}
+		break;
+	case ADAS_ALARM_LD_RIGHT:
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 0;
+		UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
+		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+			UxState_SetData(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, STATE_CURITEM, UIFlowWndMovie_StatusICN_LDWS_Alert_ICON_ADAS_LANE_RIGHT);
+		}
+		break;
+
+	case ADAS_ALARM_FC:
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 0;
+		UISound_Play(DEMOSOUND_SOUND_FCS_TONE);
+		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_FCWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+			#if 0
+			if ((pAdasRlt->FcwsRsltInfo.uiKelDist < 15) && (pAdasRlt->FcwsRsltInfo.uiKelDist > 0)) {
+				UxState_SetData(&UIFlowWndMovie_StatusICN_FCWS_AlertCtrl, STATE_CURITEM, UIFlowWndMovie_StatusICN_FCWS_Alert_ICON_FCW_FAR_ALERT);
+			}
+			#endif
+		}
+		break;
+
+	case ADAS_ALARM_GO:
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 0;
+		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_SNG_AlertCtrl, TRUE);
+			UxState_SetData(&UIFlowWndMovie_StatusICN_SNG_AlertCtrl, STATE_CURITEM, UIFlowWndMovie_StatusICN_SNG_Alert_ICON_ADAS_GO_ALERT);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+		}
+		break;
+
+	case ADAS_ALARM_FPW:
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 0;
+		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_PDWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+		}
+		break;
+
+
+	case ADAS_ALARM_VIRTUAL_BUMPERS:
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 0;
+		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_VBWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+		}
+		break;
+
+	case ADAS_ALARM_RCW_REAR:
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 0;
+		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_RCWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+		}
+		break;
+
+	case ADAS_ALARM_LCA_LEFT:
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 0;
+		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxState_SetData(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, STATE_CURITEM, UIFlowWndMovie_StatusICN_LCWS_Alert_ICON_ADAS_CHANGE_LANE_LEFT);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, TRUE);
+		}
+		break;
+
+	case ADAS_ALARM_LCA_RIGHT:
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 0;
+		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxState_SetData(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, STATE_CURITEM, UIFlowWndMovie_StatusICN_LCWS_Alert_ICON_ADAS_CHANGE_LANE_RIGHT);
+			UxCtrl_SetShow(&UIFlowWndMovie_StatusICN_LCWS_AlertCtrl, TRUE);
+		}
+		break;
+
+	default:
+		break;
+	}
+#endif  // #if (_ADAS_FUNC_ == ENABLE)
+	return NVTEVT_CONSUME;
+}
 //---------------------UIFlowWndMovie_Panel_Normal_DisplayCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndMovie_Panel_Normal_Display)
 #if (!defined(_NVT_ETHREARCAM_TX_))
@@ -2704,15 +2910,16 @@ CTRL_LIST_BEGIN(UIFlowWndMovie_ALG_Draw)
 CTRL_LIST_END
 
 //----------------------UIFlowWndMovie_ALG_DrawCtrl Event---------------------------
-INT32 UIFlowWndMovie_ALG_Draw_OnRedraw(VControl *, UINT32, UINT32 *);
+//INT32 UIFlowWndMovie_ALG_Draw_OnRedraw(VControl *, UINT32, UINT32 *);
 EVENT_BEGIN(UIFlowWndMovie_ALG_Draw)
-EVENT_ITEM(NVTEVT_REDRAW,UIFlowWndMovie_ALG_Draw_OnRedraw)
+//EVENT_ITEM(NVTEVT_REDRAW,UIFlowWndMovie_ALG_Draw_OnRedraw)
 EVENT_END
-
+#if 0
 INT32 UIFlowWndMovie_ALG_Draw_OnRedraw(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     return NVTEVT_CONSUME;
 }
+#endif
 //----------------------UIFlowWndMovie_CUSTOMERCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndMovie_CUSTOMER)
 EVENT_END
@@ -2838,6 +3045,10 @@ CTRL_LIST_BEGIN(UIFlowWndMovie_ADAS_Alert_Display)
 CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_LDWS_Alert)
 CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_FCWS_Alert)
 CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_SNG_Alert)
+CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_PDWS_Alert)
+CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_RCWS_Alert)
+CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_VBWS_Alert)
+CTRL_LIST_ITEM(UIFlowWndMovie_StatusICN_LCWS_Alert)
 CTRL_LIST_END
 
 //----------------------UIFlowWndMovie_ADAS_Alert_DisplayCtrl Event---------------------------
@@ -2854,5 +3065,21 @@ EVENT_END
 
 //----------------------UIFlowWndMovie_StatusICN_SNG_AlertCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndMovie_StatusICN_SNG_Alert)
+EVENT_END
+
+//----------------------UIFlowWndMovie_StatusICN_PDWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_StatusICN_PDWS_Alert)
+EVENT_END
+
+//----------------------UIFlowWndMovie_StatusICN_RCWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_StatusICN_RCWS_Alert)
+EVENT_END
+
+//----------------------UIFlowWndMovie_StatusICN_VBWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_StatusICN_VBWS_Alert)
+EVENT_END
+
+//----------------------UIFlowWndMovie_StatusICN_LCWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_StatusICN_LCWS_Alert)
 EVENT_END
 

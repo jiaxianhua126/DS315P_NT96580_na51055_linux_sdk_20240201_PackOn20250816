@@ -211,8 +211,8 @@ extern VControl UIFlowWndMovie_StatusICN_LDWS_AlertCtrl;//Status type
 
 typedef enum
 {
-UIFlowWndMovie_StatusICN_LDWS_Alert_ICON_LDWS_LEFT_ALERT,
-UIFlowWndMovie_StatusICN_LDWS_Alert_ICON_LDWS_RIGHT_ALERT,
+UIFlowWndMovie_StatusICN_LDWS_Alert_ICON_ADAS_LANE_LEFT,
+UIFlowWndMovie_StatusICN_LDWS_Alert_ICON_ADAS_LANE_RIGHT,
 UIFlowWndMovie_StatusICN_LDWS_Alert_MAX
 }UIFlowWndMovie_StatusICN_LDWS_Alert_Setting;
 
@@ -220,8 +220,7 @@ extern VControl UIFlowWndMovie_StatusICN_FCWS_AlertCtrl;//Status type
 
 typedef enum
 {
-UIFlowWndMovie_StatusICN_FCWS_Alert_ICON_FCW_FAR_ALERT,
-UIFlowWndMovie_StatusICN_FCWS_Alert_ICON_FCW_NEAR_ALERT,
+UIFlowWndMovie_StatusICN_FCWS_Alert_ICON_ADAS_FRONT_ALERT,
 UIFlowWndMovie_StatusICN_FCWS_Alert_MAX
 }UIFlowWndMovie_StatusICN_FCWS_Alert_Setting;
 
@@ -229,8 +228,42 @@ extern VControl UIFlowWndMovie_StatusICN_SNG_AlertCtrl;//Status type
 
 typedef enum
 {
-UIFlowWndMovie_StatusICN_SNG_Alert_ICON_SNG_ALERT,
+UIFlowWndMovie_StatusICN_SNG_Alert_ICON_ADAS_GO_ALERT,
 UIFlowWndMovie_StatusICN_SNG_Alert_MAX
 }UIFlowWndMovie_StatusICN_SNG_Alert_Setting;
 
+extern VControl UIFlowWndMovie_StatusICN_PDWS_AlertCtrl;//Status type 
+
+typedef enum
+{
+UIFlowWndMovie_StatusICN_PDWS_Alert_ICON_ADAS_PEOPLE_ALERT,
+UIFlowWndMovie_StatusICN_PDWS_Alert_MAX
+}UIFlowWndMovie_StatusICN_PDWS_Alert_Setting;
+
+extern VControl UIFlowWndMovie_StatusICN_RCWS_AlertCtrl;//Status type 
+
+typedef enum
+{
+UIFlowWndMovie_StatusICN_RCWS_Alert_ICON_ADAS_REAR_ALERT,
+UIFlowWndMovie_StatusICN_RCWS_Alert_MAX
+}UIFlowWndMovie_StatusICN_RCWS_Alert_Setting;
+
+extern VControl UIFlowWndMovie_StatusICN_VBWS_AlertCtrl;//Status type 
+
+typedef enum
+{
+UIFlowWndMovie_StatusICN_VBWS_Alert_ICON_ADAS_VIRTUAL_BUMPER,
+UIFlowWndMovie_StatusICN_VBWS_Alert_MAX
+}UIFlowWndMovie_StatusICN_VBWS_Alert_Setting;
+
+extern VControl UIFlowWndMovie_StatusICN_LCWS_AlertCtrl;//Status type 
+
+typedef enum
+{
+UIFlowWndMovie_StatusICN_LCWS_Alert_ICON_ADAS_CHANGE_LANE_LEFT,
+UIFlowWndMovie_StatusICN_LCWS_Alert_ICON_ADAS_CHANGE_LANE_RIGHT,
+UIFlowWndMovie_StatusICN_LCWS_Alert_MAX
+}UIFlowWndMovie_StatusICN_LCWS_Alert_Setting;
+
+//---------------------UIFlowWndMovieCtrl User Export---------------------------
 #endif

@@ -155,6 +155,7 @@ typedef enum {
 	FL_ADAS_PCWS, 		//Pedestrian Collision Warning               
 	FL_ADAS_RCWS, 		//Rear Collision Warning             
 	FL_ADAS_VIRTUAL_BUMPER,
+	FL_ADAS_PANEL,
 	FL_MOVIE_DDD,               // Movie DDD
 	FL_MOVIE_ADAS_CAL,          // Movie ADAS CAL
 	//#NT#2016/06/14#Charlie Chang -begin
@@ -1304,6 +1305,15 @@ enum {
 	ADAS_VIRTUAL_BUMPER_OFF = 0,
 	ADAS_VIRTUAL_BUMPER_ON,
 	ADAS_VIRTUAL_BUMPER_ID_MAX,
+};
+
+//-----------------------------------------------------------------------------
+// ADAS Panel option
+//-----------------------------------------------------------------------------
+enum {
+	ADAS_PANEL_OFF = 0,
+	ADAS_PANEL_ON,
+	ADAS_PANEL_ID_MAX,
 };
 
 
