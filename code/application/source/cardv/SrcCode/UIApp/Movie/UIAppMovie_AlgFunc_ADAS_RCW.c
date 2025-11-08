@@ -218,7 +218,7 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 			else if(adas_eventData.result.type == ALGO_TYPE_ADAS && 
 					adas_eventData.result.algoResult.adasResult.calib.calib_history == 1)
 			{				
-				printf("=========%s=====222====\n",__func__);
+				//printf("=========%s=====222====\n",__func__);
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//Ç°³µÅö×²
 			        printf("=====ALGO_ADAS_WARN_TYPE_FCW====\r\n");
 					//if(SysGetFlag(FL_MOVIE_FCW_MENU) == MOVIE_FCW_ON)
