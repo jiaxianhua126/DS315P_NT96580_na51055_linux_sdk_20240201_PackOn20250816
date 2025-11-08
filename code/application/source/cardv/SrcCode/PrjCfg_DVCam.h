@@ -47,7 +47,7 @@
 
 #define FW_VERSION_RELEASE              DISABLE //DISABLE
 #define FW_CUSTOMER_MODEL               "DS315P"
-#define FW_CUSTOMER_VERSION_NUM         "V0.35"
+#define FW_CUSTOMER_VERSION_NUM         "V0.40_RZW"
 
 
 //..............................................................................

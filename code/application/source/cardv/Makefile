@@ -335,6 +335,7 @@ SRC += \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndPreSetLanguage.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndPreSetDateTime.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupHDRTime.c \
+	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupADASCordon.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuPlay/MenuPlayback.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuPlay/UIMenuWndPlayFileType.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuPlay/UIMenuWndPlayQuickConfirmDel.c \
