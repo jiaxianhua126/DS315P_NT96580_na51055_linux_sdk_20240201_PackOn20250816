@@ -474,6 +474,46 @@ BOOL FlowMovie_WakeUpLCDBacklight(void)
 {
     FlowMovie_LCDDimDsiable(0); //reset count
 	FlowMovie_LCDIconDimDsiable(0); //reset count
+	#if 1//(GPS_PANEL_FUNC==ENABLE)
+	//Show Icon
+	if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
+		if (UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF) {
+			if(!UxCtrl_IsShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl)) {
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
+			}
+		} else {
+			#if 0//_TODO	
+			if(!UxCtrl_IsShow(&UIFlowWndWiFiMovie_GPS_INFOCtrl)) {
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_INFOCtrl, TRUE);
+			}
+			#endif
+		}
+	} else {
+		if (UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF) {
+			if(!UxCtrl_IsShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl)) {
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+				UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
+			}
+		} else {
+			#if 0//_TODO
+			if(!UxCtrl_IsShow(&UIFlowWndMovie_GPS_INFOCtrl)) {
+				UxCtrl_SetShow(&UIFlowWndMovie_GPS_INFOCtrl, TRUE);
+			}
+			#endif
+		}
+	}
+	#else 
+	//Show Icon
+	if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
+		if(!UxCtrl_IsShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
+		}
+	} else {
+		if(!UxCtrl_IsShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
+		}
+	}
+	#endif
 
     if ((FlowMovie_GetLCDDimStatus()||(GPIOMap_IsLCDBacklightOn() == FALSE))
         &&(KeyScan_GetPlugDev() != PLUG_TV)
@@ -1271,5 +1311,70 @@ void FlowMovie_AutoHDR(void)
     }
 }
 
+#if 1//(GPS_PANEL_FUNC==ENABLE)
+BOOL  g_bSpeedPanelInit = FALSE;
+void FlowMovie_UpdateADASPanel(void)
+{
+	static UINT32 StartCount = 0;
+	static UINT32 DetCount = 0;
+	/*if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
+		if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)) {
+			if (g_bSpeedPanelInit) {
+				StartCount ++;
+				if (StartCount <= 17) {
+					FlowWiFiMovie_IconDrawPanelSpeed(StartCount);
+				} else {
+					StartCount = 0;
+					g_bSpeedPanelInit = FALSE;
+				}
+			} else {
+				StartCount = 0;
+			}
+
+			if (!g_bSpeedPanelInit) {
+				DetCount ++;
+				if (DetCount >= 2){
+					//FlowWiFiMovie_IconDrawTimeDate();
+					FlowWiFiMovie_IconDrawSpeed();
+					DetCount = 0;
+				}
+			}
+		} else {
+			StartCount = 0;
+			DetCount = 0;
+			g_bSpeedPanelInit = FALSE;
+		}
+	} else*/ {
+		if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)) {
+			if (g_bSpeedPanelInit) {
+				StartCount ++;
+				if (StartCount <= 17) {
+					//FlowMovie_IconDrawPanelSpeed(StartCount);
+					FlowMovie_IconDrawADASAnimation();
+				} else {
+					StartCount = 0;
+					g_bSpeedPanelInit = FALSE;
+				}
+			} else {
+				StartCount = 0;
+			}
+
+			if (!g_bSpeedPanelInit) {
+				DetCount ++;
+				if (DetCount >= 2){
+					//FlowMovie_IconDrawTimeDate();
+					//FlowMovie_IconDrawSpeed();
+					FlowMovie_IconDrawADASAnimation();
+					DetCount = 0;
+				}
+			}
+		} else {
+			StartCount = 0;
+			DetCount = 0;
+			g_bSpeedPanelInit = FALSE;
+		}
+	}
+}
+#endif
 
 

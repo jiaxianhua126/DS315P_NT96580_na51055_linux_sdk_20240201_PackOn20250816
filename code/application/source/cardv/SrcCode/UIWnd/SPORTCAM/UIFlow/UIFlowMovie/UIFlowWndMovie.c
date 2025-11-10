@@ -168,8 +168,13 @@ BOOL g_RearErr = FALSE;
 UINT8 g_RearRebootCnt = 0;
 static UINT32 beepCntTimeout = 0; 
 #if (_ADAS_FUNC_ == ENABLE)
+#include "algo_manager.h"
 UINT32 g_uiAdasAlertSecCnt = 0;
 UINT8 g_AdasSensitivity = 1;
+AlgoEventData adas_eventData_app = {0};
+
+AlgoEventData rcw_eventData_app = {0};
+
 #endif  // #if (_ADAS_FUNC_ == ENABLE)
 
 INT32 UIFlowWndMovie_OnExeRecord(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -439,19 +444,26 @@ INT32 UIFlowWndMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 {
 	//DBG_DUMP("call UIFlowWndMovie_OnOpen\r\n");
 	static BOOL UIFlowWndMovie_uiFrist = FALSE;
+	static BOOL firstPwrOn = TRUE;
 	g_AutoRec = FALSE;
 	g_uiRecStopTimerCnt=0;
+	if (firstPwrOn || UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF) {
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);		
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
+		//firstPwrOn = FALSE;
+	}
     //GxDisplay_Set(LAYER_OSD1, LAYER_STATE_ENABLE, 1);
     //GxDisplay_Flush(LAYER_OSD1);
 #if (ASR_FUNCTION == ENABLE)
 	Dx_SetASR_Flag(0);
 	ASR_GetPCMData_EN = FALSE;
 #endif
-	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
-	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);
+	//UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+	//UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);
 	DBG_ERR("======3333===========\r\n");
 
-	UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
+	//UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 	//UxCtrl_SetShow(&UIFlowWndMovie_Status_WIFICtrl, FALSE);
     ////////UxCtrl_SetShow(&UIFlowWndMovie_GPS_INFOCtrl, FALSE);
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_DrawingLineCtrl,FALSE);
@@ -505,6 +517,14 @@ INT32 UIFlowWndMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 	FlowMovie_UpdateIcons(TRUE);
 
 	Set_PreviewStable_Record(TRUE);
+	#if 1//(GPS_PANEL_FUNC==ENABLE)
+	if (!firstPwrOn && UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON) {
+		UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, TRUE);
+	}
+	#endif
+		firstPwrOn = FALSE;
 	// Enable Motion Detect function in starting up movie mode
 	if (gUIMotionDetTimerID == NULL_TIMER) {
 		gUIMotionDetTimerID = GxTimer_StartTimer(TIMER_HALF_SEC, NVTEVT_05SEC_TIMER, CONTINUE);
@@ -1429,20 +1449,38 @@ INT32 UIFlowWndMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 			FlowMovie_LCDDimDsiable(0); //reset count
 			FlowMovie_LCDIconDimDsiable(0); //reset count
 			if(GPIOMap_IsLCDBacklightOn()){
-				if(!UxCtrl_IsShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl))
+				/*if(!UxCtrl_IsShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl)
+					&&!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl))
 				{
 					DBG_ERR("======3333===========\r\n");
 					UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 					return NVTEVT_CONSUME;
-				}
+				}*/
 				if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_BOTH) {
 					SysSetFlag(FL_DUAL_CAM, DUALCAM_FRONT);
 				} else if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_FRONT) {
 					SysSetFlag(FL_DUAL_CAM, DUALCAM_BEHIND);
 				} else //if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_BEHIND) 
 				{
-					GPIOMap_TurnOffLCDBacklight();
-					SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
+					#if 1//(GPS_PANEL_FUNC==ENABLE)
+					if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)) {
+						UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+						UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+						UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, TRUE);
+						SysSetFlag(FL_ADAS_PANEL, ADAS_PANEL_ON);
+						g_bSpeedPanelInit = TRUE;
+					} else 
+					#endif
+					{
+						GPIOMap_TurnOffLCDBacklight();
+						SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
+						UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+						UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+						UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);
+						SysSetFlag(FL_ADAS_PANEL, ADAS_PANEL_OFF);
+					}
+					//GPIOMap_TurnOffLCDBacklight();
+					//SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
 				}
 				UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM));
 				Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_DUALCAM, 1, SysGetFlag(FL_DUAL_CAM));
@@ -1459,7 +1497,23 @@ INT32 UIFlowWndMovie_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
 				//return NVTEVT_CONSUME;
 			} else {
 				if (GPIOMap_IsLCDBacklightOn()) {
-					GPIOMap_TurnOffLCDBacklight();
+					#if 1//(GPS_PANEL_FUNC==ENABLE)
+					if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)) {
+						UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+						UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+						UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, TRUE);
+						SysSetFlag(FL_ADAS_PANEL, ADAS_PANEL_ON);
+						g_bSpeedPanelInit = TRUE;
+					} else 
+					#endif
+					{
+						GPIOMap_TurnOffLCDBacklight();
+						UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+						UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+						UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);
+						SysSetFlag(FL_ADAS_PANEL, ADAS_PANEL_OFF);
+					}
+					//GPIOMap_TurnOffLCDBacklight();
 				}
 			}
 		}
@@ -3093,8 +3147,6 @@ CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Distance_Seperate)
 CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Distance_Num0)
 CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Distance_Num1)
 CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Distance_Unit)
-CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_LCA_Road)
-CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_LCA_Car)
 CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_White)
 CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Animation)
 CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Blue_00)
@@ -3135,14 +3187,6 @@ EVENT_END
 
 //----------------------UIFlowWndMovie_ADAS_Distance_UnitCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndMovie_ADAS_Distance_Unit)
-EVENT_END
-
-//----------------------UIFlowWndMovie_ADAS_LCA_RoadCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_ADAS_LCA_Road)
-EVENT_END
-
-//----------------------UIFlowWndMovie_ADAS_LCA_CarCtrl Event---------------------------
-EVENT_BEGIN(UIFlowWndMovie_ADAS_LCA_Car)
 EVENT_END
 
 //----------------------UIFlowWndMovie_ADAS_Car_WhiteCtrl Event---------------------------

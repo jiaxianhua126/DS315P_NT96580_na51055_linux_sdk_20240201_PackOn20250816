@@ -89,6 +89,7 @@ extern void GPIOMap_TurnOnLCDBacklight(void);
 extern void GPIOMap_TurnOffLCDBacklight(void);
 extern void UIFlowWndMovie_OnDeleteOld(void);
 extern UINT32 System_GetEnableSensor(void);
+extern void FlowMovie_UpdateADASPanel(void);
 
 extern BOOL isACCTrigPowerOn;
 extern BOOL isACCTrigParkMode;
@@ -100,6 +101,7 @@ extern BOOL g_NotRecordWrn;
 extern BOOL g_RearErr;
 extern UINT8 g_RearRebootCnt;
 extern BOOL WifiStarting;
+extern BOOL g_bSpeedPanelInit;
 
 //Callback function
 extern void FlowMovie_RawEncCB(UINT32 uiEventID);
