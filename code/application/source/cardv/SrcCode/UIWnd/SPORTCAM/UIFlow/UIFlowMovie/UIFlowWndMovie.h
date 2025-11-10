@@ -265,5 +265,47 @@ UIFlowWndMovie_StatusICN_LCWS_Alert_ICON_ADAS_CHANGE_LANE_RIGHT,
 UIFlowWndMovie_StatusICN_LCWS_Alert_MAX
 }UIFlowWndMovie_StatusICN_LCWS_Alert_Setting;
 
+extern VControl UIFlowWndMovie_ADAS_Alert_PanelCtrl;//Panel type 
+
+extern VControl UIFlowWndMovie_ADAS_Road_Static_IconCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Distance_BGCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Distance_SeperateCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Distance_Num0Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Distance_Num1Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Distance_UnitCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_LCA_RoadCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_LCA_CarCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_WhiteCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_AnimationCtrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_Blue_00Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_Blue_01Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_Blue_02Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_Blue_03Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_Blue_04Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_Blue_05Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_Blue_06Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_Red_00Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_Car_Red_01Ctrl;//Static type 
+
+extern VControl UIFlowWndMovie_ADAS_TypeCtrl;//Static type 
+
 //---------------------UIFlowWndMovieCtrl User Export---------------------------
 #endif
