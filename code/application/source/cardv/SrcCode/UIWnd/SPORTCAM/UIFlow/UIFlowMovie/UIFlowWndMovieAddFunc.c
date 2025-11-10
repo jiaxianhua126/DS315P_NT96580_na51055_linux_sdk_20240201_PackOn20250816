@@ -107,6 +107,15 @@ void UIFlowWndMovie_OnAutoStartRec(void)
 					else
 					{
 						Ux_PostEvent(NVTEVT_KEY_SHUTTER2, 1, NVTEVT_KEY_PRESS);
+						#if 1//(GPS_PANEL_FUNC==ENABLE)
+						if (UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON) {
+	                        UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+	                        UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, TRUE);
+	                        UI_SetData(FL_DUAL_CAM, DUALCAM_BEHIND);
+	                        UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM));
+	                        g_bSpeedPanelInit = TRUE;
+	                    }
+						#endif
 					}
 				}
 			}

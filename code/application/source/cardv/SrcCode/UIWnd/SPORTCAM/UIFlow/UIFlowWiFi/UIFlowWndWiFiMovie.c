@@ -100,6 +100,8 @@ static UINT32 beepCntTimeout = 0;
 //---------------------UIFlowWndWiFiMovieCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndWiFiMovie)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Panel_Normal_Display)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Alert_Display)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Alert_Panel)
 CTRL_LIST_END
 
 //----------------------UIFlowWndWiFiMovieCtrl Event---------------------------
@@ -296,7 +298,9 @@ INT32 UIFlowWndWiFiMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
     UIFlowWndWiFiMovie_Initparam();
     #endif
 	UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
-    ///UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_INFOCtrl, FALSE); ///harrison ds315
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE); 	
+    UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, FALSE); ///harrison ds315
+    
 	FlowWiFiMovie_initIcon();
 
     FlowMovie_SetSOSStatusNow(FALSE);
@@ -330,6 +334,17 @@ INT32 UIFlowWndWiFiMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
             bWiFiModeChanged = TRUE;
         }
     }
+
+	#if 0//GPS_PANEL_FUNC
+	if (UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON) {
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);		
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);	
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, TRUE);
+		UI_SetData(FL_DUAL_CAM, DUALCAM_BEHIND);
+		UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM));
+		g_bSpeedPanelInit = TRUE;
+	}
+	#endif
 
     bWiFiRec_AutoStart = FALSE;
     bWiFiRec_AutoStop = FALSE;
@@ -521,19 +536,37 @@ INT32 UIFlowWndWiFiMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 				FlowMovie_LCDDimDsiable(0); //reset count
 				FlowMovie_LCDIconDimDsiable(0); //reset count
 				if(GPIOMap_IsLCDBacklightOn()){
-					if(!UxCtrl_IsShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl))
+					/*if(!UxCtrl_IsShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl)
+						&&!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl))
 					{
 						UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
 						return NVTEVT_CONSUME;
-					}
+					}*/
 					if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_BOTH) {
 						SysSetFlag(FL_DUAL_CAM, DUALCAM_FRONT);
 					} else if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_FRONT) {
 						SysSetFlag(FL_DUAL_CAM, DUALCAM_BEHIND);
 					} else //if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_BEHIND) 
 					{
-						GPIOMap_TurnOffLCDBacklight();
-						SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
+						#if 0//(GPS_PANEL_FUNC==ENABLE)
+						if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)) {
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, TRUE);
+							SysSetFlag(FL_ADAS_PANEL, ADAS_PANEL_ON);
+							g_bSpeedPanelInit = TRUE;
+						} else 
+						#endif
+						{
+							GPIOMap_TurnOffLCDBacklight();
+							SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, FALSE);
+							SysSetFlag(FL_ADAS_PANEL, ADAS_PANEL_OFF);
+						}
+						//GPIOMap_TurnOffLCDBacklight();
+						//SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
 					}
 
 					UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM));
@@ -554,7 +587,23 @@ INT32 UIFlowWndWiFiMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 					//return NVTEVT_CONSUME;
 				} else {
 					if (GPIOMap_IsLCDBacklightOn()) {
-						GPIOMap_TurnOffLCDBacklight();
+						#if 0//(GPS_PANEL_FUNC==ENABLE)
+						if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)) {
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, TRUE);
+							SysSetFlag(FL_ADAS_PANEL, ADAS_PANEL_ON);
+							g_bSpeedPanelInit = TRUE;
+						} else 
+						#endif
+						{
+							GPIOMap_TurnOffLCDBacklight();
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
+							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, FALSE);
+							SysSetFlag(FL_ADAS_PANEL, ADAS_PANEL_OFF);
+						}
+						//GPIOMap_TurnOffLCDBacklight();
 					}
 				}
 			}
@@ -2337,5 +2386,146 @@ EVENT_END
 
 //----------------------UIFlowWiFiMoive_static_AppConnecttingCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWiFiMoive_static_AppConnectting)
+EVENT_END
+
+//---------------------UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndWiFiMovie_ADAS_Alert_Display)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StatusICN_LDWS_Alert)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StatusICN_FCWS_Alert)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StatusICN_SNG_Alert)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StatusICN_PDWS_Alert)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StatusICN_RCWS_Alert)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StatusICN_VBWS_Alert)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_StatusICN_LCWS_Alert)
+CTRL_LIST_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Alert_Display)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_StatusICN_LDWS_Alert)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_StatusICN_FCWS_Alert)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_StatusICN_SNG_Alert)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_StatusICN_PDWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_StatusICN_PDWS_Alert)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_StatusICN_RCWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_StatusICN_RCWS_Alert)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_StatusICN_VBWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_StatusICN_VBWS_Alert)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_StatusICN_LCWS_Alert)
+EVENT_END
+
+//---------------------UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndWiFiMovie_ADAS_Alert_Panel)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Road_Static_Icon)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Distance_BG)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Distance_Seperate)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Distance_Num0)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Distance_Num1)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Distance_Unit)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_White)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Animation)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_00)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_01)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_02)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_03)
+CTRL_LIST_ITEM(UIFlowWndWiFiIMovie_ADAS_Car_Blue_04)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_05)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_06)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Red_00)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Red_01)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Type)
+CTRL_LIST_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Alert_Panel)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Road_Static_Icon)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Distance_BGCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Distance_BG)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Distance_SeperateCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Distance_Seperate)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Distance_Num0Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Distance_Num0)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Distance_Num1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Distance_Num1)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Distance_UnitCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Distance_Unit)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_WhiteCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_White)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_AnimationCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Animation)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_Blue_00Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Blue_00)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_Blue_01Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Blue_01)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_Blue_02Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Blue_02)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_Blue_03Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Blue_03)
+EVENT_END
+
+//----------------------UIFlowWndWiFiIMovie_ADAS_Car_Blue_04Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiIMovie_ADAS_Car_Blue_04)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_Blue_05Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Blue_05)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_Blue_06Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Blue_06)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_Red_00Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Red_00)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_Red_01Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Red_01)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_ADAS_TypeCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Type)
 EVENT_END
 

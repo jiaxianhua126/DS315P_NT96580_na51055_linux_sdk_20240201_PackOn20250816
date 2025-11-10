@@ -884,6 +884,23 @@ void FlowMovie_initIcon(void)
     UxCtrl_SetShow(&UIFlowWndMovie_RL_SMALL_ICON3Ctrl, FALSE);
 }
 
+void FlowMovie_IconDrawADASAnimation(void)
+{
+	static UINT32 i = ICON_ADAS_ANIMATION_01;
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_AnimationCtrl,FALSE);
+	if(i>=ICON_ADAS_ANIMATION_01 &&i<=ICON_ADAS_ANIMATION_07)
+	{
+		UxStatic_SetData(&UIFlowWndMovie_ADAS_Car_AnimationCtrl, STATIC_VALUE, i);
+	}
+	else
+	{
+		i = ICON_ADAS_ANIMATION_01;
+		UxStatic_SetData(&UIFlowWndMovie_ADAS_Car_AnimationCtrl, STATIC_VALUE, i);
+	}
+	i++;
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_AnimationCtrl,TRUE);
+}
+
 void FlowMovie_UpdateIcons(BOOL bShow)
 {
 	if ((bShow == FALSE) || (SysGetFlag(FL_LCD_DISPLAY) == DISPOUT_OFF)) {

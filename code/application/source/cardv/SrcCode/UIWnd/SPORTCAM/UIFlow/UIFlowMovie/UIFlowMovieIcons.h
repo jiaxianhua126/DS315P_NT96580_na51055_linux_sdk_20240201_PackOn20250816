@@ -42,6 +42,8 @@ extern void FlowMovie_IconHideTSR(void);
 extern void FlowMovie_IconDrawRL(void);
 extern void FlowMovie_IconHideRL(void);
 extern void FlowMovie_initIcon(void);
+extern void FlowMovie_IconDrawADASAnimation(void);
+
 
 extern void FlowMovie_UpdateIcons(BOOL bShow);
 

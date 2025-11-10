@@ -279,10 +279,6 @@ extern VControl UIFlowWndMovie_ADAS_Distance_Num1Ctrl;//Static type
 
 extern VControl UIFlowWndMovie_ADAS_Distance_UnitCtrl;//Static type 
 
-extern VControl UIFlowWndMovie_ADAS_LCA_RoadCtrl;//Static type 
-
-extern VControl UIFlowWndMovie_ADAS_LCA_CarCtrl;//Static type 
-
 extern VControl UIFlowWndMovie_ADAS_Car_WhiteCtrl;//Static type 
 
 extern VControl UIFlowWndMovie_ADAS_Car_AnimationCtrl;//Static type 

@@ -801,5 +801,6 @@ unsigned char gDemoKit_String_RU[];
 #define STRID_ADAS_CALIBRATION                   0x02E8
 #define STRID_ADAS_CORDON                        0x02E9
 #define STRID_ADAS_CORDON_LINE                   0x02EA
+#define STRID_APP_CONNECTTING                    0x02EB
 
 #endif //_DEMOKIT_STRING_H_
