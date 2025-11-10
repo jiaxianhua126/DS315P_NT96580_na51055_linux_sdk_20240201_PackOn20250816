@@ -41,6 +41,7 @@
 CTRL_LIST_BEGIN(UIFlowWndMovie)
 CTRL_LIST_ITEM(UIFlowWndMovie_Panel_Normal_Display)
 CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Alert_Display)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Alert_Panel)
 CTRL_LIST_END
 
 //----------------------UIFlowWndMovieCtrl Event---------------------------
@@ -447,6 +448,7 @@ INT32 UIFlowWndMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 	ASR_GetPCMData_EN = FALSE;
 #endif
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);
 	DBG_ERR("======3333===========\r\n");
 
 	UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
@@ -2467,7 +2469,7 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 			g_PM_ShutdownCnt = 0;
 		}
 		#if (_ADAS_FUNC_ == ENABLE)
-		DBG_ERR("======g_uiAdasAlertSecCnt=%d==========\r\n",g_uiAdasAlertSecCnt);
+		//DBG_ERR("======g_uiAdasAlertSecCnt=%d==========\r\n",g_uiAdasAlertSecCnt);
 		if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			g_uiAdasAlertSecCnt++;
 			if (g_uiAdasAlertSecCnt >=2) {
@@ -3081,5 +3083,113 @@ EVENT_END
 
 //----------------------UIFlowWndMovie_StatusICN_LCWS_AlertCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWndMovie_StatusICN_LCWS_Alert)
+EVENT_END
+
+//---------------------UIFlowWndMovie_ADAS_Alert_PanelCtrl Control List---------------------------
+CTRL_LIST_BEGIN(UIFlowWndMovie_ADAS_Alert_Panel)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Road_Static_Icon)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Distance_BG)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Distance_Seperate)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Distance_Num0)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Distance_Num1)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Distance_Unit)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_LCA_Road)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_LCA_Car)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_White)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Animation)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Blue_00)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Blue_01)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Blue_02)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Blue_03)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Blue_04)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Blue_05)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Blue_06)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Red_00)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Car_Red_01)
+CTRL_LIST_ITEM(UIFlowWndMovie_ADAS_Type)
+CTRL_LIST_END
+
+//----------------------UIFlowWndMovie_ADAS_Alert_PanelCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Alert_Panel)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Road_Static_IconCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Road_Static_Icon)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Distance_BGCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Distance_BG)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Distance_SeperateCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Distance_Seperate)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Distance_Num0Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Distance_Num0)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Distance_Num1Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Distance_Num1)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Distance_UnitCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Distance_Unit)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_LCA_RoadCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_LCA_Road)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_LCA_CarCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_LCA_Car)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_WhiteCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_White)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_AnimationCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_Animation)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_Blue_00Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_Blue_00)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_Blue_01Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_Blue_01)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_Blue_02Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_Blue_02)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_Blue_03Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_Blue_03)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_Blue_04Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_Blue_04)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_Blue_05Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_Blue_05)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_Blue_06Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_Blue_06)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_Red_00Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_Red_00)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_Car_Red_01Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Car_Red_01)
+EVENT_END
+
+//----------------------UIFlowWndMovie_ADAS_TypeCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndMovie_ADAS_Type)
 EVENT_END
 
