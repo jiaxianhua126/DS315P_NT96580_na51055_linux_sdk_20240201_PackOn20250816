@@ -13,6 +13,7 @@
 #include "PStore.h"
 #include <unistd.h>
 
+
 #define PRI_MOVIEALG_ADAS                20//10
 #define STKSIZE_MOVIEALG_ADAS            4096
 
@@ -56,6 +57,8 @@ ER Init_PStore(void);
 
 BOOL ADAS_OpenState = FALSE;
 UINT8 ActiveFiles_flag = 0;
+pthread_mutex_t g_data_mutex_front = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t g_data_mutex_rear = PTHREAD_MUTEX_INITIALIZER;
 
 static void MovieAlgFunc_ADASSetSentivity(UINT8 adasSensitivity)
 {
@@ -187,7 +190,15 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 					);
 					
 					//
-					memcpy(&adas_eventData_app,&adas_eventData,sizeof(adas_eventData));
+					#if  1
+					if (pthread_mutex_trylock(&g_data_mutex_front) == 0) {
+						printf("LOCK success===1.\r\n");
+						memcpy(&adas_eventData_app,&adas_eventData,sizeof(adas_eventData));
+						pthread_mutex_unlock(&g_data_mutex_front);
+					}else{
+						printf("LOCK fail======111.\r\n");
+					}
+					#endif
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//前车碰撞
 				        printf("=====ALGO_ADAS_WARN_TYPE_FCW====\r\n");
 						//if(SysGetFlag(FL_MOVIE_FCW) == MOVIE_FCW_ON)
@@ -224,7 +235,15 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 			else if(adas_eventData.result.type == ALGO_TYPE_ADAS && 
 					adas_eventData.result.algoResult.adasResult.calib.calib_history == 1)
 			{	
-				memcpy(&adas_eventData_app,&adas_eventData,sizeof(adas_eventData));
+				#if 1
+				if (pthread_mutex_trylock(&g_data_mutex_front) == 0) {
+					printf("LOCK success.\r\n");
+					memcpy(&adas_eventData_app,&adas_eventData,sizeof(adas_eventData));
+					pthread_mutex_unlock(&g_data_mutex_front);
+				}else{
+					printf("LOCK fail.\r\n");
+				}
+				#endif
 				//printf("=========%s=====222====\n",__func__);
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//前车碰撞
 			        printf("=====ALGO_ADAS_WARN_TYPE_FCW====\r\n");
@@ -352,7 +371,12 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 							adas_eventData.result.algoResult.adasResult.calib.calib_process
 					);*/
 					//
-					memcpy(&rcw_eventData_app,&rcw_eventData,sizeof(rcw_eventData));
+					#if 1
+					if (pthread_mutex_trylock(&g_data_mutex_rear) == 0) {
+						memcpy(&rcw_eventData_app,&rcw_eventData,sizeof(rcw_eventData));
+						pthread_mutex_unlock(&g_data_mutex_rear);
+					}
+					#endif
 					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//前车碰撞
 				        printf("=====ALGO_RCW_WARN_TYPE_RCW_REAR====\r\n");
 						//if(SysGetFlag(FL_MOVIE_RCW) == MOVIE_RCW_ON)
@@ -373,7 +397,12 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 			}
 			else if(rcw_eventData.result.type == ALGO_TYPE_RCW && rcw_eventData.result.algoResult.rcwResult.calib.calib_history == 1)
 			{
-				memcpy(&rcw_eventData_app,&rcw_eventData,sizeof(rcw_eventData));
+				#if  1	
+				if (pthread_mutex_trylock(&g_data_mutex_rear) == 0) {
+					memcpy(&rcw_eventData_app,&rcw_eventData,sizeof(rcw_eventData));
+					pthread_mutex_unlock(&g_data_mutex_rear);
+				}
+				#endif
 				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//前车碰撞
 			        printf("=====ALGO_RCW_WARN_TYPE_RCW_REAR====\r\n");
 					//if(SysGetFlag(FL_MOVIE_RCW) == MOVIE_RCW_ON)
