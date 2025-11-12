@@ -171,13 +171,6 @@ static UINT32 beepCntTimeout = 0;
 #include "algo_manager.h"
 UINT32 g_uiAdasAlertSecCnt = 0;
 UINT8 g_AdasSensitivity = 1;
-AlgoEventData adas_eventData_app = {0};
-
-AlgoEventData rcw_eventData_app = {0};
-extern pthread_mutex_t g_data_mutex_front ;
-extern pthread_mutex_t g_data_mutex_rear ;
-
-
 #endif  // #if (_ADAS_FUNC_ == ENABLE)
 
 INT32 UIFlowWndMovie_OnExeRecord(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -2207,6 +2200,7 @@ void UIFlowWndMovie_GetASR_Flag(void)
 	}
 #endif
 }
+extern BOOL ADAS_OpenState;
 
 INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -2301,17 +2295,6 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 			ManualSetSOS = FALSE;
 		}
 	
-		#endif
-		#if 1
-		if (pthread_mutex_trylock(&g_data_mutex_front) == 0) {
-			//DBG_DUMP("========SUCCESS1===============\r\n");
-			pthread_mutex_unlock(&g_data_mutex_front);
-		}
-
-		if (pthread_mutex_trylock(&g_data_mutex_rear) == 0) {
-			pthread_mutex_unlock(&g_data_mutex_rear);
-			//DBG_DUMP("========SUCCESS2===============\r\n");
-		}
 		#endif
    	    break;
 
@@ -2438,6 +2421,9 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 
 		UIFlowMoive_AutoStartWiFi();//TBD
 		FlowMovie_DetLCDDim();
+		if(ADAS_OpenState){
+			FlowMovie_UpdateADASPanel();
+		}
 		break;
 
 	case NVTEVT_1SEC_TIMER:
@@ -2660,6 +2646,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 	Ux_FlushEventByRange(NVTEVT_CB_ADAS_SHOWALARM, NVTEVT_CB_ADAS_SHOWALARM);
 	AlarmType = paramArray[0];
+	if(UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON)
+	{
+		return NVTEVT_CONSUME;
+	}
 
 	switch (AlarmType) {
 	case ADAS_ALARM_LD_LEFT:

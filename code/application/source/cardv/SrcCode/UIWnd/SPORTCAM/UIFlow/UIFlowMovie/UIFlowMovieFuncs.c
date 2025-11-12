@@ -1351,6 +1351,7 @@ void FlowMovie_UpdateADASPanel(void)
 				if (StartCount <= 17) {
 					//FlowMovie_IconDrawPanelSpeed(StartCount);
 					FlowMovie_IconDrawADASAnimation();
+					FlowMovie_IconDrawADASUpdateCar();
 				} else {
 					StartCount = 0;
 					g_bSpeedPanelInit = FALSE;
@@ -1365,6 +1366,7 @@ void FlowMovie_UpdateADASPanel(void)
 					//FlowMovie_IconDrawTimeDate();
 					//FlowMovie_IconDrawSpeed();
 					FlowMovie_IconDrawADASAnimation();
+					FlowMovie_IconDrawADASUpdateCar();
 					DetCount = 0;
 				}
 			}

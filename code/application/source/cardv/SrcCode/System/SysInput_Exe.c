@@ -501,9 +501,7 @@ void UI_DetPwrKey(void)
 	if (!UI_IsForceLock()) {
 		GxKey_DetPwrKey();
 	}
-	#if 1//(GPS_PANEL_FUNC==ENABLE)
-	FlowMovie_UpdateADASPanel();
-	#endif
+	//if(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE&&!System_IsModeChging())
 }
 
 void UI_DetNormalKey(void)
