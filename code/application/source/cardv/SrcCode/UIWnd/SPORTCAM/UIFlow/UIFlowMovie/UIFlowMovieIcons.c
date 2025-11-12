@@ -11,6 +11,10 @@
 #include "UIApp/Network/EthCamAppNetwork.h"
 #endif
 #include "DxInput.h"
+#include "algo_manager.h"
+#include <math.h>
+
+
 static CHAR		g_RecMaxTimeStr[20] = {0};
 static UINT32	g_RecMaxTime = 0;
 static CHAR		g_RecCurrTimeStr[20] = {0};
@@ -900,6 +904,170 @@ void FlowMovie_IconDrawADASAnimation(void)
 	i++;
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_AnimationCtrl,TRUE);
 }
+AlgoEventData adas_eventData_app = {0};
+
+AlgoEventData rcw_eventData_app = {0};
+extern pthread_mutex_t g_data_mutex_front ;
+extern pthread_mutex_t g_data_mutex_rear ;
+
+void FlowMovie_IconDrawADASUpdateCar(void)
+{
+	AlgoEventData adas_eventData_app00 = {0};
+	AlgoEventData rcw_eventData_app01 = {0};
+
+#if 1
+	if (pthread_mutex_trylock(&g_data_mutex_front) == 0) {
+		memcpy(&adas_eventData_app00, &adas_eventData_app, sizeof(adas_eventData_app));
+		//DBG_DUMP("========SUCCESS1===============\r\n");
+		pthread_mutex_unlock(&g_data_mutex_front);
+
+		
+	#if 1
+		// 先隐藏所有汽车图标
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_00Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_01Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_02Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_03Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_04Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_05Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_06Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Red_00Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Red_01Ctrl, FALSE);
+		// 安全检查：确保数据有效
+		if (adas_eventData_app00.result.type != ALGO_TYPE_ADAS) {
+			DBG_DUMP("Not ADAS data, type=%d\r\n", adas_eventData_app00.result.type);
+			return;
+		}
+		
+		AlgoAdasResult* adas_result = &adas_eventData_app00.result.algoResult.adasResult;
+		
+		// 安全检查：确保FCW数据有效
+		if (adas_result == NULL) {
+			DBG_DUMP("ADAS result is NULL\r\n");
+			return;
+		}
+		
+		AlgoAdasFcwResult* fcw_result = &adas_result->fcw;
+		
+		// 安全检查：确保对象数量有效
+		if (fcw_result->objsize < 0 || fcw_result->objsize > ALGO_ADAS_OBJ_MAX_NUM) {
+			DBG_DUMP("Invalid objsize: %d\r\n", fcw_result->objsize);
+			return;
+		}
+		
+		// 先标记正前方车辆（cipv）
+		INT32 cipv_index = fcw_result->cipv;
+		BOOL has_cipv = (cipv_index >= 0 && cipv_index < fcw_result->objsize);
+		
+		DBG_DUMP("FCW: objsize=%d, cipv=%d\r\n", fcw_result->objsize, cipv_index);
+		
+		// 遍历检测到的车辆
+		for (INT32 i = 0; i < fcw_result->objsize && i < 8; i++) {
+			// 安全检查：确保对象指针有效
+			if (&fcw_result->objects[i] == NULL) {
+				DBG_DUMP("Object %d is NULL\r\n", i);
+				continue;
+			}
+			
+			AlgoAdasObject* obj = &fcw_result->objects[i];
+			 // 检查距离是否在30米范围内
+			FLOAT distance_x = fabs(obj->relative_distance.x);
+			FLOAT distance_y = fabs(obj->relative_distance.y);
+
+			  // 如果x或y方向距离超过30米，不显示
+			if (distance_x > 30.0f || distance_y > 30.0f) {
+				DBG_DUMP("Car %d out of range: (%.1f,%.1f)m\r\n", 
+						 i, obj->relative_distance.x, obj->relative_distance.y);
+				continue;
+			}
+			// 将实际距离转换为显示区域内的坐标
+			const FLOAT max_distance = 30.0f;
+			
+			// 显示区域参数
+			const INT32 display_offset_x = 50;	  // 显示区域X起始位置
+			const INT32 display_offset_y = 0;	  // 显示区域Y起始位置
+			const INT32 display_width = 168;	  // 显示区域宽度
+			const INT32 display_height = 240;	  // 显示区域高度
+			
+			// 小汽车在显示区域内的中心位置
+			const INT32 self_car_display_x = display_width / 2; 	// 84
+			const INT32 self_car_display_y = display_height / 2;	// 120
+			
+			// 计算像素/米的比例（显示区域覆盖自车+前后左右各30米）
+			const FLOAT pixels_per_meter_x = (FLOAT)display_width / (2 * max_distance);   // 168/60 = 2.8像素/米
+			const FLOAT pixels_per_meter_y = (FLOAT)(display_height - 3*30) / (2 * max_distance);  // 240/60 = 4.0像素/米
+			
+			// 计算相对于自车中心的像素偏移
+			INT32 pixel_offset_x = (INT32)(obj->relative_distance.x * pixels_per_meter_x);
+			INT32 pixel_offset_y = (INT32)(obj->relative_distance.y * pixels_per_meter_y);
+			
+			// 计算在显示区域内的坐标（以自车中心为原点）
+			INT32 display_x = self_car_display_x + pixel_offset_x;
+			INT32 display_y = self_car_display_y - pixel_offset_y - 30;	// 前方为-Y方向
+			
+			// 转换为屏幕绝对坐标
+			INT32 screen_x = display_offset_x + display_x;
+			INT32 screen_y = display_offset_y + display_y;
+			
+			// 创建矩形区域（23x30）- 中心对齐
+			Ux_RECT rect;
+			rect.x1 = screen_x - 11;   // 中心向左11像素
+			rect.y1 = screen_y - 15;   // 中心向上15像素
+			rect.x2 = screen_x + 12;   // 中心向右12像素
+			rect.y2 = screen_y + 15;   // 中心向下15像素
+
+			// 选择图标控件
+			VControl* car_ctrl = NULL;
+			
+			// 分配控件（按顺序使用所有可用的控件）
+			if (i < 7) {
+				switch (i) {
+					case 0: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_00Ctrl; break;
+					case 1: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_01Ctrl; break;
+					case 2: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_02Ctrl; break;
+					case 3: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_03Ctrl; break;
+					case 4: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_04Ctrl; break;
+					case 5: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_05Ctrl; break;
+					case 6: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_06Ctrl; break;
+					default: break;
+				}
+			} else if (i < 9) {
+				switch (i) {
+					case 7: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Red_00Ctrl; break;
+					case 8: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Red_01Ctrl; break;
+					default: break;
+				}
+			}
+			
+			if (car_ctrl != NULL) {
+				// 设置位置并显示
+				UxCtrl_SetPos(car_ctrl, rect);
+				UxCtrl_SetShow(car_ctrl, TRUE);
+				
+				// 如果是正前方车辆，设置为红色图标
+				if (i == cipv_index && has_cipv) {
+					UxStatic_SetData(car_ctrl, STATIC_VALUE, ICON_ADAS_CAR_RED);
+				} else {
+					UxStatic_SetData(car_ctrl, STATIC_VALUE, ICON_ADAS_CAR_BLUE);
+				}
+				
+				DBG_DUMP("Car %d: real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
+						 i, obj->relative_distance.x, obj->relative_distance.y, screen_x, screen_y);
+			}
+		}
+	#endif
+	}
+	
+	if (pthread_mutex_trylock(&g_data_mutex_rear) == 0) {		 
+		memcpy(&rcw_eventData_app01, &rcw_eventData_app, sizeof(rcw_eventData_app));
+		pthread_mutex_unlock(&g_data_mutex_rear);
+	}
+#endif
+}
+
+
+
+	
 
 void FlowMovie_UpdateIcons(BOOL bShow)
 {

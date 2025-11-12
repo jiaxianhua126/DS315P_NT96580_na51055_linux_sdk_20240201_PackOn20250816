@@ -150,8 +150,8 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 	movie_alg_adas_tsk_run = true;
    
 	while (movie_alg_adas_tsk_run) {
-		para.speed = g_CurSpeed;//60
-		//para.speed = 60;
+		//para.speed = g_CurSpeed;//60
+		para.speed = 60;
 		speed_cnt++;
 		if(speed_cnt == 1000){
 			//printf("=========%s====speed:%d=====\n",__func__,g_CurSpeed);
@@ -332,8 +332,8 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 	movie_alg_rcw_tsk_run = true;
    
 	while (movie_alg_rcw_tsk_run) {
-		para.speed = g_CurSpeed;//60
-		//para.speed = 60;
+		//para.speed = g_CurSpeed;//60
+		para.speed = 60;
 		speed_cnt++;
 		if(speed_cnt == 1000){
 			//printf("=========%s====speed:%d=====\n",__func__,g_CurSpeed);
