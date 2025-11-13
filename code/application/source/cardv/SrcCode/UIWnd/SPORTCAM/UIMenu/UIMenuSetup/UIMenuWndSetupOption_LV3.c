@@ -158,6 +158,42 @@ void UIMenuWndSetupOption_LV3_Tex_ShowInit(UINT32 ItemId,UINT32 SelOption)
             }
             break;
 
+        case MOVIE_LCAWS:
+            //DBG_DUMP("\r\ncase MOVIE_RCW !!!!, SysGetFlag(FL_RCW) = %d\r\n", SysGetFlag(FL_RCW));
+            g_Option_Sel = SysGetFlag(FL_ADAS_LCAWS);
+            UxMenu_SetData(&UIMenuWndSetupOption_LV3_MenuCtrl, MNU_CURITM, SysGetFlag(FL_ADAS_LCAWS));
+            UxStatic_SetData(&UIMenuWndSetupOption_LV3_TitleCtrl, STATIC_VALUE, STRID_LCWS);
+            UxCtrl_SetShow(&UIMenuWndSetupOption_LV3_TitleCtrl, TRUE);
+            for (i = 0; i < FUNCTION_ID_MAX; i ++)
+            {
+                UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  FunctionSwitch_StrTab[i]);
+                UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+            }
+            for (i = FUNCTION_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
+            {
+                UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  0);
+                UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
+            }
+            break;
+
+		case MOVIE_VIRTUAL_BUMPER:
+            //DBG_DUMP("\r\ncase MOVIE_VIRTUAL_BUMPER !!!!, SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) = %d\r\n", SysGetFlag(FL_ADAS_VIRTUAL_BUMPER));
+            g_Option_Sel = SysGetFlag(FL_ADAS_VIRTUAL_BUMPER);
+            UxMenu_SetData(&UIMenuWndSetupOption_LV3_MenuCtrl, MNU_CURITM, SysGetFlag(FL_ADAS_VIRTUAL_BUMPER));
+            UxStatic_SetData(&UIMenuWndSetupOption_LV3_TitleCtrl, STATIC_VALUE, STRID_VIRTUAL_BUMPER);
+            UxCtrl_SetShow(&UIMenuWndSetupOption_LV3_TitleCtrl, TRUE);
+            for (i = 0; i < FUNCTION_ID_MAX; i ++)
+            {
+                UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  FunctionSwitch_StrTab[i]);
+                UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
+            }
+            for (i = FUNCTION_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
+            {
+                UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  0);
+                UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
+            }
+            break;
+
         default:
             break;
         }
@@ -314,6 +350,12 @@ INT32 UIMenuWndSetupOption_LV3_Menu_OnKeyEnter(VControl *pCtrl, UINT32 paramNum,
 			break;
 		case STRID_RCW:
 			SysSetFlag(FL_RCW, g_Option_Sel);
+			break;
+		case STRID_LCWS:
+			SysSetFlag(FL_ADAS_LCAWS, g_Option_Sel);
+			break;
+		case STRID_VIRTUAL_BUMPER:
+			SysSetFlag(FL_ADAS_VIRTUAL_BUMPER, g_Option_Sel);
 			break;
         }
 		UIMenuWndSetupOption_LV3_CalcPageInfo(&MenuCommonOption_MenuCtrl, g_Option_Sel);
