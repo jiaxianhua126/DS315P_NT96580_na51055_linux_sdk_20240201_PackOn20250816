@@ -2296,6 +2296,9 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 		}
 	
 		#endif
+		if(ADAS_OpenState){
+			FlowMovie_UpdateADASPanel();
+		}
    	    break;
 
 	case NVTEVT_05SEC_TIMER:
@@ -2421,9 +2424,6 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 
 		UIFlowMoive_AutoStartWiFi();//TBD
 		FlowMovie_DetLCDDim();
-		if(ADAS_OpenState){
-			FlowMovie_UpdateADASPanel();
-		}
 		break;
 
 	case NVTEVT_1SEC_TIMER:
@@ -2525,8 +2525,8 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 		#if (_ADAS_FUNC_ == ENABLE)
 		//DBG_ERR("======g_uiAdasAlertSecCnt=%d==========\r\n",g_uiAdasAlertSecCnt);
 		if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
-			g_uiAdasAlertSecCnt++;
-			if (g_uiAdasAlertSecCnt >=2) {
+			g_uiAdasAlertSecCnt--;
+			if (g_uiAdasAlertSecCnt <=1) {
 				UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
 				
@@ -2535,6 +2535,18 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 			} else {
 				return NVTEVT_CONSUME;
 			}
+		}else  if(UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)){
+			g_uiAdasAlertSecCnt--;
+			if (g_uiAdasAlertSecCnt <=1) {
+				FlowMovie_IconHideADASDistance();
+				FlowMovie_IconHideADASDisplayType();
+				DBG_ERR("======UIFlowWndMovie_ADAS_Alert_PanelCtrl===========\r\n");
+				g_uiAdasAlertSecCnt = 0;
+			} else {
+				return NVTEVT_CONSUME;
+			}
+			
+
 		}
 		#endif  // #if (_ADAS_FUNC_ == ENABLE)
 		break;
@@ -2648,13 +2660,99 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 	AlarmType = paramArray[0];
 	if(UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON)
 	{
+		switch (AlarmType) {
+		case ADAS_ALARM_LD_LEFT:
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
+			//if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				FlowMovie_IconDrawADASDisplayType(AlarmType);
+			//}
+			break;
+		case ADAS_ALARM_LD_RIGHT:
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
+			//if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				FlowMovie_IconDrawADASDisplayType(AlarmType);
+			//}
+			break;
+
+		case ADAS_ALARM_FC:
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			UISound_Play(DEMOSOUND_SOUND_FCS_TONE);
+			//if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				FlowMovie_IconDrawADASDisplayType(AlarmType);
+			//}
+			break;
+
+		case ADAS_ALARM_GO:
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			//if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				FlowMovie_IconDrawADASDisplayType(AlarmType);
+			//}
+			break;
+
+		case ADAS_ALARM_FPW:
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			//if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				FlowMovie_IconDrawADASDisplayType(AlarmType);
+			//}
+			break;
+
+
+		case ADAS_ALARM_VIRTUAL_BUMPERS:
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			//if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				FlowMovie_IconDrawADASDisplayType(AlarmType);
+			//}
+			break;
+
+		case ADAS_ALARM_RCW_REAR:
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			//if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				FlowMovie_IconDrawADASDisplayType(AlarmType);
+			//}
+			break;
+
+		case ADAS_ALARM_LCA_LEFT:
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			//if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				FlowMovie_IconDrawADASDisplayType(AlarmType);
+			//}
+			break;
+
+		case ADAS_ALARM_LCA_RIGHT:
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			//if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				FlowMovie_IconDrawADASDisplayType(AlarmType);
+			//}
+
+			break;
+
+		default:
+			break;
+		}
 		return NVTEVT_CONSUME;
 	}
 
 	switch (AlarmType) {
 	case ADAS_ALARM_LD_LEFT:
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 0;
+		g_uiAdasAlertSecCnt = 4;
 		UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -2671,7 +2769,7 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		break;
 	case ADAS_ALARM_LD_RIGHT:
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 0;
+		g_uiAdasAlertSecCnt = 4;
 		UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -2689,7 +2787,7 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 	case ADAS_ALARM_FC:
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 0;
+		g_uiAdasAlertSecCnt = 4;
 		UISound_Play(DEMOSOUND_SOUND_FCS_TONE);
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -2711,7 +2809,7 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 	case ADAS_ALARM_GO:
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 0;
+		g_uiAdasAlertSecCnt = 4;
 		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -2729,7 +2827,7 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 	case ADAS_ALARM_FPW:
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 0;
+		g_uiAdasAlertSecCnt = 4;
 		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -2747,7 +2845,7 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 	case ADAS_ALARM_VIRTUAL_BUMPERS:
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 0;
+		g_uiAdasAlertSecCnt = 4;
 		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -2764,7 +2862,7 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 	case ADAS_ALARM_RCW_REAR:
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 0;
+		g_uiAdasAlertSecCnt = 4;
 		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -2781,7 +2879,7 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 	case ADAS_ALARM_LCA_LEFT:
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 0;
+		g_uiAdasAlertSecCnt = 4;
 		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -2799,7 +2897,7 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 	case ADAS_ALARM_LCA_RIGHT:
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 0;
+		g_uiAdasAlertSecCnt = 4;
 		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
