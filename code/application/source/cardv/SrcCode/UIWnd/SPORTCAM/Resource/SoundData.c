@@ -1613,4 +1613,64 @@ void UIVoice_Play(UINT32 index)
 #endif
 }
 
+#if 1//(E_DOG_FUNCTION == ENABLE)
+//#YND#2019/03/28  #@LHB
+static volatile BOOL        bdogToneEn = TRUE;
+UINT32 SoundSelectstatic[50]={0};
+
+void UIDogSound_Enable(BOOL bEn)
+{
+    bdogToneEn = bEn;
+}
+
+
+void UIDogSound_Play(UINT32 index)
+{
+	//debug_msg("=========SoID= %d ==========\r\n",index);
+	GxSound_SetVolume(UIVoice_GetVolume());	
+	GxSound_WaitStop();
+    GxSound_Play(index);	
+	GxSound_WaitStop();
+}
+
+void DogSoundPlayID(UINT32 SoID)
+{
+   UINT32 i;
+   for(i=0;i<=50;i++)
+   {
+     //debug_msg("24161.GPSoundPlayID.FileSelectstatic[%d] = %d SoID= %d \r\n",i,SoundSelectstatic[i],SoID);  
+      if(SoundSelectstatic[i]==0)
+      	{
+          SoundSelectstatic[i]=SoID;
+	   	  //debug_msg("24154.GPSoundPlayID.FileSelectstatic[%d] = %d SoID= %d \r\n",i,SoundSelectstatic[i],SoID);
+	  	  break;
+		}
+   }
+}
+
+//static UINT32 soundID = 0;
+void DogSoundPlayFun(void)
+{
+	//debug_msg("GPSSoundPlayFun.GxSound_IsPlaying= %d \r\n",GxSound_IsPlaying());
+	if (bdogToneEn == FALSE)
+	{
+	  return;
+	}
+
+	for(UINT32 i = 0; i < 50; i++)
+	{
+	    if(SoundSelectstatic[i] != 0)
+	    {
+	        UIDogSound_Play(SoundSelectstatic[i]);
+	        SoundSelectstatic[i] = 0;  // ²¥·ÅºóÇå³ý
+	    }
+	}
+}
+
+void DogSoundCycPlay(void)
+{
+   DogSoundPlayFun();
+}
+#endif
+
 
