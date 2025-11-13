@@ -36,6 +36,8 @@
 #include "sys_mempool.h"
 #include "Edog/EDogGlobal.h"
 #include "DxEdog.h"
+#include "DxEdog_Sound.h"
+
 
 
 #define THIS_DBGLVL         2 // 0=FATAL, 1=ERR, 2=WRN, 3=UNIT, 4=FUNC, 5=IND, 6=MSG, 7=VALUE, 8=USER
@@ -1537,6 +1539,7 @@ INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		EdogData_Load();
 		DBG_DUMP("------ Edog_Init = %ld ver=%s\r\n", Edog_Init(200),GPSRadar_GetLibVer());
 		Edog_Handle_Init(); 
+		EdogSound_Handle_Init();
 #endif
 		SysInit_EthTxFW_Update_getfile();
 		SysInit_EthBootFW_Update_getfile();

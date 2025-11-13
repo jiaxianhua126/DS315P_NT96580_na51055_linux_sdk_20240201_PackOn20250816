@@ -18,7 +18,7 @@
 #include "UIApp/MovieStamp/MovieStampAPI.h"
 #include "UIApp/MovieStamp/MovieStamp.h"
 
-
+#include "DxEdog_Sound.h"
 #if 0
 #include "SysCommon.h"
 #include "AppCommon.h"
@@ -507,6 +507,7 @@ void UI_DetPwrKey(void)
 void UI_DetNormalKey(void)
 {
 	static UINT32 keyDetectCount = 0;
+	static UINT16 edogSoundCnt = 0;
 	if (!UI_IsForceLock()) {
 		GxKey_DetNormalKey();
 
@@ -517,6 +518,14 @@ void UI_DetNormalKey(void)
 		if (keyDetectCount == 2) {
 			//recover the key detection after system boot up
 			GxKey_SetFirstKeyInvalid(KEY_PRESS, 0);
+		}
+	}
+
+	if(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)
+	{
+		if((++edogSoundCnt)%5==0)
+		{
+			EdogSoundTsk_TrigUpdate();
 		}
 	}
 }
