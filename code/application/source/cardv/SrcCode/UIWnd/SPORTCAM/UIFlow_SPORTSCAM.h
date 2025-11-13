@@ -68,6 +68,7 @@
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndPreSetDateTime.h"
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupHDRTime.h"
 #include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupADASCordon.h"
+#include "UIWnd/SPORTCAM/UIMenu/UIMenuSetup/UIMenuWndSetupOption_LV3.h"
 
 
 /****************************************************************************
@@ -157,5 +158,6 @@
 
 #include "UIWnd/SPORTCAM/UIFlow/UIFlowEdog/UIFlowWndEdogMsg_UiqueSky.h"
 #include "UIWnd/SPORTCAM/UIFlow/UIFlowEdog/UIFlowWndEdogMsg.h"	
+
 
 #endif

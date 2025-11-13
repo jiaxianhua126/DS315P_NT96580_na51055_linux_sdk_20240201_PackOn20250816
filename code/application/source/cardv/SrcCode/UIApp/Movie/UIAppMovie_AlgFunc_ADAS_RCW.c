@@ -198,32 +198,32 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 					#endif
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//前车碰撞
 				        printf("=====ALGO_ADAS_WARN_TYPE_FCW====\r\n");
-						//if(SysGetFlag(FL_MOVIE_FCW) == MOVIE_FCW_ON)
+						if(SysGetFlag(FL_MOVIE_FCW) == MOVIE_FCW_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FC);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)){//前车碰撞预报警
 				        printf("=====ALGO_ADAS_WARN_TYPE_FPW====\r\n");
-						//if(SysGetFlag(FL_MOVIE_FPW) == MOVIE_FPW_ON)
+						if(SysGetFlag(FL_PCW) == FUNCTION_ON)
 					        Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FPW);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)){////车道偏离 左偏离
 				        printf("=====ALGO_ADAS_WARN_TYPE_LDW_L====\r\n");
-						//if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON)
+						if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON)
 				       		Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_LEFT);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)){//车道偏离 右偏离
 				        printf("=====ALGO_ADAS_WARN_TYPE_LDW_R====\r\n");
-						//if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON)
+						if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_RIGHT);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)){//前车起步报警
 				        printf("=====ALGO_ADAS_WARN_TYPE_STOP_GO====\r\n");
-						//if(SysGetFlag(FL_SNG) == MOVIE_STOP_GO_ON)
+						if(SysGetFlag(FL_SNG) == FUNCTION_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_GO);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)){//行人碰撞
 				        printf("=====ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS====\r\n");
-						//if(SysGetFlag(FL_MOVIE_VIRTUAL_BUMPERS) == MOVIE_VIRTUAL_BUMPERS_ON)
+						if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) == ADAS_VIRTUAL_BUMPER_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_VIRTUAL_BUMPERS);
 				    }
 					before_algoWarnType = adas_eventData.result.algoWarnType;
@@ -241,32 +241,32 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 				#endif
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//前车碰撞
 			        printf("=====ALGO_ADAS_WARN_TYPE_FCW====\r\n");
-					//if(SysGetFlag(FL_MOVIE_FCW_MENU) == MOVIE_FCW_ON)
+					if(SysGetFlag(FL_MOVIE_FCW) == MOVIE_FCW_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FC);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)){//前车碰撞预报警
 			        printf("=====ALGO_ADAS_WARN_TYPE_FPW====\r\n");
-					//if(SysGetFlag(FL_MOVIE_FPW) == MOVIE_FPW_ON)
+					if(SysGetFlag(FL_PCW) == FUNCTION_ON)
 				        Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FPW);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)){////车道偏离 左偏离
 			        printf("=====ALGO_ADAS_WARN_TYPE_LDW_L====\r\n");
-					//if(SysGetFlag(FL_MOVIE_LDWS_MENU) == MOVIE_LDWS_ON)
+					if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON)
 			       		Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_LEFT);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)){//车道偏离 右偏离
 			        printf("=====ALGO_ADAS_WARN_TYPE_LDW_R====\r\n");
-					//if(SysGetFlag(FL_MOVIE_LDWS_MENU) == MOVIE_LDWS_ON)
+					if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_RIGHT);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)){//前车起步报警
 			        printf("=====ALGO_ADAS_WARN_TYPE_STOP_GO====\r\n");
-					//if(SysGetFlag(FL_SNG) == MOVIE_STOP_GO_ON)
+					if(SysGetFlag(FL_SNG) == FUNCTION_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_GO);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)){//行人碰撞
 			        printf("=====ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS====\r\n");
-					//if(SysGetFlag(FL_MOVIE_VIRTUAL_BUMPERS) == MOVIE_VIRTUAL_BUMPERS_ON)
+					if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) == ADAS_VIRTUAL_BUMPER_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_VIRTUAL_BUMPERS);
 			    }
 				before_algoWarnType = adas_eventData.result.algoWarnType;
@@ -370,19 +370,19 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 						pthread_mutex_unlock(&g_data_mutex_rear);
 					}
 					#endif
-					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//前车碰撞
+					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//后车碰撞
 				        printf("=====ALGO_RCW_WARN_TYPE_RCW_REAR====\r\n");
-						//if(SysGetFlag(FL_MOVIE_RCW) == MOVIE_RCW_ON)
+						if(SysGetFlag(FL_RCW) == FUNCTION_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_RCW_REAR);
 				    }
-					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//车距过近
+					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//左侧有车
 				        printf("=====ALGO_RCW_WARN_TYPE_LCA_LEFT====\r\n");
-						//if(SysGetFlag(FL_MOVIE_LCAS) == MOVIE_LCAS_ON)
+						if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_LEFT);
 				    }
-					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//前车碰撞预报警
+					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//右侧有车
 				        printf("=====ALGO_RCW_WARN_TYPE_LCA_RIGHT====\r\n");
-						//if(SysGetFlag(FL_MOVIE_LCAS) == MOVIE_LCAS_ON)
+						if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_RIGHT);
 				    }
 					before_algoWarnType = rcw_eventData.result.algoWarnType;
@@ -398,17 +398,17 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 				#endif
 				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//前车碰撞
 			        printf("=====ALGO_RCW_WARN_TYPE_RCW_REAR====\r\n");
-					//if(SysGetFlag(FL_MOVIE_RCW) == MOVIE_RCW_ON)
+					if(SysGetFlag(FL_RCW) == FUNCTION_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_RCW_REAR);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//车距过近
 			        printf("=====ALGO_RCW_WARN_TYPE_LCA_LEFT====\r\n");
-					//if(SysGetFlag(FL_MOVIE_LCAS) == MOVIE_LCAS_ON)
+					if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_LEFT);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//前车碰撞预报警
 			        printf("=====ALGO_RCW_WARN_TYPE_LCA_RIGHT====\r\n");
-					//if(SysGetFlag(FL_MOVIE_LCAS) == MOVIE_LCAS_ON)
+					if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_RIGHT);
 			    }
 				before_algoWarnType = rcw_eventData.result.algoWarnType;

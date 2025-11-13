@@ -803,10 +803,10 @@ unsigned char gDemoKit_String_RU[];
 #define STRID_FCW                                0x02EA
 #define STRID_VIRTUAL_BUMPER                     0x02EB
 #define STRID_LCWS                               0x02EC
-#define STRID_STOP_GO                            0x02ED
-#define STRID_ADAS_CALIBRATION                   0x02EE
-#define STRID_ADAS_CORDON                        0x02EF
-#define STRID_ADAS_CORDON_LINE                   0x02F0
-#define STRID_APP_CONNECTTING                    0x02F1
+#define STRID_ADAS_CALIBRATION                   0x02ED
+#define STRID_ADAS_CORDON                        0x02EE
+#define STRID_ADAS_CORDON_LINE                   0x02EF
+#define STRID_APP_CONNECTTING                    0x02F0
+#define STRID_ADAS                               0x02F1
 
 #endif //_DEMOKIT_STRING_H_
