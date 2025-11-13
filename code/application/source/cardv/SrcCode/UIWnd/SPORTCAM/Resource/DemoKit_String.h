@@ -794,13 +794,19 @@ unsigned char gDemoKit_String_RU[];
 #define STRID_REVERSE_ALARM                      0x02E1
 #define STRID_GSENSOR_CAL_WARN                   0x02E2
 #define STRID_REQUIRE_ACC_HW_CABLE               0x02E3
-#define STRID_HMW                                0x02E4
-#define STRID_PCW                                0x02E5
-#define STRID_RCW                                0x02E6
-#define STRID_BSD                                0x02E7
-#define STRID_ADAS_CALIBRATION                   0x02E8
-#define STRID_ADAS_CORDON                        0x02E9
-#define STRID_ADAS_CORDON_LINE                   0x02EA
-#define STRID_APP_CONNECTTING                    0x02EB
+#define STRID_HOLD3S_TOGGLE_ALARM                0x02E4
+#define STRID_HMW                                0x02E5
+#define STRID_PCW                                0x02E6
+#define STRID_RCW                                0x02E7
+#define STRID_BSD                                0x02E8
+#define STRID_LDWS                               0x02E9
+#define STRID_FCW                                0x02EA
+#define STRID_VIRTUAL_BUMPER                     0x02EB
+#define STRID_LCWS                               0x02EC
+#define STRID_STOP_GO                            0x02ED
+#define STRID_ADAS_CALIBRATION                   0x02EE
+#define STRID_ADAS_CORDON                        0x02EF
+#define STRID_ADAS_CORDON_LINE                   0x02F0
+#define STRID_APP_CONNECTTING                    0x02F1
 
 #endif //_DEMOKIT_STRING_H_
