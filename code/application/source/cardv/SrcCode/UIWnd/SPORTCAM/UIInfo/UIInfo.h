@@ -1317,11 +1317,10 @@ enum {
 	MOVIE_FCW,
 	MOVIE_SNG,
 	MOVIE_PCW,
-	MOVIE_ADAS_ID_MAX,
 	MOVIE_RCW,
 	MOVIE_LCAWS,
 	MOVIE_VIRTUAL_BUMPER,
-	
+	MOVIE_ADAS_ID_MAX,	
 };
 
 //-----------------------------------------------------------------------------
