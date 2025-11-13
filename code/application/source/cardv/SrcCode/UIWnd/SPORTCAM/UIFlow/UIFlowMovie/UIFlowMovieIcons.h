@@ -44,6 +44,12 @@ extern void FlowMovie_IconHideRL(void);
 extern void FlowMovie_initIcon(void);
 extern void FlowMovie_IconDrawADASAnimation(void);
 extern void FlowMovie_IconDrawADASUpdateCar(void);
+extern void FlowMovie_IconDrawADASHideCar(void);
+extern void FlowMovie_IconDrawADASDistance(UINT32 distance);
+extern void FlowMovie_IconHideADASDistance(void);
+extern void FlowMovie_IconDrawADASDisplayType(UINT32 id);
+extern void FlowMovie_IconHideADASDisplayType(void);
+
 
 
 extern void FlowMovie_UpdateIcons(BOOL bShow);

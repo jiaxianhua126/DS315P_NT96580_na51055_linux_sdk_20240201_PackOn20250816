@@ -904,18 +904,407 @@ void FlowMovie_IconDrawADASAnimation(void)
 	i++;
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_AnimationCtrl,TRUE);
 }
+UINT32 FlowWndMovie_DrawADASDisNum(UINT32 Value)
+{
+	UINT32 ICON_ID = ICONID_NULL;
+
+	switch(Value)
+	{
+	case 0:
+		ICON_ID =ICON_ADAS_00;
+		break;
+	case 1:
+		ICON_ID =ICON_ADAS_01;
+		break;
+	case 2:
+		ICON_ID =ICON_ADAS_02;
+		break;
+	case 3:
+		ICON_ID =ICON_ADAS_03;
+		break;
+	case 4:
+		ICON_ID =ICON_ADAS_04;
+		break;
+	case 5:
+		ICON_ID =ICON_ADAS_05;
+		break;
+	case 6:
+		ICON_ID =ICON_ADAS_06;
+		break;
+	case 7:
+		ICON_ID =ICON_ADAS_07;
+		break;
+	case 8:
+		ICON_ID =ICON_ADAS_08;
+		break;
+	case 9:
+		ICON_ID =ICON_ADAS_09;
+		break;
+	}
+
+	return ICON_ID;
+}
+
+void FlowMovie_IconDrawADASDistance(UINT32 distance)
+{
+	UINT32 uiN0 = 0,uiN1 = 0;
+
+	uiN0 = (distance%10);
+	uiN1 = ((distance%100)/10);
+
+	UxStatic_SetData(&UIFlowWndMovie_ADAS_Distance_Num0Ctrl,STATIC_VALUE,FlowWndMovie_DrawADASDisNum(uiN1));
+    UxStatic_SetData(&UIFlowWndMovie_ADAS_Distance_Num1Ctrl,STATIC_VALUE,FlowWndMovie_DrawADASDisNum(uiN0));
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Distance_Num0Ctrl,TRUE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Distance_Num1Ctrl,TRUE);
+}
+void FlowMovie_IconHideADASDistance(void)
+{
+	UxStatic_SetData(&UIFlowWndMovie_ADAS_Distance_Num0Ctrl,STATIC_VALUE,ICON_ADAS_00);
+    UxStatic_SetData(&UIFlowWndMovie_ADAS_Distance_Num1Ctrl,STATIC_VALUE,ICON_ADAS_00);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Distance_Num0Ctrl,TRUE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Distance_Num1Ctrl,TRUE);
+}
+
+
+void FlowMovie_IconDrawADASDisplayType(UINT32 id)
+{
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_TypeCtrl,FALSE);
+	switch(id)
+	{
+		case ADAS_ALARM_LD_LEFT:
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE, ICON_ADAS_LANE_LEFT);
+			break;
+			
+		case ADAS_ALARM_LD_RIGHT:
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE, ICON_ADAS_LANE_RIGHT);
+			break;
+			
+		case ADAS_ALARM_FC:
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE, ICON_ADAS_FRONT_ALERT);
+			break;
+
+		case ADAS_ALARM_GO:
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE, ICON_ADAS_GO_ALERT);
+			break;
+
+		case ADAS_ALARM_FPW:
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE, ICON_ADAS_PEOPLE_ALERT);
+			break;
+
+		case ADAS_ALARM_VIRTUAL_BUMPERS:
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE, ICON_ADAS_VIRTUAL_BUMPER);
+			break;
+
+		case ADAS_ALARM_RCW_REAR:
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE, ICON_ADAS_REAR_ALERT);
+			break;
+
+		case ADAS_ALARM_LCA_LEFT:
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE, ICON_ADAS_CHANGE_LANE_LEFT);
+			break;
+
+		case ADAS_ALARM_LCA_RIGHT:
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE, ICON_ADAS_CHANGE_LANE_RIGHT);
+			break;
+
+		default:
+			break;
+	}
+	
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_TypeCtrl,TRUE);
+}
+void FlowMovie_IconHideADASDisplayType(void)
+{
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_TypeCtrl,FALSE);
+}
+
 AlgoEventData adas_eventData_app = {0};
 
 AlgoEventData rcw_eventData_app = {0};
 extern pthread_mutex_t g_data_mutex_front ;
 extern pthread_mutex_t g_data_mutex_rear ;
+void FlowMovie_IconDrawADASHideCar(void)
+{
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_00Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_01Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_02Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_03Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_04Ctrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_05Ctrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_06Ctrl, FALSE);
+    UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Red_01Ctrl, FALSE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Red_00Ctrl, FALSE);
+}
 
 void FlowMovie_IconDrawADASUpdateCar(void)
+#if 1
 {
 	AlgoEventData adas_eventData_app00 = {0};
 	AlgoEventData rcw_eventData_app01 = {0};
 
-#if 1
+	if (pthread_mutex_trylock(&g_data_mutex_front) == 0) {
+		memcpy(&adas_eventData_app00, &adas_eventData_app, sizeof(adas_eventData_app));
+		pthread_mutex_unlock(&g_data_mutex_front);
+
+		// 只隐藏前路控件（4蓝1红）
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_00Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_01Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_02Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_03Ctrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Red_00Ctrl, FALSE);
+		
+		if (adas_eventData_app00.result.type != ALGO_TYPE_ADAS) {
+			DBG_DUMP("Not ADAS data, type=%d\r\n", adas_eventData_app00.result.type);
+			return;
+		}
+		
+		AlgoAdasResult* adas_result = &adas_eventData_app00.result.algoResult.adasResult;
+		
+		if (adas_result == NULL) {
+			DBG_DUMP("ADAS result is NULL\r\n");
+			return;
+		}
+		
+		AlgoAdasFcwResult* fcw_result = &adas_result->fcw;
+		
+		if (fcw_result->objsize < 0 || fcw_result->objsize > ALGO_ADAS_OBJ_MAX_NUM) {
+			DBG_DUMP("Invalid objsize: %d\r\n", fcw_result->objsize);
+			return;
+		}
+		
+		INT32 cipv_index = fcw_result->cipv;
+		BOOL has_cipv = (cipv_index >= 0 && cipv_index < fcw_result->objsize);
+		
+		DBG_DUMP("FCW: objsize=%d, cipv=%d\r\n", fcw_result->objsize, cipv_index);
+		
+		// 前路车辆计数和红色标记
+		INT32 front_count = 0;
+		BOOL front_red_shown = FALSE;
+		INT32 blue_count = 0;
+		
+		for (INT32 i = 0; i < fcw_result->objsize && front_count < 5; i++) {
+			AlgoAdasObject* obj = &fcw_result->objects[i];
+			
+			FLOAT distance_x = fabs(obj->relative_distance.x);
+			FLOAT distance_y = fabs(obj->relative_distance.y);
+
+			if (distance_x > 30.0f || distance_y > 30.0f) {
+				DBG_DUMP("Car %d out of range: (%.1f,%.1f)m\r\n", 
+						 i, obj->relative_distance.x, obj->relative_distance.y);
+				continue;
+			}
+			
+			// 坐标计算
+			const FLOAT max_distance = 30.0f;
+			const INT32 display_offset_x = 50;
+			const INT32 display_offset_y = 0;
+			const INT32 display_width = 168;
+			const INT32 display_height = 240;
+			const INT32 self_car_display_x = display_width / 2;
+			const INT32 self_car_display_y = display_height / 2;
+			
+			const FLOAT pixels_per_meter_x = (FLOAT)display_width / (2 * max_distance);
+			const FLOAT pixels_per_meter_y = (FLOAT)(display_height - 3*30) / (2 * max_distance);
+			
+			INT32 pixel_offset_x = (INT32)(obj->relative_distance.x * pixels_per_meter_x);
+			INT32 pixel_offset_y = (INT32)(obj->relative_distance.y * pixels_per_meter_y);
+			
+			INT32 display_x = self_car_display_x + pixel_offset_x;
+			INT32 display_y = self_car_display_y - pixel_offset_y - 30;
+			
+			INT32 screen_x = display_offset_x + display_x;
+			INT32 screen_y = display_offset_y + display_y;
+			
+			Ux_RECT rect;
+			rect.x1 = screen_x - 11;
+			rect.y1 = screen_y - 15;
+			rect.x2 = screen_x + 12;
+			rect.y2 = screen_y + 15;
+
+			// 分配前路控件：优先显示红色，然后蓝色
+			VControl* car_ctrl = NULL;
+			BOOL is_red_car = (i == cipv_index && has_cipv);
+			
+			// 如果是红色车辆且还没显示红色
+			if (is_red_car && !front_red_shown) {
+				car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Red_00Ctrl;
+				front_red_shown = TRUE;
+				if(ICON_ADAS_REAR_ALERT != UxStatic_GetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE)){
+					// 直接使用Y轴距离（前方距离）
+				    FLOAT distance_m = obj->relative_distance.y;
+				    
+				    // 米转英尺
+				    UINT32 distance_ft = (UINT32)(distance_m * 3.28084f + 0.5f); // 四舍五入
+				    
+				    // 显示距离（英尺）
+				    FlowMovie_IconDrawADASDistance(distance_ft);
+				    
+				    DBG_DUMP("Red Car Front Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
+				}
+			} 
+			// 如果是蓝色车辆且还有蓝色名额（最多4个）
+			else if (!is_red_car && blue_count < 4) {
+				switch (blue_count) {
+					case 0: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_00Ctrl; break;
+					case 1: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_01Ctrl; break;
+					case 2: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_02Ctrl; break;
+					case 3: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_03Ctrl; break;
+				}
+				blue_count++;
+			} else {
+				// 没有名额了，跳过这个车辆
+				continue;
+			}
+			
+			if (car_ctrl != NULL) {
+				UxCtrl_SetPos(car_ctrl, rect);
+				UxCtrl_SetShow(car_ctrl, TRUE);
+				
+				if (is_red_car) {
+					UxStatic_SetData(car_ctrl, STATIC_VALUE, ICON_ADAS_CAR_RED);
+				} else {
+					UxStatic_SetData(car_ctrl, STATIC_VALUE, ICON_ADAS_CAR_BLUE);
+				}
+				
+				DBG_DUMP("Front Car %d: %s, real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
+						 i, is_red_car ? "RED" : "BLUE", 
+						 obj->relative_distance.x, obj->relative_distance.y, screen_x, screen_y);
+				
+				front_count++;
+			}
+		}
+	}
+	
+	if (pthread_mutex_trylock(&g_data_mutex_rear) == 0) {		 
+	    memcpy(&rcw_eventData_app01, &rcw_eventData_app, sizeof(rcw_eventData_app));
+	    pthread_mutex_unlock(&g_data_mutex_rear);
+
+	    // 只隐藏后路控件（3蓝1红）
+	    UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_04Ctrl, FALSE);
+	    UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_05Ctrl, FALSE);
+	    UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Blue_06Ctrl, FALSE);
+	    UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Red_01Ctrl, FALSE);
+	    
+	    if (rcw_eventData_app01.result.type == ALGO_TYPE_RCW) {
+	        AlgoRcwResult* rcw_result = &rcw_eventData_app01.result.algoResult.rcwResult;
+	        
+	        if (rcw_result != NULL) {
+	            AlgoRcwCarResult* car_result = &rcw_result->rear;  // 使用rear成员
+	            
+	            if (car_result->objsize >= 0 && car_result->objsize <= ALGO_RCW_OBJ_MAX_NUM) {
+	                INT32 cipv_index = car_result->cipv;
+	                BOOL has_cipv = (cipv_index >= 0 && cipv_index < car_result->objsize);
+	                
+	                DBG_DUMP("RCW: objsize=%d, cipv=%d\r\n", car_result->objsize, cipv_index);
+	                
+	                // 后路车辆计数和红色标记
+	                INT32 rear_count = 0;
+	                BOOL rear_red_shown = FALSE;
+	                INT32 blue_count = 0;
+	                
+	                for (INT32 i = 0; i < car_result->objsize && rear_count < 4; i++) {
+	                    AlgoRcwObject* obj = &car_result->objects[i];  // 使用AlgoRcwObject
+	                    
+	                    FLOAT distance_x = fabs(obj->relative_distance.x);
+	                    FLOAT distance_y = fabs(obj->relative_distance.y);
+	                    
+	                    if (distance_x > 30.0f || distance_y > 30.0f) {
+	                        DBG_DUMP("Rear Car %d out of range: (%.1f,%.1f)m\r\n", 
+	                                 i, obj->relative_distance.x, obj->relative_distance.y);
+	                        continue;
+	                    }
+	                    
+	                    // 后路坐标计算（Y轴方向与前方相反）
+	                    const FLOAT max_distance = 30.0f;
+	                    const INT32 display_offset_x = 50;
+	                    const INT32 display_offset_y = 0;
+	                    const INT32 display_width = 168;
+	                    const INT32 display_height = 240;
+	                    const INT32 self_car_display_x = display_width / 2;
+	                    const INT32 self_car_display_y = display_height / 2;
+	                    
+	                    const FLOAT pixels_per_meter_x = (FLOAT)display_width / (2 * max_distance);
+	                    const FLOAT pixels_per_meter_y = (FLOAT)(display_height - 3*30) / (2 * max_distance);
+	                    
+	                    INT32 pixel_offset_x = (INT32)(obj->relative_distance.x * pixels_per_meter_x);
+	                    INT32 pixel_offset_y = (INT32)(obj->relative_distance.y * pixels_per_meter_y);
+	                    
+	                    // 后路车辆Y轴计算：使用 +30 而不是 -30
+	                    INT32 display_x = self_car_display_x + pixel_offset_x;
+	                    INT32 display_y = self_car_display_y - pixel_offset_y + 30;
+	                    
+	                    INT32 screen_x = display_offset_x + display_x;
+	                    INT32 screen_y = display_offset_y + display_y;
+	                    
+	                    Ux_RECT rect;
+	                    rect.x1 = screen_x - 11;
+	                    rect.y1 = screen_y - 15;
+	                    rect.x2 = screen_x + 12;
+	                    rect.y2 = screen_y + 15;
+	                    
+	                    // 分配后路控件：优先显示红色，然后蓝色
+	                    VControl* car_ctrl = NULL;
+	                    BOOL is_red_car = (i == cipv_index && has_cipv);
+	                    
+	                    // 如果是红色车辆且还没显示红色
+	                    if (is_red_car && !rear_red_shown) {
+	                        car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Red_01Ctrl;
+	                        rear_red_shown = TRUE;
+							
+							if(ICON_ADAS_REAR_ALERT == UxStatic_GetData(&UIFlowWndMovie_ADAS_TypeCtrl, STATIC_VALUE))
+							{
+								// 后路使用Y轴距离的绝对值（后方距离）
+							    FLOAT distance_m = fabs(obj->relative_distance.y);
+							    
+							    // 米转英尺
+							    UINT32 distance_ft = (UINT32)(distance_m * 3.28084f + 0.5f); // 四舍五入
+							    
+							    // 显示距离（英尺）
+							    FlowMovie_IconDrawADASDistance(distance_ft);
+							    
+							    DBG_DUMP("Rear Red Car Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
+							}
+	                    } 
+	                    // 如果是蓝色车辆且还有蓝色名额（最多3个）
+	                    else if (!is_red_car && blue_count < 3) {
+	                        switch (blue_count) {
+	                            case 0: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_04Ctrl; break;
+	                            case 1: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_05Ctrl; break;
+	                            case 2: car_ctrl = (VControl*)&UIFlowWndMovie_ADAS_Car_Blue_06Ctrl; break;
+	                        }
+	                        blue_count++;
+	                    } else {
+	                        // 没有名额了，跳过这个车辆
+	                        continue;
+	                    }
+	                    
+	                    if (car_ctrl != NULL) {
+	                        UxCtrl_SetPos(car_ctrl, rect);
+	                        UxCtrl_SetShow(car_ctrl, TRUE);
+	                        
+	                        if (is_red_car) {
+	                            UxStatic_SetData(car_ctrl, STATIC_VALUE, ICON_ADAS_CAR_RED);
+	                        } else {
+	                            UxStatic_SetData(car_ctrl, STATIC_VALUE, ICON_ADAS_CAR_BLUE);
+	                        }
+	                        
+	                        DBG_DUMP("Rear Car %d: %s, real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
+	                                 i, is_red_car ? "RED" : "BLUE", 
+	                                 obj->relative_distance.x, obj->relative_distance.y, screen_x, screen_y);
+	                        
+	                        rear_count++;
+	                    }
+	                }
+	            }
+	        }
+	    }
+	}
+}
+#else
+{
+	AlgoEventData adas_eventData_app00 = {0};
+	AlgoEventData rcw_eventData_app01 = {0};
+
 	if (pthread_mutex_trylock(&g_data_mutex_front) == 0) {
 		memcpy(&adas_eventData_app00, &adas_eventData_app, sizeof(adas_eventData_app));
 		//DBG_DUMP("========SUCCESS1===============\r\n");
@@ -1062,9 +1451,8 @@ void FlowMovie_IconDrawADASUpdateCar(void)
 		memcpy(&rcw_eventData_app01, &rcw_eventData_app, sizeof(rcw_eventData_app));
 		pthread_mutex_unlock(&g_data_mutex_rear);
 	}
-#endif
 }
-
+#endif
 
 
 	

@@ -1287,7 +1287,7 @@ void FlowMovie_AutoHDR(void)
         SysSetFlag(FL_MOVIE_HDR_MENU, MOVIE_HDR_ON);
         SysSetFlag(FL_MOVIE_WDR, MOVIE_WDR_ON);
         SysSetFlag(FL_MOVIE_WDR_MENU, MOVIE_WDR_ON);		
-	FlowMovie_CheckReOpenItem();
+		FlowMovie_CheckReOpenItem();
         Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
     }
     else if ((temp >= time_start) && (temp < time_stop) && (SysGetFlag(FL_MOVIE_HDR) == MOVIE_HDR_ON))
@@ -1349,9 +1349,10 @@ void FlowMovie_UpdateADASPanel(void)
 			if (g_bSpeedPanelInit) {
 				StartCount ++;
 				if (StartCount <= 17) {
-					//FlowMovie_IconDrawPanelSpeed(StartCount);
 					FlowMovie_IconDrawADASAnimation();
+					FlowMovie_IconDrawADASHideCar();
 					FlowMovie_IconDrawADASUpdateCar();
+					
 				} else {
 					StartCount = 0;
 					g_bSpeedPanelInit = FALSE;
@@ -1363,8 +1364,6 @@ void FlowMovie_UpdateADASPanel(void)
 			if (!g_bSpeedPanelInit) {
 				DetCount ++;
 				if (DetCount >= 2){
-					//FlowMovie_IconDrawTimeDate();
-					//FlowMovie_IconDrawSpeed();
 					FlowMovie_IconDrawADASAnimation();
 					FlowMovie_IconDrawADASUpdateCar();
 					DetCount = 0;
