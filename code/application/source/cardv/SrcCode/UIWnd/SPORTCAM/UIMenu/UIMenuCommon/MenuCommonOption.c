@@ -14,6 +14,7 @@ CTRL_LIST_END
 //----------------------MenuCommonOptionCtrl Event---------------------------
 INT32 MenuCommonOption_OnOpen(VControl *, UINT32, UINT32 *);
 INT32 MenuCommonOption_OnClose(VControl *, UINT32, UINT32 *);
+INT32 MenuCommonOption_OnChildClose(VControl *, UINT32, UINT32 *);
 INT32 MenuCommonOption_OnKeyLeft(VControl *, UINT32, UINT32 *);
 INT32 MenuCommonOption_OnKeyMenu(VControl *, UINT32, UINT32 *);
 INT32 MenuCommonOption_OnKeyMode(VControl *, UINT32, UINT32 *);
@@ -22,6 +23,7 @@ INT32 MenuCommonOption_OnBatteryLow(VControl *, UINT32 , UINT32 *);
 EVENT_BEGIN(MenuCommonOption)
 EVENT_ITEM(NVTEVT_OPEN_WINDOW,MenuCommonOption_OnOpen)
 EVENT_ITEM(NVTEVT_CLOSE_WINDOW,MenuCommonOption_OnClose)
+EVENT_ITEM(NVTEVT_CHILD_CLOSE,MenuCommonOption_OnChildClose)
 EVENT_ITEM(NVTEVT_KEY_LEFT,MenuCommonOption_OnKeyLeft)
 //EVENT_ITEM(NVTEVT_KEY_MENU,MenuCommonOption_OnKeyMenu)
 //EVENT_ITEM(NVTEVT_KEY_MODE,MenuCommonOption_OnKeyMode)
@@ -224,6 +226,12 @@ INT32 MenuCommonOption_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
         } else {
             UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, SysGetFlag(pItem->SysFlag));
         }
+    } else if ((pItem->ItemId == IDM_MOVIE_ADAS) /*|| (pItem->ItemId == IDM_MOVIE_IMPRINT) || (pItem->ItemId == IDM_VOLUME)*/) {
+        UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, 0);
+		SysSetFlag(FL_MOVIE_ADAS, 0);
+		//SysSetFlag(FL_MOVIE_IMPRINT, 0);
+		//SysSetFlag(FL_VOLUME, 0);
+		g_uiMenuCommonOption_Sel = 0;
     } else {
         UxMenu_SetData(&MenuCommonOption_MenuCtrl, MNU_CURITM, SysGetFlag(pItem->SysFlag));
     }
@@ -239,6 +247,12 @@ INT32 MenuCommonOption_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
     Ux_DefaultEvent(pCtrl,NVTEVT_CLOSE_WINDOW,paramNum,paramArray);
     return NVTEVT_CONSUME;
 }
+INT32 MenuCommonOption_OnChildClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+	Ux_RedrawAllWind();
+    return NVTEVT_CONSUME;
+}
+
 INT32 MenuCommonOption_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     UINT32  state = 0;
@@ -463,6 +477,20 @@ INT32 MenuCommonOption_Menu_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 
 				UI_SetData(FL_MOVIE_HDR_MENU, MOVIE_HDR_OFF);
 			}
 			break;
+		case IDM_MOVIE_ADAS:
+            if(1) //(uiSelOption == PARKING_MODE_TIMELAPSE)
+            {
+                Ux_OpenWindow(&UIMenuWndSetupOption_LV3Ctrl, 2, pItem->ItemId, uiSelOption);
+                TM_MENU_CALLBACK(pMenu, TMM_CONFIRM_OPTION, MAKE_LONG(pItem->ItemId, uiSelOption));
+                MenuCommonOption_CalcPageInfo(&MenuCommonOption_MenuCtrl, uiSelOption);
+            }
+            else
+            {
+                // notify upper layer the Option had been confirmed
+                TM_MENU_CALLBACK(pMenu, TMM_CONFIRM_OPTION, MAKE_LONG(pItem->ItemId, uiSelOption));
+                MenuCommonOption_CalcPageInfo(&MenuCommonOption_MenuCtrl, uiSelOption);
+            }
+            break;
         default:
             Ux_CloseWindow(&MenuCommonOptionCtrl, 2,pItem->ItemId,uiSelOption);
 

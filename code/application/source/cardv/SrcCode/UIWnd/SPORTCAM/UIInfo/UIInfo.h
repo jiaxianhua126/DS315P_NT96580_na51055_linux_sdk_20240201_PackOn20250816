@@ -150,14 +150,16 @@ typedef enum {
 	FL_MOVIE_PIM,               // Movie PIM
 	FL_MOVIE_FCW,               // Movie FCW
 	FL_MOVIE_LDWS,              // Movie LDWS
+	FL_PCW,						//Pedestrian Collision Warning   
+    FL_RCW,						//Rear Collision Warning   
+    FL_MOVIE_ADAS_CORDON,
 	FL_ADAS_LCAWS,               //Lane change assist
-	FL_ADAS_STOP_GO,			
-	FL_ADAS_PCWS, 		//Pedestrian Collision Warning               
-	FL_ADAS_RCWS, 		//Rear Collision Warning             
+	FL_SNG,						//STOP && GO				          
 	FL_ADAS_VIRTUAL_BUMPER,
 	FL_ADAS_PANEL,
 	FL_MOVIE_DDD,               // Movie DDD
 	FL_MOVIE_ADAS_CAL,          // Movie ADAS CAL
+	FL_MOVIE_ADAS,
 	//#NT#2016/06/14#Charlie Chang -begin
 	//#NT# support contrast, audio in,audio in sample rate , flip
 	FL_MOVIE_CONTRAST,
@@ -363,7 +365,6 @@ typedef enum {
     //TPMS_END
     FL_AMBIANCE_LIGHT,
     FL_EDOG_OVERSPEED_ALARM,
-    FL_MOVIE_ADAS_CORDON,
 	FL_IndexInfoMAX
 } UI_IndexInfo;
 
@@ -1272,34 +1273,6 @@ enum {
 };
 
 //-----------------------------------------------------------------------------
-// ADAS STOP && GO option
-//-----------------------------------------------------------------------------
-enum {
-	ADAS_STOP_GO_OFF = 0,
-	ADAS_STOP_GO_ON,
-	ADAS_STOP_GO_ID_MAX,
-};
-
-//-----------------------------------------------------------------------------
-// ADAS Pedestrian Collision Warning option
-//-----------------------------------------------------------------------------
-enum {
-	ADAS_PCWS_OFF = 0,
-	ADAS_PCWS_ON,
-	ADAS_PCWS_ID_MAX,
-};
-
-
-//-----------------------------------------------------------------------------
-// ADAS Rear Collision Warning	 option 
-//-----------------------------------------------------------------------------
-enum {
-	ADAS_RCWS_OFF = 0,
-	ADAS_RCWS_ON,
-	ADAS_RCWS_ID_MAX,
-};
-
-//-----------------------------------------------------------------------------
 // ADAS PCWS option
 //-----------------------------------------------------------------------------
 enum {
@@ -1334,6 +1307,21 @@ enum {
 	MOVIE_ADAS_CAL_OFF = 0,
 	MOVIE_ADAS_CAL_ON,
 	MOVIE_ADAS_CAL_ID_MAX,
+};
+
+//-----------------------------------------------------------------------------
+// Movie ADAS option
+//-----------------------------------------------------------------------------
+enum {
+	MOVIE_LDWS = 0,
+	MOVIE_FCW,
+	MOVIE_SNG,
+	MOVIE_PCW,
+	MOVIE_ADAS_ID_MAX,
+	MOVIE_RCW,
+	MOVIE_LCAWS,
+	MOVIE_VIRTUAL_BUMPER,
+	
 };
 
 //-----------------------------------------------------------------------------
@@ -2081,6 +2069,13 @@ enum _FW_UI_RESET {
 };
 
 //-----------------------------------------------------------------------------
+//RemindLight FUNCTION
+//-----------------------------------------------------------------------------
+enum _FUNTION_OPTION {
+    FUNCTION_OFF = 0,
+    FUNCTION_ON,
+    FUNCTION_ID_MAX
+};
 // Volume
 //-----------------------------------------------------------------------------
 enum _Volume {
