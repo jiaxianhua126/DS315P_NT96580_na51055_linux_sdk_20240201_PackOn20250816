@@ -5744,12 +5744,13 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	vendor_isp_set_ae(AET_ITEM_CURVE_GEN_MOVIE, &curve_gen_movie);
 
 	//limit exposure time
+	/*
 	AET_EXPT_BOUND expt_bound = {0};
 	expt_bound.id = 0;
 	expt_bound.bound.l = (UINT32)50;
 	expt_bound.bound.h = (UINT32)8000;
 	vendor_isp_set_ae(AET_ITEM_EXPT_BOUND, &expt_bound);
-
+	*/
     vendor_isp_get_iq(IQT_ITEM_LDC_PARAM, &ldc);
     ldc.ldc.geo_enable = 1;
     vendor_isp_set_iq(IQT_ITEM_LDC_PARAM, &ldc);
