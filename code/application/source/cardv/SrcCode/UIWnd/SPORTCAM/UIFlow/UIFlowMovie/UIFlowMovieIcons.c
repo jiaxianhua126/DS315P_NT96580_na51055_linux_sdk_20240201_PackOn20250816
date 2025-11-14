@@ -1480,6 +1480,7 @@ void FlowMovie_UpdateIcons(BOOL bShow)
         FlowMovie_DrawFolderCheck(FALSE);
         FlowMovie_HideCustomerType();
         FlowMovie_IconHideGPSSignal();
+		FlowMovie_IconHideADASDisplayType();
 	} else {
 		//FlowMovie_IconDrawDscMode(&UIFlowWndMovie_Static_cameraCtrl);
 		FlowMovie_IconDrawSize(&UIFlowWndMovie_Static_resolutionCtrl);
@@ -1525,6 +1526,7 @@ void FlowMovie_UpdateIcons(BOOL bShow)
         }
         //FlowMovie_IconDrawGPSSignal();
 		#endif
+		FlowMovie_IconHideADASDisplayType();
 	}
 }
 
