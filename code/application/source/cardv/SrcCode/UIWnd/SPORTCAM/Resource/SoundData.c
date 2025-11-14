@@ -255,6 +255,11 @@
 #include "SoundData_LDWS_16K.c"
 #include "SoundData_FCW_16K.c"
 #include "SoundData_SnG_16K.c"
+#include "SoundData_LaneDeparture_16K.c"
+#include "SoundData_FrontCarCollision_16K.c"
+#include "SoundData_FrontCarGo_16K.c"
+#include "SoundData_Pedestrian_16K.c"
+
 #endif
 #if (_DDD_FUNC_ == ENABLE)
 #include "SoundData_DDD1_16K.c"
@@ -643,9 +648,13 @@ static const SOUND_DATA gDemo_Sound[DEMOSOUND_SOUND_MAX_CNT] = {
 #endif
 	{ uiSoundPowerOn,			sizeof(uiSoundPowerOn),			SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_POWERON_TONE		},
 #if (_ADAS_FUNC_ == ENABLE)
-	{ uiSoundLdws,				sizeof(uiSoundLdws),			SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_LDWS_TONE			},
-	{ uiSoundFcw,				sizeof(uiSoundFcw),				SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_FCS_TONE			},
-	{ uiSoundSnG,				sizeof(uiSoundSnG),				SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_SNG_TONE			},
+	{ uiSoundLaneDeparture,		sizeof(uiSoundLaneDeparture),	SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_LDWS_TONE 		},
+	{ uiSoundFrontCarCollision,	sizeof(uiSoundFrontCarCollision),SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_FCS_TONE			},
+	{ uiSoundFrontCarGo,		sizeof(uiSoundFrontCarGo), 		SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_SNG_TONE			},
+	{ uiSoundPedestrian,		sizeof(uiSoundPedestrian),		SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_PCW_TONE			},
+	{ uiSoundLdws,				sizeof(uiSoundLdws),			SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_LCAWS_TONE 		},
+	{ uiSoundFcw,				sizeof(uiSoundFcw), 			SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_RCW_TONE			},
+	{ uiSoundSnG,				sizeof(uiSoundSnG), 			SOUND_AUDIO_SR, TRUE, DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE},
 #endif  // #if (_ADAS_FUNC_ == ENABLE)
 //#NT#2016/07/20#Brain Yen -begin
 //#NT#DDD alarm sound
