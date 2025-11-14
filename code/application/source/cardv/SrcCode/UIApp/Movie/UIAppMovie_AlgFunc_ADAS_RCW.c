@@ -125,7 +125,6 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 	AlgoCmdPara para;
 	int size = 345600;
 	static UINT32 before_algoWarnType = 0;
-	UINT32 speed_cnt = 0;
 	THREAD_ENTRY();
 	img_path = ImageApp_MovieMulti_GetAlgDataPort(_CFG_REC_ID_1, _CFG_ALG_PATH3);
 	printf("=========%s====img_path:%d=====\n",__func__,img_path);
@@ -149,13 +148,8 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 	movie_alg_adas_tsk_run = true;
    
 	while (movie_alg_adas_tsk_run) {
-		//para.speed = g_CurSpeed;//60
-		para.speed = 60;
-		speed_cnt++;
-		if(speed_cnt == 1000){
-			//printf("=========%s====speed:%d=====\n",__func__,g_CurSpeed);
-			speed_cnt = 0;
-		}
+		para.speed = g_CurSpeed;//60
+		//para.speed = 60;
 		hd_ret = ALGO_MANAGER_Invoke(ALGO_ADAS_INVOKE_CMD_SPEED,&para);
 		if ((hd_ret = hd_videoproc_pull_out_buf(img_path, &video_frame, -1)) == HD_OK)
 		{
@@ -301,7 +295,6 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 	AlgoCmdPara para;
 	int size = 345600;
 	static UINT32 before_algoWarnType = 0;
-	UINT32 speed_cnt = 0;
 	THREAD_ENTRY();
 	img_path = ImageApp_MovieMulti_GetAlgDataPort(_CFG_REC_ID_2, _CFG_ALG_PATH3);
 	//img_path = _CFG_ETHCAM_ID_1;
@@ -325,13 +318,8 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 	movie_alg_rcw_tsk_run = true;
    
 	while (movie_alg_rcw_tsk_run) {
-		//para.speed = g_CurSpeed;//60
-		para.speed = 60;
-		speed_cnt++;
-		if(speed_cnt == 1000){
-			//printf("=========%s====speed:%d=====\n",__func__,g_CurSpeed);
-			speed_cnt = 0;
-		}
+		para.speed = g_CurSpeed;//60
+		//para.speed = 60;
 		hd_ret = ALGO_MANAGER_Invoke(ALGO_RCW_INVOKE_CMD_SPEED,&para);
 		if ((hd_ret = hd_videoproc_pull_out_buf(img_path, &video_frame, -1)) == HD_OK)
 		//if ((hd_ret = ImageApp_MovieMulti_DispPullOut(img_path, &video_frame, -1)) == HD_OK)
