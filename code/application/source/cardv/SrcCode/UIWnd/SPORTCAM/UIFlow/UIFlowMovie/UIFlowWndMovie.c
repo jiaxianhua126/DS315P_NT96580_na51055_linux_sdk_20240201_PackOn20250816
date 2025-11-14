@@ -2734,10 +2734,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			g_uiAdasAlertSecCnt = 4;
 			#if 1
 			UIDogSound_Enable(FALSE);
-			DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+			DogSoundPlayID(DEMOSOUND_SOUND_PCW_TONE);							
 			UIDogSound_Enable(TRUE);
 			#else
-			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			UISound_Play(DEMOSOUND_SOUND_PCW_TONE);
 			#endif
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
@@ -2751,10 +2751,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			g_uiAdasAlertSecCnt = 4;
 			#if 1
 			UIDogSound_Enable(FALSE);
-			DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+			DogSoundPlayID(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);							
 			UIDogSound_Enable(TRUE);
 			#else
-			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			UISound_Play(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);
 			#endif
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
@@ -2767,10 +2767,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			g_uiAdasAlertSecCnt = 4;
 			#if 1
 			UIDogSound_Enable(FALSE);
-	        DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+	        DogSoundPlayID(DEMOSOUND_SOUND_RCW_TONE);							
 			UIDogSound_Enable(TRUE);
 			#else
-			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			UISound_Play(DEMOSOUND_SOUND_RCW_TONE);
 			#endif
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
@@ -2783,10 +2783,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			g_uiAdasAlertSecCnt = 4;
 			#if 1
 			UIDogSound_Enable(FALSE);
-			DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+			DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
 			UIDogSound_Enable(TRUE);
 			#else
-			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
 			#endif
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
@@ -2799,10 +2799,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			g_uiAdasAlertSecCnt = 4;
 			#if 1
 			UIDogSound_Enable(FALSE);
-			DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+			DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
 			UIDogSound_Enable(TRUE);
 			#else
-			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
 			#endif
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
@@ -2933,10 +2933,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		g_uiAdasAlertSecCnt = 4;
 		#if 1
 		UIDogSound_Enable(FALSE);
-        DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+        DogSoundPlayID(DEMOSOUND_SOUND_PCW_TONE);							
 		UIDogSound_Enable(TRUE);
 		#else
-		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		UISound_Play(DEMOSOUND_SOUND_PCW_TONE);
 		#endif
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -2960,10 +2960,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		g_uiAdasAlertSecCnt = 4;
 		#if 1
 		UIDogSound_Enable(FALSE);
-        DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+        DogSoundPlayID(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);							
 		UIDogSound_Enable(TRUE);
 		#else
-		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		UISound_Play(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);
 		#endif
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -2986,10 +2986,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		g_uiAdasAlertSecCnt = 4;
 		#if 1
 		UIDogSound_Enable(FALSE);
-        DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+        DogSoundPlayID(DEMOSOUND_SOUND_RCW_TONE);							
 		UIDogSound_Enable(TRUE);
 		#else
-		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		UISound_Play(DEMOSOUND_SOUND_RCW_TONE);
 		#endif
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -3012,10 +3012,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		g_uiAdasAlertSecCnt = 4;
 		#if 1
 		UIDogSound_Enable(FALSE);
-        DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+        DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
 		UIDogSound_Enable(TRUE);
 		#else
-		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
 		#endif
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
@@ -3039,10 +3039,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		g_uiAdasAlertSecCnt = 4;
 		#if 1
 		UIDogSound_Enable(FALSE);
-        DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+        DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
 		UIDogSound_Enable(TRUE);
 		#else
-		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
 		#endif
 		if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
