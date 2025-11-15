@@ -165,7 +165,8 @@ int  ALGO_MANAGER_ProcessImage(AlgoHandle algoHandle,AlgoProcessCmd cmd,const Al
 */
 int ALGO_MANAGER_FUSE_RESULT(const AlgoEventData *adas_data,const AlgoEventData *rcw_data, AlgoFuseEventData *algoFuseEventData);
 
-
+// 激活成功返回 0 ，失败返回 负数
+int ALGO_MANAGER_GetActiveResult(void);
 #ifdef __cplusplus
 #if __cplusplus
 }
