@@ -10,8 +10,8 @@
 */
 #include "dispdev_ifdsi.h"
 
-#define PANEL_WIDTH     320
-#define PANEL_HEIGHT    816
+#define PANEL_WIDTH     376//384
+#define PANEL_HEIGHT    960
 
 /*
     RGB888 = 1 pixel = 3bytes packet
@@ -31,7 +31,7 @@
 #define DSI_PACKET_FORMAT          DSI_FORMAT_RGB888
 
 
-#define DSI_TARGET_CLK            480    //real chip use 240Mhz
+#define DSI_TARGET_CLK             600//-59.85//580-57.44//480//300//480    //real chip use 240Mhz
 
 //#define DSI_TARGET_CLK             160  //FPGA use 160MHz
 //#define DSI_TARGET_CLK             120
@@ -52,273 +52,242 @@
 //@{
 /*Used in DSI*/
 const T_PANEL_CMD t_cmd_mode_dsi[] = {
-	{DSICMD_CMD, 0x11},
-	{CMDDELAY_MS, 200},
+    {DSICMD_CMD, 0x11},
+    {CMDDELAY_MS, 120},
 
-	{DSICMD_CMD,  0xFF},
-	{DSICMD_DATA,0x77},
-	{DSICMD_DATA,0x01},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x13},
-	{DSICMD_CMD,  0xEF},
-	{DSICMD_DATA,0x08},
-	{DSICMD_CMD,  0xFF},
-	{DSICMD_DATA,0x77},
-	{DSICMD_DATA,0x01},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x10},
-	{DSICMD_CMD,  0xC0},
-	{DSICMD_DATA,0xE5},
-	{DSICMD_DATA,0x02},
-	{DSICMD_CMD,  0xC1},
-	{DSICMD_DATA,0x15},
-	{DSICMD_DATA,0x0A},
-	{DSICMD_CMD,  0xC2},
-	{DSICMD_DATA,0x07},
-	{DSICMD_DATA,0x02},
-	{DSICMD_CMD,  0xCC},
-	{DSICMD_DATA,0x10},
-	{DSICMD_CMD,  0xB0},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x08},
-	{DSICMD_DATA,0x51},
-	{DSICMD_DATA,0x0D},
-	{DSICMD_DATA,0xCE},
-	{DSICMD_DATA,0x06},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x08},
-	{DSICMD_DATA,0x08},
-	{DSICMD_DATA,0x24},
-	{DSICMD_DATA,0x05},
-	{DSICMD_DATA,0xD0},
-	{DSICMD_DATA,0x0F},
-	{DSICMD_DATA,0x6F},
-	{DSICMD_DATA,0x36},
-	{DSICMD_DATA,0x1F},
-	{DSICMD_CMD,  0xB1},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x10},
-	{DSICMD_DATA,0x4F},
-	{DSICMD_DATA,0x0C},
-	{DSICMD_DATA,0x11},
-	{DSICMD_DATA,0x05},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x07},
-	{DSICMD_DATA,0x07},
-	{DSICMD_DATA,0x18},
-	{DSICMD_DATA,0x02},
-	{DSICMD_DATA,0xD3},
-	{DSICMD_DATA,0x11},
-	{DSICMD_DATA,0x6E},
-	{DSICMD_DATA,0x34},
-	{DSICMD_DATA,0x1F},
-	{DSICMD_CMD,  0xFF},
-	{DSICMD_DATA,0x77},
-	{DSICMD_DATA,0x01},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x11},
-	{DSICMD_CMD,  0xB0},
-	{DSICMD_DATA,0x4D},
-	{DSICMD_CMD,  0xB1},
-	{DSICMD_DATA,0x37},
-	{DSICMD_CMD,  0xB2},
-	{DSICMD_DATA,0x85},
-	{DSICMD_CMD,  0xB3},
-	{DSICMD_DATA,0x80},
-	{DSICMD_CMD,  0xB5},
-	{DSICMD_DATA,0x4A},
-	{DSICMD_CMD,  0xB7},
-	{DSICMD_DATA,0x85},
-	{DSICMD_CMD,  0xB8},
-	{DSICMD_DATA,0x32},
-	{DSICMD_CMD,  0xB9},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x13},
-			{DSICMD_CMD,0xBA},
-	{DSICMD_DATA,0x22},
-		{DSICMD_CMD,0xBB},
-	{DSICMD_DATA,0x00},
-		{DSICMD_CMD,0xBC},
-	{DSICMD_DATA,0x00},
+    {DSICMD_CMD,0xFF},
+    {DSICMD_DATA,0x77},
+    {DSICMD_DATA,0x01},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x13},
 
-	{DSICMD_CMD,  0xC0},
-	{DSICMD_DATA,0x09},
-	{DSICMD_CMD,  0xC1},
-	{DSICMD_DATA,0x78},
-	{DSICMD_CMD,  0xC2},
-	{DSICMD_DATA,0x78},
-	{DSICMD_CMD,  0xD0},
-	{DSICMD_DATA,0x88},
-	{CMDDELAY_MS,100},
-	{DSICMD_CMD,  0xE0},
-	{DSICMD_DATA,0x80},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x02},
-	{DSICMD_CMD,  0xE1},
-	{DSICMD_DATA,0x0F},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x10},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x60},
-	{DSICMD_DATA,0x60},
-	{DSICMD_CMD,  0xE2},
-	{DSICMD_DATA,0x30},
-	{DSICMD_DATA,0x30},
-	{DSICMD_DATA,0x60},
-	{DSICMD_DATA,0x60},
-	{DSICMD_DATA,0x45},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x46},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_CMD,  0xE3},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x33},
-	{DSICMD_DATA,0x33},
-	{DSICMD_CMD,  0xE4},
-	{DSICMD_DATA,0x44},
-	{DSICMD_DATA,0x44},
-	{DSICMD_CMD,  0xE5},
-	{DSICMD_DATA,0x0F},
-	{DSICMD_DATA,0x4A},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0x11},
-	{DSICMD_DATA,0x4A},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0x13},
-	{DSICMD_DATA,0x4A},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0x15},
-	{DSICMD_DATA,0x4A},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_CMD,  0xE6},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x33},
-	{DSICMD_DATA,0x33},
-	{DSICMD_CMD,  0xE7},
-	{DSICMD_DATA,0x44},
-	{DSICMD_DATA,0x44},
-	{DSICMD_CMD,  0xE8},
-	{DSICMD_DATA,0x10},
-	{DSICMD_DATA,0x4A},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0x12},
-	{DSICMD_DATA,0x4A},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0x14},
-	{DSICMD_DATA,0x4A},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0x16},
-	{DSICMD_DATA,0x4A},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_DATA,0xA0},
-	{DSICMD_CMD,  0xEB},
-	{DSICMD_DATA,0x02},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x4E},
-	{DSICMD_DATA,0x4E},
-	{DSICMD_DATA,0xEE},
-	{DSICMD_DATA,0x44},
-	{DSICMD_DATA,0x00},
-	{DSICMD_CMD,  0xED},
-	{DSICMD_DATA,0xFF},
-	{DSICMD_DATA,0xFF},
-	{DSICMD_DATA,0x04},
-	{DSICMD_DATA,0x56},
-	{DSICMD_DATA,0x72},
-	{DSICMD_DATA,0xFF},
-	{DSICMD_DATA,0xFF},
-	{DSICMD_DATA,0xFF},
-	{DSICMD_DATA,0xFF},
-	{DSICMD_DATA,0xFF},
-	{DSICMD_DATA,0xFF},
-	{DSICMD_DATA,0x27},
-	{DSICMD_DATA,0x65},
-	{DSICMD_DATA,0x40},
-	{DSICMD_DATA,0xFF},
-	{DSICMD_DATA,0xFF},
-	{DSICMD_CMD,  0xEF},
-	{DSICMD_DATA,0x08},
-	{DSICMD_DATA,0x08},
-	{DSICMD_DATA,0x08},
-	{DSICMD_DATA,0x45},
-	{DSICMD_DATA,0x3F},
-	{DSICMD_DATA,0x54},
-	{DSICMD_CMD,  0xFF},
-	{DSICMD_DATA,0x77},
-	{DSICMD_DATA,0x01},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x13},
-	{DSICMD_CMD,  0xE8},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x0E},
-	{DSICMD_CMD,  0xFF},
-	{DSICMD_DATA,0x77},
-	{DSICMD_DATA,0x01},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_CMD,  0x11},
-	{CMDDELAY_MS,120},
-	{DSICMD_CMD,  0xFF},
-	{DSICMD_DATA,0x77},
-	{DSICMD_DATA,0x01},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x13},
-	{DSICMD_CMD,  0xE8},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x0C},
-	{CMDDELAY_MS,10},
-	{DSICMD_CMD,  0xE8},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_CMD,  0xFF},
-	{DSICMD_DATA,0x77},
-	{DSICMD_DATA,0x01},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_DATA,0x00},
-	{DSICMD_CMD,  0x36},
-	{DSICMD_DATA,0x00},
-	{DSICMD_CMD,  0x35},
-	{DSICMD_DATA,0x00},
-/*{DSICMD_CMD,	 0xFF},
-{DSICMD_DATA,0x77},
-{DSICMD_DATA,0x01},
-{DSICMD_DATA,0x00},
-{DSICMD_DATA,0x00},
-{DSICMD_DATA,0x12},//bank2
-{DSICMD_CMD,   0xD1},
-{DSICMD_DATA,0x81},
-{DSICMD_DATA,  0xD2},
-//WriteData (0x05);//黑色白边�?//WriteData (0x06);//棋盘�?{DSICMD_DATA,0x08},//彩条
-*/
-	{DSICMD_CMD,  0x29},
-	{CMDDELAY_MS,20 },
+    {DSICMD_CMD,0xEF},
+    {DSICMD_DATA,0x08},
 
+    {DSICMD_CMD,0xFF},
+    {DSICMD_DATA,0x77},
+    {DSICMD_DATA,0x01},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x10},
+
+    {DSICMD_CMD,0xC0},
+    {DSICMD_DATA,0x77},
+    {DSICMD_DATA,0x00},
+    {DSICMD_CMD,0xC1},
+    {DSICMD_DATA,0x0C},
+    {DSICMD_DATA,0x0C},
+    {DSICMD_CMD,0xC2},
+    {DSICMD_DATA,0x07},
+    {DSICMD_DATA,0x02},
+    {DSICMD_CMD,0xCC},
+    {DSICMD_DATA,0x10},
+    {DSICMD_CMD,0xB0},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x0C},
+    {DSICMD_DATA,0x19},
+    {DSICMD_DATA,0x0B},
+    {DSICMD_DATA,0x0F},
+    {DSICMD_DATA,0x06},
+    {DSICMD_DATA,0x05},
+    {DSICMD_DATA,0x08},
+    {DSICMD_DATA,0x08},
+    {DSICMD_DATA,0x1F},
+    {DSICMD_DATA,0x04},
+    {DSICMD_DATA,0x11},
+    {DSICMD_DATA,0x0F},
+    {DSICMD_DATA,0x26},
+    {DSICMD_DATA,0x2F},
+    {DSICMD_DATA,0x1D},
+    {DSICMD_CMD,0xB1},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x17},
+    {DSICMD_DATA,0x19},
+    {DSICMD_DATA,0x0F},
+    {DSICMD_DATA,0x12},
+    {DSICMD_DATA,0x05},
+    {DSICMD_DATA,0x05},
+    {DSICMD_DATA,0x08},
+    {DSICMD_DATA,0x07},
+    {DSICMD_DATA,0x1F},
+    {DSICMD_DATA,0x03},
+    {DSICMD_DATA,0x10},
+    {DSICMD_DATA,0x10},
+    {DSICMD_DATA,0x27},
+    {DSICMD_DATA,0x2F},
+    {DSICMD_DATA,0x1D},
+    {DSICMD_CMD,0xFF},
+    {DSICMD_DATA,0x77},
+    {DSICMD_DATA,0x01},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x11},
+    {DSICMD_CMD,0xB0},
+    {DSICMD_DATA,0x25},
+    {DSICMD_CMD,0xB1},
+    {DSICMD_DATA,0x76},
+    {DSICMD_CMD,0xB2},
+    {DSICMD_DATA,0x81},
+    {DSICMD_CMD,0xB3},
+    {DSICMD_DATA,0x80},
+    {DSICMD_CMD,0xB5},
+    {DSICMD_DATA,0x4E},
+    {DSICMD_CMD,0xB7},
+    {DSICMD_DATA,0x85},
+    {DSICMD_CMD,0xB8},
+    {DSICMD_DATA,0x20},
+    {DSICMD_CMD,0xC1},
+    {DSICMD_DATA,0x78},
+    {DSICMD_CMD,0xC2},
+    {DSICMD_DATA,0x78},
+    {DSICMD_CMD,0xD0},
+    {DSICMD_DATA,0x88},
+    {DSICMD_CMD,0xE0}, 
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x02}, 
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x0C},
+    {DSICMD_CMD,0xE1}, 
+    {DSICMD_DATA,0x02},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_DATA,0x04},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_DATA,0x01},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_DATA,0x03},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x44},
+    {DSICMD_DATA,0x44},
+    {DSICMD_CMD,0xE2},
+    {DSICMD_DATA,0x03},
+    {DSICMD_DATA,0x03},
+    {DSICMD_DATA,0x03},
+    {DSICMD_DATA,0x03},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0xD4},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0xD4},
+    {DSICMD_DATA,0x00},
+    {DSICMD_CMD,0xE3},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x33},
+    {DSICMD_DATA,0x33},
+    {DSICMD_CMD,0xE4},
+    {DSICMD_DATA,0x44},
+    {DSICMD_DATA,0x44},
+    {DSICMD_CMD,0xE5},
+    {DSICMD_DATA,0x09},//2
+    {DSICMD_DATA,0xD2},
+    {DSICMD_DATA,0x35},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_DATA,0x0B},//4
+    {DSICMD_DATA,0xD4},
+    {DSICMD_DATA,0x35},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_DATA,0x05},//6
+    {DSICMD_DATA,0xCE},
+    {DSICMD_DATA,0x35},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_DATA,0x07},//8
+    {DSICMD_DATA,0xD0},
+    {DSICMD_DATA,0x35},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_CMD,0xE6},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x33},
+    {DSICMD_DATA,0x33},
+    {DSICMD_CMD,0xE7},
+    {DSICMD_DATA,0x44},
+    {DSICMD_DATA,0x44},
+    {DSICMD_CMD,0xE8},
+    {DSICMD_DATA,0x08},//1
+    {DSICMD_DATA,0xD1},
+    {DSICMD_DATA,0x35},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_DATA,0x0A},//3
+    {DSICMD_DATA,0xD3},
+    {DSICMD_DATA,0x35},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_DATA,0x04},//5
+    {DSICMD_DATA,0xCD},
+    {DSICMD_DATA,0x35},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_DATA,0x06},//7
+    {DSICMD_DATA,0xCF},
+    {DSICMD_DATA,0x35},
+    {DSICMD_DATA,0x8C},
+    {DSICMD_CMD,0xEB},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x01},
+    {DSICMD_DATA,0xE4},
+    {DSICMD_DATA,0xE4},
+    {DSICMD_DATA,0x44},
+    {DSICMD_DATA,0x33},
+    {DSICMD_CMD,0xED},
+    {DSICMD_DATA,0x77},
+    {DSICMD_DATA,0x66},
+    {DSICMD_DATA,0x55},
+    {DSICMD_DATA,0x44},
+    {DSICMD_DATA,0xCA},
+    {DSICMD_DATA,0xF1},
+    {DSICMD_DATA,0x03},
+    {DSICMD_DATA,0xBF},
+    {DSICMD_DATA,0xFB},
+    {DSICMD_DATA,0x30},
+    {DSICMD_DATA,0x1F},
+    {DSICMD_DATA,0xAC},
+    {DSICMD_DATA,0x44},
+    {DSICMD_DATA,0x55},
+    {DSICMD_DATA,0x66},
+    {DSICMD_DATA,0x77},
+    {DSICMD_CMD,0xEF},
+    {DSICMD_DATA,0x10},
+    {DSICMD_DATA,0x0D},
+    {DSICMD_DATA,0x04},
+    {DSICMD_DATA,0x08},
+    {DSICMD_DATA,0x3F},
+    {DSICMD_DATA,0x1F},
+    {DSICMD_CMD,0xFF},
+    {DSICMD_DATA,0x77},
+    {DSICMD_DATA,0x01},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x13},
+    {DSICMD_CMD,0xE8},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x0E},
+    {DSICMD_CMD,0x11},
+    {CMDDELAY_MS, 120},
+    {DSICMD_CMD,0xE8},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x0C},
+    {CMDDELAY_MS, 20},
+    {DSICMD_CMD,0xE8},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_CMD,0xFF},
+    {DSICMD_DATA,0x77},
+    {DSICMD_DATA,0x01},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_DATA,0x00},
+    {DSICMD_CMD,0x29},
+    {DSICMD_CMD,0x35},
+    {DSICMD_DATA,0x00},//TE ON
+    {DSICMD_CMD,0x36},
+    {DSICMD_DATA,0x00},//FW:00     BW:10
+
+    {CMDDELAY_MS, 20},
+    {DSICMD_CMD,0x29},
 };
 
 
@@ -335,38 +304,39 @@ const T_LCD_PARAM t_mode_dsi[] = {
         // tPANEL_PARAM
         {
             /* Old prototype */
-
+            //PINMUX_DSI_1_LANE_VDO_SYNC_EVENT_RGB666P,   //!< LCDMode
+            //PINMUX_DSI_1_LANE_VDO_SYNC_PULSE_RGB666P,   //!< LCDMode
+            //PINMUX_DSI_1_LANE_VDO_SYNC_EVENT_RGB666L,
+            //PINMUX_DSI_1_LANE_VDO_SYNC_PULSE_RGB666L,   //!< LCDMode
+            //PINMUX_DSI_1_LANE_VDO_SYNC_PULSE_RGB565,
             PINMUX_DSI_1_LANE_VDO_SYNC_EVENT_RGB888,
 
-			_IDE_fDCLK,                             //!< fd_clk
+            _IDE_fDCLK,                             //!< fd_clk
+            (HVALIDST+HVALIDST+HSYNCT+PANEL_WIDTH),                   //!< ui_hsync_total_period
+            PANEL_WIDTH,                            //!< ui_hsync_active_period
+            HVALIDST,                                   //!< ui_hsync_back_porch
+            (VVALIDST+VVALIDST+VSYNCT + PANEL_HEIGHT),                    //!< ui_vsync_total_period
+            PANEL_HEIGHT,                           //!< ui_vsync_active_period
+            VVALIDST,                                   //!< ui_vsync_back_porch_odd
+            VVALIDST,                                   //!< ui_vsync_back_porch_even
+            PANEL_WIDTH,                            //!< ui_buffer_width
+            PANEL_HEIGHT,                           //!< ui_buffer_height
+            PANEL_WIDTH,                            //!< ui_window_width
+            PANEL_HEIGHT,                           //!< ui_window_height
+            FALSE,                                  //!< b_ycbcr_format
 
-			PANEL_WIDTH+30+30+10,//(HVALIDST+HVALIDST+HSYNCT+PANEL_WIDTH), //!< uiHSyncTotalPeriod
-            PANEL_WIDTH,                                //!< uiHSyncActivePeriod
-			30,//HVALIDST, 58,4                              //!< uiHSyncBackPorch
-			PANEL_HEIGHT+20+20+8,//(VVALIDST+VVALIDST + VSYNCT+ PANEL_HEIGHT),//!< ui_vsync_total_period
-            PANEL_HEIGHT,                               //!< uiVSyncActivePeriod
-			20,//VVALIDST,                               //!< ui_vsync_back_porch_odd
-			20,//VVALIDST,                               //!< ui_vsync_back_porch_even			
-			PANEL_WIDTH,                            //!< ui_buffer_width
-			PANEL_HEIGHT,                           //!< ui_buffer_height
-			PANEL_WIDTH,                            //!< ui_window_width
-			PANEL_HEIGHT,                           //!< ui_window_height
-			FALSE,                                  //!< b_ycbcr_format
+            /* New added parameters */
+            HSYNCT,                                   //!< ui_hsync_sync_width
+            HSYNCT                                    //!< ui_vsync_sync_width
+        },
 
-			/* New added parameters */
-
-			10,//0x04,									//!< ui_hsync_sync_width
-			8,//0x04,									//!< ui_vsync_sync_width
-		},
-
-
-		// T_IDE_PARAM
-		{
-			/* Old prototype */
-			PINMUX_LCD_SEL_GPIO,            //!< pinmux_select_lcd;
-			ICST_CCIR601,                   //!< icst;
-            {FALSE, FALSE},                  //!< dithering[2];
-			DISPLAY_DEVICE_MIPIDSI,         //!< **DONT-CARE**
+        // T_IDE_PARAM
+        {
+            /* Old prototype */
+            PINMUX_LCD_SEL_GPIO,            //!< pinmux_select_lcd;
+            ICST_CCIR601,                   //!< icst;
+            {TRUE, FALSE},                  //!< dithering[2];
+            DISPLAY_DEVICE_MIPIDSI,         //!< **DONT-CARE**
 			IDE_PDIR_RGB,                   //!< pdir;
 			IDE_LCD_R,                      //!< odd;
 			IDE_LCD_G,                      //!< even;
@@ -393,7 +363,7 @@ const T_LCD_PARAM t_mode_dsi[] = {
 			FALSE,                          //!< hlpf
 			{FALSE, FALSE, FALSE},          //!< subpix_odd[3]
 			{FALSE, FALSE, FALSE},          //!< subpix_even[3]
-			{IDE_DITHER_5BITS, IDE_DITHER_6BITS, IDE_DITHER_5BITS}, //!< dither_bits[3]
+            {IDE_DITHER_6BITS, IDE_DITHER_6BITS, IDE_DITHER_6BITS}, //!< dither_bits[3]
 			FALSE                           //!< clk1/2
 		},
 
@@ -458,7 +428,7 @@ void dispdev_set_dsi_config(DSI_CONFIG *p_dsi_config)
 	dispdev_set_dsi_drv_config(DSI_CONFIG_ID_FREQ, DSI_TARGET_CLK * 1000000);
 #endif
 
-#if 0//(DSI_TARGET_CLK == 480)
+#if (DSI_TARGET_CLK == 480)
 
     dispdev_set_dsi_drv_config(DSI_CONFIG_ID_TLPX, 3);
     dispdev_set_dsi_drv_config(DSI_CONFIG_ID_BTA_TA_GO, 21);
@@ -481,16 +451,16 @@ void dispdev_set_dsi_config(DSI_CONFIG *p_dsi_config)
 
     dispdev_set_dsi_drv_config(DSI_CONFIG_ID_DATALANE_NO, DSI_DATA_LANE_0);
 	dispdev_set_dsi_drv_config(DSI_CONFIG_ID_TE_BTA_INTERVAL, 0x1F);
-    dispdev_set_dsi_drv_config(DSI_CONFIG_ID_CLK_PHASE_OFS, 0x3);
+    //dispdev_set_dsi_drv_config(DSI_CONFIG_ID_CLK_PHASE_OFS, 0x3);
 	//dispdev_set_dsi_drv_config(DSI_CONFIG_ID_PHASE_DELAY_ENABLE_OFS, 0x1);
 
-	#if 0
+	#if 1
 	dispdev_set_dsi_drv_config(DSI_CONFIG_ID_CLK_LP_CTRL, 0x1);
 	#else
 	dispdev_set_dsi_drv_config(DSI_CONFIG_ID_CLK_LP_CTRL, 0x0);
 	#endif
 	dispdev_set_dsi_drv_config(DSI_CONFIG_ID_SYNC_DLY_CNT, 0xF);
-	dsi_set_config(DSI_CONFIG_ID_EOT_PKT_EN, TRUE);//mask check
+	//dsi_set_config(DSI_CONFIG_ID_EOT_PKT_EN, TRUE);//mask check
 }
 
 #if defined __FREERTOS

@@ -148,8 +148,8 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 	movie_alg_adas_tsk_run = true;
    
 	while (movie_alg_adas_tsk_run) {
-		para.speed = g_CurSpeed;//60
-		//para.speed = 60;
+		//para.speed = g_CurSpeed;//60
+		para.speed = 60;
 		hd_ret = ALGO_MANAGER_Invoke(ALGO_ADAS_INVOKE_CMD_SPEED,&para);
 		if ((hd_ret = hd_videoproc_pull_out_buf(img_path, &video_frame, -1)) == HD_OK)
 		{
@@ -318,8 +318,8 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 	movie_alg_rcw_tsk_run = true;
    
 	while (movie_alg_rcw_tsk_run) {
-		para.speed = g_CurSpeed;//60
-		//para.speed = 60;
+		//para.speed = g_CurSpeed;//60
+		para.speed = 60;
 		hd_ret = ALGO_MANAGER_Invoke(ALGO_RCW_INVOKE_CMD_SPEED,&para);
 		if ((hd_ret = hd_videoproc_pull_out_buf(img_path, &video_frame, -1)) == HD_OK)
 		//if ((hd_ret = ImageApp_MovieMulti_DispPullOut(img_path, &video_frame, -1)) == HD_OK)
