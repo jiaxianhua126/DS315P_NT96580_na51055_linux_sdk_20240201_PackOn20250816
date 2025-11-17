@@ -148,8 +148,8 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 	movie_alg_adas_tsk_run = true;
    
 	while (movie_alg_adas_tsk_run) {
-		//para.speed = g_CurSpeed;//60
-		para.speed = 60;
+		para.speed = g_CurSpeed;//60
+		//para.speed = 60;
 		hd_ret = ALGO_MANAGER_Invoke(ALGO_ADAS_INVOKE_CMD_SPEED,&para);
 		if ((hd_ret = hd_videoproc_pull_out_buf(img_path, &video_frame, -1)) == HD_OK)
 		{
@@ -190,32 +190,32 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 						pthread_mutex_unlock(&g_data_mutex_front);
 					}
 					#endif
-					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//«∞≥µ≈ˆ◊≤
+					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//«∞ÔøΩÔøΩÔøΩÔøΩ◊≤
 				        printf("=====ALGO_ADAS_WARN_TYPE_FCW====\r\n");
 						if(SysGetFlag(FL_MOVIE_FCW) == MOVIE_FCW_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FC);
 				    }
-					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)){//«∞≥µ≈ˆ◊≤‘§±®æØ
+					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)){//«∞ÔøΩÔøΩÔøΩÔøΩ◊≤‘§ÔøΩÔøΩÔøΩÔøΩ
 				        printf("=====ALGO_ADAS_WARN_TYPE_FPW====\r\n");
 						if(SysGetFlag(FL_PCW) == FUNCTION_ON)
 					        Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FPW);
 				    }
-					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)){////≥µµ¿∆´¿Î ◊Û∆´¿Î
+					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)){////ÔøΩÔøΩÔøΩÔøΩ∆´ÔøΩÔøΩ ÔøΩÔøΩ∆´ÔøΩÔøΩ
 				        printf("=====ALGO_ADAS_WARN_TYPE_LDW_L====\r\n");
 						if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON)
 				       		Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_LEFT);
 				    }
-					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)){//≥µµ¿∆´¿Î ”“∆´¿Î
+					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)){//ÔøΩÔøΩÔøΩÔøΩ∆´ÔøΩÔøΩ ÔøΩÔøΩ∆´ÔøΩÔøΩ
 				        printf("=====ALGO_ADAS_WARN_TYPE_LDW_R====\r\n");
 						if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_RIGHT);
 				    }
-					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)){//«∞≥µ∆≤Ω±®æØ
+					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)){//«∞ÔøΩÔøΩÔøΩ≤Ω±ÔøΩÔøΩÔøΩ
 				        printf("=====ALGO_ADAS_WARN_TYPE_STOP_GO====\r\n");
 						if(SysGetFlag(FL_SNG) == FUNCTION_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_GO);
 				    }
-					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)){//––»À≈ˆ◊≤
+					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)){//ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ◊≤
 				        printf("=====ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS====\r\n");
 						if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) == ADAS_VIRTUAL_BUMPER_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_VIRTUAL_BUMPERS);
@@ -233,32 +233,32 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 					pthread_mutex_unlock(&g_data_mutex_front);
 				}
 				#endif
-				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//«∞≥µ≈ˆ◊≤
+				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//«∞ÔøΩÔøΩÔøΩÔøΩ◊≤
 			        printf("=====ALGO_ADAS_WARN_TYPE_FCW====\r\n");
 					if(SysGetFlag(FL_MOVIE_FCW) == MOVIE_FCW_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FC);
 			    }
-				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)){//«∞≥µ≈ˆ◊≤‘§±®æØ
+				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)){//«∞ÔøΩÔøΩÔøΩÔøΩ◊≤‘§ÔøΩÔøΩÔøΩÔøΩ
 			        printf("=====ALGO_ADAS_WARN_TYPE_FPW====\r\n");
 					if(SysGetFlag(FL_PCW) == FUNCTION_ON)
 				        Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FPW);
 			    }
-				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)){////≥µµ¿∆´¿Î ◊Û∆´¿Î
+				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)){////ÔøΩÔøΩÔøΩÔøΩ∆´ÔøΩÔøΩ ÔøΩÔøΩ∆´ÔøΩÔøΩ
 			        printf("=====ALGO_ADAS_WARN_TYPE_LDW_L====\r\n");
 					if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON)
 			       		Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_LEFT);
 			    }
-				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)){//≥µµ¿∆´¿Î ”“∆´¿Î
+				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)){//ÔøΩÔøΩÔøΩÔøΩ∆´ÔøΩÔøΩ ÔøΩÔøΩ∆´ÔøΩÔøΩ
 			        printf("=====ALGO_ADAS_WARN_TYPE_LDW_R====\r\n");
 					if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_RIGHT);
 			    }
-				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)){//«∞≥µ∆≤Ω±®æØ
+				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)){//«∞ÔøΩÔøΩÔøΩ≤Ω±ÔøΩÔøΩÔøΩ
 			        printf("=====ALGO_ADAS_WARN_TYPE_STOP_GO====\r\n");
 					if(SysGetFlag(FL_SNG) == FUNCTION_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_GO);
 			    }
-				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)){//––»À≈ˆ◊≤
+				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)){//ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ◊≤
 			        printf("=====ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS====\r\n");
 					if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) == ADAS_VIRTUAL_BUMPER_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_VIRTUAL_BUMPERS);
@@ -318,8 +318,8 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 	movie_alg_rcw_tsk_run = true;
    
 	while (movie_alg_rcw_tsk_run) {
-		//para.speed = g_CurSpeed;//60
-		para.speed = 60;
+		para.speed = g_CurSpeed;//60
+		//para.speed = 60;
 		hd_ret = ALGO_MANAGER_Invoke(ALGO_RCW_INVOKE_CMD_SPEED,&para);
 		if ((hd_ret = hd_videoproc_pull_out_buf(img_path, &video_frame, -1)) == HD_OK)
 		//if ((hd_ret = ImageApp_MovieMulti_DispPullOut(img_path, &video_frame, -1)) == HD_OK)
@@ -358,17 +358,17 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 						pthread_mutex_unlock(&g_data_mutex_rear);
 					}
 					#endif
-					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//∫Û≥µ≈ˆ◊≤
+					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//ÔøΩÔøΩÔøΩÔøΩ◊≤
 				        printf("=====ALGO_RCW_WARN_TYPE_RCW_REAR====\r\n");
 						if(SysGetFlag(FL_RCW) == FUNCTION_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_RCW_REAR);
 				    }
-					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//◊Û≤‡”–≥µ
+					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//ÔøΩÔøΩÔøΩÔøΩ–≥ÔøΩ
 				        printf("=====ALGO_RCW_WARN_TYPE_LCA_LEFT====\r\n");
 						if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_LEFT);
 				    }
-					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//”“≤‡”–≥µ
+					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//ÔøΩ“≤ÔøΩÔøΩ–≥ÔøΩ
 				        printf("=====ALGO_RCW_WARN_TYPE_LCA_RIGHT====\r\n");
 						if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON)
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_RIGHT);
@@ -384,17 +384,17 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 					pthread_mutex_unlock(&g_data_mutex_rear);
 				}
 				#endif
-				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//«∞≥µ≈ˆ◊≤
+				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//«∞ÔøΩÔøΩÔøΩÔøΩ◊≤
 			        printf("=====ALGO_RCW_WARN_TYPE_RCW_REAR====\r\n");
 					if(SysGetFlag(FL_RCW) == FUNCTION_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_RCW_REAR);
 			    }
-				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//≥µæ‡π˝Ω¸
+				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
 			        printf("=====ALGO_RCW_WARN_TYPE_LCA_LEFT====\r\n");
 					if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_LEFT);
 			    }
-				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//«∞≥µ≈ˆ◊≤‘§±®æØ
+				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//«∞ÔøΩÔøΩÔøΩÔøΩ◊≤‘§ÔøΩÔøΩÔøΩÔøΩ
 			        printf("=====ALGO_RCW_WARN_TYPE_LCA_RIGHT====\r\n");
 					if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON)
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_RIGHT);
@@ -432,8 +432,8 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Ethcam_Tsk(void)
 	int size = 345600;
 	static UINT32 before_algoWarnType = 0;
 	
-	UINT32 ethcam_index = 0; // ÂÅáËÆæÂè™Êúâ‰∏Ä‰∏™ÂêéË∑Ø‰ª•Â§™ÁΩëÊëÑÂÉèÂ§?	UINT32 ethcam_id;
-	HD_RESULT ret = E_OK; // Ê∑ªÂä†ÈîôËØØÁ†?	
+	UINT32 ethcam_index = 0; // ÂÅáËÆæÂè™Êúâ‰∏Ä‰∏™ÂêéË∑Ø‰ª•Â§™ÁΩëÊëÑÂÉèÔøΩ?	UINT32 ethcam_id;
+	HD_RESULT ret = E_OK; // Ê∑ªÂä†ÈîôËØØÔøΩ?	
 	THREAD_ENTRY();
 	
 	// ‰ª•Â§™ÁΩëÂêéË∑ØÊëÑÂÉèÂ§¥Á¥¢Âºï
@@ -461,7 +461,7 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Ethcam_Tsk(void)
 	while (movie_alg_rcw_tsk_run) {
 		//para.speed = g_CurSpeed;//60
 		para.speed = 60;
-		//printf("=========%s====speedÔº?d=====\n",__func__,g_CurSpeed);
+		//printf("=========%s====speedÔøΩ?d=====\n",__func__,g_CurSpeed);
 		hd_ret = ALGO_MANAGER_Invoke(ALGO_RCW_INVOKE_CMD_SPEED,&para);
 
 		// Ê£ÄÊü•‰ª•Â§™ÁΩëÊëÑÂÉèÂ§¥ÊòØÂê¶ËøûÊé•Âπ∂Ëé∑ÂèñÊï∞ÊçÆ
@@ -481,7 +481,7 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Ethcam_Tsk(void)
                         if(ImageApp_MovieMulti_IsStreamRunning(ethcam_id)){
                             Ux_PostEvent(NVTEVT_CB_MOVIE_SLOW, 0);
                         }
-                        // Â∞ùËØïÈáçÁΩÆ‰ª•Â§™ÁΩëËøûÊé?                        EthCamCmd_GetFrameTimerEn(0);
+                        // Â∞ùËØïÈáçÁΩÆ‰ª•Â§™ÁΩëËøûÔøΩ?                        EthCamCmd_GetFrameTimerEn(0);
                         EthCam_SendXMLCmd(ethcam_index, ETHCAM_PORT_DATA1, ETHCAM_CMD_TX_RESET_I, 0);
                         #if(ETH_REARCAM_CLONE_FOR_DISPLAY == ENABLE)
                         EthCam_SendXMLCmd(ethcam_index, ETHCAM_PORT_DATA2, ETHCAM_CMD_TX_RESET_I, 0);
@@ -504,7 +504,7 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Ethcam_Tsk(void)
 						hd_ret = ALGO_MANAGER_ProcessImage(rcw_handle,ALGO_PROCESS_CMD_RCW_BASE_ID,&rcw_input_image,&rcw_eventData);
 
 						if(rcw_eventData.result.algoResult.rcwResult.calib.calib_process < 100)
-							printf("calib_processÔº?d===RCW==hd_ret:%d \n",rcw_eventData.result.algoResult.rcwResult.calib.calib_process,hd_ret);
+							printf("calib_processÔøΩ?d===RCW==hd_ret:%d \n",rcw_eventData.result.algoResult.rcwResult.calib.calib_process,hd_ret);
 						
 						if(rcw_eventData.result.type == ALGO_TYPE_RCW
 							&&rcw_eventData.result.algoResult.rcwResult.calib.calib_process>=1
@@ -518,15 +518,15 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Ethcam_Tsk(void)
 									adas_eventData.result.algoResult.adasResult.calib.calib_process
 							);*/
 							//
-							if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//«∞≥µ≈ˆ◊≤
+							if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//«∞ÔøΩÔøΩÔøΩÔøΩ◊≤
 						        printf("=====ALGO_RCW_WARN_TYPE_RCW_REAR====\r\n");
 						        Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_RCW_REAR);
 						    }
-							if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//≥µæ‡π˝Ω¸
+							if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
 						        printf("=====ALGO_RCW_WARN_TYPE_LCA_LEFT====\r\n");
 						        Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_LEFT);
 						    }
-							if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//«∞≥µ≈ˆ◊≤‘§±®æØ
+							if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//«∞ÔøΩÔøΩÔøΩÔøΩ◊≤‘§ÔøΩÔøΩÔøΩÔøΩ
 						        printf("=====ALGO_RCW_WARN_TYPE_LCA_RIGHT====\r\n");
 						        Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_RIGHT);
 						    }
