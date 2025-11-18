@@ -210,7 +210,7 @@ extern VControl UIFlowWndWiFiMovie_ADAS_Car_Blue_02Ctrl;//Static type
 
 extern VControl UIFlowWndWiFiMovie_ADAS_Car_Blue_03Ctrl;//Static type 
 
-extern VControl UIFlowWndWiFiIMovie_ADAS_Car_Blue_04Ctrl;//Static type 
+extern VControl UIFlowWndWiFiMovie_ADAS_Car_Blue_04Ctrl;//Static type 
 
 extern VControl UIFlowWndWiFiMovie_ADAS_Car_Blue_05Ctrl;//Static type 
 

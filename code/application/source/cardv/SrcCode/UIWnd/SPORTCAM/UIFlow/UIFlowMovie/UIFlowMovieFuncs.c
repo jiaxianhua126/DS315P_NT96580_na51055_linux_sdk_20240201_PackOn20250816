@@ -1317,12 +1317,14 @@ void FlowMovie_UpdateADASPanel(void)
 {
 	static UINT32 StartCount = 0;
 	static UINT32 DetCount = 0;
-	/*if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
-		if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)) {
+	if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
+		if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)) {
 			if (g_bSpeedPanelInit) {
 				StartCount ++;
 				if (StartCount <= 17) {
-					FlowWiFiMovie_IconDrawPanelSpeed(StartCount);
+					FlowWiFiMovie_IconDrawADASAnimation();
+					FlowWiFiMovie_IconDrawADASHideCar();
+					FlowWiFiMovie_IconDrawADASUpdateCar();
 				} else {
 					StartCount = 0;
 					g_bSpeedPanelInit = FALSE;
@@ -1334,8 +1336,8 @@ void FlowMovie_UpdateADASPanel(void)
 			if (!g_bSpeedPanelInit) {
 				DetCount ++;
 				if (DetCount >= 2){
-					//FlowWiFiMovie_IconDrawTimeDate();
-					FlowWiFiMovie_IconDrawSpeed();
+					FlowWiFiMovie_IconDrawADASAnimation();
+					FlowWiFiMovie_IconDrawADASUpdateCar();
 					DetCount = 0;
 				}
 			}
@@ -1344,7 +1346,7 @@ void FlowMovie_UpdateADASPanel(void)
 			DetCount = 0;
 			g_bSpeedPanelInit = FALSE;
 		}
-	} else*/ {
+	} else {
 		if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)) {
 			if (g_bSpeedPanelInit) {
 				StartCount ++;
