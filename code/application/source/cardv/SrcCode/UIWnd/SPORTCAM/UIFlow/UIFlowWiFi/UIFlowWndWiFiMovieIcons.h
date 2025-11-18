@@ -33,6 +33,13 @@ extern void FlowWiFiMovie_IconDrawSNG(BOOL bShow);
 extern void FlowWiFiMovie_IconDrawTSR(BOOL bShow);
 extern  void FlowWiFiMovie_IconDrawRL(BOOL bShow);
 extern void FlowWiFiMovie_initIcon(void);
+extern void FlowWiFiMovie_IconDrawADASAnimation(void);
+extern void FlowWiFiMovie_IconDrawADASUpdateCar(void);
+extern void FlowWiFiMovie_IconDrawADASHideCar(void);
+extern void FlowWiFiMovie_IconDrawADASDistance(UINT32 distance);
+extern void FlowWiFiMovie_IconHideADASDistance(void);
+extern void FlowWiFiMovie_IconDrawADASDisplayType(UINT32 id);
+extern void FlowWiFiMovie_IconHideADASDisplayType(void);
 
 extern void FlowWiFiMovie_UpdateIcons(BOOL bShow);
 

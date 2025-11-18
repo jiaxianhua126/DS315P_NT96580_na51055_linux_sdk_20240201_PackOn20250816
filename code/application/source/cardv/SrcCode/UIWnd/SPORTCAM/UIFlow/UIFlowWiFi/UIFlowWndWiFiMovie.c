@@ -96,6 +96,7 @@ extern BOOL ExitParkMode;
 extern BOOL BT_EVENT;
 extern BOOL ASR_GetPCMData_EN;
 static UINT32 beepCntTimeout = 0; 
+extern UINT32 g_uiAdasAlertSecCnt;
 
 //---------------------UIFlowWndWiFiMovieCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndWiFiMovie)
@@ -140,6 +141,7 @@ INT32 UIFlowWndWiFiMovie_OnCustom1(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndWiFiMovie_OnCustom2(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndWiFiMovie_OnKeyRcShutter2(VControl *, UINT32, UINT32 *);
 INT32 UIFlowWndWiFiMovie_OnEdogAlarm(VControl *, UINT32, UINT32 *);
+INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *, UINT32, UINT32 *);        //#NT#2016/03/25#New ADAS#KCHong
 
 EVENT_BEGIN(UIFlowWndWiFiMovie)
 EVENT_ITEM(NVTEVT_OPEN_WINDOW,UIFlowWndWiFiMovie_OnOpen)
@@ -181,6 +183,7 @@ EVENT_ITEM(NVTEVT_CB_MOVIE_VEDIO_READY,UIFlowWndWiFiMovie_OnExeMovieVedioReady)
 EVENT_ITEM(NVTEVT_KEY_CUSTOM1,UIFlowWndWiFiMovie_OnCustom1)
 EVENT_ITEM(NVTEVT_KEY_RC_SHUTTER2, UIFlowWndWiFiMovie_OnKeyRcShutter2)
 EVENT_ITEM(NVTEVT_KEY_EDOG_ALARM,UIFlowWndWiFiMovie_OnEdogAlarm)
+EVENT_ITEM(NVTEVT_CB_ADAS_SHOWALARM, UIFlowWndWiFiMovie_OnADASShowAlarm)	  
 EVENT_END
 
 
@@ -297,9 +300,11 @@ INT32 UIFlowWndWiFiMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
     //GxLED_SetCtrl(KEYSCAN_LED_FCS, TURNON_LED, TRUE);
     UIFlowWndWiFiMovie_Initparam();
     #endif
-	UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE); 	
-    UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, FALSE); ///harrison ds315
+	if (UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF) {
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
+    	UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE); 	
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, FALSE); 
+	}
     
 	FlowWiFiMovie_initIcon();
 
@@ -335,7 +340,7 @@ INT32 UIFlowWndWiFiMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
         }
     }
 
-	#if 0//GPS_PANEL_FUNC
+	#if 1//GPS_PANEL_FUNC
 	if (UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON) {
 		UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);		
 		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);	
@@ -548,7 +553,7 @@ INT32 UIFlowWndWiFiMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 						SysSetFlag(FL_DUAL_CAM, DUALCAM_BEHIND);
 					} else //if (SysGetFlag(FL_DUAL_CAM) == DUALCAM_BEHIND) 
 					{
-						#if 0//(GPS_PANEL_FUNC==ENABLE)
+						#if 1//(GPS_PANEL_FUNC==ENABLE)
 						if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)) {
 							UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
 							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
@@ -587,7 +592,7 @@ INT32 UIFlowWndWiFiMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 					//return NVTEVT_CONSUME;
 				} else {
 					if (GPIOMap_IsLCDBacklightOn()) {
-						#if 0//(GPS_PANEL_FUNC==ENABLE)
+						#if 1//(GPS_PANEL_FUNC==ENABLE)
 						if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)) {
 							UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
 							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
@@ -1250,6 +1255,7 @@ void UIFlowWndWiFiMovie_GetASR_Flag(void)
 	}
 #endif
 }
+extern BOOL ADAS_OpenState;
 
 INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
@@ -1372,6 +1378,9 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
             WiFiManualSetSOS = FALSE;
         }
         #endif
+		if(ADAS_OpenState){
+			FlowMovie_UpdateADASPanel();
+		}
 	    break;
 
     case NVTEVT_05SEC_TIMER:
@@ -1618,6 +1627,34 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 
         //check GPS status
         //UIFlowWndWiFiMovie_CheckGPSStatus();
+
+		
+		#if (_ADAS_FUNC_ == ENABLE)
+		//DBG_ERR("======g_uiAdasAlertSecCnt=%d==========\r\n",g_uiAdasAlertSecCnt);
+		if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+			g_uiAdasAlertSecCnt--;
+			if (g_uiAdasAlertSecCnt <=1) {
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
+				
+				DBG_ERR("======4444===========\r\n");
+				g_uiAdasAlertSecCnt = 0;
+			} else {
+				return NVTEVT_CONSUME;
+			}
+		}else  if(UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)){
+			g_uiAdasAlertSecCnt--;
+			if (g_uiAdasAlertSecCnt <=1) {
+				FlowWiFiMovie_IconHideADASDistance();
+				FlowWiFiMovie_IconHideADASDisplayType();
+				DBG_ERR("======UIFlowWiFiWndMovie_ADAS_Alert_PanelCtrl===========\r\n");
+				g_uiAdasAlertSecCnt = 0;
+			} else {
+				return NVTEVT_CONSUME;
+			}	
+
+		}
+		#endif	// #if (_ADAS_FUNC_ == ENABLE)
        	break;
     }
 
@@ -2147,6 +2184,420 @@ void UIFlowWndWiFiMovie_StartTimer(void)
    }
 
 }
+INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
+{
+#if (_ADAS_FUNC_ == ENABLE)
+	UINT32 AlarmType;
+	//ADAS_APPS_RESULT_INFO *pAdasRlt = MovieExe_GetAdasRltOSD();
+
+	Ux_FlushEventByRange(NVTEVT_CB_ADAS_SHOWALARM, NVTEVT_CB_ADAS_SHOWALARM);
+	AlarmType = paramArray[0];
+	if(UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON)
+	{
+		switch (AlarmType) {
+		case ADAS_ALARM_LD_LEFT:
+			if(SysGetFlag(FL_MOVIE_LDWS) != MOVIE_LDWS_ON){
+				return NVTEVT_CONSUME;
+			}
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			#if 1
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
+			UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
+			#endif
+			//if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
+				FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
+			//}
+			break;
+		case ADAS_ALARM_LD_RIGHT:
+			if(SysGetFlag(FL_MOVIE_LDWS) != MOVIE_LDWS_ON){
+				return NVTEVT_CONSUME;
+			}
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			#if 1
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
+			UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
+			#endif
+			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
+			break;
+
+		case ADAS_ALARM_FC:
+			if(SysGetFlag(FL_MOVIE_FCW) != MOVIE_FCW_ON){
+				return NVTEVT_CONSUME;
+			}
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			#if 1
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(DEMOSOUND_SOUND_FCS_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
+			UISound_Play(DEMOSOUND_SOUND_FCS_TONE);
+			#endif
+			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
+			break;
+
+		case ADAS_ALARM_GO:
+			if(SysGetFlag(FL_SNG) != FUNCTION_ON){
+				return NVTEVT_CONSUME;
+			}
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			#if 1
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
+			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+			#endif
+			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
+			break;
+
+		case ADAS_ALARM_FPW:
+			if(SysGetFlag(FL_PCW) != FUNCTION_ON){
+				return NVTEVT_CONSUME;
+			}
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			#if 1
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(DEMOSOUND_SOUND_PCW_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
+			UISound_Play(DEMOSOUND_SOUND_PCW_TONE);
+			#endif
+			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
+			break;
+
+
+		case ADAS_ALARM_VIRTUAL_BUMPERS:
+			if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) != ADAS_VIRTUAL_BUMPER_ON){
+				return NVTEVT_CONSUME;
+			}
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			#if 1
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
+			UISound_Play(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);
+			#endif
+			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
+			break;
+
+		case ADAS_ALARM_RCW_REAR:
+			if(SysGetFlag(FL_RCW) != FUNCTION_ON){
+				return NVTEVT_CONSUME;
+			}
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			#if 1
+			UIDogSound_Enable(FALSE);
+	        DogSoundPlayID(DEMOSOUND_SOUND_RCW_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
+			UISound_Play(DEMOSOUND_SOUND_RCW_TONE);
+			#endif
+			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
+			break;
+
+		case ADAS_ALARM_LCA_LEFT:
+			if(SysGetFlag(FL_ADAS_LCAWS) != FUNCTION_ON){
+				return NVTEVT_CONSUME;
+			}
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			#if 1
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
+			UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
+			#endif
+			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
+			break;
+
+		case ADAS_ALARM_LCA_RIGHT:
+			if(SysGetFlag(FL_ADAS_LCAWS) != FUNCTION_ON){
+				return NVTEVT_CONSUME;
+			}
+			FlowMovie_WakeUpLCDBacklight();
+			g_uiAdasAlertSecCnt = 4;
+			#if 1
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
+			UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
+			#endif
+			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
+			break;
+
+		default:
+			break;
+		}
+		return NVTEVT_CONSUME;
+	}
+
+	switch (AlarmType) {
+	case ADAS_ALARM_LD_LEFT:
+		if(SysGetFlag(FL_MOVIE_LDWS) != MOVIE_LDWS_ON){
+			return NVTEVT_CONSUME;
+		}
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 4;
+		#if 1
+		UIDogSound_Enable(FALSE);
+        DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
+		UIDogSound_Enable(TRUE);
+		#else
+		UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
+		#endif
+		if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+			UxState_SetData(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_StatusICN_LDWS_Alert_ICON_ADAS_LANE_LEFT);
+		}
+		break;
+	case ADAS_ALARM_LD_RIGHT:
+		if(SysGetFlag(FL_MOVIE_LDWS) != MOVIE_LDWS_ON){
+			return NVTEVT_CONSUME;
+		}
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 4;
+		#if 1
+		UIDogSound_Enable(FALSE);
+        DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
+		UIDogSound_Enable(TRUE);
+		#else
+		UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
+		#endif
+		if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+			UxState_SetData(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_StatusICN_LDWS_Alert_ICON_ADAS_LANE_RIGHT);
+		}
+		break;
+
+	case ADAS_ALARM_FC:
+		if(SysGetFlag(FL_MOVIE_FCW) != MOVIE_FCW_ON){
+			return NVTEVT_CONSUME;
+		}
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 4;
+		#if 1
+		UIDogSound_Enable(FALSE);
+        DogSoundPlayID(DEMOSOUND_SOUND_FCS_TONE);							
+		UIDogSound_Enable(TRUE);
+		#else
+		UISound_Play(DEMOSOUND_SOUND_FCS_TONE);
+		#endif
+		if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+			#if 0
+			if ((pAdasRlt->FcwsRsltInfo.uiKelDist < 15) && (pAdasRlt->FcwsRsltInfo.uiKelDist > 0)) {
+				UxState_SetData(&UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_StatusICN_FCWS_Alert_ICON_FCW_FAR_ALERT);
+			}
+			#endif
+		}
+		break;
+
+	case ADAS_ALARM_GO:
+		if(SysGetFlag(FL_SNG) != FUNCTION_ON){
+			return NVTEVT_CONSUME;
+		}
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 4;
+		#if 1
+		UIDogSound_Enable(FALSE);
+        DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
+		UIDogSound_Enable(TRUE);
+		#else
+		UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
+		#endif
+		if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl, TRUE);
+			UxState_SetData(&UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_StatusICN_SNG_Alert_ICON_ADAS_GO_ALERT);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+		}
+		break;
+
+	case ADAS_ALARM_FPW:
+		if(SysGetFlag(FL_PCW) != FUNCTION_ON){
+			return NVTEVT_CONSUME;
+		}
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 4;
+		#if 1
+		UIDogSound_Enable(FALSE);
+        DogSoundPlayID(DEMOSOUND_SOUND_PCW_TONE);							
+		UIDogSound_Enable(TRUE);
+		#else
+		UISound_Play(DEMOSOUND_SOUND_PCW_TONE);
+		#endif
+		if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_PDWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+		}
+		break;
+
+
+	case ADAS_ALARM_VIRTUAL_BUMPERS:
+		if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) != ADAS_VIRTUAL_BUMPER_ON){
+			return NVTEVT_CONSUME;
+		}
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 4;
+		#if 1
+		UIDogSound_Enable(FALSE);
+        DogSoundPlayID(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);							
+		UIDogSound_Enable(TRUE);
+		#else
+		UISound_Play(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);
+		#endif
+		if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_VBWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+		}
+		break;
+
+	case ADAS_ALARM_RCW_REAR:
+		if(SysGetFlag(FL_RCW) != FUNCTION_ON){
+			return NVTEVT_CONSUME;
+		}
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 4;
+		#if 1
+		UIDogSound_Enable(FALSE);
+        DogSoundPlayID(DEMOSOUND_SOUND_RCW_TONE);							
+		UIDogSound_Enable(TRUE);
+		#else
+		UISound_Play(DEMOSOUND_SOUND_RCW_TONE);
+		#endif
+		if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_RCWS_AlertCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, FALSE);
+		}
+		break;
+
+	case ADAS_ALARM_LCA_LEFT:
+		if(SysGetFlag(FL_ADAS_LCAWS) != FUNCTION_ON){
+			return NVTEVT_CONSUME;
+		}
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 4;
+		#if 1
+		UIDogSound_Enable(FALSE);
+        DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
+		UIDogSound_Enable(TRUE);
+		#else
+		UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
+		#endif
+		if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxState_SetData(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_StatusICN_LCWS_Alert_ICON_ADAS_CHANGE_LANE_LEFT);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, TRUE);
+		}
+		break;
+
+	case ADAS_ALARM_LCA_RIGHT:
+		if(SysGetFlag(FL_ADAS_LCAWS) != FUNCTION_ON){
+			return NVTEVT_CONSUME;
+		}
+		FlowMovie_WakeUpLCDBacklight();
+		g_uiAdasAlertSecCnt = 4;
+		#if 1
+		UIDogSound_Enable(FALSE);
+        DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
+		UIDogSound_Enable(TRUE);
+		#else
+		UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
+		#endif
+		if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, TRUE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_FCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_SNG_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_PDWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_RCWS_AlertCtrl, FALSE);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_VBWS_AlertCtrl, FALSE);
+			UxState_SetData(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, STATE_CURITEM, UIFlowWndWiFiMovie_StatusICN_LCWS_Alert_ICON_ADAS_CHANGE_LANE_RIGHT);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_StatusICN_LCWS_AlertCtrl, TRUE);
+		}
+		break;
+
+	default:
+		break;
+	}
+#endif  // #if (_ADAS_FUNC_ == ENABLE)
+	return NVTEVT_CONSUME;
+}
 
 //---------------------UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl Control List---------------------------
 CTRL_LIST_BEGIN(UIFlowWndWiFiMovie_Panel_Normal_Display)
@@ -2445,7 +2896,7 @@ CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_00)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_01)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_02)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_03)
-CTRL_LIST_ITEM(UIFlowWndWiFiIMovie_ADAS_Car_Blue_04)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_04)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_05)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Blue_06)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_ADAS_Car_Red_00)
@@ -2505,8 +2956,8 @@ EVENT_END
 EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Blue_03)
 EVENT_END
 
-//----------------------UIFlowWndWiFiIMovie_ADAS_Car_Blue_04Ctrl Event---------------------------
-EVENT_BEGIN(UIFlowWndWiFiIMovie_ADAS_Car_Blue_04)
+//----------------------UIFlowWndWiFiMovie_ADAS_Car_Blue_04Ctrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Blue_04)
 EVENT_END
 
 //----------------------UIFlowWndWiFiMovie_ADAS_Car_Blue_05Ctrl Event---------------------------
