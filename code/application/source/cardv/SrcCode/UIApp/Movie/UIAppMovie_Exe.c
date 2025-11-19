@@ -4750,6 +4750,7 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
 #if (MOVIE_YUV_COMPRESS)
     ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_YUV_COMPRESS, TRUE);
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2, MOVIEMULTI_PARAM_YUV_COMPRESS, TRUE);
 #endif
 
 	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PRARM_FILEDB_MAX_MUM, 5000);
