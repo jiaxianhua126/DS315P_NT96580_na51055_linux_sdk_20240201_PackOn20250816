@@ -378,6 +378,8 @@ extern void UISound_RegTable(void);
 extern void UISound_EnableKey(BOOL bEn);
 extern void UISound_Play(UINT32 index);
 extern void UIVoice_Play(UINT32 index);
+extern UINT32 UIVoice_GetIndex(UINT32 index);
+
 
 
 extern void DogSoundPlayID(UINT32 SoID);

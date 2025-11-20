@@ -480,7 +480,13 @@ INT32 UIFlowWndWiFiMovie_OnKeyMenu(VControl *pCtrl, UINT32 paramNum, UINT32 *par
             FlowWiFiMovie_DrawPIM(TRUE);
 	   		Delay_DelayMs(100);
             Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
+			#if PLAY_SOUND_IN_OTHER_TASK
+            UIDogSound_Enable(FALSE);
+	        DogSoundPlayID(DEMOSOUND_SOUND_SHUTTER_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
             UISound_Play(DEMOSOUND_SOUND_SHUTTER_TONE);
+			#endif
         }
         break;
 
@@ -760,12 +766,24 @@ INT32 UIFlowWndWiFiMovie_OnKeyUp(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_OFF) {
 			SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_ON);
 			Control_LedTurn(MIC_LED,1);
+			#if PLAY_SOUND_IN_OTHER_TASK
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_MICEN_TONE));							
+			UIDogSound_Enable(TRUE);
+			#else
 			UIVoice_Play(DEMOSOUND_SOUND_MICEN_TONE);
+			#endif
 			Delay_DelayMs(50);
 		} else {
 			SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_OFF);
 			Control_LedTurn(MIC_LED,0);
+			#if PLAY_SOUND_IN_OTHER_TASK
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_MICDIS_TONE));							
+			UIDogSound_Enable(TRUE);
+			#else
 			UIVoice_Play(DEMOSOUND_SOUND_MICDIS_TONE);
+			#endif
 			Delay_DelayMs(50);
 		}
 		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_AUDIO, 1, SysGetFlag(FL_MOVIE_AUDIO));
@@ -788,7 +806,13 @@ INT32 UIFlowWndWiFiMovie_OnKeyDown(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 			FlowWiFiMovie_DrawPIM(TRUE);
 			Delay_DelayMs(150);
 			Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
+			#if PLAY_SOUND_IN_OTHER_TASK
+            UIDogSound_Enable(FALSE);
+	        DogSoundPlayID(DEMOSOUND_SOUND_SHUTTER_TONE);							
+			UIDogSound_Enable(TRUE);
+			#else
 			UISound_Play(DEMOSOUND_SOUND_SHUTTER_TONE);
+			#endif
 		}
 		break;
 	}
@@ -1328,10 +1352,16 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
             //if ((g_beep_Cnt == 1) || (g_beep_Cnt == 3)) {
             if ((g_beep_Cnt == 4) || (g_beep_Cnt == 7)) {
                 if (UI_GetData(FL_BEEP) == BEEP_ON) {
-		 //Control_LedTurn(REC_LED,1);
-		 if (!APP_Sound_Control) {
-                    	UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
-		 }
+				 //Control_LedTurn(REC_LED,1);
+				 if (!APP_Sound_Control) {
+                    	#if PLAY_SOUND_IN_OTHER_TASK
+		                UIDogSound_Enable(FALSE);
+				        DogSoundPlayID(DEMOSOUND_SOUND_KEY_TONE);							
+						UIDogSound_Enable(TRUE);
+						#else
+                        UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
+						#endif
+		 			}
                 }
             }
 	 if (g_beep_Cnt == 10) {
@@ -1364,7 +1394,13 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
             {
                 if (UI_GetData(FL_BEEP) == BEEP_ON) {
 					if(!g_uiWiFiRecordIngMotionDet) {			
-			        	UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
+						#if PLAY_SOUND_IN_OTHER_TASK
+		                UIDogSound_Enable(FALSE);
+				        DogSoundPlayID(DEMOSOUND_SOUND_KEY_TONE);							
+						UIDogSound_Enable(TRUE);
+						#else
+                        UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
+						#endif
 					}
                 }
             }
@@ -1536,14 +1572,26 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
             if ((g_AutoSOS_Cnt == 1) || (g_AutoSOS_Cnt == 3) || (g_AutoSOS_Cnt == 5)) {
                 if (!WiFiManualSetSOS) {
                     if (UI_GetData(FL_BEEP) == BEEP_ON) {
+						#if PLAY_SOUND_IN_OTHER_TASK
+		                UIDogSound_Enable(FALSE);
+				        DogSoundPlayID(DEMOSOUND_SOUND_KEY_TONE);							
+						UIDogSound_Enable(TRUE);
+						#else
                         UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
+						#endif
                     }
                 }
             }
 
             if (g_AutoSOS_Cnt == 6) {
+				#if PLAY_SOUND_IN_OTHER_TASK
+				UIDogSound_Enable(FALSE);
+				DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_VIDEOPROTECT_TONE));							
+				UIDogSound_Enable(TRUE);
+				#else
+				UIVoice_Play(DEMOSOUND_SOUND_VIDEOPROTECT_TONE);
+				#endif
 	       		Delay_DelayMs(80);
-	       		UIVoice_Play(DEMOSOUND_SOUND_VIDEOPROTECT_TONE);
             }
         } else {
             g_AutoSOS_Cnt = 0;
@@ -1980,7 +2028,13 @@ INT32 UIFlowWndWiFiMovie_OnCustom2(VControl *pCtrl, UINT32 paramNum, UINT32 *par
         Delay_DelayMs(300);
     }
     UIFlowWndWiFiMovie_UpdateWiFiData(FALSE);
-    UIVoice_Play(DEMOSOUND_SOUND_WIFIDISABLE_TONE);
+	#if PLAY_SOUND_IN_OTHER_TASK
+	UIDogSound_Enable(FALSE);
+	DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_WIFIDISABLE_TONE));							
+	UIDogSound_Enable(TRUE);
+	#else
+	UIVoice_Play(DEMOSOUND_SOUND_WIFIDISABLE_TONE);
+	#endif
     Delay_DelayMs(100);	
     FlowWiFiMovie_IconDrawWiFiDisConnected(TRUE);
     Control_LedTurn(WIFI_LED,0);
@@ -2036,8 +2090,14 @@ INT32 UIFlowWndWiFiMovie_OnKeyRcShutter2(VControl *pCtrl, UINT32 paramNum, UINT3
             }
 
             if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
-	       Delay_DelayMs(100);
-	       UIVoice_Play(DEMOSOUND_SOUND_PINSERTCARD_TONE);
+				#if PLAY_SOUND_IN_OTHER_TASK
+				UIDogSound_Enable(FALSE);
+				DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_PINSERTCARD_TONE));							
+				UIDogSound_Enable(TRUE);
+				#else
+				UIVoice_Play(DEMOSOUND_SOUND_PINSERTCARD_TONE);
+				#endif
+		        Delay_DelayMs(100);
                 Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, UIFlowWndWrnMsg_StatusTXT_Msg_STRID_PLEASE_INSERT_SD, FLOWWRNMSG_TIMER_2SEC);
                 return NVTEVT_CONSUME;
             }
@@ -2076,7 +2136,13 @@ INT32 UIFlowWndWiFiMovie_OnKeyRcShutter2(VControl *pCtrl, UINT32 paramNum, UINT3
                     //photo capture
                     FlowWiFiMovie_DrawPIM(TRUE);
                     Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_RAWENC, 0);
+					#if PLAY_SOUND_IN_OTHER_TASK
+	                UIDogSound_Enable(FALSE);
+			        DogSoundPlayID(DEMOSOUND_SOUND_SHUTTER_TONE);							
+					UIDogSound_Enable(TRUE);
+					#else
                     UISound_Play(DEMOSOUND_SOUND_SHUTTER_TONE);
+					#endif
                 }
             }
             break;
@@ -2201,7 +2267,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 4;
-			#if 1
+			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
 			UIDogSound_Enable(TRUE);
@@ -2219,7 +2285,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 4;
-			#if 1
+			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
 			UIDogSound_Enable(TRUE);
@@ -2238,7 +2304,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 4;
-			#if 1
+			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_FCS_TONE);							
 			UIDogSound_Enable(TRUE);
@@ -2257,7 +2323,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 4;
-			#if 1
+			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
 			UIDogSound_Enable(TRUE);
@@ -2276,7 +2342,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 4;
-			#if 1
+			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_PCW_TONE);							
 			UIDogSound_Enable(TRUE);
@@ -2296,7 +2362,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 4;
-			#if 1
+			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);							
 			UIDogSound_Enable(TRUE);
@@ -2315,7 +2381,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 4;
-			#if 1
+			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 	        DogSoundPlayID(DEMOSOUND_SOUND_RCW_TONE);							
 			UIDogSound_Enable(TRUE);
@@ -2334,7 +2400,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 4;
-			#if 1
+			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
 			UIDogSound_Enable(TRUE);
@@ -2353,7 +2419,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 4;
-			#if 1
+			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
 			UIDogSound_Enable(TRUE);
@@ -2379,7 +2445,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 4;
-		#if 1
+		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
 		UIDogSound_Enable(TRUE);
@@ -2405,7 +2471,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 4;
-		#if 1
+		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
 		UIDogSound_Enable(TRUE);
@@ -2432,7 +2498,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 4;
-		#if 1
+		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_FCS_TONE);							
 		UIDogSound_Enable(TRUE);
@@ -2463,7 +2529,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 4;
-		#if 1
+		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
 		UIDogSound_Enable(TRUE);
@@ -2490,7 +2556,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 4;
-		#if 1
+		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_PCW_TONE);							
 		UIDogSound_Enable(TRUE);
@@ -2517,7 +2583,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 4;
-		#if 1
+		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);							
 		UIDogSound_Enable(TRUE);
@@ -2543,7 +2609,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 4;
-		#if 1
+		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_RCW_TONE);							
 		UIDogSound_Enable(TRUE);
@@ -2569,7 +2635,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 4;
-		#if 1
+		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
 		UIDogSound_Enable(TRUE);
@@ -2596,7 +2662,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 4;
-		#if 1
+		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
 		UIDogSound_Enable(TRUE);

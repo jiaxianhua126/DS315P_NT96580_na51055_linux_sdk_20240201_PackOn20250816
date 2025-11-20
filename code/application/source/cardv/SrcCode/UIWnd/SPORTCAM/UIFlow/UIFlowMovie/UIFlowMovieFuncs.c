@@ -82,8 +82,14 @@ void FlowMovie_StartRec(void)
             }
         }
         #endif
-		if ((!SlowCard_Flag) && (!Voice_Parrecordstart)){	
+		if ((!SlowCard_Flag) && (!Voice_Parrecordstart)){
+			#if PLAY_SOUND_IN_OTHER_TASK
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_RECORDINGSTART_TONE));							
+			UIDogSound_Enable(TRUE);
+			#else
 			UIVoice_Play(DEMOSOUND_SOUND_RECORDINGSTART_TONE);
+			#endif
 			Voice_Parrecordstart = FALSE;
 		}
 		ASR_GetPCMData_EN = FALSE;
@@ -197,8 +203,14 @@ BOOL FlowMovie_IsStorageErr(BOOL IsCheckFull)
 
 	// check card inserted
 	if (System_GetState(SYS_STATE_CARD)  == CARD_REMOVED) {
+		#if PLAY_SOUND_IN_OTHER_TASK
+		UIDogSound_Enable(FALSE);
+		DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_PINSERTCARD_TONE));							
+		UIDogSound_Enable(TRUE);
+		#else
+		UIVoice_Play(DEMOSOUND_SOUND_PINSERTCARD_TONE);	
+		#endif		
 		Delay_DelayMs(100);
-		UIVoice_Play(DEMOSOUND_SOUND_PINSERTCARD_TONE);		
 		Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, UIFlowWndWrnMsg_StatusTXT_Msg_STRID_PLEASE_INSERT_SD, FLOWWRNMSG_TIMER_2SEC);
 		return TRUE;
 	}

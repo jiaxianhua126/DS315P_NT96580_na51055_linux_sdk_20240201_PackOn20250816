@@ -123,7 +123,13 @@ void FlowWiFiMovie_StartRec(void)
 
     //FlowMovie_CreateFileRecoveryTxt();
 	if (!Voice_Parrecordstart) {	
+		#if PLAY_SOUND_IN_OTHER_TASK
+		UIDogSound_Enable(FALSE);
+		DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_RECORDINGSTART_TONE));							
+		UIDogSound_Enable(TRUE);
+		#else
 		UIVoice_Play(DEMOSOUND_SOUND_RECORDINGSTART_TONE);
+		#endif
 		Voice_Parrecordstart = FALSE;
 	}
 	Delay_DelayMs(200);	
@@ -754,10 +760,22 @@ INT32 WiFiCmd_OnExeSetMovieAudio(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 
 	if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) {
 		if (Data) {
+			#if PLAY_SOUND_IN_OTHER_TASK
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_MICEN_TONE));							
+			UIDogSound_Enable(TRUE);
+			#else
 			UIVoice_Play(DEMOSOUND_SOUND_MICEN_TONE);
+			#endif
 			Delay_DelayMs(50);
 		} else {
+			#if PLAY_SOUND_IN_OTHER_TASK
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_MICDIS_TONE));							
+			UIDogSound_Enable(TRUE);
+			#else
 			UIVoice_Play(DEMOSOUND_SOUND_MICDIS_TONE);
+			#endif
 			Delay_DelayMs(50);
 		}
 		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_AUDIO, 1, Data);
