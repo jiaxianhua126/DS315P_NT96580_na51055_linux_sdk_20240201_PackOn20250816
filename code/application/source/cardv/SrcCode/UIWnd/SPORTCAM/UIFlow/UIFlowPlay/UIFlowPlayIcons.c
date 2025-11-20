@@ -325,7 +325,7 @@ static void FlowPB_IconDrawImageSize(BOOL bShow)
 			if (MovieInfo.uiVidRate == 50) {
 				snprintf(item1_Buf, 32, "4K P50");
 			} else {
-				snprintf(item1_Buf, 32, "4K P30");
+				snprintf(item1_Buf, 32, "4K");
 			}
 			break;
 		case 2880: //2880X2160P24
@@ -336,9 +336,9 @@ static void FlowPB_IconDrawImageSize(BOOL bShow)
 					snprintf(item1_Buf, 32, "1600P30");//snprintf(item1_Buf, 32, "QHD P30");
 			} else if (MovieInfo.uiVidHeight == 1080) {
     			if (MovieInfo.uiVidRate == 60) {
-                    snprintf(item1_Buf, 32, "2KP60  21:9");
+                    snprintf(item1_Buf, 32, "1440P60  21:9");
                 } else {
-                    snprintf(item1_Buf, 32, "2KP30  21:9");
+                    snprintf(item1_Buf, 32, "1440P30  21:9");
                 }
 			} else {
 			    if (MovieInfo.uiVidRate == 60) {
@@ -412,9 +412,9 @@ static void FlowPB_IconDrawImageSize(BOOL bShow)
 					snprintf(item1_Buf, 32, "1600P27.5");//snprintf(item1_Buf, 32, "QHD P30");
 			} else if (MovieInfo.uiVidHeight == 1080) {
     			if (MovieInfo.uiVidRate == 55) {
-                    snprintf(item1_Buf, 32, "2KP55  21:9");
+                    snprintf(item1_Buf, 32, "1440P55  21:9");
                 } else {
-                    snprintf(item1_Buf, 32, "2KP27.5  21:9");
+                    snprintf(item1_Buf, 32, "1440P27.5  21:9");
                 }
 			} else {
 			    if (MovieInfo.uiVidRate == 55) {
