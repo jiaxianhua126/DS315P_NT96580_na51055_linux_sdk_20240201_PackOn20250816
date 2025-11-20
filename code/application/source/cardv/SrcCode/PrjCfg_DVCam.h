@@ -959,6 +959,7 @@
 #define _GPS_EDOG_UNIQUE_SKY_			ENABLE
 #define WATCHDOG_FUNC					ENABLE
 //#define COUNTRY_JP						1					//mark this ,disable func
+#define PLAY_SOUND_IN_OTHER_TASK		DISABLE
 
 /*******************************************************************************************
  * LVGL UI Style config

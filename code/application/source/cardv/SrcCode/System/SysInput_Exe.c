@@ -199,7 +199,13 @@ void KeySoundCB(UINT32 uiSoundID)
     if ((UI_GetData(FL_BEEP) == BEEP_ON) || (UI_GetData(FL_BEEP) == BUTTON_BEEP)) {
     	if (uiSoundID) {
             #if(UI_FUNC==ENABLE)
+			#if PLAY_SOUND_IN_OTHER_TASK
+            UIDogSound_Enable(FALSE);
+	        DogSoundPlayID(uiSoundID);							
+			UIDogSound_Enable(TRUE);
+			#else
     		UISound_Play(uiSoundID);
+			#endif
             #endif
     	}
     }

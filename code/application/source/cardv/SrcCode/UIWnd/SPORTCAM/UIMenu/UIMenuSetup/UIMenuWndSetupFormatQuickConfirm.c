@@ -116,7 +116,13 @@ INT32 UIMenuWndSetupFormatQuickConfirm_OnTimer(VControl *pCtrl, UINT32 paramNum,
         if (g_FmtCardBeep) {
             g_sound_Cnt++;
             if ((g_sound_Cnt == 1) || (g_sound_Cnt == 3) || (g_sound_Cnt == 5)) {
+				#if PLAY_SOUND_IN_OTHER_TASK
+                UIDogSound_Enable(FALSE);
+		        DogSoundPlayID(DEMOSOUND_SOUND_KEY_TONE);							
+				UIDogSound_Enable(TRUE);
+				#else
                 UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
+				#endif
             }
 
             if (g_sound_Cnt%30 == 0) {

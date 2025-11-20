@@ -879,11 +879,23 @@ UINT32 BackgroundFormatCard(void)
 		LogFile_ReOpen();
 #endif
 		//#NT#2016/05/30#Lincy Lin -end
+		#if PLAY_SOUND_IN_OTHER_TASK
+		UIDogSound_Enable(FALSE);
+		DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_MCARDFORMATSUCCESSFUL_TONE));							
+		UIDogSound_Enable(TRUE);
+		#else
 		UIVoice_Play(DEMOSOUND_SOUND_MCARDFORMATSUCCESSFUL_TONE);
+		#endif
 		vos_util_delay_ms(1000);
         SysMain_system("sync");
 	} else {
+		#if PLAY_SOUND_IN_OTHER_TASK
+		UIDogSound_Enable(FALSE);
+		DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_MCARDFORMATFAIL_TONE));							
+		UIDogSound_Enable(TRUE);
+		#else
 		UIVoice_Play(DEMOSOUND_SOUND_MCARDFORMATFAIL_TONE);	
+		#endif
 	}
 	MovieExe_ResetFileSN();
     DBG_FUNC_END("\r\n");

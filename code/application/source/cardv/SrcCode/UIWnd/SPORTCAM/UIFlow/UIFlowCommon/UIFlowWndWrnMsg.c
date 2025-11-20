@@ -181,7 +181,13 @@ INT32 UIFlowWndWrnMsg_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArr
 			}
 			else
 			{
+				#if PLAY_SOUND_IN_OTHER_TASK
+				UIDogSound_Enable(FALSE);
+				DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_MCARDERRORFORMAT_TONE));							
+				UIDogSound_Enable(TRUE);
+				#else
 				UIVoice_Play(DEMOSOUND_SOUND_MCARDERRORFORMAT_TONE);
+				#endif
 				Ux_OpenWindow((VControl *)(&UIMenuWndSetupFormatQuickConfirmCtrl), 0);
 			}
 		}

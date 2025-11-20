@@ -1820,7 +1820,13 @@ INT32 System_OnACCShutdown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
             }
 
 			//isACCTrigPowerOn = TRUE;
-			UIVoice_Play(DEMOSOUND_SOUND_PARRECORDSTART_TONE);
+			#if  PLAY_SOUND_IN_OTHER_TASK
+			UIDogSound_Enable(FALSE);
+	        DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_PARRECORDSTART_TONE));							
+			UIDogSound_Enable(TRUE);
+			#else
+			UISound_Play(DEMOSOUND_SOUND_PARRECORDSTART_TONE);
+			#endif
 			#if 1
 			if (SysGetFlag(FL_PARKING_OFF_GPS) == PGPS_TRUE) {
 				GPSRec_Close();

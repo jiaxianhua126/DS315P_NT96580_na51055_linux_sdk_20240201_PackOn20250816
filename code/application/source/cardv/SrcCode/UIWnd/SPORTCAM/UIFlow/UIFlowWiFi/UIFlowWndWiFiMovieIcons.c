@@ -758,7 +758,13 @@ void FlowWiFiMovie_IconDrawGPSSignal(BOOL bShow)
 						#elif defined(_GPS_EDOG_UNIQUE_SKY_)
 						if ((g_Count == 1) && !g_GPS_PlaySound_onetime)
                         {
+                        	#if PLAY_SOUND_IN_OTHER_TASK
+	                        UIDogSound_Enable(FALSE);
+					        DogSoundPlayID(DEMOSOUND_SOUND_EP5_TONE_GPS_OK);							
+							UIDogSound_Enable(TRUE);
+							#else
                             UISound_Play(DEMOSOUND_SOUND_EP5_TONE_GPS_OK);
+							#endif
                             g_GPS_PlaySound_onetime = TRUE;
                         }
 						#endif
