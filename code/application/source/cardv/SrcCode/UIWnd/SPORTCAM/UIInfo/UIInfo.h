@@ -1423,9 +1423,9 @@ enum _BEEP {
 //-----------------------------------------------------------------------------
 enum _LANGUAGE {
 #if (!defined(COUNTRY_JP))
+	LANG_EN,
 	LANG_TC,
 	LANG_SC,
-	LANG_EN,
 	LANG_ID_MAX,
 	LANG_JP,
 #else

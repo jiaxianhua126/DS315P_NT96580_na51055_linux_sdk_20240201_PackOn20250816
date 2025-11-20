@@ -763,7 +763,7 @@ void FlowWiFiMovie_IconDrawGPSSignal(BOOL bShow)
 					        DogSoundPlayID(DEMOSOUND_SOUND_EP5_TONE_GPS_OK);							
 							UIDogSound_Enable(TRUE);
 							#else
-                            UISound_Play(DEMOSOUND_SOUND_EP5_TONE_GPS_OK);
+                            //UISound_Play(DEMOSOUND_SOUND_EP5_TONE_GPS_OK);
 							#endif
                             g_GPS_PlaySound_onetime = TRUE;
                         }
