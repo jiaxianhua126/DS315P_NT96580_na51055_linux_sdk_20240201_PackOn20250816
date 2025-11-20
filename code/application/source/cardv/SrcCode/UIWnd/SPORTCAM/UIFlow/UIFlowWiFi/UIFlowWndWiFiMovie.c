@@ -1684,6 +1684,7 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 			if (g_uiAdasAlertSecCnt <=1) {
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, FALSE);
 				
 				DBG_ERR("======4444===========\r\n");
 				g_uiAdasAlertSecCnt = 0;
@@ -1693,6 +1694,9 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 		}else  if(UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)){
 			g_uiAdasAlertSecCnt--;
 			if (g_uiAdasAlertSecCnt <=1) {
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl,FALSE);
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, TRUE);
 				FlowWiFiMovie_IconHideADASDistance();
 				FlowWiFiMovie_IconHideADASDisplayType();
 				DBG_ERR("======UIFlowWiFiWndMovie_ADAS_Alert_PanelCtrl===========\r\n");

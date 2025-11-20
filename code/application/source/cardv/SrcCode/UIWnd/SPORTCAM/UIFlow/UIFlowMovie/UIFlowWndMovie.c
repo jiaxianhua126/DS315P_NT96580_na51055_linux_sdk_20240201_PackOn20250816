@@ -204,7 +204,7 @@ INT32 UIFlowWndMovie_OnExeRecord(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 	        DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_PINSERTCARD_TONE));							
 			UIDogSound_Enable(TRUE);
 			#else
-			UISound_Play(DEMOSOUND_SOUND_PINSERTCARD_TONE);
+			UIVoice_Play(DEMOSOUND_SOUND_PINSERTCARD_TONE);
 			#endif
 			Delay_DelayMs(100);
 			FlowMovie_SetLedFlash_BeepWrn(TRUE);
@@ -224,7 +224,7 @@ INT32 UIFlowWndMovie_OnExeRecord(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 	        DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_PINSERTCARD_TONE));							
 			UIDogSound_Enable(TRUE);	
 			#else
-			UISound_Play(DEMOSOUND_SOUND_PINSERTCARD_TONE);	
+			UIVoice_Play(DEMOSOUND_SOUND_PINSERTCARD_TONE);	
 			#endif
 			Delay_DelayMs(100);
 			Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, UIFlowWndWrnMsg_StatusTXT_Msg_STRID_PLEASE_INSERT_SD, FLOWWRNMSG_TIMER_2SEC);
@@ -2618,6 +2618,7 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 			if (g_uiAdasAlertSecCnt <=1) {
 				UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);
 				
 				DBG_ERR("======4444===========\r\n");
 				g_uiAdasAlertSecCnt = 0;
@@ -2627,6 +2628,9 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 		}else  if(UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)){
 			g_uiAdasAlertSecCnt--;
 			if (g_uiAdasAlertSecCnt <=1) {
+				UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl,TRUE);
 				FlowMovie_IconHideADASDistance();
 				FlowMovie_IconHideADASDisplayType();
 				DBG_ERR("======UIFlowWndMovie_ADAS_Alert_PanelCtrl===========\r\n");

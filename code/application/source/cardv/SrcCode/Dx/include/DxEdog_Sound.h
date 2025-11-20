@@ -28,9 +28,9 @@ void EdogSound_Handle_Init(void);
 #define FLGEDOGSOUND_UPDATE        FLGPTN_BIT(1)
 #define FLGEDOGSOUND_ALL           0xFFFFFFFF
 
-extern ID FLG_ID_EDOGSOUND;
+//extern ID FLG_ID_EDOGSOUND;
 
-extern void EdogSoundTsk_TrigUpdate(void);
+//extern void EdogSoundTsk_TrigUpdate(void);
 extern ER EdogSoundTsk_Close(void);
 
 
