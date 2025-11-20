@@ -4751,6 +4751,8 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 #if (MOVIE_YUV_COMPRESS)
     ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_YUV_COMPRESS, TRUE);
 	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2, MOVIEMULTI_PARAM_YUV_COMPRESS, TRUE);
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_VDO_QUALITY_BASE_MODE_EN, TRUE);
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2, MOVIEMULTI_PARAM_VDO_QUALITY_BASE_MODE_EN, TRUE);
 #endif
 
 	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PRARM_FILEDB_MAX_MUM, 5000);
@@ -4917,7 +4919,7 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1 , MOVIEMULTI_PARAM_IPL_FORCED_IMG_SIZE, MOVIE_IPL_SIZE_USER);
 
 #endif
-#endif
+#endif 
 
 
 #if (defined(_NVT_ETHREARCAM_TX_))
@@ -5377,11 +5379,18 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	if (SysGetFlag(FL_PARKING_MODE) == PARKING_MODE_OFF) {	
 		if (SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF) {
 			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_CODEC_TRIGGER_MODE, MOVIE_CODEC_TRIGGER_DIRECT);//1440p60 have same frame.
-		} 	
+			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2, MOVIEMULTI_PARAM_CODEC_TRIGGER_MODE, MOVIE_CODEC_TRIGGER_DIRECT);//1440p60 have same frame.
+		} 	else {
+			
+			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2, MOVIEMULTI_PARAM_CODEC_TRIGGER_MODE, MOVIE_CODEC_TRIGGER_TIMER);
+		}
 	} else {
 		//add for parking mode
 		if (SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC) == PARKING_MODE_TIMELAPSEREC_OFF) {
 			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_CODEC_TRIGGER_MODE, MOVIE_CODEC_TRIGGER_DIRECT);//1440p60 have same frame.
+			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2, MOVIEMULTI_PARAM_CODEC_TRIGGER_MODE, MOVIE_CODEC_TRIGGER_DIRECT);//1440p60 have same frame.
+		}else{
+			ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2, MOVIEMULTI_PARAM_CODEC_TRIGGER_MODE, MOVIE_CODEC_TRIGGER_TIMER);
 		}
 	}
 	#if(PRE_RECORD_DET_FUNC==ENABLE)
@@ -6707,6 +6716,7 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		}
 	}
 #endif
+	DBG_DUMP("------BOOT------222222222222222222\r\n");
 	return NVTEVT_CONSUME;
 }
 

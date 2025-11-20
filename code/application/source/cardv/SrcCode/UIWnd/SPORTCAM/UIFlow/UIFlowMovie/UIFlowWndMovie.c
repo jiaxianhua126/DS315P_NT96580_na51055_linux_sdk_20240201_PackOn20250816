@@ -2674,9 +2674,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			#else
 			UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
 			#endif
-			//if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
-				FlowMovie_IconDrawADASDisplayType(AlarmType);
-			//}
+			if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
+			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 		case ADAS_ALARM_LD_RIGHT:
 			if(SysGetFlag(FL_MOVIE_LDWS) != MOVIE_LDWS_ON){
@@ -2691,6 +2692,9 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			#else
 			UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2707,6 +2711,9 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			#else
 			UISound_Play(DEMOSOUND_SOUND_FCS_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2723,6 +2730,9 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			#else
 			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2739,6 +2749,9 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			#else
 			UISound_Play(DEMOSOUND_SOUND_PCW_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2756,6 +2769,9 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			#else
 			UISound_Play(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2772,6 +2788,9 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			#else
 			UISound_Play(DEMOSOUND_SOUND_RCW_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2788,6 +2807,9 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			#else
 			UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2804,6 +2826,9 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			#else
 			UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 

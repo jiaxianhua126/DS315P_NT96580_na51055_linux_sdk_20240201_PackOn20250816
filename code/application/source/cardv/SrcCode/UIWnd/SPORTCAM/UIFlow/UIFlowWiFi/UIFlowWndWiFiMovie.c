@@ -2208,9 +2208,10 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			#else
 			UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
 			#endif
-			//if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
-				FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
-			//}
+			if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
+			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 		case ADAS_ALARM_LD_RIGHT:
 			if(SysGetFlag(FL_MOVIE_LDWS) != MOVIE_LDWS_ON){
@@ -2225,6 +2226,9 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			#else
 			UISound_Play(DEMOSOUND_SOUND_LDWS_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2241,6 +2245,9 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			#else
 			UISound_Play(DEMOSOUND_SOUND_FCS_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2257,6 +2264,9 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			#else
 			UISound_Play(DEMOSOUND_SOUND_SNG_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2273,6 +2283,9 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			#else
 			UISound_Play(DEMOSOUND_SOUND_PCW_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2290,6 +2303,9 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			#else
 			UISound_Play(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2306,6 +2322,9 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			#else
 			UISound_Play(DEMOSOUND_SOUND_RCW_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2322,6 +2341,9 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			#else
 			UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
@@ -2338,6 +2360,9 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			#else
 			UISound_Play(DEMOSOUND_SOUND_LCAWS_TONE);
 			#endif
+			if (!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {				
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl,TRUE);
+			}
 			FlowWiFiMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 
