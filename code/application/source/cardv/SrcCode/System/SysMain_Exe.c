@@ -1315,6 +1315,30 @@ void  Delete_EdogDataFile(void)
 {
 	remove(EDOGDATA_FILE_NAME_SRC);
 }
+#define ADAS_CHECK_FILE    "/mnt/sd2/adas.plc"//"A:\\PStore.plc"
+
+void SystemBoot_Adas_Check(void)
+{
+    FILE *fp = NULL;
+
+    if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
+        return;
+    }
+
+    fp = fopen(ADAS_CHECK_FILE, "r");
+    if (fp)
+    {
+        fclose(fp);
+		system("umount /data/usr_adas"); 
+		system("mount -o rw /dev/mtdblock8 /data/usr_adas");    
+		DBG_DUMP("=============remount======\r\n");
+    } 
+	/*else //default ro
+	{
+		system("umount /data/usr_adas"); 
+		system("mount -o ro /dev/mtdblock8 /data/usr_adas");
+	}*/
+}
 
 
 INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -1544,6 +1568,7 @@ INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		SysInit_EthTxFW_Update_getfile();
 		SysInit_EthBootFW_Update_getfile();
 		DBG_DUMP("------BOOT------111111111111111111111\r\n");
+		SystemBoot_Adas_Check();
 
 		//bind user mem to ImageStream
 		//ImageStream_ConfigUserDump();
@@ -1825,7 +1850,7 @@ INT32 System_OnACCShutdown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	        DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_PARRECORDSTART_TONE));							
 			UIDogSound_Enable(TRUE);
 			#else
-			UISound_Play(DEMOSOUND_SOUND_PARRECORDSTART_TONE);
+			UIVoice_Play(DEMOSOUND_SOUND_PARRECORDSTART_TONE);
 			#endif
 			#if 1
 			if (SysGetFlag(FL_PARKING_OFF_GPS) == PGPS_TRUE) {

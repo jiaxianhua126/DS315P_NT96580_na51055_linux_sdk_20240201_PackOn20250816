@@ -13,10 +13,10 @@
 static THREAD_HANDLE  edogSound_pid;
 #define PRI_DX_EDOGSOUND                15
 #define STKSIZE_DX_EDOGSOUND            4096
-pthread_mutex_t lockSound = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t lockSound = PTHREAD_MUTEX_INITIALIZER;
 static BOOL     g_bDxEdogSoundTskOpened = FALSE;
 static BOOL     g_bDxEdogSoundTskClosing = FALSE;
-ID FLG_ID_EDOGSOUND = 0;
+//ID FLG_ID_EDOGSOUND = 0;
 
 extern void DogSoundCycPlay(void);
 
@@ -24,19 +24,22 @@ extern void DogSoundCycPlay(void);
 
 void *  EdogSound_CreateTask(void *pvParameters)
 {
-	FLGPTN	FlgPtn;
+	//FLGPTN	FlgPtn;
 	printf("...............EDOGSoundTsk.................!!!!\r\n");
 	THREAD_ENTRY();
 
 	while(1)
 	{
+		#if 0
 		vos_flag_set(FLG_ID_EDOGSOUND, FLGEDOGSOUND_IDLE);
 		PROFILE_TASK_IDLE();
 		vos_flag_wait(&FlgPtn, FLG_ID_EDOGSOUND, FLGEDOGSOUND_UPDATE, TWF_ORW | TWF_CLR);
 		PROFILE_TASK_BUSY();
 		vos_flag_clr(FLG_ID_EDOGSOUND, FLGEDOGSOUND_IDLE);
+		#endif
 		//printf("11111\r\n");
 		DogSoundCycPlay();
+		Delay_DelayMs(100);
 
 	}
 	return NULL;
@@ -48,8 +51,8 @@ void EdogSound_Handle_Init(void)
 	if (g_bDxEdogSoundTskOpened) {
 		return ;
 	}
-	vos_flag_create(&FLG_ID_EDOGSOUND, NULL, "FLG_ID_EDOGSOUND");
-	vos_flag_clr(FLG_ID_EDOGSOUND, FLGEDOGSOUND_ALL);
+	//vos_flag_create(&FLG_ID_EDOGSOUND, NULL, "FLG_ID_EDOGSOUND");
+	//vos_flag_clr(FLG_ID_EDOGSOUND, FLGEDOGSOUND_ALL);
 	g_bDxEdogSoundTskOpened = TRUE;
 	g_bDxEdogSoundTskClosing = FALSE;
 
@@ -62,23 +65,25 @@ void EdogSound_Handle_Init(void)
 
 void EdogSoundTsk_TrigUpdate(void)
 {
+	#if 0
 	if(g_bDxEdogSoundTskOpened&&!g_bDxEdogSoundTskClosing){
 		set_flg(FLG_ID_EDOGSOUND, FLGEDOGSOUND_UPDATE);
 	}
+	#endif
 }
 
 ER EdogSoundTsk_Close(void)
 {
-	FLGPTN  FlgPtn;
+	//FLGPTN  FlgPtn;
 
 	if (!g_bDxEdogSoundTskOpened) {
 		return E_SYS;
 	}
 
 	g_bDxEdogSoundTskClosing = TRUE;
-	vos_flag_wait(&FlgPtn, FLG_ID_EDOGSOUND, FLGEDOGSOUND_IDLE, TWF_ORW);
+	//vos_flag_wait(&FlgPtn, FLG_ID_EDOGSOUND, FLGEDOGSOUND_IDLE, TWF_ORW);
 	vos_task_destroy(edogSound_pid);
-	vos_flag_destroy(FLG_ID_EDOGSOUND);
+	//vos_flag_destroy(FLG_ID_EDOGSOUND);
 	g_bDxEdogSoundTskOpened = FALSE;
 
 	return E_OK;
