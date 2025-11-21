@@ -100,7 +100,7 @@ static UINT32 g_AlarmTypePrev = 0xff, g_AlarmTypeNow = 0xff;
 UINT32 g_AvgReaminSec = 0;
 BOOL g_bAvgCalStart = FALSE;
 UINT32 g_AvgTotalSec = 0;
-extern BOOL g_bManualCloseEdogWnd;
+BOOL g_bManualCloseEdogWnd;
 
 //#NT#2023/03/11#delai.zhang -begin
 //#NT#APP task get value ,GPS taks set value.Two tasks assign a value to a variable at the same time
@@ -2443,10 +2443,10 @@ THREAD_RETTYPE GPS_TASK(void *pvParameters)
                     GPSRec_GetRMCEData();
 					edogCBdata_update_ok = TRUE;
                     break;
+#if 0
 				case TXT_SENTENCE:// switch to tpms task
 					TPMSRecTsk();
 					break;
-#if 0
                 case GSA_SENTENCE:
                     // DBG_DUMP("GSA\n");
                     NMEASentence.GSA = RecSentence;

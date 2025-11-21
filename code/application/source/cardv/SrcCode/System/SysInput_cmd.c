@@ -88,7 +88,7 @@ static BOOL Cmd_key_movie(unsigned char argc, char **argv)
 		return TRUE;
 	}
 }
-static UINT8 soundIndex = DEMOSOUND_SOUND_EP0_TONE_WRONGDIRECT;
+static UINT8 soundIndex = DEMOSOUND_SOUND_DDD_TONE;
 static BOOL Cmd_key_up(unsigned char argc, char **argv)
 {
 	//if(uiKeyTmpMsk & FLGkey_UP)
@@ -112,7 +112,7 @@ static BOOL Cmd_key_down(unsigned char argc, char **argv)
 		//Ux_PostEvent(NVTEVT_KEY_DOWN, 1, NVTEVT_KEY_PRESS);
 		DBG_DUMP("%d\r\n",soundIndex);
 		UISound_Play(soundIndex);
-		if(soundIndex >= DEMOSOUND_SOUND_EP0_TONE_WRONGDIRECT)
+		if(soundIndex >= DEMOSOUND_SOUND_DDD_TONE)
 			soundIndex--;
 		return TRUE;
 	}

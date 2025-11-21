@@ -1593,10 +1593,10 @@ INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		SysInit_CarNoBackup_getfile();
 		GetCarNumFile();
 	
-#if 1
 		XML_InitBuf();
 		SysInit_CheckDateTime();
 		SystemBoot_PS_Format();
+		#if 0//delete
 		if(EdogData_Update_Check())
 		{
 			EdogData_Update();
@@ -1605,7 +1605,7 @@ INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		DBG_DUMP("------ Edog_Init = %ld ver=%s\r\n", Edog_Init(200),GPSRadar_GetLibVer());
 		Edog_Handle_Init(); 
 		EdogSound_Handle_Init();
-#endif
+		#endif
 		SysInit_EthTxFW_Update_getfile();
 		SysInit_EthBootFW_Update_getfile();
 		DBG_DUMP("------BOOT------111111111111111111111\r\n");

@@ -37,9 +37,7 @@ extern UINT8 FlowMovie_GetCapPictureCount(void);
 extern BOOL FlowMovie_IsEthCamConnectOK(void);
 extern void FlowMovie_SyncTimeToRear(void);
 extern void FlowMovie_SetCrash(void);
-#if defined(_GPS_EDOG_)
-extern void  FlowMovie_EdogAlarmVoice(void);
-#elif defined(_GPS_EDOG_UNIQUE_SKY_)
+#if (_GPS_EDOG_UNIQUE_SKY_==ENABLE)
 extern void  FlowMovie_EdogAlarmVoice(UINT8 type);
 extern BOOL  FlowMovie_isEdogTypeValid(UINT8 type);
 extern BOOL g_bManualCloseEdogWnd;
