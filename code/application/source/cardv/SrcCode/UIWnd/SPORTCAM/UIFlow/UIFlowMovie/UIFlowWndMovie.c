@@ -2381,7 +2381,7 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 
 	case NVTEVT_05SEC_TIMER:
 		if (ADAS_Auth_Test) {
-			//UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
+			UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
 		}
 //check ASR Whether it works properly or not , Abnormal restart
 #if 0
