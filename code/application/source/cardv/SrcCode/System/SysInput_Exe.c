@@ -513,7 +513,7 @@ void UI_DetPwrKey(void)
 void UI_DetNormalKey(void)
 {
 	static UINT32 keyDetectCount = 0;
-	//static UINT16 edogSoundCnt = 0;
+	static UINT16 edogSoundCnt = 0;
 	if (!UI_IsForceLock()) {
 		GxKey_DetNormalKey();
 
@@ -527,13 +527,13 @@ void UI_DetNormalKey(void)
 		}
 	}
 
-	/*if(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)
+	/*if(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)*/
 	{
 		if((++edogSoundCnt)%5==0)
 		{
-			EdogSoundTsk_TrigUpdate();
+			DogSoundCycPlay();
 		}
-	}*/
+	}
 }
 
 void UI_DetStatusKey(void)

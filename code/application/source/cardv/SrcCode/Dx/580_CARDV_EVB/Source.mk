@@ -16,10 +16,7 @@ DX_SRC = \
 	./SrcCode/Dx/$(MODEL)/DxLed.c \
 	./SrcCode/Dx/$(MODEL)/DxGpio.c \
 	./SrcCode/Dx/$(MODEL)/Dxwatchdog.c \
-	./SrcCode/Dx/$(MODEL)/DxASR.c		\
-	./SrcCode/Dx/$(MODEL)/DxEdog.c		\
-	./SrcCode/Dx/$(MODEL)/DxEdog_Sound.c		\
-#	./SrcCode/Dx/$(MODEL)/ProjectInfo.c \
+	./SrcCode/Dx/$(MODEL)/DxASR.c
 #	./SrcCode/Dx/$(MODEL)/DxCamera_Sensor.c \
 #	./SrcCode/Dx/$(MODEL)/DxCfg.c
 #	./SrcCode/Dx/$(MODEL)/DxCmd.c

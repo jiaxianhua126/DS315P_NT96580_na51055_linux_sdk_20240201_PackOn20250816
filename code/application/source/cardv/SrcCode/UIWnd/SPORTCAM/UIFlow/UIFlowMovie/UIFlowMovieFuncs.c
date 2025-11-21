@@ -494,24 +494,20 @@ BOOL FlowMovie_WakeUpLCDBacklight(void)
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
 			}
 		} else {
-			#if 0//_TODO	
-			if(!UxCtrl_IsShow(&UIFlowWndWiFiMovie_GPS_INFOCtrl)) {
-				UxCtrl_SetShow(&UIFlowWndWiFiMovie_GPS_INFOCtrl, TRUE);
+			if(!UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)) {
+				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, TRUE);
 			}
-			#endif
 		}
 	} else {
 		if (UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF) {
 			if(!UxCtrl_IsShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl)) {
-				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+				//UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
 				UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 			}
 		} else {
-			#if 0//_TODO
-			if(!UxCtrl_IsShow(&UIFlowWndMovie_GPS_INFOCtrl)) {
-				UxCtrl_SetShow(&UIFlowWndMovie_GPS_INFOCtrl, TRUE);
+			if(!UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)) {
+				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, TRUE);
 			}
-			#endif
 		}
 	}
 	#else 
