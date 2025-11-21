@@ -127,6 +127,7 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 	AlgoCmdPara para;
 	int size = 345600;
 	static UINT32 before_algoWarnType = 0;
+	AlgoAttr attr_debug_lvl ={0};
 	THREAD_ENTRY();
 	img_path = ImageApp_MovieMulti_GetAlgDataPort(_CFG_REC_ID_1, _CFG_ALG_PATH3);
 	printf("=========%s====img_path:%d=====\n",__func__,img_path);
@@ -136,6 +137,13 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 	hd_ret = ALGO_MANAGER_GetHandleByName(&adas_handle,ADAS_ALGO_NAME);
 	MovieAlgFunc_ADASSetSentivity(SEN_HIGH);
 	MovieAlgFunc_SetLdwSpeed(30);
+	
+	attr_debug_lvl.logLevel = ALGO_LEVEL_WARN;
+	hd_ret = ALGO_MANAGER_SetAttr(ALGO_ATTR_LOGLEVEL,&attr_debug_lvl);
+	if(hd_ret != 0)
+	{
+		printf("algo setattr failed %x \n",hd_ret);
+	}
 
 	memset(&adas_input_image,0, sizeof(AlgoImages));
 	memset(&adas_eventData,0, sizeof(AlgoEventData));
@@ -299,7 +307,8 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 	AlgoImage *imagePack[2];
 	AlgoCmdPara para;
 	int size = 345600;
-	static UINT32 before_algoWarnType = 0;
+	static UINT32 before_algoWarnType = 0;	
+	AlgoAttr attr_debug_lvl ={0};
 	THREAD_ENTRY();
 	img_path = ImageApp_MovieMulti_GetAlgDataPort(_CFG_REC_ID_2, _CFG_ALG_PATH3);
 	//img_path = _CFG_ETHCAM_ID_1;
@@ -309,6 +318,13 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 	//add by keytech
 	hd_ret = ALGO_MANAGER_GetHandleByName(&rcw_handle,RCW_ALGO_NAME);
 	MovieAlgFunc_RCWSetSentivity(SEN_HIGH);
+
+	attr_debug_lvl.logLevel = ALGO_LEVEL_WARN;
+	hd_ret = ALGO_MANAGER_SetAttr(ALGO_ATTR_LOGLEVEL,&attr_debug_lvl);
+	if(hd_ret != 0)
+	{
+		printf("algo setattr failed %x \n",hd_ret);
+	}
 
 	memset(&rcw_input_image,0, sizeof(AlgoImages));
 	memset(&rcw_eventData,0, sizeof(AlgoEventData));
