@@ -68,7 +68,7 @@ static UINT32  gUIGPSSignalDetTimerID = NULL_TIMER;
 #endif
 static UINT16 Cur_GPS_Speed;//	
 //extern BOOL g_bEdogShowUI;//
-BOOL g_bManualCloseEdogWnd = FALSE;
+extern BOOL g_bManualCloseEdogWnd;
 //BOOL g_bEdogMsgOff = FALSE;
 static UINT32 AlarmTypePrev = 0xff, AlarmTypeNow = 0xff;
 extern BOOL g_bAvgCalStart;

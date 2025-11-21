@@ -312,8 +312,6 @@ SRC += \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowPlay/UIFlowWndPlayThumb.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowWiFi/UIFlowWndWiFiMovie.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowWiFi/UIFlowWndWiFiMovieIcons.c \
-	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowEdog/UIFlowWndEdogMsg_UiqueSky.c \
-	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowEdog/UIFlowWndEdogMsg.c  \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuCommon/TabMenu.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuCommon/MenuMode.c \
 	./SrcCode/UIWnd/SPORTCAM/UIMenu/UIMenuCommon/MenuCommon.c \

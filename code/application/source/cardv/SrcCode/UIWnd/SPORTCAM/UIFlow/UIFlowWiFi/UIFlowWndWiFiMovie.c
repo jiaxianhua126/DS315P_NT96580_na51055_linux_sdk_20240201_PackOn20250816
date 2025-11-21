@@ -2160,29 +2160,7 @@ INT32 UIFlowWndWiFiMovie_OnKeyRcShutter2(VControl *pCtrl, UINT32 paramNum, UINT3
 INT32 UIFlowWndWiFiMovie_OnEdogAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
 	//debug_msg("***********UIFlowWndWiFiMovie_OnEdogAlarm TypePre=0x%x TypeNow0x%x\r\n",paramArray[0],paramArray[1]);
-#if defined(_GPS_EDOG_)
-    if(!g_bManualCloseEdogWnd)
-    {
-        if(SysGetFlag(FL_EDOG_OVERSPEED_ALARM) == EDOG_OVERSPEED_ALARM_ON)
-        {
-            if(SysGetFlag(FL_EDOG_MODE) == EDOG_MODE_OVERSPEED)
-            {
-                if(EdogInfo_Alarm.Alarm_Type > 0x0C)
-                {
-                    return NVTEVT_CONSUME;
-                }
-            }
-            FlowMovie_WakeUpLCDBacklight();
-            //Show Edog Alarm UI & Play Voice
-            Ux_OpenWindow(&UIFlowWndEdogMsgCtrl, 0);
-            Ux_Redraw();
-            if(EdogInfo_Alarm.Alarm_YN == 0x01)
-			{
-            	FlowMovie_EdogAlarmVoice();
-			}
-        }
-    }
-#elif defined(_GPS_EDOG_UNIQUE_SKY_)
+#if (_GPS_EDOG_UNIQUE_SKY_==ENABLE)
 	if(SysGetFlag(FL_EDOG_OVERSPEED_ALARM) == EDOG_OVERSPEED_ALARM_ON)
 	{
 		if (WiFiCmd_GetStatus() != WIFI_MOV_ST_RECORD) 

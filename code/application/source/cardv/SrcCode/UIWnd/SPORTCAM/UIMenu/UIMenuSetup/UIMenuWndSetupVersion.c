@@ -52,7 +52,7 @@ INT32 UIMenuWndSetupVersion_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 #else 
 	UxCtrl_SetShow(&UIMenuSetupVersionText2Ctrl,FALSE);
 #endif
-#if defined(_GPS_EDOG_UNIQUE_SKY_)
+#if (_GPS_EDOG_UNIQUE_SKY_==ENABLE)
 	UxStatic_SetData(&UIMenuSetupVersionText3Ctrl, STATIC_VALUE, Txt_Pointer(GPSRec_GetEdogVersion()));
 	UxCtrl_SetShow(&UIMenuSetupVersionText3Ctrl,FALSE);
 #else
