@@ -47,7 +47,7 @@
 
 #define FW_VERSION_RELEASE              DISABLE //DISABLE
 #define FW_CUSTOMER_MODEL               "DS315P"
-#define FW_CUSTOMER_VERSION_NUM         "V0.65_RZW"
+#define FW_CUSTOMER_VERSION_NUM         "V1.00"
 
 
 //..............................................................................
@@ -959,7 +959,7 @@
 #define _GPS_EDOG_UNIQUE_SKY_			DISABLE//ENABLE
 #define WATCHDOG_FUNC					ENABLE
 //#define COUNTRY_JP						1					//mark this ,disable func
-#define PLAY_SOUND_IN_OTHER_TASK		ENABLE//DISABLE
+#define PLAY_SOUND_IN_OTHER_TASK		DISABLE//ENABLE//
 
 /*******************************************************************************************
  * LVGL UI Style config

@@ -513,7 +513,9 @@ void UI_DetPwrKey(void)
 void UI_DetNormalKey(void)
 {
 	static UINT32 keyDetectCount = 0;
+	#if (PLAY_SOUND_IN_OTHER_TASK==ENABLE)
 	static UINT16 edogSoundCnt = 0;
+	#endif
 	if (!UI_IsForceLock()) {
 		GxKey_DetNormalKey();
 
@@ -526,14 +528,12 @@ void UI_DetNormalKey(void)
 			GxKey_SetFirstKeyInvalid(KEY_PRESS, 0);
 		}
 	}
-
-	/*if(System_GetState(SYS_STATE_CURRMODE) == PRIMARY_MODE_MOVIE)*/
+	#if (PLAY_SOUND_IN_OTHER_TASK==ENABLE)
+	if((++edogSoundCnt)%5==0)
 	{
-		if((++edogSoundCnt)%5==0)
-		{
-			DogSoundCycPlay();
-		}
+		DogSoundCycPlay();
 	}
+	#endif
 }
 
 void UI_DetStatusKey(void)

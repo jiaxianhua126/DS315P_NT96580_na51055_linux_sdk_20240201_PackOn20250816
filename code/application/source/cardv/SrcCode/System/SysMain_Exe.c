@@ -76,8 +76,7 @@ extern BOOL g_NotRecordWrn;
 static UINT32 Sys_DateTime = DEFAULT_LAST_DATETIME;
 extern BOOL g_bUsbRemovePowerOff;
 extern BOOL g_bIsNeedReboot;
-static UINT32 UI_BefMovieSize = 0;
-static BOOL UI_MovieSizeChange = FALSE;
+static UINT32 g_uiPreMovieSize = 0;
 BOOL ComingParkMode = FALSE;
 BOOL ExitParkMode = FALSE;
 
@@ -1687,10 +1686,9 @@ INT32 System_OnShutdown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
         FlowMovie_USBRemovePowerOff();
 		bWndWiFiMovieOpenFirst = FALSE;
 		
-		if (UI_MovieSizeChange) {
-			UI_SetData(FL_MOVIE_SIZE,UI_BefMovieSize);
-			UI_SetData(FL_MOVIE_SIZE_MENU, UI_BefMovieSize);
-			UI_MovieSizeChange = FALSE;
+		if (isACCTrigParkMode) {
+			UI_SetData(FL_MOVIE_SIZE,g_uiPreMovieSize);
+			UI_SetData(FL_MOVIE_SIZE_MENU, g_uiPreMovieSize);
 		}
 
     	//#NT#2019/10/30#Philex Lin - begin
@@ -1902,12 +1900,16 @@ INT32 System_OnACCShutdown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			Voice_Parrecordstart = TRUE;
 			isACCTrigParkMode = TRUE;
 			g_NotRecordWrn = FALSE;
-			UI_BefMovieSize = UI_GetData(FL_MOVIE_SIZE);
+			g_uiPreMovieSize = UI_GetData(FL_MOVIE_SIZE);
 			
-			if (UI_BefMovieSize == MOVIE_SIZE_FRONT_2560x1440P60) {
-				UI_SetData(FL_MOVIE_SIZE, MOVIE_SIZE_FRONT_2560x1440P30);
-				UI_SetData(FL_MOVIE_SIZE_MENU, MOVIE_SIZE_FRONT_2560x1440P30);
-				UI_MovieSizeChange = TRUE;
+			if (g_uiPreMovieSize >= MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30
+				&&g_uiPreMovieSize < MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30) {//dual
+				UI_SetData(FL_MOVIE_SIZE, MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30);
+				UI_SetData(FL_MOVIE_SIZE_MENU, MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30);
+			}else if(g_uiPreMovieSize >= MOVIE_SIZE_FRONT_3840x2160P30
+					&&g_uiPreMovieSize < MOVIE_SIZE_FRONT_1920x1080P30){//single
+				UI_SetData(FL_MOVIE_SIZE, MOVIE_SIZE_FRONT_1920x1080P30);
+				UI_SetData(FL_MOVIE_SIZE_MENU, MOVIE_SIZE_FRONT_1920x1080P30);
 			}
 
             if ((UI_GetData(FL_PARKING_MODE) != PARKING_MODE_MOTION_DET) && (UI_GetData(FL_PARKING_MODE) != PARKING_MODE_LOW_BITRATE))
@@ -1956,18 +1958,15 @@ INT32 System_OnACCPowerOn(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {
     DBG_DUMP("^MSystem_OnACCPowerOn\r\n");
 
-    isACCTrigParkMode = FALSE;
     //isACCTrigPowerOn = TRUE;
     g_bUsbRemovePowerOff = FALSE;
-    if ((SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC) != PARKING_MODE_TIMELAPSEREC_OFF) || isACCTrigLowBitrate || isACCTrigPreRecordDet)
+    if (isACCTrigParkMode)//if ((SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC) != PARKING_MODE_TIMELAPSEREC_OFF) || isACCTrigLowBitrate || isACCTrigPreRecordDet)
     {
+    	isACCTrigParkMode = FALSE;
 		//stop recording
 		FlowMovie_USBRemovePowerOff();
-		if (UI_MovieSizeChange)	{
-			UI_SetData(FL_MOVIE_SIZE,UI_BefMovieSize);
-			UI_SetData(FL_MOVIE_SIZE_MENU, UI_BefMovieSize);
-			UI_MovieSizeChange = FALSE;
-		}
+		UI_SetData(FL_MOVIE_SIZE,g_uiPreMovieSize);
+		UI_SetData(FL_MOVIE_SIZE_MENU, g_uiPreMovieSize);
 
 		//acc exit open gps 
 		if (SysGetFlag(FL_PARKING_OFF_GPS) == PGPS_TRUE) {	
