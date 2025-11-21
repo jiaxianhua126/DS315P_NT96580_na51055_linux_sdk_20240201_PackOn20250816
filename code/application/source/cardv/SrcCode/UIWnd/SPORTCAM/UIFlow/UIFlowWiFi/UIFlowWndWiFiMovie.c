@@ -1679,7 +1679,7 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 		
 		#if (_ADAS_FUNC_ == ENABLE)
 		//DBG_ERR("======g_uiAdasAlertSecCnt=%d==========\r\n",g_uiAdasAlertSecCnt);
-		if (UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
+		if ((UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF)&&UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
 			g_uiAdasAlertSecCnt--;
 			if (g_uiAdasAlertSecCnt <=1) {
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
@@ -1691,7 +1691,7 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 			} else {
 				return NVTEVT_CONSUME;
 			}
-		}else  if(UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)){
+		}else  if((UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON)&&UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)){
 			g_uiAdasAlertSecCnt--;
 			if (g_uiAdasAlertSecCnt <=1) {
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl,FALSE);

@@ -540,10 +540,7 @@ static UINT32 g_year = DEF_YEAR;
 static UINT32 g_Count = 0;
 extern INT8 uitpmsstatus;
 extern BOOL GPS_UpdateDateTime;
-#if defined(_GPS_EDOG_)
-extern BOOL EdogFstCnetd;
-BOOL g_GPS_PlaySound_onetime;
-#elif defined(_GPS_EDOG_UNIQUE_SKY_)
+#if (_GPS_EDOG_UNIQUE_SKY_==ENABLE)
 extern BOOL EdogFstCnetd;
 BOOL g_GPS_PlaySound_onetime;
 #endif
@@ -609,7 +606,7 @@ void FlowMovie_IconDrawGPSSignal(void)
                             UISound_Play(DEMOSOUND_SOUND_GPS_OK1_TONE);
                             g_GPS_PlaySound_onetime = TRUE;
                         }
-						#elif defined(_GPS_EDOG_UNIQUE_SKY_)
+						#elif (_GPS_EDOG_UNIQUE_SKY_ == ENABLE)
 						if ((g_Count == 1) && !g_GPS_PlaySound_onetime)
                         {
                         	#if PLAY_SOUND_IN_OTHER_TASK

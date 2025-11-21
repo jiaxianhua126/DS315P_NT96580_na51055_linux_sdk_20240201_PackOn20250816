@@ -2381,7 +2381,7 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 
 	case NVTEVT_05SEC_TIMER:
 		if (ADAS_Auth_Test) {
-			UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
+			//UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
 		}
 //check ASR Whether it works properly or not , Abnormal restart
 #if 0
@@ -2617,19 +2617,19 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 		}
 		#if (_ADAS_FUNC_ == ENABLE)
 		//DBG_ERR("======g_uiAdasAlertSecCnt=%d==========\r\n",g_uiAdasAlertSecCnt);
-		if (UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
+		if ((UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF)&&UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl)) {
 			g_uiAdasAlertSecCnt--;
 			if (g_uiAdasAlertSecCnt <=1) {
 				UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
 				UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);
 				
-				DBG_ERR("======4444===========\r\n");
+				DBG_ERR("======UIFlowWndMovie_ADAS_Alert_DisplayCtrl===========\r\n");
 				g_uiAdasAlertSecCnt = 0;
 			} else {
 				return NVTEVT_CONSUME;
 			}
-		}else  if(UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)){
+		}else  if((UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON)&&UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl)){
 			g_uiAdasAlertSecCnt--;
 			if (g_uiAdasAlertSecCnt <=1) {
 				UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
