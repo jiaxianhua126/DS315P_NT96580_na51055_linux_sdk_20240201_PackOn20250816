@@ -136,6 +136,7 @@ static UINT32 g_ParkingModeTLRecTime = 0;
 static UINT32 ParkingM_MD_EMR_Cnt = 0;
 BOOL g_AutoRec = FALSE;
 static UINT32 g_uiRecStopTimerCnt = 0;
+extern BOOL ADAS_Auth_Test;
 
 #if (GPS_FUNCTION == ENABLE)
 extern FLOAT g_CurSpeed;
@@ -2379,6 +2380,9 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
    	    break;
 
 	case NVTEVT_05SEC_TIMER:
+		if (ADAS_Auth_Test) {
+			UISound_Play(DEMOSOUND_SOUND_KEY_TONE);
+		}
 //check ASR Whether it works properly or not , Abnormal restart
 #if 0
 		if (ASR_Abnormal) {

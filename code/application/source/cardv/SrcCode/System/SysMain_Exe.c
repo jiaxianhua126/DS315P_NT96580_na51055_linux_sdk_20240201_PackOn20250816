@@ -401,6 +401,43 @@ BOOL SysInit_getintopcc_getfile(void)
 }
 #endif
 
+//-----------------------------------------------------------------------------
+// test ADAS
+//-----------------------------------------------------------------------------
+#if 1//(TEST_ADAS == ENABLE)
+#define TEST_ADAS_FILE_NAME  "A:\\test.adas"
+
+static BOOL getintotestadas = FALSE;
+void SysInit_getintoadas_mode_setstd(BOOL std)
+{
+    getintotestadas = std;
+}
+BOOL SysInit_getintoadas_mode_getstd(void)
+{
+    return getintotestadas;
+}
+
+BOOL SysInit_getintoadas_getfile(void)
+{
+    FST_FILE fp = NULL;
+
+    if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
+		DBG_ERR("NO CARD!\r\n");
+        return 0;
+    }
+
+    fp = FileSys_OpenFile(TEST_ADAS_FILE_NAME, FST_OPEN_READ|FST_OPEN_EXISTING);
+    if (fp) {
+        DBG_WRN("getintoADAS_getfile = TRUE\r\n");
+        SysInit_getintoadas_mode_setstd(TRUE);
+        FileSys_CloseFile(fp);
+    } else {
+        SysInit_getintoadas_mode_setstd(FALSE);
+    }
+    return 0;
+}
+#endif
+
 
 void System_LastDateTimeSet(void)
 {
@@ -1549,6 +1586,10 @@ INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		SysInit_getintopcc_getfile();
 #endif
 	
+		#if 1//(TEST_ADAS == ENABLE)
+        SysInit_getintoadas_getfile();
+		#endif
+
 		SysInit_CarNoBackup_getfile();
 		GetCarNumFile();
 	
@@ -1610,6 +1651,7 @@ INT32 System_OnShutdown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		DBG_DUMP("^MOn Shutdown ignore\r\n");	
 		return NVTEVT_CONSUME;
 	}
+
 	DBG_DUMP("^MOn Shutdown begin\r\n");
 	if (paramNum == 1 && paramArray[0] == 0) { //power-off begin
 		g_IsShutdownBegin=TRUE;
@@ -1725,8 +1767,8 @@ INT32 System_OnShutdown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
     			GxDisplay_Flush(LAYER_OSD1);
 
     			Display_ShowSplash(SPLASH_POWEROFF);
-    			SwTimer_DelayMs(500);
     			GPIOMap_TurnOffLCDBacklight();
+    			SwTimer_DelayMs(500);
                 UISound_EnableKey(TRUE);
                 UISound_Play(DEMOSOUND_SOUND_POWERON_TONE);//DEMOSOUND_SOUND_POWEROFF_TONE
                 GxSound_WaitStop();
