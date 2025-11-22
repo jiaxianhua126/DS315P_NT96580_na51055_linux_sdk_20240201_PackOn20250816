@@ -2592,7 +2592,6 @@ EDOGINFO_UNIQUESKY_A EdogInfo_SentenceA = {0};
 
 //ALARMINFO_EDOG EdogInfo_Alarm;
 BOOL g_bEdogShowUI = FALSE; //Add for Send Show UI Event
-extern BOOL g_bManualCloseEdogWnd;
 
 UINT32 GetGPSAvgRemainSec(void)
 {

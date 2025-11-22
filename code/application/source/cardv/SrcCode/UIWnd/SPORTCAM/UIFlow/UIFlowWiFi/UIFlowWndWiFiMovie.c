@@ -2715,6 +2715,7 @@ CTRL_LIST_ITEM(UIFlowWndWiFiMovie_MENU_PowerKey)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_FolderCheck_StatusTxt)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Static_SNG)
 CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Panel_PlayMode)
+CTRL_LIST_ITEM(UIFlowWndWiFiMovie_Status_HDR)
 CTRL_LIST_END
 
 //----------------------UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl Event---------------------------
@@ -2910,6 +2911,10 @@ EVENT_END
 
 //----------------------UIFlowWiFiMoive_static_AppConnecttingCtrl Event---------------------------
 EVENT_BEGIN(UIFlowWiFiMoive_static_AppConnectting)
+EVENT_END
+
+//----------------------UIFlowWndWiFiMovie_Status_HDRCtrl Event---------------------------
+EVENT_BEGIN(UIFlowWndWiFiMovie_Status_HDR)
 EVENT_END
 
 //---------------------UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl Control List---------------------------

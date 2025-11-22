@@ -1470,7 +1470,7 @@ void FlowMovie_UpdateIcons(BOOL bShow)
 		FlowMovie_IconHideRec(&UIFlowWndMovie_PanelCtrl);
 		FlowMovie_IconHideStorage(&UIFlowWndMovie_Status_StorageCtrl);
 		FlowMovie_IconHideCyclicRec(&UIFlowWndMovie_Status_CyclicRecCtrl);
-		//FlowMovie_IconHideHDR(&UIFlowWndMovie_Status_HDRCtrl);
+		FlowMovie_IconHideHDR(&UIFlowWndMovie_Status_HDRCtrl);
 		FlowMovie_IconHideMotionDet();
 		FlowMovie_IconHideDZoom(&UIFlowWndMovie_Zoom_StaticCtrl);
 		FlowMovie_IconHideBattery(&UIFlowWndMovie_Status_batteryCtrl);
@@ -1494,7 +1494,7 @@ void FlowMovie_UpdateIcons(BOOL bShow)
 		FlowMovie_IconHideRec(&UIFlowWndMovie_PanelCtrl);
 		FlowMovie_IconHideStorage(&UIFlowWndMovie_Status_StorageCtrl);
 		FlowMovie_IconHideCyclicRec(&UIFlowWndMovie_Status_CyclicRecCtrl);
-		//FlowMovie_IconDrawHDR(&UIFlowWndMovie_Status_HDRCtrl);
+		FlowMovie_IconDrawHDR(&UIFlowWndMovie_Status_HDRCtrl);
 		FlowMovie_IconHideDZoom(&UIFlowWndMovie_Zoom_StaticCtrl);
 		FlowMovie_IconHideBattery(&UIFlowWndMovie_Status_batteryCtrl);
 		//FlowMovie_IconDrawEV(&UIFlowWndMovie_StatusICN_EVCtrl);
