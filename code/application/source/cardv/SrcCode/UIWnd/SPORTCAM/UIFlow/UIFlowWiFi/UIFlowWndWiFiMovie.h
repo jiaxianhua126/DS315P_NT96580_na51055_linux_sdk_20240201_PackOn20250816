@@ -124,6 +124,15 @@ extern VControl UIFlowWndWiFiMovie_Panel_PlayModeCtrl;//Panel type
 
 extern VControl UIFlowWiFiMoive_static_AppConnecttingCtrl;//Static type 
 
+extern VControl UIFlowWndWiFiMovie_Status_HDRCtrl;//Status type 
+
+typedef enum
+{
+UIFlowWndWiFiMovie_Status_HDR_ICONID_NULL,
+UIFlowWndWiFiMovie_Status_HDR_ICON_HDR,
+UIFlowWndWiFiMovie_Status_HDR_MAX
+}UIFlowWndWiFiMovie_Status_HDR_Setting;
+
 extern VControl UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl;//Panel type 
 
 extern VControl UIFlowWndWiFiMovie_StatusICN_LDWS_AlertCtrl;//Status type 

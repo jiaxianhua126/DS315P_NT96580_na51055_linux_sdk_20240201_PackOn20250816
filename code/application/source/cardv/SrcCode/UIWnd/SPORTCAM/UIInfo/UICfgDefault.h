@@ -172,7 +172,7 @@
 #if defined(COUNTRY_JP)
 #define DEFAULT_DATE_FORMAT             DATE_FORMAT_DMY
 #else
-#define DEFAULT_DATE_FORMAT             DATE_FORMAT_YMD
+#define DEFAULT_DATE_FORMAT             DATE_FORMAT_MDY
 #endif
 #define DEFAULT_OPENING_LOGO            OPENING_LOGO_ON
 #define DEFAULT_LCD_DISPLAY             DISPOUT_NORMAL
@@ -180,7 +180,7 @@
 #define DEFAULT_MACRO                   MACRO_OFF
 #define DEFAULT_USB_MODE                USB_MODE_MSDC
 #if (GSENSOR_FUNCTION == ENABLE)
-#define DEFAULT_GSENSOR                 GSENSOR_OFF
+#define DEFAULT_GSENSOR                 GSENSOR_MED
 #else
 #define DEFAULT_GSENSOR                 GSENSOR_OFF
 #endif

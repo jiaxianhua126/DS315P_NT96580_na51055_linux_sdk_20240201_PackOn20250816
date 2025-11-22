@@ -452,16 +452,14 @@ void FlowWiFiMovie_IconDrawCyclicRec(BOOL bShow)
 
 void FlowWiFiMovie_IconDrawHDR(BOOL bShow)
 {
-#if 0
     if (bShow == FALSE)
     {
         UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_HDRCtrl, FALSE);
         return;
     }
 
-	UxState_SetData(&UIFlowWndWiFiMovie_Status_HDRCtrl, STATE_CURITEM, SysGetFlag(FL_MOVIE_WDR));//FL_MOVIE_HDR
+	UxState_SetData(&UIFlowWndWiFiMovie_Status_HDRCtrl, STATE_CURITEM, SysGetFlag(FL_MOVIE_HDR));
 	UxCtrl_SetShow(&UIFlowWndWiFiMovie_Status_HDRCtrl, TRUE);
-#endif
 }
 
 void FlowWiFiMovie_IconDrawMotionDet(BOOL bShow)
@@ -1699,7 +1697,7 @@ void FlowWiFiMovie_UpdateIcons(BOOL bShow)
         FlowWiFiMovie_IconDrawRec(FALSE);
         FlowWiFiMovie_IconDrawStorage(FALSE);
         FlowWiFiMovie_IconDrawCyclicRec(FALSE);
-        //FlowWiFiMovie_IconDrawHDR(FALSE);
+        FlowWiFiMovie_IconDrawHDR(FALSE);
         FlowWiFiMovie_IconDrawMotionDet(FALSE);
         FlowWiFiMovie_IconDrawDZoom(FALSE);
         FlowWiFiMovie_IconDrawBattery(FALSE);
@@ -1725,7 +1723,7 @@ void FlowWiFiMovie_UpdateIcons(BOOL bShow)
         FlowWiFiMovie_IconDrawRec(FALSE);
         FlowWiFiMovie_IconDrawStorage(FALSE);
         FlowWiFiMovie_IconDrawCyclicRec(FALSE);
-        //FlowWiFiMovie_IconDrawHDR(FALSE);
+        FlowWiFiMovie_IconDrawHDR(TRUE);
         FlowWiFiMovie_IconDrawDZoom(FALSE);
         FlowWiFiMovie_IconDrawBattery(FALSE);
         //FlowWiFiMovie_IconDrawEV(FALSE);
