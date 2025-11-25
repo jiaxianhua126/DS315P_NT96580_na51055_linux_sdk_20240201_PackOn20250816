@@ -341,9 +341,9 @@ INT32 MoviePlayExe_OpenPlay(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 		UIAppMoviePlayExe_MoviePlay_ConfigErr();
 		return NVTEVT_CONSUME;
     }
-	ImageApp_MoviePlay_SetVolume(GetMovieAudioVolumeValue(SysGetFlag(FL_BEEP)+2));
 
 	PBView_videoout_task_create();
+
 #if PLAY_DEWARP == ENABLE
 	UIAppPlay_Dewarp_Init((HD_DIM){PB_MAX_VIDEO_W, PB_MAX_VIDEO_H}, NULL);
 #endif

@@ -1172,9 +1172,8 @@ INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 				Ux_SendEvent(0, NVTEVT_EXE_OPENPLAY, 1, (UINT32)gphUIFlowMovPlay_Filehdl);
 				Ux_SendEvent(0, NVTEVT_EXE_STARTPLAY, 0);
 
-
-				//set movie volumn again to avoid volumn changed by beep sound
-				Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, GetMovieAudioVolumeValue(SysGetFlag(FL_BEEP)+2), 1);
+				//set movie volumn
+				Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, UI_GetData(FL_MovieAudioPlayIndex), 1);
 
 				g_PlbData.State = PLB_ST_PLAY_MOV;
 				FlowPB_IconDrawMovPlay(TRUE);
@@ -1220,7 +1219,7 @@ INT32 UIFlowWndPlay_OnKeyEnter(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
             //#NT#2012/10/23#Philex Lin - end
             // Start to Play
             //set movie volumn again to avoid volumn changed by beep sound
-            //Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, GetMovieAudioVolumeValue(SysGetFlag(FL_BEEP)+2), 1);
+			//Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, UI_GetData(FL_MovieAudioPlayIndex), 1);
 			Ux_SendEvent(0, NVTEVT_EXE_RESUMEPLAY, 0);
 			//g_PlbData.State = PLB_ST_PLAY_MOV;
 
