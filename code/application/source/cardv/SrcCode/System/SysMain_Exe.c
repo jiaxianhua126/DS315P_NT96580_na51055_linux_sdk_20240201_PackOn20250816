@@ -1375,6 +1375,10 @@ void SystemBoot_Adas_Check(void)
 	}*/
 }
 
+void SystemBoot_Delete_ASR(void)
+{
+	system("rm -rf /mnt/pstore/ASR"); 
+}
 
 INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 {

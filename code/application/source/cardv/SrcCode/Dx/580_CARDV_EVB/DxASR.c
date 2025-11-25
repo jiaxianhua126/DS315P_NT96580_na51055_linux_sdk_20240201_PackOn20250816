@@ -839,6 +839,7 @@ void ASR_SetMode(UINT32 mode_arg)
 {
     ASR_SelectMode = mode_arg;
 }
+extern void SystemBoot_Delete_ASR(void);
 
 void ASR_Aiengine_exe(const char *cfg)
 {
@@ -850,6 +851,10 @@ void ASR_Aiengine_exe(const char *cfg)
         ret = aiengine_do_auth(cfg, &err_info, getSerialNumber, NULL);
         if (0 != ret) {
             printf("do auth error: %s\n", err_info);
+			SystemBoot_Delete_ASR();			
+			memset(pASN.SerialNumber,0,sizeof(pASN.SerialNumber));			
+			pASN.Asr_SerialNumber_Flag = 0;			
+			aiengine_do_auth(cfg, &err_info, getSerialNumber, NULL);
         } else {
             printf("do auth success: %s\n", err_info);
         }
