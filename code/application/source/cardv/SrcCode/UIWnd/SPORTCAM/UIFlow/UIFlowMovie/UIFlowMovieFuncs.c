@@ -121,7 +121,7 @@ void FlowMovie_StartRec(void)
 void FlowMovie_StopRec(void)
 {
 	DBG_DUMP("call FlowMovie_StopRec\r\n");
-#if (_ADAS_FUNC_ == ENABLE)
+#if 0//(_ADAS_FUNC_ == ENABLE)//
 	// Fixed icon disappear issue when stop record during ADAS warning window
 	UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);

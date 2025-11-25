@@ -459,33 +459,14 @@ INT32 UIFlowWndMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 {
 	//DBG_DUMP("call UIFlowWndMovie_OnOpen\r\n");
 	static BOOL UIFlowWndMovie_uiFrist = FALSE;
-	static BOOL firstPwrOn = TRUE;
 	g_AutoRec = FALSE;
 	g_uiRecStopTimerCnt=0;
-	if (firstPwrOn || UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF) {
-		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);		
-		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
-		UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
-		//firstPwrOn = FALSE;
-	}
     //GxDisplay_Set(LAYER_OSD1, LAYER_STATE_ENABLE, 1);
     //GxDisplay_Flush(LAYER_OSD1);
 #if (ASR_FUNCTION == ENABLE)
 	Dx_SetASR_Flag(0);
 	ASR_GetPCMData_EN = FALSE;
 #endif
-	//UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
-	//UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);
-	DBG_ERR("======3333===========\r\n");
-
-	//UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
-	//UxCtrl_SetShow(&UIFlowWndMovie_Status_WIFICtrl, FALSE);
-    ////////UxCtrl_SetShow(&UIFlowWndMovie_GPS_INFOCtrl, FALSE);
-	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_DrawingLineCtrl,FALSE);
-	UxCtrl_SetShow(&UIFlowWndMovie_ALG_DrawCtrl,FALSE);
-	FlowMovie_initIcon();
-	FlowMovie_IconHideSNG();
-
 	Ux_FlushEventByRange(NVTEVT_KEY_EVT_START, NVTEVT_KEY_EVT_END);
 	g_uiMaskKeyPress = MOVIE_KEY_PRESS_MASK;
 	g_uiMaskKeyRelease = MOVIE_KEY_RELEASE_MASK;
@@ -529,17 +510,25 @@ INT32 UIFlowWndMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
     UIFlowWndMovie_uiFrist = TRUE;
 	FlowMovie_SetSOSStatusNow(FALSE);
 	UIFlowWndMovie_Initparam();
-	FlowMovie_UpdateIcons(TRUE);
-
-	Set_PreviewStable_Record(TRUE);
 	#if 1//(GPS_PANEL_FUNC==ENABLE)
-	if (!firstPwrOn && UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON) {
+	if(UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF){
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, FALSE);		
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
+		UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
+	}else{
 		UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, FALSE);
 		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
 		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_PanelCtrl, TRUE);
 	}
 	#endif
-		firstPwrOn = FALSE;
+	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_DrawingLineCtrl,FALSE);
+	UxCtrl_SetShow(&UIFlowWndMovie_ALG_DrawCtrl,FALSE);
+	FlowMovie_initIcon();
+	FlowMovie_IconHideSNG();
+	FlowMovie_UpdateIcons(TRUE);
+
+	Set_PreviewStable_Record(TRUE);
+	
 	// Enable Motion Detect function in starting up movie mode
 	if (gUIMotionDetTimerID == NULL_TIMER) {
 		gUIMotionDetTimerID = GxTimer_StartTimer(TIMER_HALF_SEC, NVTEVT_05SEC_TIMER, CONTINUE);
