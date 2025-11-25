@@ -300,11 +300,21 @@ INT32 UIFlowWndWiFiMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
     //GxLED_SetCtrl(KEYSCAN_LED_FCS, TURNON_LED, TRUE);
     UIFlowWndWiFiMovie_Initparam();
     #endif
+	
+	#if 1//GPS_PANEL_FUNC
 	if (UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF) {
 		UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
     	UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE); 	
 		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, FALSE); 
+	}else{
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);		
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);	
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, TRUE);
+		UI_SetData(FL_DUAL_CAM, DUALCAM_BEHIND);
+		UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM));
+		g_bSpeedPanelInit = TRUE;
 	}
+	#endif
     
 	FlowWiFiMovie_initIcon();
 
@@ -339,18 +349,7 @@ INT32 UIFlowWndWiFiMovie_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramA
             bWiFiModeChanged = TRUE;
         }
     }
-
-	#if 1//GPS_PANEL_FUNC
-	if (UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON) {
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, FALSE);		
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);	
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, TRUE);
-		UI_SetData(FL_DUAL_CAM, DUALCAM_BEHIND);
-		UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM));
-		g_bSpeedPanelInit = TRUE;
-	}
-	#endif
-
+	
     bWiFiRec_AutoStart = FALSE;
     bWiFiRec_AutoStop = FALSE;
 	Set_IsRearOK(0);

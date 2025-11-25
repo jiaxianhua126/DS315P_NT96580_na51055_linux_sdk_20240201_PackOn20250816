@@ -1057,28 +1057,28 @@ void FlowMovie_IconDrawADASUpdateCar(void)
 		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_Red_00Ctrl, FALSE);
 		
 		if (adas_eventData_app00.result.type != ALGO_TYPE_ADAS) {
-			DBG_DUMP("Not ADAS data, type=%d\r\n", adas_eventData_app00.result.type);
+			DBG_IND("Not ADAS data, type=%d\r\n", adas_eventData_app00.result.type);
 			return;
 		}
 		
 		AlgoAdasResult* adas_result = &adas_eventData_app00.result.algoResult.adasResult;
 		
 		if (adas_result == NULL) {
-			DBG_DUMP("ADAS result is NULL\r\n");
+			DBG_IND("ADAS result is NULL\r\n");
 			return;
 		}
 		
 		AlgoAdasFcwResult* fcw_result = &adas_result->fcw;
 		
 		if (fcw_result->objsize < 0 || fcw_result->objsize > ALGO_ADAS_OBJ_MAX_NUM) {
-			DBG_DUMP("Invalid objsize: %d\r\n", fcw_result->objsize);
+			DBG_IND("Invalid objsize: %d\r\n", fcw_result->objsize);
 			return;
 		}
 		
 		INT32 cipv_index = fcw_result->cipv;
 		BOOL has_cipv = (cipv_index >= 0 && cipv_index < fcw_result->objsize);
 		
-		DBG_DUMP("FCW: objsize=%d, cipv=%d\r\n", fcw_result->objsize, cipv_index);
+		DBG_IND("FCW: objsize=%d, cipv=%d\r\n", fcw_result->objsize, cipv_index);
 		
 		// 前路车辆计数和红色标记
 		INT32 front_count = 0;
@@ -1092,7 +1092,7 @@ void FlowMovie_IconDrawADASUpdateCar(void)
 			FLOAT distance_y = fabs(obj->relative_distance.y);
 
 			if (distance_x > 30.0f || distance_y > 30.0f) {
-				DBG_DUMP("Car %d out of range: (%.1f,%.1f)m\r\n", 
+				DBG_IND("Car %d out of range: (%.1f,%.1f)m\r\n", 
 						 i, obj->relative_distance.x, obj->relative_distance.y);
 				continue;
 			}
@@ -1142,7 +1142,7 @@ void FlowMovie_IconDrawADASUpdateCar(void)
 				    // 显示距离（英尺）
 				    FlowMovie_IconDrawADASDistance(distance_ft);
 				    
-				    DBG_DUMP("Red Car Front Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
+				    DBG_IND("Red Car Front Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
 				}
 			} 
 			// 如果是蓝色车辆且还有蓝色名额（最多4个）
@@ -1169,7 +1169,7 @@ void FlowMovie_IconDrawADASUpdateCar(void)
 					UxStatic_SetData(car_ctrl, STATIC_VALUE, ICON_ADAS_CAR_BLUE);
 				}
 				
-				DBG_DUMP("Front Car %d: %s, real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
+				DBG_IND("Front Car %d: %s, real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
 						 i, is_red_car ? "RED" : "BLUE", 
 						 obj->relative_distance.x, obj->relative_distance.y, screen_x, screen_y);
 				
@@ -1198,7 +1198,7 @@ void FlowMovie_IconDrawADASUpdateCar(void)
 	                INT32 cipv_index = car_result->cipv;
 	                BOOL has_cipv = (cipv_index >= 0 && cipv_index < car_result->objsize);
 	                
-	                DBG_DUMP("RCW: objsize=%d, cipv=%d\r\n", car_result->objsize, cipv_index);
+	                DBG_IND("RCW: objsize=%d, cipv=%d\r\n", car_result->objsize, cipv_index);
 	                
 	                // 后路车辆计数和红色标记
 	                INT32 rear_count = 0;
@@ -1212,7 +1212,7 @@ void FlowMovie_IconDrawADASUpdateCar(void)
 	                    FLOAT distance_y = fabs(obj->relative_distance.y);
 	                    
 	                    if (distance_x > 30.0f || distance_y > 30.0f) {
-	                        DBG_DUMP("Rear Car %d out of range: (%.1f,%.1f)m\r\n", 
+	                        DBG_IND("Rear Car %d out of range: (%.1f,%.1f)m\r\n", 
 	                                 i, obj->relative_distance.x, obj->relative_distance.y);
 	                        continue;
 	                    }
@@ -1265,7 +1265,7 @@ void FlowMovie_IconDrawADASUpdateCar(void)
 							    // 显示距离（英尺）
 							    FlowMovie_IconDrawADASDistance(distance_ft);
 							    
-							    DBG_DUMP("Rear Red Car Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
+							    DBG_IND("Rear Red Car Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
 							}
 	                    } 
 	                    // 如果是蓝色车辆且还有蓝色名额（最多3个）
@@ -1291,7 +1291,7 @@ void FlowMovie_IconDrawADASUpdateCar(void)
 	                            UxStatic_SetData(car_ctrl, STATIC_VALUE, ICON_ADAS_CAR_BLUE);
 	                        }
 	                        
-	                        DBG_DUMP("Rear Car %d: %s, real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
+	                        DBG_IND("Rear Car %d: %s, real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
 	                                 i, is_red_car ? "RED" : "BLUE", 
 	                                 obj->relative_distance.x, obj->relative_distance.y, screen_x, screen_y);
 	                        
