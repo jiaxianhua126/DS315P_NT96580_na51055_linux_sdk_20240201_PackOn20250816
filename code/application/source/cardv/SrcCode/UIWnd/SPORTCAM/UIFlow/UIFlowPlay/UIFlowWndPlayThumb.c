@@ -505,7 +505,7 @@ INT32 UIFlowWndPlayThumb_OnKeySelect(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			Ux_SendEvent(0, NVTEVT_EXE_STARTPLAY, 0);
 
 			//set movie volumn
-			Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, GetMovieAudioVolumeValue(SysGetFlag(FL_BEEP)+2), 1);
+			Ux_SendEvent(&CustomMoviePlayObjCtrl, NVTEVT_EXE_MOVIEAUDPLAYVOLUME, 2, UI_GetData(FL_MovieAudioPlayIndex), 1);
 			FlowPB_UpdateIcons(0);
 			g_PlbData.State = PLB_ST_PLAY_MOV;
 			//FlowPB_IconDrawLeftBtn(TRUE);
