@@ -760,7 +760,7 @@ void UISound_EnableKey(BOOL bEn)
 }
 UINT32 UIVoice_GetVolume(void)
 {
-    UINT32 vol_value = 100;
+    UINT32 vol_value = 95;
 	switch(UI_GetData(FL_VOLUME))
 	{
 	case VOLUME20:
@@ -773,16 +773,16 @@ UINT32 UIVoice_GetVolume(void)
 		vol_value = 60;
 		break;
 	case VOLUME80:
-		vol_value = 100;
+		vol_value = 80;
 		break;
 	case VOLUME100:
-		vol_value = 120;
+		vol_value = 95;
 		break;
 	case VOLUME_MUTE:
 		vol_value = 0;
 		break;
 	default:
-		vol_value = 100;
+		vol_value = 95;
 		break;
 	}
 	return vol_value;

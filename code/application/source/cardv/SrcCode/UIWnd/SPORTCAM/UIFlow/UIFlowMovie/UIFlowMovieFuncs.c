@@ -88,7 +88,7 @@ void FlowMovie_StartRec(void)
 			DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_RECORDINGSTART_TONE));							
 			UIDogSound_Enable(TRUE);
 			#else
-			UIVoice_Play(DEMOSOUND_SOUND_RECORDINGSTART_TONE);
+			//UIVoice_Play(DEMOSOUND_SOUND_RECORDINGSTART_TONE);
 			#endif
 			Voice_Parrecordstart = FALSE;
 		}
