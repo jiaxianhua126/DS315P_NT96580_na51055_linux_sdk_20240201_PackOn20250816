@@ -642,7 +642,7 @@ void FlowMovie_SetCrash(void)
 			}
 		}
 		#else
-		ImageApp_MovieMulti_TrigEMR(_CFG_REC_ID_1);
+		ImageApp_MovieMulti_SetCrash(_CFG_REC_ID_1, TRUE);
 		#endif
 	}
 	else
