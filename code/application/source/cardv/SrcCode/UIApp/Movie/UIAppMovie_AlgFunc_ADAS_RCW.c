@@ -135,7 +135,7 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 
 	//add by keytech
 	hd_ret = ALGO_MANAGER_GetHandleByName(&adas_handle,ADAS_ALGO_NAME);
-	MovieAlgFunc_ADASSetSentivity(SEN_HIGH);
+	MovieAlgFunc_ADASSetSentivity(SEN_MIDDLE);
 	MovieAlgFunc_SetLdwSpeed(60);
 	
 	attr_debug_lvl.logLevel = ALGO_LEVEL_WARN;
@@ -317,7 +317,7 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 
 	//add by keytech
 	hd_ret = ALGO_MANAGER_GetHandleByName(&rcw_handle,RCW_ALGO_NAME);
-	MovieAlgFunc_RCWSetSentivity(SEN_HIGH);
+	MovieAlgFunc_RCWSetSentivity(SEN_MIDDLE);
 
 	attr_debug_lvl.logLevel = ALGO_LEVEL_WARN;
 	hd_ret = ALGO_MANAGER_SetAttr(ALGO_ATTR_LOGLEVEL,&attr_debug_lvl);

@@ -2722,6 +2722,10 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 	//ADAS_APPS_RESULT_INFO *pAdasRlt = MovieExe_GetAdasRltOSD();
 
 	Ux_FlushEventByRange(NVTEVT_CB_ADAS_SHOWALARM, NVTEVT_CB_ADAS_SHOWALARM);
+	if(g_uiAdasAlertSecCnt > 0)
+	{
+		return NVTEVT_CONSUME;
+	}
 	AlarmType = paramArray[0];
 	if(UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON)
 	{
