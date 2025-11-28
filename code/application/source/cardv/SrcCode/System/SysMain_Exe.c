@@ -1610,7 +1610,7 @@ INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		#endif
 		SysInit_EthTxFW_Update_getfile();
 		SysInit_EthBootFW_Update_getfile();
-		DBG_DUMP("------BOOT------111111111111111111111\r\n");
+		DBG_DUMP("========BOOT========111111111111111111111\r\n");
 		SystemBoot_Adas_Check();
 
 		//bind user mem to ImageStream
