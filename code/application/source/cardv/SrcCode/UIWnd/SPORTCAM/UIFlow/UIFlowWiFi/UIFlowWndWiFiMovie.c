@@ -576,9 +576,10 @@ INT32 UIFlowWndWiFiMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 							SysSetFlag(FL_ADAS_PANEL, ADAS_PANEL_OFF);
 						}
 						//GPIOMap_TurnOffLCDBacklight();
-						//SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);
+						//SysSetFlag(FL_DUAL_CAM, DUALCAM_BOTH);						
+						FlowWiFiMovie_IconHideADASDistance();
+						FlowWiFiMovie_IconHideADASDisplayType();
 					}
-
 					UI_SetData(FL_DUAL_CAM_MENU, UI_GetData(FL_DUAL_CAM));
 					Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_DUALCAM, 1, SysGetFlag(FL_DUAL_CAM));
 				}
@@ -613,7 +614,8 @@ INT32 UIFlowWndWiFiMovie_OnKeyLeft(VControl *pCtrl, UINT32 paramNum, UINT32 *par
 							UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, FALSE);
 							SysSetFlag(FL_ADAS_PANEL, ADAS_PANEL_OFF);
 						}
-						//GPIOMap_TurnOffLCDBacklight();
+						FlowWiFiMovie_IconHideADASDistance();
+						FlowWiFiMovie_IconHideADASDisplayType();
 					}
 				}
 			}
@@ -1679,8 +1681,8 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 		#if (_ADAS_FUNC_ == ENABLE)
 		//DBG_ERR("======g_uiAdasAlertSecCnt=%d==========\r\n",g_uiAdasAlertSecCnt);
 		if ((UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_OFF)&&UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)) {
-			g_uiAdasAlertSecCnt--;
-			if (g_uiAdasAlertSecCnt <=1) {
+			g_uiAdasAlertSecCnt++;
+			if (g_uiAdasAlertSecCnt >=4) {
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl, TRUE);
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, FALSE);
@@ -1690,9 +1692,9 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 			} else {
 				return NVTEVT_CONSUME;
 			}
-		}else  if((UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON)&&UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl)){
-			g_uiAdasAlertSecCnt--;
-			if (g_uiAdasAlertSecCnt <=1) {
+		}else  if((UI_GetData(FL_ADAS_PANEL) == ADAS_PANEL_ON)&&UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_TypeCtrl)){
+			g_uiAdasAlertSecCnt++;
+			if (g_uiAdasAlertSecCnt >=4) {
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_Normal_DisplayCtrl,FALSE);
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl, FALSE);
 				UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Alert_PanelCtrl, TRUE);
@@ -1704,6 +1706,8 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 				return NVTEVT_CONSUME;
 			}	
 
+		}else{
+			g_uiAdasAlertSecCnt = 0;
 		}
 		#endif	// #if (_ADAS_FUNC_ == ENABLE)
        	break;
@@ -2238,8 +2242,10 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 	//ADAS_APPS_RESULT_INFO *pAdasRlt = MovieExe_GetAdasRltOSD();
 
 	Ux_FlushEventByRange(NVTEVT_CB_ADAS_SHOWALARM, NVTEVT_CB_ADAS_SHOWALARM);
-	if(g_uiAdasAlertSecCnt > 0)
+	if(UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_Alert_DisplayCtrl)
+		||UxCtrl_IsShow(&UIFlowWndWiFiMovie_ADAS_TypeCtrl))
 	{
+		//DBG_ERR("======%d %d===========\r\n",UxCtrl_IsShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl),UxCtrl_IsShow(&UIFlowWndMovie_ADAS_TypeCtrl));
 		return NVTEVT_CONSUME;
 	}
 	AlarmType = paramArray[0];
@@ -2251,7 +2257,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 				return NVTEVT_CONSUME;
 			}
 			FlowMovie_WakeUpLCDBacklight();
-			g_uiAdasAlertSecCnt = 4;
+			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
@@ -2269,7 +2275,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 				return NVTEVT_CONSUME;
 			}
 			FlowMovie_WakeUpLCDBacklight();
-			g_uiAdasAlertSecCnt = 4;
+			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
@@ -2288,7 +2294,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 				return NVTEVT_CONSUME;
 			}
 			FlowMovie_WakeUpLCDBacklight();
-			g_uiAdasAlertSecCnt = 4;
+			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_FCS_TONE);							
@@ -2307,7 +2313,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 				return NVTEVT_CONSUME;
 			}
 			FlowMovie_WakeUpLCDBacklight();
-			g_uiAdasAlertSecCnt = 4;
+			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
@@ -2326,7 +2332,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 				return NVTEVT_CONSUME;
 			}
 			FlowMovie_WakeUpLCDBacklight();
-			g_uiAdasAlertSecCnt = 4;
+			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_PCW_TONE);							
@@ -2346,7 +2352,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 				return NVTEVT_CONSUME;
 			}
 			FlowMovie_WakeUpLCDBacklight();
-			g_uiAdasAlertSecCnt = 4;
+			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);							
@@ -2365,7 +2371,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 				return NVTEVT_CONSUME;
 			}
 			FlowMovie_WakeUpLCDBacklight();
-			g_uiAdasAlertSecCnt = 4;
+			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 	        DogSoundPlayID(DEMOSOUND_SOUND_RCW_TONE);							
@@ -2384,7 +2390,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 				return NVTEVT_CONSUME;
 			}
 			FlowMovie_WakeUpLCDBacklight();
-			g_uiAdasAlertSecCnt = 4;
+			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
@@ -2403,7 +2409,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 				return NVTEVT_CONSUME;
 			}
 			FlowMovie_WakeUpLCDBacklight();
-			g_uiAdasAlertSecCnt = 4;
+			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
 			UIDogSound_Enable(FALSE);
 			DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
@@ -2429,7 +2435,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			return NVTEVT_CONSUME;
 		}
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 4;
+		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
@@ -2455,7 +2461,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			return NVTEVT_CONSUME;
 		}
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 4;
+		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_LDWS_TONE);							
@@ -2482,7 +2488,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			return NVTEVT_CONSUME;
 		}
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 4;
+		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_FCS_TONE);							
@@ -2513,7 +2519,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			return NVTEVT_CONSUME;
 		}
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 4;
+		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_SNG_TONE);							
@@ -2540,7 +2546,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			return NVTEVT_CONSUME;
 		}
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 4;
+		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_PCW_TONE);							
@@ -2567,7 +2573,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			return NVTEVT_CONSUME;
 		}
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 4;
+		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_VIRTUAL_BUMPERS_TONE);							
@@ -2593,7 +2599,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			return NVTEVT_CONSUME;
 		}
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 4;
+		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_RCW_TONE);							
@@ -2619,7 +2625,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			return NVTEVT_CONSUME;
 		}
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 4;
+		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
@@ -2646,7 +2652,7 @@ INT32 UIFlowWndWiFiMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT3
 			return NVTEVT_CONSUME;
 		}
 		FlowMovie_WakeUpLCDBacklight();
-		g_uiAdasAlertSecCnt = 4;
+		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
 		UIDogSound_Enable(FALSE);
         DogSoundPlayID(DEMOSOUND_SOUND_LCAWS_TONE);							
