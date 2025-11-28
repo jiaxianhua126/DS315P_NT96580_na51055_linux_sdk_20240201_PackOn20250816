@@ -6688,10 +6688,10 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 			if(gEthcamRecInfoRecFormat ==_CFG_FILE_FORMAT_MP4){
 				ImageApp_MovieMulti_SetParam(_CFG_ETHCAM_ID_1 + j, MOVIEMULTI_PARAM_FILE_FRONT_MOOV, TRUE);
 				ImageApp_MovieMulti_SetParam(_CFG_ETHCAM_ID_1 + j, MOVIEMULTI_PARAM_FILE_FRONT_MOOV_FLUSH_SEC, 10);
-				DBG_DUMP("===========REAR MOOV FUNC OPEN.=====================\r\n");
+				//DBG_DUMP("===========REAR MOOV FUNC OPEN.=====================\r\n");
 			}else{
 				ImageApp_MovieMulti_SetParam(_CFG_ETHCAM_ID_1 + j, MOVIEMULTI_PARAM_FILE_FRONT_MOOV, FALSE);
-				DBG_DUMP("===========REAR MOOV FUNC CLOSE.=====================\r\n");
+				//DBG_DUMP("===========REAR MOOV FUNC CLOSE.=====================\r\n");
 			}
 			#endif
 			//#NT#2023/03/27#HTK ADD -end
@@ -6716,7 +6716,7 @@ INT32 MovieExe_OnRecStart(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		}
 	}
 #endif
-	DBG_DUMP("------BOOT------222222222222222222\r\n");
+	DBG_DUMP("========BOOT========222222222222222222\r\n");
 	return NVTEVT_CONSUME;
 }
 

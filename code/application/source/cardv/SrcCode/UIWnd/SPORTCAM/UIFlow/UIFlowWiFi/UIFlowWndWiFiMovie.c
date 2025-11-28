@@ -1706,8 +1706,6 @@ INT32 UIFlowWndWiFiMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *param
 				return NVTEVT_CONSUME;
 			}	
 
-		}else{
-			g_uiAdasAlertSecCnt = 0;
 		}
 		#endif	// #if (_ADAS_FUNC_ == ENABLE)
        	break;
