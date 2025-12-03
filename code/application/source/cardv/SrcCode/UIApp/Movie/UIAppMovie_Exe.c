@@ -4753,7 +4753,7 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	}
 #endif
 	//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_CODEC_TRIGGER_MODE, MOVIE_CODEC_TRIGGER_DIRECT); //Add IQ-NG
-	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2, MOVIEMULTI_PARAM_FORCED_USE_YUVAUX, TRUE); //for AHD/TVI
+	//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2, MOVIEMULTI_PARAM_FORCED_USE_YUVAUX, TRUE); //for AHD/TVI
 
 	//4kp30 repeat frame modification
 	//MovieExe_Videoproc_Set(0);

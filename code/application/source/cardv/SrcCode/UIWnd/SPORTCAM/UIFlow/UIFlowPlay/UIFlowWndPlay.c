@@ -428,16 +428,6 @@ INT32 UIFlowWndPlay_OnClose(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 		UIFlowMoviePlay_SetSpeed(g_PlbData.VideoPBSpeed);
 		g_uiUIFlowWndPlayCurrenDirection = SMEDIAPLAY_DIR_FORWARD;
 		Ux_SendEvent(0, NVTEVT_EXE_CLOSEPLAY, 0);
-
-		ImageApp_MoviePlay_Close();
-        if (gMovie_Play_Info.event_cb) {
-			#if (NMEDIAPLAY_FUNC == DISABLE)
-			gMovie_Play_Info.event_cb(5,0,0,0); // release ISF_Data by AppDisp_ScaleView
-			#else //((NMEDIAPLAY_FUNC == ENABLE))
-			gMovie_Play_Info.event_cb(5,0,0,0);
-			#endif
-		}
-
 		if (gphUIFlowMovPlay_Filehdl) {
 			FileSys_CloseFile(gphUIFlowMovPlay_Filehdl);
 			gphUIFlowMovPlay_Filehdl = NULL;
