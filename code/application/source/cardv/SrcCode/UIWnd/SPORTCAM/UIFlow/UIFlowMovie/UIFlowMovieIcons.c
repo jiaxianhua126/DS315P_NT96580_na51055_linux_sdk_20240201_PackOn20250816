@@ -890,10 +890,11 @@ void FlowMovie_initIcon(void)
     UxCtrl_SetShow(&UIFlowWndMovie_RL_SMALL_ICON2Ctrl, FALSE);
     UxCtrl_SetShow(&UIFlowWndMovie_RL_SMALL_ICON3Ctrl, FALSE);
 }
-
+extern FLOAT g_CurSpeed;
+extern BOOL SysInit_getintoadas_mode_getstd(void);
 void FlowMovie_IconDrawADASAnimation(void)
 {
-	static UINT32 i = ICON_ADAS_ANIMATION_01,j = ICON_ADAS_ROAD_13;
+	static UINT32 i = ICON_ADAS_ANIMATION_01,j = ICON_ADAS_ROAD_06;
 	static UINT32 cnt = 0;
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_AnimationCtrl,FALSE);
 	if(i>=ICON_ADAS_ANIMATION_01 &&i<=ICON_ADAS_ANIMATION_14)
@@ -909,20 +910,31 @@ void FlowMovie_IconDrawADASAnimation(void)
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_AnimationCtrl,TRUE);
 
 	cnt++;
-	if(cnt%2 ==0){
-		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl,FALSE);
-		if(j>=ICON_ADAS_ROAD_07 &&j<=ICON_ADAS_ROAD_13)
+	if(cnt%2 ==0)
+	{
+		if(g_CurSpeed > 0 || SysInit_getintoadas_mode_getstd())
 		{
-			UxStatic_SetData(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl,FALSE);
+			if(j>=ICON_ADAS_ROAD &&j<=ICON_ADAS_ROAD_06)
+			{
+				UxStatic_SetData(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+			}
+			else
+			{
+				j = ICON_ADAS_ROAD_06;
+				UxStatic_SetData(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+			}
+			j--;
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl,TRUE);
 		}
 		else
 		{
-			j = ICON_ADAS_ROAD_13;
-			UxStatic_SetData(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl,FALSE);
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, ICON_ADAS_ROAD);
+			UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl,TRUE);
 		}
-		j--;
-		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl,TRUE);
 	}
+	
 	
 }
 UINT32 FlowWndMovie_DrawADASDisNum(UINT32 Value)
@@ -1502,6 +1514,7 @@ void FlowMovie_UpdateIcons(BOOL bShow)
         FlowMovie_HideCustomerType();
         FlowMovie_IconHideGPSSignal();
 		FlowMovie_IconHideADASDisplayType();
+		FlowMovie_IconDrawADASHideCar();
 	} else {
 		//FlowMovie_IconDrawDscMode(&UIFlowWndMovie_Static_cameraCtrl);
 		FlowMovie_IconDrawSize(&UIFlowWndMovie_Static_resolutionCtrl);
@@ -1548,6 +1561,7 @@ void FlowMovie_UpdateIcons(BOOL bShow)
         //FlowMovie_IconDrawGPSSignal();
 		#endif
 		FlowMovie_IconHideADASDisplayType();
+		FlowMovie_IconDrawADASHideCar();
 	}
 }
 

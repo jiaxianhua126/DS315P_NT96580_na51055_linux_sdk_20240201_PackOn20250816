@@ -8069,7 +8069,7 @@ INT32 MovieExe_OnSensorHotPlug(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 		//Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
 		if (System_GetState(SYS_STATE_CURRSUBMODE)==SYS_SUBMODE_WIFI) {
 			Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 2, System_GetState(SYS_STATE_CURRMODE), SYS_SUBMODE_WIFI);
-			//bWiFiModeChanged = TRUE;
+			bWiFiModeChanged = TRUE;
 		} else {
 			Ux_SendEvent(0, NVTEVT_SYSTEM_MODE, 1, System_GetState(SYS_STATE_CURRMODE));
 		}
