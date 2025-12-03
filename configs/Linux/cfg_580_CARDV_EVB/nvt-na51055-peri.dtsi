@@ -122,7 +122,8 @@
 		max-voltage = <1800>;
 		bus-width = <4>;
 		neg-sample-edge = <1>;/*0*/
-		driving = <15 15 15 25 25 25 30 30 30 30 30 30>;
+		/*driving = <15 15 15 25 25 25 30 30 30 30 30 30>;*/
+		driving = <15 15 15 15 15 15 20 20 20 20 20 20>;
 		cd_gpio = <0 GPIO_FALLING_EDGE GPIO_POLLING>;
 		/*card_power_gpio = <D_GPIO(1) GPIO_HIGH>;*/
 		/*ro_gpio = <D_GPIO(1) GPIO_RISING_EDGE GPIO_POLLING>;*/

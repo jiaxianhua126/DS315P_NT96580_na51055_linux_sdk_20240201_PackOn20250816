@@ -2734,9 +2734,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 	{
 		switch (AlarmType) {
 		case ADAS_ALARM_LD_LEFT:
-			if(SysGetFlag(FL_MOVIE_LDWS) != MOVIE_LDWS_ON){
-				return NVTEVT_CONSUME;
-			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
@@ -2752,9 +2749,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			FlowMovie_IconDrawADASDisplayType(AlarmType);
 			break;
 		case ADAS_ALARM_LD_RIGHT:
-			if(SysGetFlag(FL_MOVIE_LDWS) != MOVIE_LDWS_ON){
-				return NVTEVT_CONSUME;
-			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
@@ -2771,9 +2765,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			break;
 
 		case ADAS_ALARM_FC:
-			if(SysGetFlag(FL_MOVIE_FCW) != MOVIE_FCW_ON){
-				return NVTEVT_CONSUME;
-			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
@@ -2790,9 +2781,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			break;
 
 		case ADAS_ALARM_GO:
-			if(SysGetFlag(FL_SNG) != FUNCTION_ON){
-				return NVTEVT_CONSUME;
-			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
@@ -2809,9 +2797,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			break;
 
 		case ADAS_ALARM_FPW:
-			if(SysGetFlag(FL_PCW) != FUNCTION_ON){
-				return NVTEVT_CONSUME;
-			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
@@ -2829,9 +2814,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 
 		case ADAS_ALARM_VIRTUAL_BUMPERS:
-			if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) != ADAS_VIRTUAL_BUMPER_ON){
-				return NVTEVT_CONSUME;
-			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
@@ -2848,9 +2830,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			break;
 
 		case ADAS_ALARM_RCW_REAR:
-			if(SysGetFlag(FL_RCW) != FUNCTION_ON){
-				return NVTEVT_CONSUME;
-			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
@@ -2867,9 +2846,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			break;
 
 		case ADAS_ALARM_LCA_LEFT:
-			if(SysGetFlag(FL_ADAS_LCAWS) != FUNCTION_ON){
-				return NVTEVT_CONSUME;
-			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
@@ -2886,9 +2862,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 			break;
 
 		case ADAS_ALARM_LCA_RIGHT:
-			if(SysGetFlag(FL_ADAS_LCAWS) != FUNCTION_ON){
-				return NVTEVT_CONSUME;
-			}
 			FlowMovie_WakeUpLCDBacklight();
 			g_uiAdasAlertSecCnt = 0;
 			#if PLAY_SOUND_IN_OTHER_TASK
@@ -2912,9 +2885,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 	switch (AlarmType) {
 	case ADAS_ALARM_LD_LEFT:
-		if(SysGetFlag(FL_MOVIE_LDWS) != MOVIE_LDWS_ON){
-			return NVTEVT_CONSUME;
-		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
@@ -2938,9 +2908,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		}
 		break;
 	case ADAS_ALARM_LD_RIGHT:
-		if(SysGetFlag(FL_MOVIE_LDWS) != MOVIE_LDWS_ON){
-			return NVTEVT_CONSUME;
-		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
@@ -2965,9 +2932,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		break;
 
 	case ADAS_ALARM_FC:
-		if(SysGetFlag(FL_MOVIE_FCW) != MOVIE_FCW_ON){
-			return NVTEVT_CONSUME;
-		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
@@ -2996,9 +2960,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		break;
 
 	case ADAS_ALARM_GO:
-		if(SysGetFlag(FL_SNG) != FUNCTION_ON){
-			return NVTEVT_CONSUME;
-		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
@@ -3023,9 +2984,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		break;
 
 	case ADAS_ALARM_FPW:
-		if(SysGetFlag(FL_PCW) != FUNCTION_ON){
-			return NVTEVT_CONSUME;
-		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
@@ -3050,9 +3008,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 
 
 	case ADAS_ALARM_VIRTUAL_BUMPERS:
-		if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) != ADAS_VIRTUAL_BUMPER_ON){
-			return NVTEVT_CONSUME;
-		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
@@ -3076,9 +3031,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		break;
 
 	case ADAS_ALARM_RCW_REAR:
-		if(SysGetFlag(FL_RCW) != FUNCTION_ON){
-			return NVTEVT_CONSUME;
-		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
@@ -3102,9 +3054,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		break;
 
 	case ADAS_ALARM_LCA_LEFT:
-		if(SysGetFlag(FL_ADAS_LCAWS) != FUNCTION_ON){
-			return NVTEVT_CONSUME;
-		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
@@ -3129,9 +3078,6 @@ INT32 UIFlowWndMovie_OnADASShowAlarm(VControl *pCtrl, UINT32 paramNum, UINT32 *p
 		break;
 
 	case ADAS_ALARM_LCA_RIGHT:
-		if(SysGetFlag(FL_ADAS_LCAWS) != FUNCTION_ON){
-			return NVTEVT_CONSUME;
-		}
 		FlowMovie_WakeUpLCDBacklight();
 		g_uiAdasAlertSecCnt = 0;
 		#if PLAY_SOUND_IN_OTHER_TASK
