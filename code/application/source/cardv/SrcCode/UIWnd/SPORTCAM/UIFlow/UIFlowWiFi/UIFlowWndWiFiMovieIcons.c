@@ -1121,9 +1121,10 @@ void FlowWiFiMovie_initIcon(void)
 }
 void FlowWiFiMovie_IconDrawADASAnimation(void)
 {
-	static UINT32 i = ICON_ADAS_ANIMATION_01;
+	static UINT32 i = ICON_ADAS_ANIMATION_01,j = ICON_ADAS_ROAD_13;
+	static UINT32 cnt = 0;
 	UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Car_AnimationCtrl,FALSE);
-	if(i>=ICON_ADAS_ANIMATION_01 &&i<=ICON_ADAS_ANIMATION_07)
+	if(i>=ICON_ADAS_ANIMATION_01 &&i<=ICON_ADAS_ANIMATION_14)
 	{
 		UxStatic_SetData(&UIFlowWndWiFiMovie_ADAS_Car_AnimationCtrl, STATIC_VALUE, i);
 	}
@@ -1134,7 +1135,25 @@ void FlowWiFiMovie_IconDrawADASAnimation(void)
 	}
 	i++;
 	UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Car_AnimationCtrl,TRUE);
+
+	cnt++;
+	if(cnt%2 ==0){
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl,FALSE);
+		if(j>=ICON_ADAS_ROAD_07 &&j<=ICON_ADAS_ROAD_13)
+		{
+			UxStatic_SetData(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+		}
+		else
+		{
+			j = ICON_ADAS_ROAD_13;
+			UxStatic_SetData(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+		}
+		j--;
+		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl,TRUE);
+	}
+	
 }
+
 UINT32 FlowWiFiMovie_DrawADASDisNum(UINT32 Value)
 {
 	UINT32 ICON_ID = ICONID_NULL;
@@ -1368,7 +1387,7 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 				    UINT32 distance_ft = (UINT32)(distance_m * 3.28084f + 0.5f); // 四舍五入
 				    
 				    // 显示距离（英尺）
-				    FlowMovie_IconDrawADASDistance(distance_ft);
+				    FlowWiFiMovie_IconDrawADASDistance(distance_ft);
 				    
 				    DBG_DUMP("Red Car Front Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
 				}
@@ -1712,7 +1731,7 @@ void FlowWiFiMovie_UpdateIcons(BOOL bShow)
         //FlowWiFiMovie_IconDrawWiFiConnected(FALSE);
         FlowWiFiMovie_IconDrawWiFiDisConnected(FALSE);
         FlowWiFiMovie_IconDrawGPSSignal(FALSE);
-		FlowMovie_IconHideADASDisplayType();
+		FlowWiFiMovie_IconHideADASDisplayType();
     }
     else
     {

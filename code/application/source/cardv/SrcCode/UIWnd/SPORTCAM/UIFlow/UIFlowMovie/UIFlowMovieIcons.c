@@ -893,7 +893,8 @@ void FlowMovie_initIcon(void)
 
 void FlowMovie_IconDrawADASAnimation(void)
 {
-	static UINT32 i = ICON_ADAS_ANIMATION_01;
+	static UINT32 i = ICON_ADAS_ANIMATION_01,j = ICON_ADAS_ROAD_13;
+	static UINT32 cnt = 0;
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_AnimationCtrl,FALSE);
 	if(i>=ICON_ADAS_ANIMATION_01 &&i<=ICON_ADAS_ANIMATION_14)
 	{
@@ -906,6 +907,23 @@ void FlowMovie_IconDrawADASAnimation(void)
 	}
 	i++;
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_AnimationCtrl,TRUE);
+
+	cnt++;
+	if(cnt%2 ==0){
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl,FALSE);
+		if(j>=ICON_ADAS_ROAD_07 &&j<=ICON_ADAS_ROAD_13)
+		{
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+		}
+		else
+		{
+			j = ICON_ADAS_ROAD_13;
+			UxStatic_SetData(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+		}
+		j--;
+		UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Road_Static_IconCtrl,TRUE);
+	}
+	
 }
 UINT32 FlowWndMovie_DrawADASDisNum(UINT32 Value)
 {
