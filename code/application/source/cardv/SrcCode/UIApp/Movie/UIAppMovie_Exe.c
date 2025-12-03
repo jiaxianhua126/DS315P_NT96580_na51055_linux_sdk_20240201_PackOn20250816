@@ -20,6 +20,8 @@
 #include "UIApp/AppDisp_PipView.h"
 #include <vf_gfx.h>
 #include "vendor_videocapture.h"
+#include "vendor_videoprocess.h"
+
 #if (GPS_FUNCTION == ENABLE)
 //#include <GPS.h>
 #include "DxGPS.h"
@@ -2270,11 +2272,7 @@ MOVIE_RECODE_INFO MovieExe_GetRecInfo(MOVIE_CFG_REC_ID  rec_id)
 }
 UINT32 MovieExe_GetEmrRollbackSec(void)
 {
-#if(PRE_RECORD_DET_FUNC==ENABLE)
-	return gMovie_Rec_Option.emr_sec+15;//add buf
-#else
 	return gMovie_Rec_Option.emr_sec;
-#endif
 }
 #if(defined(_NVT_ETHREARCAM_RX_))
 UINT32 MovieExe_GetEthcamEncBufSec(ETHCAM_PATH_ID  path_id)
@@ -2971,7 +2969,7 @@ static void MovieExe_InitAlgFunc(void)
 
 	// install alg functions here
 #if 1//((!defined(_MODEL_580_SDV_SJ10_)) && (!defined(_MODEL_580_SDV_SJ10_FAST_BT_)))
-	//MovieAlgFunc_MD_InstallID();
+	MovieAlgFunc_MD_InstallID();
 #endif
 
 #if (_ADAS_FUNC_ == ENABLE)
@@ -4646,6 +4644,9 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		}
 		movie_onopen_cnt ++;
 	}
+	//H264FroSync 1
+	system("echo H264FroSync 1 > /proc/kdrv_vdocdc/param");
+	DBG_DUMP("H264FroSync 1\r\n");
 
 	//MOVIE_AD_MAP Movie_AD_Sensor_Map[SENSOR_CAPS_COUNT] = {{_CFG_REC_ID_1, 0 ,HD_VIDEOCAP_0 }, { _CFG_REC_ID_2, 0, HD_VIDEOCAP_1}, {_CFG_REC_ID_3, ((1<<8)| 0), HD_VIDEOCAP_2}};
 	for (i = 0; i < SENSOR_CAPS_COUNT; i++) {
@@ -4744,9 +4745,18 @@ INT32 MovieExe_OnOpen(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 	#endif
 
 #if (MOVIE_DIRECT_FUNC == ENABLE)
-	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_VCAP_OUTFUNC, HD_VIDEOCAP_OUTFUNC_DIRECT);
+	//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_VCAP_OUTFUNC, HD_VIDEOCAP_OUTFUNC_DIRECT);
+	if (SysGetFlag(FL_MOVIE_SIZE_MENU) != MOVIE_SIZE_FRONT_2560x1440P60) {
+		ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_VCAP_OUTFUNC, HD_VIDEOCAP_OUTFUNC_DIRECT);
+	} else {
+		ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_VCAP_OUTFUNC, 0);
+	}
 #endif
+	//ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_CODEC_TRIGGER_MODE, MOVIE_CODEC_TRIGGER_DIRECT); //Add IQ-NG
+	ImageApp_MovieMulti_SetParam(_CFG_REC_ID_2, MOVIEMULTI_PARAM_FORCED_USE_YUVAUX, TRUE); //for AHD/TVI
 
+	//4kp30 repeat frame modification
+	//MovieExe_Videoproc_Set(0);
 
 #if (MOVIE_YUV_COMPRESS)
     ImageApp_MovieMulti_SetParam(_CFG_REC_ID_1, MOVIEMULTI_PARAM_YUV_COMPRESS, TRUE);
