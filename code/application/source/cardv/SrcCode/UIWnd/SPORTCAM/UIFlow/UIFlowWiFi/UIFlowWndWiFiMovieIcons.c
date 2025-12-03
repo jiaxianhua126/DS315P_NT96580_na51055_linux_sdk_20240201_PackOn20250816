@@ -1119,9 +1119,11 @@ void FlowWiFiMovie_initIcon(void)
     UxCtrl_SetShow(&UIFlowWndWiFiMovie_Static_RL3Ctrl, FALSE);
 	UxCtrl_SetShow(&UIFlowWndWiFiMovie_Panel_PlayModeCtrl, FALSE);
 }
+extern FLOAT g_CurSpeed;
+extern BOOL SysInit_getintoadas_mode_getstd(void);
 void FlowWiFiMovie_IconDrawADASAnimation(void)
 {
-	static UINT32 i = ICON_ADAS_ANIMATION_01,j = ICON_ADAS_ROAD_13;
+	static UINT32 i = ICON_ADAS_ANIMATION_01,j = ICON_ADAS_ROAD_06;
 	static UINT32 cnt = 0;
 	UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Car_AnimationCtrl,FALSE);
 	if(i>=ICON_ADAS_ANIMATION_01 &&i<=ICON_ADAS_ANIMATION_14)
@@ -1136,22 +1138,33 @@ void FlowWiFiMovie_IconDrawADASAnimation(void)
 	i++;
 	UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Car_AnimationCtrl,TRUE);
 
+	
 	cnt++;
-	if(cnt%2 ==0){
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl,FALSE);
-		if(j>=ICON_ADAS_ROAD_07 &&j<=ICON_ADAS_ROAD_13)
+	if(cnt%2 ==0)
+	{
+		if(g_CurSpeed > 0 ||SysInit_getintoadas_mode_getstd())
 		{
-			UxStatic_SetData(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl,FALSE);
+			if(j>=ICON_ADAS_ROAD &&j<=ICON_ADAS_ROAD_06)
+			{
+				UxStatic_SetData(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+			}
+			else
+			{
+				j = ICON_ADAS_ROAD_06;
+				UxStatic_SetData(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+			}
+			j--;
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl,TRUE);
 		}
 		else
 		{
-			j = ICON_ADAS_ROAD_13;
-			UxStatic_SetData(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, j);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl,FALSE);
+			UxStatic_SetData(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl, STATIC_VALUE, ICON_ADAS_ROAD);
+			UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl,TRUE);
 		}
-		j--;
-		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Road_Static_IconCtrl,TRUE);
 	}
-	
+
 }
 
 UINT32 FlowWiFiMovie_DrawADASDisNum(UINT32 Value)
@@ -1304,7 +1317,7 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 		UxCtrl_SetShow(&UIFlowWndWiFiMovie_ADAS_Car_Red_00Ctrl, FALSE);
 		
 		if (adas_eventData_app00.result.type != ALGO_TYPE_ADAS) {
-			DBG_DUMP("Not ADAS data, type=%d\r\n", adas_eventData_app00.result.type);
+			//DBG_DUMP("Not ADAS data, type=%d\r\n", adas_eventData_app00.result.type);
 			return;
 		}
 		
@@ -1325,7 +1338,7 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 		INT32 cipv_index = fcw_result->cipv;
 		BOOL has_cipv = (cipv_index >= 0 && cipv_index < fcw_result->objsize);
 		
-		DBG_DUMP("FCW: objsize=%d, cipv=%d\r\n", fcw_result->objsize, cipv_index);
+		//DBG_DUMP("FCW: objsize=%d, cipv=%d\r\n", fcw_result->objsize, cipv_index);
 		
 		// 前路车辆计数和红色标记
 		INT32 front_count = 0;
@@ -1339,7 +1352,7 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 			FLOAT distance_y = fabs(obj->relative_distance.y);
 
 			if (distance_x > 30.0f || distance_y > 30.0f) {
-				DBG_DUMP("Car %d out of range: (%.1f,%.1f)m\r\n", 
+				DBG_IND("Car %d out of range: (%.1f,%.1f)m\r\n", 
 						 i, obj->relative_distance.x, obj->relative_distance.y);
 				continue;
 			}
@@ -1389,7 +1402,7 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 				    // 显示距离（英尺）
 				    FlowWiFiMovie_IconDrawADASDistance(distance_ft);
 				    
-				    DBG_DUMP("Red Car Front Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
+				    //DBG_DUMP("Red Car Front Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
 				}
 			} 
 			// 如果是蓝色车辆且还有蓝色名额（最多4个）
@@ -1416,7 +1429,7 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 					UxStatic_SetData(car_ctrl, STATIC_VALUE, ICON_ADAS_CAR_BLUE);
 				}
 				
-				DBG_DUMP("Front Car %d: %s, real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
+				DBG_IND("Front Car %d: %s, real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
 						 i, is_red_car ? "RED" : "BLUE", 
 						 obj->relative_distance.x, obj->relative_distance.y, screen_x, screen_y);
 				
@@ -1445,7 +1458,7 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 	                INT32 cipv_index = car_result->cipv;
 	                BOOL has_cipv = (cipv_index >= 0 && cipv_index < car_result->objsize);
 	                
-	                DBG_DUMP("RCW: objsize=%d, cipv=%d\r\n", car_result->objsize, cipv_index);
+	                DBG_IND("RCW: objsize=%d, cipv=%d\r\n", car_result->objsize, cipv_index);
 	                
 	                // 后路车辆计数和红色标记
 	                INT32 rear_count = 0;
@@ -1459,7 +1472,7 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 	                    FLOAT distance_y = fabs(obj->relative_distance.y);
 	                    
 	                    if (distance_x > 30.0f || distance_y > 30.0f) {
-	                        DBG_DUMP("Rear Car %d out of range: (%.1f,%.1f)m\r\n", 
+	                        DBG_IND("Rear Car %d out of range: (%.1f,%.1f)m\r\n", 
 	                                 i, obj->relative_distance.x, obj->relative_distance.y);
 	                        continue;
 	                    }
@@ -1510,9 +1523,9 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 							    UINT32 distance_ft = (UINT32)(distance_m * 3.28084f + 0.5f); // 四舍五入
 							    
 							    // 显示距离（英尺）
-							    FlowMovie_IconDrawADASDistance(distance_ft);
+							    FlowWiFiMovie_IconDrawADASDistance(distance_ft);
 							    
-							    DBG_DUMP("Rear Red Car Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
+							    DBG_IND("Rear Red Car Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
 							}
 	                    } 
 	                    // 如果是蓝色车辆且还有蓝色名额（最多3个）
@@ -1538,7 +1551,7 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 	                            UxStatic_SetData(car_ctrl, STATIC_VALUE, ICON_ADAS_CAR_BLUE);
 	                        }
 	                        
-	                        DBG_DUMP("Rear Car %d: %s, real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
+	                        DBG_IND("Rear Car %d: %s, real(%.1f,%.1f)m, screen(%d,%d)\r\n", 
 	                                 i, is_red_car ? "RED" : "BLUE", 
 	                                 obj->relative_distance.x, obj->relative_distance.y, screen_x, screen_y);
 	                        
@@ -1732,6 +1745,7 @@ void FlowWiFiMovie_UpdateIcons(BOOL bShow)
         FlowWiFiMovie_IconDrawWiFiDisConnected(FALSE);
         FlowWiFiMovie_IconDrawGPSSignal(FALSE);
 		FlowWiFiMovie_IconHideADASDisplayType();
+		FlowWiFiMovie_IconDrawADASHideCar();
     }
     else
     {
@@ -1786,6 +1800,7 @@ void FlowWiFiMovie_UpdateIcons(BOOL bShow)
         //FlowWiFiMovie_IconDrawGPSSignal(TRUE);
 		#endif
 		FlowWiFiMovie_IconHideADASDisplayType();
+		FlowWiFiMovie_IconDrawADASHideCar();
     }
 }
 
