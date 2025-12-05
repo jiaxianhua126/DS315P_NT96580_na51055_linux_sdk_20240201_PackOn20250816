@@ -3405,19 +3405,6 @@ int XML_GetSensorStatus(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bu
     return CYG_HFS_CB_GETDATA_RETURN_OK;
 }
 
-int XML_GetGPS_DB(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
-{
-    char buf[64] = {0};
-
-    snprintf(buf, sizeof(buf), "%c,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d", RMCInfo.Status, g_Edog_satellie_DB.satellie_DB_GSM_BD[0], 
-        g_Edog_satellie_DB.satellie_DB_GSM_BD[1], g_Edog_satellie_DB.satellie_DB_GSM_BD[2], g_Edog_satellie_DB.satellie_DB_GSM_BD[3], g_Edog_satellie_DB.satellie_DB_GSM_BD[4],
-        g_Edog_satellie_DB.satellie_DB_GSM_BD[5], g_Edog_satellie_DB.satellie_DB_GSM_BD[6], g_Edog_satellie_DB.satellie_DB_GSM_BD[7], g_Edog_satellie_DB.satellie_DB_GSM_BD[8],
-        g_Edog_satellie_DB.satellie_DB_GSM_BD[9], g_Edog_satellie_DB.satellie_DB_GSM_BD[10], g_Edog_satellie_DB.satellie_DB_GSM_BD[11]);
-    DBG_DUMP("^G *** buf= %s ***\r\n", buf);
-    XML_StringResult(WIFIAPP_CMD_GET_GPS_DB, buf, bufAddr, bufSize, mimeType);
-
-    return CYG_HFS_CB_GETDATA_RETURN_OK;
-}
 
 extern void GxSystem_SWResetNOW(void);
 extern void FlowWiFiMovie_StopRec(void);
@@ -3436,6 +3423,19 @@ int XML_SysReboot(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize,
 	 Save_MenuInfo();
 	 Delay_DelayMs(100);
 	 GxSystem_SWResetNOW();
+
+	return CYG_HFS_CB_GETDATA_RETURN_OK;
+}
+int XML_GetGPS_DB(char *path, char *argument, HFS_U32 bufAddr, HFS_U32 *bufSize, char *mimeType, HFS_U32 segmentCount)
+{
+    char buf[64] = {0};
+
+    snprintf(buf, sizeof(buf), "%c,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d,%02d", RMCInfo.Status, g_Edog_satellie_DB.satellie_DB_GSM_BD[0], 
+        g_Edog_satellie_DB.satellie_DB_GSM_BD[1], g_Edog_satellie_DB.satellie_DB_GSM_BD[2], g_Edog_satellie_DB.satellie_DB_GSM_BD[3], g_Edog_satellie_DB.satellie_DB_GSM_BD[4],
+        g_Edog_satellie_DB.satellie_DB_GSM_BD[5], g_Edog_satellie_DB.satellie_DB_GSM_BD[6], g_Edog_satellie_DB.satellie_DB_GSM_BD[7], g_Edog_satellie_DB.satellie_DB_GSM_BD[8],
+        g_Edog_satellie_DB.satellie_DB_GSM_BD[9], g_Edog_satellie_DB.satellie_DB_GSM_BD[10], g_Edog_satellie_DB.satellie_DB_GSM_BD[11]);
+    DBG_DUMP("^G *** buf= %s ***\r\n", buf);
+    XML_StringResult(WIFIAPP_CMD_GET_GPS_DB, buf, bufAddr, bufSize, mimeType);
 
 	return CYG_HFS_CB_GETDATA_RETURN_OK;
 }
