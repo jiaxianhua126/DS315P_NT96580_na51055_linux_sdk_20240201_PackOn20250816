@@ -2494,7 +2494,7 @@ INT32 UIFlowWndMovie_OnTimer(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArra
 		}
 		#endif
 
-		UIFlowMoive_AutoStartWiFi();//TBD
+		UIFlowMoive_AutoStartWiFi();
 		FlowMovie_DetLCDDim();
 		break;
 

@@ -1712,7 +1712,7 @@ SHOW_MAP_BODY(Skin304)
 SHOW_MAP_BODY(Icon305)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group,Normal303,80,35,179,176)
+SHOW_ITEM_GROUP(CMD_Group,Normal303,80,49,179,190)
 
 SHOW_MAP_BEGIN(UIFlowWndMovie_ADAS_Car_Animation)
 SHOW_MAP_BODY(Normal303)
@@ -1720,7 +1720,7 @@ SHOW_MAP_END
 
 DECLARE_EVENT(UIFlowWndMovie_ADAS_Car_Animation)
 CREATE_STATIC_DATA(UIFlowWndMovie_ADAS_Car_Animation,ICON_ADAS_ANIMATION_04)
-CREATE_STATIC_CTRL(UIFlowWndMovie_ADAS_Car_Animation,0,80,35,179,176)
+CREATE_STATIC_CTRL(UIFlowWndMovie_ADAS_Car_Animation,0,80,49,179,190)
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
