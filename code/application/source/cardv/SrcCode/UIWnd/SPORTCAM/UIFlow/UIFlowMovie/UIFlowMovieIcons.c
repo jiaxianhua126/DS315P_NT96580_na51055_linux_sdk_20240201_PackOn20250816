@@ -897,7 +897,7 @@ void FlowMovie_IconDrawADASAnimation(void)
 	static UINT32 i = ICON_ADAS_ANIMATION_01,j = ICON_ADAS_ROAD_06;
 	static UINT32 cnt = 0;
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Car_AnimationCtrl,FALSE);
-	if(i>=ICON_ADAS_ANIMATION_01 &&i<=ICON_ADAS_ANIMATION_14)
+	if(i>=ICON_ADAS_ANIMATION_01 &&i<=ICON_ADAS_ANIMATION_08)
 	{
 		UxStatic_SetData(&UIFlowWndMovie_ADAS_Car_AnimationCtrl, STATIC_VALUE, i);
 	}

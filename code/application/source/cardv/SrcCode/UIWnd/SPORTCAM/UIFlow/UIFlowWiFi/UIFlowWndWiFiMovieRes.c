@@ -1509,7 +1509,7 @@ SHOW_MAP_BODY(Skin258)
 SHOW_MAP_BODY(Icon259)
 SHOW_MAP_END
 
-SHOW_ITEM_GROUP(CMD_Group,Normal257,80,35,179,176)
+SHOW_ITEM_GROUP(CMD_Group,Normal257,80,49,179,190)
 
 SHOW_MAP_BEGIN(UIFlowWndWiFiMovie_ADAS_Car_Animation)
 SHOW_MAP_BODY(Normal257)
@@ -1517,7 +1517,7 @@ SHOW_MAP_END
 
 DECLARE_EVENT(UIFlowWndWiFiMovie_ADAS_Car_Animation)
 CREATE_STATIC_DATA(UIFlowWndWiFiMovie_ADAS_Car_Animation,ICON_ADAS_ANIMATION_04)
-CREATE_STATIC_CTRL(UIFlowWndWiFiMovie_ADAS_Car_Animation,0,80,35,179,176)
+CREATE_STATIC_CTRL(UIFlowWndWiFiMovie_ADAS_Car_Animation,0,80,49,179,190)
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
