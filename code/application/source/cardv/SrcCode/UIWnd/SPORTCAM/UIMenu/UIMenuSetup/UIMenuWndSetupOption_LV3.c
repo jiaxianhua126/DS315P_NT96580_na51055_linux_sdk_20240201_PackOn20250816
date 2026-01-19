@@ -51,7 +51,9 @@ EVENT_END
 UINT32 FunctionSwitch_StrTab[]=
 {
     STRID_OFF,
-    STRID_ON,
+    STRID_LOW,
+    STRID_MED, 
+    STRID_HIGH,
 };
 
 static UINT8 g_Option_Sel = 0;
@@ -74,12 +76,12 @@ void UIMenuWndSetupOption_LV3_Tex_ShowInit(UINT32 ItemId,UINT32 SelOption)
             UxMenu_SetData(&UIMenuWndSetupOption_LV3_MenuCtrl, MNU_CURITM, SysGetFlag(FL_MOVIE_LDWS));
             UxStatic_SetData(&UIMenuWndSetupOption_LV3_TitleCtrl, STATIC_VALUE, STRID_LDWS);
             UxCtrl_SetShow(&UIMenuWndSetupOption_LV3_TitleCtrl, TRUE);
-            for (i = 0; i < MOVIE_LDWS_ID_MAX; i ++)
+            for (i = 0; i < ADAS_LDWS_ID_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  FunctionSwitch_StrTab[i]);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
             }
-            for (i = MOVIE_LDWS_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
+            for (i = ADAS_LDWS_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  0);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
@@ -92,12 +94,12 @@ void UIMenuWndSetupOption_LV3_Tex_ShowInit(UINT32 ItemId,UINT32 SelOption)
             UxMenu_SetData(&UIMenuWndSetupOption_LV3_MenuCtrl, MNU_CURITM, SysGetFlag(FL_MOVIE_FCW));
             UxStatic_SetData(&UIMenuWndSetupOption_LV3_TitleCtrl, STATIC_VALUE, STRID_FCW);
             UxCtrl_SetShow(&UIMenuWndSetupOption_LV3_TitleCtrl, TRUE);
-            for (i = 0; i < MOVIE_FCW_ID_MAX; i ++)
+            for (i = 0; i < ADAS_FCW_ID_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  FunctionSwitch_StrTab[i]);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
             }
-            for (i = MOVIE_FCW_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
+            for (i = ADAS_FCW_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  0);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
@@ -110,12 +112,12 @@ void UIMenuWndSetupOption_LV3_Tex_ShowInit(UINT32 ItemId,UINT32 SelOption)
             UxMenu_SetData(&UIMenuWndSetupOption_LV3_MenuCtrl, MNU_CURITM, SysGetFlag(FL_SNG));
             UxStatic_SetData(&UIMenuWndSetupOption_LV3_TitleCtrl, STATIC_VALUE, STRID_SNG);
             UxCtrl_SetShow(&UIMenuWndSetupOption_LV3_TitleCtrl, TRUE);
-            for (i = 0; i < FUNCTION_ID_MAX; i ++)
+            for (i = 0; i < ADAS_SNG_ID_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  FunctionSwitch_StrTab[i]);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
             }
-            for (i = FUNCTION_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
+            for (i = ADAS_SNG_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  0);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
@@ -128,12 +130,12 @@ void UIMenuWndSetupOption_LV3_Tex_ShowInit(UINT32 ItemId,UINT32 SelOption)
             UxMenu_SetData(&UIMenuWndSetupOption_LV3_MenuCtrl, MNU_CURITM, SysGetFlag(FL_PCW));
             UxStatic_SetData(&UIMenuWndSetupOption_LV3_TitleCtrl, STATIC_VALUE, STRID_PCW);
             UxCtrl_SetShow(&UIMenuWndSetupOption_LV3_TitleCtrl, TRUE);
-            for (i = 0; i < FUNCTION_ID_MAX; i ++)
+            for (i = 0; i < ADAS_PCW_ID_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  FunctionSwitch_StrTab[i]);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
             }
-            for (i = FUNCTION_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
+            for (i = ADAS_PCW_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  0);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
@@ -146,12 +148,12 @@ void UIMenuWndSetupOption_LV3_Tex_ShowInit(UINT32 ItemId,UINT32 SelOption)
             UxMenu_SetData(&UIMenuWndSetupOption_LV3_MenuCtrl, MNU_CURITM, SysGetFlag(FL_RCW));
             UxStatic_SetData(&UIMenuWndSetupOption_LV3_TitleCtrl, STATIC_VALUE, STRID_RCW);
             UxCtrl_SetShow(&UIMenuWndSetupOption_LV3_TitleCtrl, TRUE);
-            for (i = 0; i < FUNCTION_ID_MAX; i ++)
+            for (i = 0; i < ADAS_RCW_ID_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  FunctionSwitch_StrTab[i]);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
             }
-            for (i = FUNCTION_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
+            for (i = ADAS_RCW_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  0);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
@@ -164,12 +166,12 @@ void UIMenuWndSetupOption_LV3_Tex_ShowInit(UINT32 ItemId,UINT32 SelOption)
             UxMenu_SetData(&UIMenuWndSetupOption_LV3_MenuCtrl, MNU_CURITM, SysGetFlag(FL_ADAS_LCAWS));
             UxStatic_SetData(&UIMenuWndSetupOption_LV3_TitleCtrl, STATIC_VALUE, STRID_LCWS);
             UxCtrl_SetShow(&UIMenuWndSetupOption_LV3_TitleCtrl, TRUE);
-            for (i = 0; i < FUNCTION_ID_MAX; i ++)
+            for (i = 0; i < ADAS_LCAWS_ID_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  FunctionSwitch_StrTab[i]);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
             }
-            for (i = FUNCTION_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
+            for (i = ADAS_LCAWS_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  0);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);
@@ -182,12 +184,12 @@ void UIMenuWndSetupOption_LV3_Tex_ShowInit(UINT32 ItemId,UINT32 SelOption)
             UxMenu_SetData(&UIMenuWndSetupOption_LV3_MenuCtrl, MNU_CURITM, SysGetFlag(FL_ADAS_VIRTUAL_BUMPER));
             UxStatic_SetData(&UIMenuWndSetupOption_LV3_TitleCtrl, STATIC_VALUE, STRID_VIRTUAL_BUMPER);
             UxCtrl_SetShow(&UIMenuWndSetupOption_LV3_TitleCtrl, TRUE);
-            for (i = 0; i < FUNCTION_ID_MAX; i ++)
+            for (i = 0; i < ADAS_VIRTUAL_BUMPER_ID_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  FunctionSwitch_StrTab[i]);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_ENABLE);
             }
-            for (i = FUNCTION_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
+            for (i = ADAS_VIRTUAL_BUMPER_ID_MAX; i < UIMenuWndSetupOption_LV3_Menu_MAX; i ++)
             {
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STRID,  0);
                 UxMenu_SetItemData(&UIMenuWndSetupOption_LV3_MenuCtrl, i, MNUITM_STATUS, STATUS_DISABLE);

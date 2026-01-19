@@ -1340,6 +1340,30 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 		
 		//DBG_DUMP("FCW: objsize=%d, cipv=%d\r\n", fcw_result->objsize, cipv_index);
 		
+		// 前路距离显示：只要有CIPV就显示距离，否则显示00
+		if (has_cipv && cipv_index < fcw_result->objsize) {
+			AlgoAdasObject* cipv_obj = &fcw_result->objects[cipv_index];
+			FLOAT distance_m = cipv_obj->relative_distance.y;
+			
+			if (distance_m > 0) {
+				// 米转英尺
+				UINT32 distance_ft = (UINT32)(distance_m * 3.28084f + 0.5f); // 四舍五入
+				
+				// 显示距离（英尺）
+				FlowWiFiMovie_IconDrawADASDistance(distance_ft);
+				
+				//DBG_DUMP("Front Car Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
+			} else {
+				// 如果CIPV的Y距离不是正数，显示00
+				FlowWiFiMovie_IconDrawADASDistance(0);
+				//DBG_DUMP("CIPV not in front, distance set to 00\r\n");
+			}
+		} else {
+			// 没有CIPV，显示00
+			FlowWiFiMovie_IconDrawADASDistance(0);
+			//DBG_DUMP("No front car, distance set to 00\r\n");
+		}
+		
 		// 前路车辆计数和红色标记
 		INT32 front_count = 0;
 		BOOL front_red_shown = FALSE;
@@ -1392,18 +1416,6 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 			if (is_red_car && !front_red_shown) {
 				car_ctrl = (VControl*)&UIFlowWndWiFiMovie_ADAS_Car_Red_00Ctrl;
 				front_red_shown = TRUE;
-				if(ICON_ADAS_REAR_ALERT != UxStatic_GetData(&UIFlowWndWiFiMovie_ADAS_TypeCtrl, STATIC_VALUE)){
-					// 直接使用Y轴距离（前方距离）
-				    FLOAT distance_m = obj->relative_distance.y;
-				    
-				    // 米转英尺
-				    UINT32 distance_ft = (UINT32)(distance_m * 3.28084f + 0.5f); // 四舍五入
-				    
-				    // 显示距离（英尺）
-				    FlowWiFiMovie_IconDrawADASDistance(distance_ft);
-				    
-				    //DBG_DUMP("Red Car Front Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
-				}
 			} 
 			// 如果是蓝色车辆且还有蓝色名额（最多4个）
 			else if (!is_red_car && blue_count < 4) {
@@ -1460,6 +1472,30 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 	                
 	                DBG_IND("RCW: objsize=%d, cipv=%d\r\n", car_result->objsize, cipv_index);
 	                
+	                // 后路距离显示：只要有CIPV就显示距离，否则显示00（不需要检查警报模式）
+	                if (has_cipv && cipv_index < car_result->objsize) {
+	                    AlgoRcwObject* cipv_obj = &car_result->objects[cipv_index];
+	                    FLOAT distance_m = fabs(cipv_obj->relative_distance.y);
+	                    
+	                    if (distance_m > 0) {
+	                        // 米转英尺
+	                        UINT32 distance_ft = (UINT32)(distance_m * 3.28084f + 0.5f); // 四舍五入
+	                        
+	                        // 显示距离（英尺）
+	                        FlowWiFiMovie_IconDrawADASDistance(distance_ft);
+	                        
+	                        DBG_IND("Rear Car Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
+	                    } else {
+	                        // 如果距离为0，显示00
+	                        FlowWiFiMovie_IconDrawADASDistance(0);
+	                        DBG_IND("Rear car distance is 0, set to 00\r\n");
+	                    }
+	                } else {
+	                    // 没有后路CIPV，显示00
+	                    FlowWiFiMovie_IconDrawADASDistance(0);
+	                    DBG_IND("No rear car, distance set to 00\r\n");
+	                }
+	                
 	                // 后路车辆计数和红色标记
 	                INT32 rear_count = 0;
 	                BOOL rear_red_shown = FALSE;
@@ -1513,20 +1549,6 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 	                    if (is_red_car && !rear_red_shown) {
 	                        car_ctrl = (VControl*)&UIFlowWndWiFiMovie_ADAS_Car_Red_01Ctrl;
 	                        rear_red_shown = TRUE;
-							
-							if(ICON_ADAS_REAR_ALERT == UxStatic_GetData(&UIFlowWndWiFiMovie_ADAS_TypeCtrl, STATIC_VALUE))
-							{
-								// 后路使用Y轴距离的绝对值（后方距离）
-							    FLOAT distance_m = fabs(obj->relative_distance.y);
-							    
-							    // 米转英尺
-							    UINT32 distance_ft = (UINT32)(distance_m * 3.28084f + 0.5f); // 四舍五入
-							    
-							    // 显示距离（英尺）
-							    FlowWiFiMovie_IconDrawADASDistance(distance_ft);
-							    
-							    DBG_IND("Rear Red Car Distance: %.1fm -> %dft\r\n", distance_m, distance_ft);
-							}
 	                    } 
 	                    // 如果是蓝色车辆且还有蓝色名额（最多3个）
 	                    else if (!is_red_car && blue_count < 3) {
@@ -1563,6 +1585,7 @@ void FlowWiFiMovie_IconDrawADASUpdateCar(void)
 	    }
 	}
 }
+
 #else
 {
 	AlgoEventData adas_eventData_app00 = {0};
