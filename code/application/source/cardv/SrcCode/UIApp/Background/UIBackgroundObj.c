@@ -836,12 +836,12 @@ UINT32 BackgroundFormat(void)
 
 UINT32 BackgroundFormatCard(void)
 {
-	int ret;
+	int ret = FST_STA_OK;
     DBG_FUNC_BEGIN("\r\n");
 	//DX_HANDLE pStrgDev = Dx_GetObject(DX_CLASS_STORAGE_EXT|DX_TYPE_CARD1);
 	//UINT32 hStrgObj = Dx_Getcaps(pStrgDev, STORAGE_CAPS_HANDLE, 0);
 	//ret = FileSys_FormatDisk((HNVT_STRG)hStrgObj, FALSE);
-	FS_HANDLE pStrgDXH = (FS_HANDLE)Dx_GetObject(DX_CLASS_STORAGE_EXT | DX_TYPE_CARD1);
+	//FS_HANDLE pStrgDXH = (FS_HANDLE)Dx_GetObject(DX_CLASS_STORAGE_EXT | DX_TYPE_CARD1);
     //FS_HANDLE pStrgDXH = (FS_HANDLE)sdio_getStorageObject(STRG_OBJ_FAT1);
     DBG_FUNC("pStrgDXH=0x%08X\r\n",pStrgDXH);
 	//#NT#2016/05/30#Lincy Lin -begin
@@ -851,7 +851,13 @@ UINT32 BackgroundFormatCard(void)
 	LogFile_Complete();
 #endif
 	//#NT#2016/05/30#Lincy Lin -end
-	ret = FileSys_FormatDisk(pStrgDXH, FALSE);
+	SysMain_system("umount /dev/mmcblk1p1");
+	DBG_DUMP("=========umount=========\r\n");
+	SysMain_system("mkfs.vfat -F 32 /dev/mmcblk1p1");	
+	DBG_DUMP("=========mkfs.vfat=========\r\n");
+	SysMain_system("mount -t vfat /dev/mmcblk1p1 /mnt/sd2");
+	DBG_DUMP("=========mount=========\r\n");
+	//ret = FileSys_FormatDisk(pStrgDXH, FALSE);
 	DBG_FUNC("Call FileSys_FormatDisk() ret=%d\r\n", ret);
 
 	if (ret == FST_STA_OK) {

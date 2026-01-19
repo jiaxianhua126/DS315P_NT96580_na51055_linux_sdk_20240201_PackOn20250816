@@ -54,31 +54,112 @@ pthread_mutex_t g_data_mutex_rear = PTHREAD_MUTEX_INITIALIZER;
 BOOL ADAS_Auth_Test = FALSE;
 extern BOOL SysInit_getintoadas_mode_getstd(void);
 
-static void MovieAlgFunc_ADASSetSentivity(UINT8 adasSensitivity)
+static void MovieAlgFunc_ADASSetSentivity(void)
 {
 	AlgoAttr AlgoAttr_set={0};
+	UINT8 adasSensitivity = 0;
 	ALGO_MANAGER_GetAttr(ALGO_ATTR_ADAS_LDW_SENSITIVITY,&AlgoAttr_set);
 	printf("senType %d\n",AlgoAttr_set.adasAttr.senType);
+	switch(SysGetFlag(FL_MOVIE_LDWS))
+	{
+		case ADAS_LDWS_LOW:
+			adasSensitivity = SEN_LOW;
+			break;
+		case ADAS_LDWS_MID:
+			adasSensitivity = SEN_MIDDLE;
+			break;
+		case ADAS_LDWS_HIGH:
+			adasSensitivity = SEN_HIGH;
+			break;
+		case ADAS_LDWS_OFF:
+		default:
+			adasSensitivity = SEN_LOW;
+			break;
+	}
 	AlgoAttr_set.adasAttr.senType = adasSensitivity;
 	ALGO_MANAGER_SetAttr(ALGO_ATTR_ADAS_LDW_SENSITIVITY,&AlgoAttr_set);
 
 	ALGO_MANAGER_GetAttr(ALGO_ATTR_ADAS_FCW_SENSITIVITY,&AlgoAttr_set);
 	printf("senType %d\n",AlgoAttr_set.adasAttr.senType);
+	switch(SysGetFlag(FL_MOVIE_FCW))
+	{
+		case ADAS_FCW_LOW:
+			adasSensitivity = SEN_LOW;
+			break;
+		case ADAS_FCW_MID:
+			adasSensitivity = SEN_MIDDLE;
+			break;
+		case ADAS_FCW_HIGH:
+			adasSensitivity = SEN_HIGH;
+			break;
+		case ADAS_FCW_OFF:
+		default:
+			adasSensitivity = SEN_LOW;
+			break;
+	}
 	AlgoAttr_set.adasAttr.senType = adasSensitivity;
 	ALGO_MANAGER_SetAttr(ALGO_ATTR_ADAS_FCW_SENSITIVITY,&AlgoAttr_set);
 
 	ALGO_MANAGER_GetAttr(ALGO_ATTR_ADAS_PED_SENSITIVITY,&AlgoAttr_set);
 	printf("senType %d\n",AlgoAttr_set.adasAttr.senType);
+	switch(SysGetFlag(FL_PCW))
+	{
+		case ADAS_PCW_LOW:
+			adasSensitivity = SEN_LOW;
+			break;
+		case ADAS_PCW_MID:
+			adasSensitivity = SEN_MIDDLE;
+			break;
+		case ADAS_PCW_HIGH:
+			adasSensitivity = SEN_HIGH;
+			break;
+		case ADAS_PCW_OFF:
+		default:
+			adasSensitivity = SEN_LOW;
+			break;
+	}
 	AlgoAttr_set.adasAttr.senType = adasSensitivity;
 	ALGO_MANAGER_SetAttr(ALGO_ATTR_ADAS_PED_SENSITIVITY,&AlgoAttr_set);
 
 	ALGO_MANAGER_GetAttr(ALGO_ATTR_ADAS_STGO_SENSITIVITY,&AlgoAttr_set);
 	printf("senType %d\n",AlgoAttr_set.adasAttr.senType);
+	switch(SysGetFlag(FL_SNG))
+	{
+		case ADAS_SNG_LOW:
+			adasSensitivity = SEN_LOW;
+			break;
+		case ADAS_SNG_MID:
+			adasSensitivity = SEN_MIDDLE;
+			break;
+		case ADAS_SNG_HIGH:
+			adasSensitivity = SEN_HIGH;
+			break;
+		case ADAS_SNG_OFF:
+		default:
+			adasSensitivity = SEN_LOW;
+			break;
+	}
 	AlgoAttr_set.adasAttr.senType = adasSensitivity;
 	ALGO_MANAGER_SetAttr(ALGO_ATTR_ADAS_STGO_SENSITIVITY,&AlgoAttr_set);
 
 	ALGO_MANAGER_GetAttr(ALGO_ATTR_ADAS_VIRBUMPER_SENSITIVITY,&AlgoAttr_set);
 	printf("senType %d\n",AlgoAttr_set.adasAttr.senType);
+	switch(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER))
+	{
+		case ADAS_VIRTUAL_BUMPER_LOW:
+			adasSensitivity = SEN_LOW;
+			break;
+		case ADAS_VIRTUAL_BUMPER_MID:
+			adasSensitivity = SEN_MIDDLE;
+			break;
+		case ADAS_VIRTUAL_BUMPER_HIGH:
+			adasSensitivity = SEN_HIGH;
+			break;
+		case ADAS_VIRTUAL_BUMPER_OFF:
+		default:
+			adasSensitivity = SEN_LOW;
+			break;
+	}
 	AlgoAttr_set.adasAttr.senType = adasSensitivity;
 	ALGO_MANAGER_SetAttr(ALGO_ATTR_ADAS_VIRBUMPER_SENSITIVITY,&AlgoAttr_set);
 }
@@ -92,16 +173,58 @@ static void MovieAlgFunc_SetLdwSpeed(int speed)
 	ALGO_MANAGER_SetAttr(ALGO_ATTR_ADAS_LDW_WARN_SPEED,&AlgoAttr_set);
 }
 
-static void MovieAlgFunc_RCWSetSentivity(UINT8 rcwSensitivity)
+static void MovieAlgFunc_RCWSetSpeed(int speed)
 {
 	AlgoAttr AlgoAttr_set={0};
+	ALGO_MANAGER_GetAttr(ALGO_ATTR_RCW_SPEED_THRESHOLD,&AlgoAttr_set);
+	printf("senType %d\n",AlgoAttr_set.rcwAttr.speedThreshold);
+	AlgoAttr_set.rcwAttr.speedThreshold = speed;
+	ALGO_MANAGER_SetAttr(ALGO_ATTR_RCW_SPEED_THRESHOLD,&AlgoAttr_set);
+}
+
+static void MovieAlgFunc_RCWSetSentivity(void)
+{
+	AlgoAttr AlgoAttr_set={0};
+	UINT8 rcwSensitivity = 0;
 	ALGO_MANAGER_GetAttr(ALGO_ATTR_RCW_SENSITIVITY,&AlgoAttr_set);
 	printf("senType %d\n",AlgoAttr_set.rcwAttr.sen);
+	switch(SysGetFlag(FL_RCW))
+	{
+		case ADAS_RCW_LOW:
+			rcwSensitivity = SEN_LOW;
+			break;
+		case ADAS_RCW_MID:
+			rcwSensitivity = SEN_MIDDLE;
+			break;
+		case ADAS_RCW_HIGH:
+			rcwSensitivity = SEN_HIGH;
+			break;
+		case ADAS_RCW_OFF:
+		default:
+			rcwSensitivity = SEN_LOW;
+			break;
+	}
 	AlgoAttr_set.rcwAttr.sen = rcwSensitivity;
 	ALGO_MANAGER_SetAttr(ALGO_ATTR_RCW_SENSITIVITY,&AlgoAttr_set);
 
 	ALGO_MANAGER_GetAttr(ALGO_ATTR_RCW_LCA_SENSITIVITY,&AlgoAttr_set);
 	printf("senType %d\n",AlgoAttr_set.rcwAttr.sen);
+	switch(SysGetFlag(FL_ADAS_LCAWS))
+	{
+		case ADAS_LCAWS_LOW:
+			rcwSensitivity = SEN_LOW;
+			break;
+		case ADAS_LCAWS_MID:
+			rcwSensitivity = SEN_MIDDLE;
+			break;
+		case ADAS_LCAWS_HIGH:
+			rcwSensitivity = SEN_HIGH;
+			break;
+		case ADAS_LCAWS_OFF:
+		default:
+			rcwSensitivity = SEN_LOW;
+			break;
+	}
 	AlgoAttr_set.rcwAttr.sen = rcwSensitivity;
 	ALGO_MANAGER_SetAttr(ALGO_ATTR_RCW_LCA_SENSITIVITY,&AlgoAttr_set);
 }
@@ -127,7 +250,7 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 
 	//add by keytech
 	hd_ret = ALGO_MANAGER_GetHandleByName(&adas_handle,ADAS_ALGO_NAME);
-	MovieAlgFunc_ADASSetSentivity(SEN_MIDDLE);
+	MovieAlgFunc_ADASSetSentivity();
 	MovieAlgFunc_SetLdwSpeed(60);
 	
 	attr_debug_lvl.logLevel = ALGO_LEVEL_WARN;
@@ -197,32 +320,32 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 					#endif
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//ǰ����ײ
 				        printf("=====ALGO_ADAS_WARN_TYPE_FCW====\r\n");
-						if(SysGetFlag(FL_MOVIE_FCW) == MOVIE_FCW_ON|| SysInit_getintoadas_mode_getstd())
+						if(SysGetFlag(FL_MOVIE_FCW) != ADAS_FCW_OFF|| SysInit_getintoadas_mode_getstd())
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FC);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)){//ǰ����ײԤ����
 				        printf("=====ALGO_ADAS_WARN_TYPE_FPW====\r\n");
-						if(SysGetFlag(FL_PCW) == FUNCTION_ON|| SysInit_getintoadas_mode_getstd())
+						if(SysGetFlag(FL_PCW) != ADAS_PCW_OFF|| SysInit_getintoadas_mode_getstd())
 					        Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FPW);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)){////����ƫ�� ��ƫ��
 				        printf("=====ALGO_ADAS_WARN_TYPE_LDW_L====\r\n");
-						if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON|| SysInit_getintoadas_mode_getstd())
+						if(SysGetFlag(FL_MOVIE_LDWS) != ADAS_LDWS_OFF|| SysInit_getintoadas_mode_getstd())
 				       		Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_LEFT);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)){//����ƫ�� ��ƫ��
 				        printf("=====ALGO_ADAS_WARN_TYPE_LDW_R====\r\n");
-						if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON|| SysInit_getintoadas_mode_getstd())
+						if(SysGetFlag(FL_MOVIE_LDWS) != ADAS_LDWS_OFF|| SysInit_getintoadas_mode_getstd())
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_RIGHT);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)){//ǰ���𲽱���
 				        printf("=====ALGO_ADAS_WARN_TYPE_STOP_GO====\r\n");
-						if(SysGetFlag(FL_SNG) == FUNCTION_ON|| SysInit_getintoadas_mode_getstd())
+						if(SysGetFlag(FL_SNG) != ADAS_SNG_OFF|| SysInit_getintoadas_mode_getstd())
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_GO);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)){//������ײ
 				        printf("=====ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS====\r\n");
-						if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) == ADAS_VIRTUAL_BUMPER_ON|| SysInit_getintoadas_mode_getstd())
+						if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) != ADAS_VIRTUAL_BUMPER_OFF|| SysInit_getintoadas_mode_getstd())
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_VIRTUAL_BUMPERS);
 				    }
 					before_algoWarnType = adas_eventData.result.algoWarnType;
@@ -240,32 +363,32 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 				#endif
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FCW)){//ǰ����ײ
 			        printf("=====ALGO_ADAS_WARN_TYPE_FCW====\r\n");
-					if(SysGetFlag(FL_MOVIE_FCW) == MOVIE_FCW_ON|| SysInit_getintoadas_mode_getstd())
+					if(SysGetFlag(FL_MOVIE_FCW) != ADAS_FCW_OFF|| SysInit_getintoadas_mode_getstd())
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FC);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_FPW)){//ǰ����ײԤ����
 			        printf("=====ALGO_ADAS_WARN_TYPE_FPW====\r\n");
-					if(SysGetFlag(FL_PCW) == FUNCTION_ON|| SysInit_getintoadas_mode_getstd())
+					if(SysGetFlag(FL_PCW) != ADAS_PCW_OFF|| SysInit_getintoadas_mode_getstd())
 				        Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_FPW);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_L)){////����ƫ�� ��ƫ��
 			        printf("=====ALGO_ADAS_WARN_TYPE_LDW_L====\r\n");
-					if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON|| SysInit_getintoadas_mode_getstd())
+					if(SysGetFlag(FL_MOVIE_LDWS) != ADAS_LDWS_OFF|| SysInit_getintoadas_mode_getstd())
 			       		Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_LEFT);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_LDW_R)){//����ƫ�� ��ƫ��
 			        printf("=====ALGO_ADAS_WARN_TYPE_LDW_R====\r\n");
-					if(SysGetFlag(FL_MOVIE_LDWS) == MOVIE_LDWS_ON|| SysInit_getintoadas_mode_getstd())
+					if(SysGetFlag(FL_MOVIE_LDWS) != ADAS_LDWS_OFF|| SysInit_getintoadas_mode_getstd())
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LD_RIGHT);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_STOP_GO)){//ǰ���𲽱���
 			        printf("=====ALGO_ADAS_WARN_TYPE_STOP_GO====\r\n");
-					if(SysGetFlag(FL_SNG) == FUNCTION_ON|| SysInit_getintoadas_mode_getstd())
+					if(SysGetFlag(FL_SNG) != ADAS_SNG_OFF|| SysInit_getintoadas_mode_getstd())
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_GO);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(adas_eventData.result.algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS)){//������ײ
 			        printf("=====ALGO_ADAS_WARN_TYPE_VIRTUAL_BUMPERS====\r\n");
-					if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) == ADAS_VIRTUAL_BUMPER_ON|| SysInit_getintoadas_mode_getstd())
+					if(SysGetFlag(FL_ADAS_VIRTUAL_BUMPER) != ADAS_VIRTUAL_BUMPER_OFF|| SysInit_getintoadas_mode_getstd())
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_VIRTUAL_BUMPERS);
 			    }
 				before_algoWarnType = adas_eventData.result.algoWarnType;
@@ -309,7 +432,8 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 
 	//add by keytech
 	hd_ret = ALGO_MANAGER_GetHandleByName(&rcw_handle,RCW_ALGO_NAME);
-	MovieAlgFunc_RCWSetSentivity(SEN_MIDDLE);
+	MovieAlgFunc_RCWSetSentivity();
+	MovieAlgFunc_RCWSetSpeed(10);
 
 	attr_debug_lvl.logLevel = ALGO_LEVEL_WARN;
 	hd_ret = ALGO_MANAGER_SetAttr(ALGO_ATTR_LOGLEVEL,&attr_debug_lvl);
@@ -376,17 +500,17 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 					#endif
 					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//����ײ
 				        printf("=====ALGO_RCW_WARN_TYPE_RCW_REAR====\r\n");
-						if(SysGetFlag(FL_RCW) == FUNCTION_ON|| SysInit_getintoadas_mode_getstd())
+						if(SysGetFlag(FL_RCW) != ADAS_RCW_OFF|| SysInit_getintoadas_mode_getstd())
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_RCW_REAR);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//����г�
 				        printf("=====ALGO_RCW_WARN_TYPE_LCA_LEFT====\r\n");
-						if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON|| SysInit_getintoadas_mode_getstd())
+						if(SysGetFlag(FL_ADAS_LCAWS) != ADAS_LCAWS_OFF|| SysInit_getintoadas_mode_getstd())
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_LEFT);
 				    }
 					if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//�Ҳ��г�
 				        printf("=====ALGO_RCW_WARN_TYPE_LCA_RIGHT====\r\n");
-						if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON|| SysInit_getintoadas_mode_getstd())
+						if(SysGetFlag(FL_ADAS_LCAWS) != ADAS_LCAWS_OFF|| SysInit_getintoadas_mode_getstd())
 				        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_RIGHT);
 				    }
 					before_algoWarnType = rcw_eventData.result.algoWarnType;
@@ -402,17 +526,17 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Tsk(void)
 				#endif
 				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_RCW_REAR)){//ǰ����ײ
 			        printf("=====ALGO_RCW_WARN_TYPE_RCW_REAR====\r\n");
-					if(SysGetFlag(FL_RCW) == FUNCTION_ON|| SysInit_getintoadas_mode_getstd())
+					if(SysGetFlag(FL_RCW) != ADAS_RCW_OFF|| SysInit_getintoadas_mode_getstd())
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_RCW_REAR);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_LEFT)){//�������
 			        printf("=====ALGO_RCW_WARN_TYPE_LCA_LEFT====\r\n");
-					if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON|| SysInit_getintoadas_mode_getstd())
+					if(SysGetFlag(FL_ADAS_LCAWS) != ADAS_LCAWS_OFF|| SysInit_getintoadas_mode_getstd())
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_LEFT);
 			    }
 				if(ALGO_WARN_TYPE_CHECK_SET(rcw_eventData.result.algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)&&!ALGO_WARN_TYPE_CHECK_SET(before_algoWarnType,ALGO_RCW_WARN_TYPE_LCA_RIGHT)){//ǰ����ײԤ����
 			        printf("=====ALGO_RCW_WARN_TYPE_LCA_RIGHT====\r\n");
-					if(SysGetFlag(FL_ADAS_LCAWS) == FUNCTION_ON|| SysInit_getintoadas_mode_getstd())
+					if(SysGetFlag(FL_ADAS_LCAWS) != ADAS_LCAWS_OFF|| SysInit_getintoadas_mode_getstd())
 			        	Ux_PostEvent(NVTEVT_CB_ADAS_SHOWALARM, 1, ADAS_ALARM_LCA_RIGHT);
 			    }
 				before_algoWarnType = rcw_eventData.result.algoWarnType;

@@ -1246,21 +1246,58 @@ enum {
 };
 
 //-----------------------------------------------------------------------------
-// Movie FCW option
+// ADAS LDWS option
 //-----------------------------------------------------------------------------
 enum {
-	MOVIE_FCW_OFF = 0,
-	MOVIE_FCW_ON,
-	MOVIE_FCW_ID_MAX,
+	ADAS_LDWS_OFF = 0,
+	ADAS_LDWS_LOW,
+	ADAS_LDWS_MID,
+	ADAS_LDWS_HIGH,
+	ADAS_LDWS_ID_MAX,
 };
 
 //-----------------------------------------------------------------------------
-// Movie LDWS option
+// ADAS FCW option
 //-----------------------------------------------------------------------------
 enum {
-	MOVIE_LDWS_OFF = 0,
-	MOVIE_LDWS_ON,
-	MOVIE_LDWS_ID_MAX,
+	ADAS_FCW_OFF = 0,
+	ADAS_FCW_LOW,
+	ADAS_FCW_MID,
+	ADAS_FCW_HIGH,
+	ADAS_FCW_ID_MAX,
+};
+
+//-----------------------------------------------------------------------------
+// ADAS SNG option
+//-----------------------------------------------------------------------------
+enum {
+	ADAS_SNG_OFF = 0,
+	ADAS_SNG_LOW,
+	ADAS_SNG_MID,
+	ADAS_SNG_HIGH,
+	ADAS_SNG_ID_MAX,
+};
+
+//-----------------------------------------------------------------------------
+// ADAS PCW option
+//-----------------------------------------------------------------------------
+enum {
+	ADAS_PCW_OFF = 0,
+	ADAS_PCW_LOW,
+	ADAS_PCW_MID,
+	ADAS_PCW_HIGH,
+	ADAS_PCW_ID_MAX,
+};
+
+//-----------------------------------------------------------------------------
+// ADAS RCW option
+//-----------------------------------------------------------------------------
+enum {
+	ADAS_RCW_OFF = 0,
+	ADAS_RCW_LOW,
+	ADAS_RCW_MID,
+	ADAS_RCW_HIGH,
+	ADAS_RCW_ID_MAX,
 };
 
 //-----------------------------------------------------------------------------
@@ -1268,7 +1305,9 @@ enum {
 //-----------------------------------------------------------------------------
 enum {
 	ADAS_LCAWS_OFF = 0,
-	ADAS_LCAWS_ON,
+	ADAS_LCAWS_LOW,
+	ADAS_LCAWS_MID,
+	ADAS_LCAWS_HIGH,
 	ADAS_LCAWS_ID_MAX,
 };
 
@@ -1277,7 +1316,9 @@ enum {
 //-----------------------------------------------------------------------------
 enum {
 	ADAS_VIRTUAL_BUMPER_OFF = 0,
-	ADAS_VIRTUAL_BUMPER_ON,
+	ADAS_VIRTUAL_BUMPER_LOW,
+	ADAS_VIRTUAL_BUMPER_MID,
+	ADAS_VIRTUAL_BUMPER_HIGH,
 	ADAS_VIRTUAL_BUMPER_ID_MAX,
 };
 
