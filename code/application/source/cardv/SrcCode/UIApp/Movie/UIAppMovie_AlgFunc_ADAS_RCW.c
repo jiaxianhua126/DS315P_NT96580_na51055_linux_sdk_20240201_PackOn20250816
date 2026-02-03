@@ -299,7 +299,6 @@ static THREAD_RETTYPE MovieAlgFunc_ADAS_Tsk(void)
 					//printf("calib_process:%d==ADAS===\n",adas_eventData.result.algoResult.adasResult.calib.calib_process);
 				
 				if(adas_eventData.result.type == ALGO_TYPE_ADAS
-					&&adas_eventData.result.algoResult.adasResult.calib.calib_process>=1
 					&&adas_eventData.result.algoResult.adasResult.calib.calib_process>=100)
 				{
 					/*printf("warn %x, fcw objsize %d ldw %d ped %d, calib_his %d calib_process %d\n",adas_eventData.result.algoWarnType,
@@ -647,7 +646,6 @@ static THREAD_RETTYPE MovieAlgFunc_RCW_Ethcam_Tsk(void)
 							printf("calib_process�?d===RCW==hd_ret:%d \n",rcw_eventData.result.algoResult.rcwResult.calib.calib_process,hd_ret);
 						
 						if(rcw_eventData.result.type == ALGO_TYPE_RCW
-							&&rcw_eventData.result.algoResult.rcwResult.calib.calib_process>=1
 							&&rcw_eventData.result.algoResult.rcwResult.calib.calib_process>=100)
 						{
 							/*printf("warn %x, fcw objsize %d ldw %d ped %d, calib_his %d calib_process %d\n",adas_eventData.result.algoWarnType,
