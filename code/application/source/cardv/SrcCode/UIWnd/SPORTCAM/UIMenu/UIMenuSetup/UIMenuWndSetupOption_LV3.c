@@ -24,7 +24,16 @@
 #define UIMenuWndSetupOption_LV3TraceMsg(...)
 #endif
 
-//---------------------UIMenuWndSetupOption_LV3Ctrl Global Variables -----------------------------
+//local debug level: THIS_DBGLVL
+#define THIS_DBGLVL         6 // 0=FATAL, 1=ERR, 2=WRN, 3=UNIT, 4=FUNC, 5=IND, 6=MSG, 7=VALUE, 8=USER
+///////////////////////////////////////////////////////////////////////////////
+#define __MODULE__          UIMenuWndSetupOption_LV3
+#define __DBGLVL__          ((THIS_DBGLVL>=PRJ_DBG_LVL)?THIS_DBGLVL:PRJ_DBG_LVL)
+#define __DBGFLT__          "*" //*=All, [mark]=CustomClass
+#include <kwrap/debug.h>
+///////////////////////////////////////////////////////////////////////////////
+
+//---------------------UIMenuWndCustomerComfirmCtrl Global Variables -----------------------------
 
 //---------------------UIMenuWndSetupOption_LV3Ctrl Prototype Declaration  -----------------------
 
