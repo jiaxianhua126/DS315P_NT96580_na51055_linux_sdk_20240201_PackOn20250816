@@ -80,7 +80,7 @@ code/application/external/wpa_supplicant-2.5
 code/application/external/iperf-3.0.12/
 code/application/external/wireless_tools.30.rtl/
 code/application/external/dhd_priv/
-code/application/external/wireless_tools.29
+code/application/external/
 code/lib/external/openssl-1.0.2d
 code/lib/external/libnl-3.2.27
 code/lib/external/libiconv-1.16/
@@ -96,3 +96,11 @@ code/hdal/samples/
 .nvt_finish
 
 siprj
+DS315_new_sdk_AIC8880.*
+*.tmp
+BSP/root-fs
+S2PRO_new_sdk.*
+*.o
+code/application/source/cardv_auto_wifi_20251205.tar.bz2
+modules.builtin
+*_no_tracer.c
