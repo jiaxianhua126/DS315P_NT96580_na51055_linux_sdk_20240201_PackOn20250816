@@ -104,3 +104,5 @@ S2PRO_new_sdk.*
 code/application/source/cardv_auto_wifi_20251205.tar.bz2
 modules.builtin
 *_no_tracer.c
+._*
+.DS_Store
