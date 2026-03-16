@@ -308,6 +308,27 @@ static void update_wifi(void)
 	lv_plugin_img_set_src(image_wifi_scr_uiflowmovie, res[SysGetFlag(FL_WIFI)]);
 }
 
+static void update_driver_assist(void)
+{
+	FlowWiFiMovie_IconDrawSNG(UI_GetData(FL_SNG) != ADAS_SNG_OFF);
+	FlowWiFiMovie_IconDrawTSR(UI_GetData(FL_GPS) != GPS_OFF);
+
+	if ((image_ddd_scr_uiflowmovie == NULL) || (label_ddd_alert_scr_uiflowmovie == NULL)) {
+		return;
+	}
+
+	if (!lv_obj_get_hidden(label_ddd_alert_scr_uiflowmovie)) {
+		return;
+	}
+
+	if (UI_GetData(FL_MOVIE_DDD) == MOVIE_DDD_ON) {
+		lv_img_set_src(image_ddd_scr_uiflowmovie, &icon_ddd_on);
+		lv_obj_set_hidden(image_ddd_scr_uiflowmovie, false);
+	} else {
+		lv_obj_set_hidden(image_ddd_scr_uiflowmovie, true);
+	}
+}
+
 
 void UIFlowMovie_update_icons(void)
 {
@@ -328,6 +349,7 @@ static void update_icons(void)
 	update_cyclic_rec();
 	update_battery();
 	update_max_rec_time();
+	update_driver_assist();
 
 }
 
