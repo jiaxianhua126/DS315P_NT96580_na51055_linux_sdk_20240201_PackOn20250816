@@ -31,6 +31,19 @@ static BOOL sSOSStatusNow = FALSE;
 
 extern void UIFlowMovie_update_icons(void);
 
+static void LVGLCompat_SetDDDAlert(const char *text)
+{
+    if (image_ddd_scr_uiflowmovie != NULL) {
+        lv_img_set_src(image_ddd_scr_uiflowmovie, &icon_ddd_on);
+        lv_obj_set_hidden(image_ddd_scr_uiflowmovie, false);
+    }
+
+    if (label_ddd_alert_scr_uiflowmovie != NULL) {
+        lv_label_set_text(label_ddd_alert_scr_uiflowmovie, text);
+        lv_obj_set_hidden(label_ddd_alert_scr_uiflowmovie, false);
+    }
+}
+
 static void LVGLCompat_UpdateWiFiOverlay(void)
 {
     static char ssid_buf[32];
@@ -350,6 +363,26 @@ void FlowWiFiMovie_IconDrawWiFiDisConnected(BOOL show)
     LVGLCompat_UpdateWiFiOverlay();
 }
 
+void FlowWiFiMovie_IconDrawSNG(BOOL show)
+{
+    if (image_sng_scr_uiflowmovie != NULL) {
+        if (show) {
+            lv_img_set_src(image_sng_scr_uiflowmovie, &icon_sng_on);
+        }
+        lv_obj_set_hidden(image_sng_scr_uiflowmovie, !show);
+    }
+}
+
+void FlowWiFiMovie_IconDrawTSR(BOOL show)
+{
+    if (image_tsr_scr_uiflowmovie != NULL) {
+        if (show) {
+            lv_img_set_src(image_tsr_scr_uiflowmovie, &icon_tsr_on);
+        }
+        lv_obj_set_hidden(image_tsr_scr_uiflowmovie, !show);
+    }
+}
+
 void FlowWiFiMovie_IconDrawADASAnimation(void)
 {
 }
@@ -420,6 +453,40 @@ void FlowWiFiMovie_IconHideADASDisplayType(void)
     }
     if (label_adas_alert_scr_uiflowmovie != NULL) {
         lv_obj_set_hidden(label_adas_alert_scr_uiflowmovie, true);
+    }
+}
+
+void FlowWiFiMovie_IconDrawDDDAlarm(UINT32 id)
+{
+    switch (id) {
+    case DDD_ALARM_PERCLOS:
+        LVGLCompat_SetDDDAlert("PERCLOS");
+        break;
+    case DDD_ALARM_YAWN:
+        LVGLCompat_SetDDDAlert("YAWN");
+        break;
+    case DDD_ALARM_DIS:
+        LVGLCompat_SetDDDAlert("DISTRACT");
+        break;
+    case DDD_ALARM_NODE:
+        LVGLCompat_SetDDDAlert("NOD");
+        break;
+    case DDD_ALARM_EYE:
+        LVGLCompat_SetDDDAlert("EYE");
+        break;
+    default:
+        LVGLCompat_SetDDDAlert("DDD");
+        break;
+    }
+}
+
+void FlowWiFiMovie_IconHideDDDAlarm(void)
+{
+    if (image_ddd_scr_uiflowmovie != NULL) {
+        lv_obj_set_hidden(image_ddd_scr_uiflowmovie, true);
+    }
+    if (label_ddd_alert_scr_uiflowmovie != NULL) {
+        lv_obj_set_hidden(label_ddd_alert_scr_uiflowmovie, true);
     }
 }
 

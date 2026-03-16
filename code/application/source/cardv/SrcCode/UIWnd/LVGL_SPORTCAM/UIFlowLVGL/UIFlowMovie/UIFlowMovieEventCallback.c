@@ -20,6 +20,7 @@ static lv_task_t* 	gUIMotionDetTimerID = NULL;
 static BOOL    	g_uiRecordIngMotionDet = TRUE;
 //#NT#2021/09/13#Philex Lin - end
 static UINT32 g_uiAdasAlertSecCnt = 0;
+static UINT32 g_uiDddAlertSecCnt = 0;
 
 uint16_t warn_msgbox_auto_close_ms = 6000;
 uint32_t warn_msgbox_auto_infinite_ms = 0xffffffff;
@@ -382,6 +383,13 @@ static void task_1sec_period_cb(lv_task_t* task)
 			FlowWiFiMovie_IconHideADASDisplayType();
 			FlowWiFiMovie_IconHideADASDistance();
 			g_uiAdasAlertSecCnt = 0;
+		}
+	}
+	if ((image_ddd_scr_uiflowmovie != NULL) && !lv_obj_get_hidden(image_ddd_scr_uiflowmovie)) {
+		g_uiDddAlertSecCnt++;
+		if (g_uiDddAlertSecCnt >= 4) {
+			FlowWiFiMovie_IconHideDDDAlarm();
+			g_uiDddAlertSecCnt = 0;
 		}
 	}
 }
@@ -908,6 +916,18 @@ static void UIFlowMovie_ADASShowAlarm(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_
 	FlowWiFiMovie_IconDrawADASDisplayType(msg->paramArray[0]);
 }
 
+static void UIFlowMovie_DDDShowAlarm(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* msg)
+{
+	(void)obj;
+
+	if ((msg == NULL) || (msg->paramNum < 2)) {
+		return;
+	}
+
+	g_uiDddAlertSecCnt = 0;
+	FlowWiFiMovie_IconDrawDDDAlarm(msg->paramArray[1]);
+}
+
 static void UIFlowMovie_SLOW(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* msg)
 {
 		// stop recoding when slow card event is happening
@@ -1070,6 +1090,13 @@ static void UIFlowMovie_NVTMSG(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* m
 	case NVTEVT_CB_ADAS_SHOWALARM:
 	{
 		UIFlowMovie_ADASShowAlarm(obj, msg);
+		break;
+	}
+
+	case NVTEVT_KEY_EDOG_ALARM:
+	case NVTEVT_CB_DDD_SHOWALARM:
+	{
+		UIFlowMovie_DDDShowAlarm(obj, msg);
 		break;
 	}
 
