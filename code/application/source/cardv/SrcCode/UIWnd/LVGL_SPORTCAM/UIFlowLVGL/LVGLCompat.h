@@ -33,6 +33,7 @@ void FlowWiFiMovie_UpdateIcons(BOOL force);
 void FlowWiFiMovie_IconDrawTimelapse(BOOL show);
 void FlowWiFiMovie_IconDrawMotionDet(BOOL show);
 void FlowWiFiMovie_IconDrawAudio(BOOL show);
+void FlowWiFiMovie_IconDrawGPSSignal(BOOL show);
 void FlowWiFiMovie_IconDrawWiFiConnected(BOOL show);
 void UIFlowWndWiFiMovie_UpdateWiFiData(BOOL bShow);
 void FlowMovie_USBRemovePowerOff(void);

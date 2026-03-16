@@ -22,6 +22,7 @@ lv_obj_t* label_size_scr_uiflowmovie;
 lv_obj_t* image_cyclic_rec_scr_uiflowmovie;
 lv_obj_t* image_hdr_scr_uiflowmovie;
 lv_obj_t* image_wifi_scr_uiflowmovie;
+lv_obj_t* image_gps_scr_uiflowmovie;
 lv_obj_t* image_audio_scr_uiflowmovie;
 lv_obj_t* image_motiondetect_scr_uiflowmovie;
 lv_obj_t* image_timelapse_scr_uiflowmovie;
@@ -723,6 +724,24 @@ lv_obj_t* UIFlowMovie_create(){
 	lv_obj_add_style(image_wifi, 0, &image_wifi_s0);
 
 	image_wifi_scr_uiflowmovie = image_wifi;
+
+	static lv_style_t image_gps_s0;
+	lv_style_init(&image_gps_s0);
+	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&image_gps_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&image_gps_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&image_gps_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_outline_color(&image_gps_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_image_recolor(&image_gps_s0, LV_STATE_DEFAULT, color);
+	lv_obj_t *image_gps = lv_img_create(parent, NULL);
+	lv_obj_set_hidden(image_gps, true);
+	lv_obj_set_click(image_gps, false);
+	lv_obj_set_drag(image_gps, false);
+	lv_obj_set_pos(image_gps, 12, 137);
+	lv_obj_set_size(image_gps, 28, 28);
+	lv_img_set_src(image_gps, &icon_gps_off);
+	lv_obj_add_style(image_gps, 0, &image_gps_s0);
+
+	image_gps_scr_uiflowmovie = image_gps;
 
 	static lv_style_t image_audio_s0;
 	lv_style_init(&image_audio_s0);

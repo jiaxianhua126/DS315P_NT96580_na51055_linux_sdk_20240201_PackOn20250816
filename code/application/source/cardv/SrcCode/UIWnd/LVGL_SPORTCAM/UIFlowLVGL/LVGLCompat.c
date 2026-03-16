@@ -8,6 +8,8 @@
 #include "UIFlowLVGL/UIFlowWifiLinkOK/UIFlowWifiLinkOK.h"
 #include "algo_manager.h"
 
+extern INT8 GetGPSSignalStatus(void);
+
 BOOL ParkingM_PreRecord_EMR = FALSE;
 BOOL WifiStarting = FALSE;
 BOOL bWiFiConnected = FALSE;
@@ -118,6 +120,24 @@ static void LVGLCompat_UpdateTimelapseIcon(BOOL show)
     }
 }
 
+static void LVGLCompat_UpdateGPSIcon(BOOL show)
+{
+    INT8 gps_status;
+
+    if (image_gps_scr_uiflowmovie == NULL) {
+        return;
+    }
+
+    if (!show || (UI_GetData(FL_GPS) == GPS_OFF)) {
+        lv_obj_set_hidden(image_gps_scr_uiflowmovie, true);
+        return;
+    }
+
+    gps_status = GetGPSSignalStatus();
+    lv_img_set_src(image_gps_scr_uiflowmovie, (gps_status > 0) ? &icon_gps_on : &icon_gps_off);
+    lv_obj_set_hidden(image_gps_scr_uiflowmovie, false);
+}
+
 void FlowMovie_BaseDaySet(int year, int month, int day)
 {
     UI_SetData(FL_FORMAT_WARNING_DATE, year * 10000 + month * 100 + day);
@@ -183,6 +203,7 @@ void FlowWiFiMovie_UpdateIcons(BOOL force)
     UIFlowMovie_update_icons();
     LVGLCompat_UpdateAudioIcon(TRUE);
     LVGLCompat_UpdateTimelapseIcon(TRUE);
+    LVGLCompat_UpdateGPSIcon(TRUE);
     LVGLCompat_UpdateWiFiOverlay();
 }
 
@@ -201,6 +222,11 @@ void FlowWiFiMovie_IconDrawMotionDet(BOOL show)
 void FlowWiFiMovie_IconDrawAudio(BOOL show)
 {
     LVGLCompat_UpdateAudioIcon(show);
+}
+
+void FlowWiFiMovie_IconDrawGPSSignal(BOOL show)
+{
+    LVGLCompat_UpdateGPSIcon(show);
 }
 
 void FlowWiFiMovie_IconDrawWiFiConnected(BOOL show)

@@ -30,6 +30,7 @@ extern lv_obj_t* label_size_scr_uiflowmovie;
 extern lv_obj_t* image_cyclic_rec_scr_uiflowmovie;
 extern lv_obj_t* image_hdr_scr_uiflowmovie;
 extern lv_obj_t* image_wifi_scr_uiflowmovie;
+extern lv_obj_t* image_gps_scr_uiflowmovie;
 extern lv_obj_t* image_audio_scr_uiflowmovie;
 extern lv_obj_t* image_motiondetect_scr_uiflowmovie;
 extern lv_obj_t* image_timelapse_scr_uiflowmovie;
