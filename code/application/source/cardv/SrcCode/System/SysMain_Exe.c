@@ -94,7 +94,7 @@ void GxSystem_SWResetNOW(void)
 {
 	DBG_DUMP("GxSystem_SWResetNOW!!\r\n");
 	#if 1
-	//…Ë÷√≤Œ ˝≤Œøºwatch dog reset.c ==>nvt_trigger_wdt_external
+	//ËÆæÁΩÆÂèÇÊï∞ÂèÇËÄÉwatch dog reset.c ==>nvt_trigger_wdt_external
     DBG_DUMP("WTD reboot now...\r\n");
 	system("modprobe na51055_wdt");
 	system("mem w 0xF0050000 0x5a960112");
@@ -254,7 +254,7 @@ void System_OnTimerInit(void)
 	{
 		GxTimer_RegCB(Timer_CB);         //Register CB function of GxTimer
 		SX_TIMER_DET_TIMER_ID = SxTimer_AddItem(&Timer_System_CntTimer);
-		//5.µ˘•USxCmd™A∞» ---------> Cmd Function
+		//5.Ë®ªÂÜäSxCmdÊúçÂãô ---------> Cmd Function
 		//HwClock_InstallCmd();
 	}
 	{
@@ -1100,7 +1100,7 @@ BOOL EdogData_Load(void) //just for test ,write and read is the same??
 		}
 	    fclose(filehdl);
 		
-		// …Ë÷√Œƒº˛»®œﬁŒ™÷ª∂¡
+		// ËÆæÁΩÆÊñá‰ª∂ÊùÉÈôê‰∏∫Âè™ËØª
     	ret = chmod(E_DOG_DATA_TMP_PATH, S_IRUSR | S_IRGRP | S_IROTH);
 	    if (ret == FST_STA_OK)
 	    {
@@ -1299,6 +1299,10 @@ UINT32 ReadPstore_EDogDate_Fun(UINT8 *buffer,UINT32 offset,UINT32 count)
     return len;
 }
 #define PS_FORMAT_CHECK_FILE    "/mnt/sd2/PStore.plc"//"A:\\PStore.plc"
+void SystemBoot_Delete_ASR(void)
+{
+	system("rm -rf /mnt/pstore/ASR");
+}
 
 void SystemBoot_PS_Format(void)
 {
@@ -1312,7 +1316,8 @@ void SystemBoot_PS_Format(void)
     if (fp)
     {
         fclose(fp);
-        System_PS_Format();
+        //System_PS_Format();
+        SystemBoot_Delete_ASR();
     } 
 }
 //#define EDOGDATA_FILE_NAME_SRC "/mnt/sd/PERNIS/edog_map.bin"//"A:\\DCIM\\edog_map_enc.bin"
@@ -1365,19 +1370,15 @@ void SystemBoot_Adas_Check(void)
     {
         fclose(fp);
 		system("umount /data/usr_adas"); 
-		system("mount -o rw /dev/mtdblock8 /data/usr_adas");    
+		system("mount -o rw /dev/mtdblock8 /data/usr_adas");
 		DBG_DUMP("=============remount======\r\n");
+		system("rm -rf /data/usr_adas");
     } 
 	/*else //default ro
 	{
 		system("umount /data/usr_adas"); 
 		system("mount -o ro /dev/mtdblock8 /data/usr_adas");
 	}*/
-}
-
-void SystemBoot_Delete_ASR(void)
-{
-	system("rm -rf /mnt/pstore/ASR"); 
 }
 
 INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
@@ -1541,7 +1542,7 @@ INT32 System_OnBoot(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
 #if (BT_FUNC == ENABLE)
 		//System_OnBTInit();
-		signal(SIGRTMAX, signal_hander); // ◊¢≤· SIGINT µƒ–≈∫≈¥¶¿Ì∫Ø ˝°£
+		signal(SIGRTMAX, signal_hander); // Ê≥®ÂÜå SIGINT ÁöÑ‰ø°Âè∑Â§ÑÁêÜÂáΩÊï∞„ÄÇ
 #endif
 #if (OUTPUT_FUNC == ENABLE)
 		// Turn on LED
