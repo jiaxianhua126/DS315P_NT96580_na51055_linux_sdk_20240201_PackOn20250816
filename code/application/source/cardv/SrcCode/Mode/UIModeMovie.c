@@ -155,7 +155,9 @@ void SubModeUvc_Open(void)
 		    #if defined(_UI_STYLE_LVGL_)
 
             #else
+			#if !defined(_UI_STYLE_LVGL_)
 			Ux_OpenWindow(&UIMenuWndWiFiMobileLinkOKCtrl, 0);
+			#endif
             #endif
 	}
 }
@@ -167,7 +169,9 @@ void SubModeUvc_Close(void)
 			#if defined(_UI_STYLE_LVGL_)
 
             #else
+			#if !defined(_UI_STYLE_LVGL_)
 			Ux_CloseWindow(&UIMenuWndWiFiMobileLinkOKCtrl, 0);
+			#endif
             #endif		
 	}
 }
@@ -178,4 +182,3 @@ SYS_SUBMODE gSubModeUvc = {
 	SubModeUvc_Close,
 };
 #endif
-

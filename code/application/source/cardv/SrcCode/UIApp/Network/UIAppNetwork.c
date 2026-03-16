@@ -417,7 +417,11 @@ INT32 UINet_HFSUnInit(void)
 }
 
 #if 1
+#if defined(_UI_STYLE_LVGL_)
+#include "UIWnd/LVGL_SPORTCAM/UIInfo/UIInfo.h"
+#else
 #include "UIWnd/SPORTCAM/UIInfo/UIInfo.h"
+#endif
 //#include "SysCfg.h"
 #include "HfsNvt/HfsNvtAPI.h"
 //#include "FsIpcAPI.h"

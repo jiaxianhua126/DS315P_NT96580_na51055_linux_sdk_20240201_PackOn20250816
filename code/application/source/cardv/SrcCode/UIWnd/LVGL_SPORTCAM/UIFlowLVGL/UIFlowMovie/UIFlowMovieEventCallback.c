@@ -23,7 +23,7 @@ uint16_t warn_msgbox_auto_close_ms = 6000;
 uint32_t warn_msgbox_auto_infinite_ms = 0xffffffff;
 
 //MOVIE_SIZE_TAG
-static CHAR    *resolution_Buf[MOVIE_SIZE_ID_MAX] = {
+static CHAR    *resolution_Buf[1024] = {
 	[MOVIE_SIZE_FRONT_2880x2160P50] = "UHD P50",
 	[MOVIE_SIZE_FRONT_3840x2160P30] = "UHD P30",
 	[MOVIE_SIZE_FRONT_2880x2160P24] = "UHD P24",

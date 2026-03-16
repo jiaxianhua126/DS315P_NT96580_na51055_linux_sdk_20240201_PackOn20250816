@@ -33,6 +33,7 @@ extern const PALETTE_ITEM gDemoKit_Palette_Palette[256];
 #include "UIWnd/LVGL_SPORTCAM/UIInfo/UIMovieInfo.h"
 #include "UIWnd/LVGL_SPORTCAM/UIInfo/UIMovieMapping.h"
 #include "UIWnd/LVGL_SPORTCAM/UIInfo/DateTimeInfo.h"
+#include "UIWnd/LVGL_SPORTCAM/UIFlowLVGL/LVGLCompat.h"
 #include "UIFlowLVGL/UIFlowLVGL.h"
 #include "UIFlowLVGL/UIFlowMenuCommonItem/TabMenu.h"
 #include "UIFlowLVGL/UIFlowMenuCommonItem/MenuId.h"

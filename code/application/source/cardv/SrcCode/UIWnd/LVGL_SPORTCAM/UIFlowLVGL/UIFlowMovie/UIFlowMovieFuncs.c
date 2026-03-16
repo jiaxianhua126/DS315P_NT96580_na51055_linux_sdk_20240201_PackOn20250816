@@ -47,12 +47,6 @@ void FlowMovie_StartRec(void)
 
 void FlowMovie_StopRec(void)
 {
-#if (_ADAS_FUNC_ == ENABLE)
-	// Fixed icon disappear issue when stop record during ADAS warning window
-	UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
-	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
-#endif  // #if (_ADAS_FUNC_ == ENABLE)
-
 	////UxState_SetData(&UIFlowWndMovie_Status_RECCtrl, STATE_CURITEM, UIFlowWndMovie_Status_REC_ICON_REC_TRANSPAENT);
 	Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_STOP, 0);
 
@@ -167,6 +161,11 @@ BOOL FlowMovie_IsStorageErr2(lv_obj_t* parent,BOOL IsCheckFull)
 	return FALSE;
 }
 
+BOOL FlowMovie_IsStorageErr(BOOL IsCheckFull)
+{
+	return FlowMovie_IsStorageErr2(NULL, IsCheckFull);
+}
+
 UINT32 FlowMovie_GetSelfTimerID(void)
 {
 	return g_MovRecSelfTimerID;
@@ -190,4 +189,3 @@ void FlowMovie_OnTimer1SecIndex(void)
 
 	}
 }
-

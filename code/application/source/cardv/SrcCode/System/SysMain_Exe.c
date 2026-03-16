@@ -24,7 +24,11 @@
 #include "DxDisplay.h"
 #include "comm/hwclock.h"
 #include "UIWnd/UIFlow.h"
+#if defined(_UI_STYLE_LVGL_)
+#include "UIWnd/LVGL_SPORTCAM/UIInfo/UICfgDefault.h"
+#else
 #include "UIWnd/SPORTCAM/UIInfo/UICfgDefault.h"
+#endif
 #include "UIApp/Network/EthCamAppNetwork.h"
 #include "UIApp/Network/UIAppNetwork.h"
 #include "UIApp/Network/UIAppWiFiCmdMovie.h"
@@ -1688,7 +1692,9 @@ INT32 System_OnShutdown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 		#endif
         //stop recording
         FlowMovie_USBRemovePowerOff();
+		#if !defined(_UI_STYLE_LVGL_)
 		bWndWiFiMovieOpenFirst = FALSE;
+		#endif
 		
 		if (isACCTrigParkMode) {
 			UI_SetData(FL_MOVIE_SIZE,g_uiPreMovieSize);
@@ -1697,8 +1703,10 @@ INT32 System_OnShutdown(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
 
     	//#NT#2019/10/30#Philex Lin - begin
     	// fixed bug for can't stopping wifi station re-connect timer during shutdown
+    	#if !defined(_UI_STYLE_LVGL_)
     	if (UI_GetData(FL_NetWorkMode) == NET_STATION_MODE)	
     	    Ux_CloseWindow(&UIMenuWndWiFiMobileLinkOKCtrl, 0);
+    	#endif
     	//#NT#2019/10/30#Philex Lin - end
 #if (UI_FUNC == ENABLE)
 		// save RTC date data and file ID
@@ -2244,4 +2252,3 @@ EVENT_ENTRY SystemObjCmdMap[] = {
 };
 
 CREATE_APP(SystemObj, 0)
-

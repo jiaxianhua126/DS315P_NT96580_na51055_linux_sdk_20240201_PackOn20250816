@@ -3,7 +3,11 @@
 #include "PrjInc.h"
 ////////////////////////////////////////////////////////////////////////////////
 #include "UIApp/Movie/UIAppMovie.h"
+#if defined(_UI_STYLE_LVGL_)
+#include "UIWnd/LVGL_SPORTCAM/UIInfo/UIMovieMapping.h"
+#else
 #include "UIWnd/SPORTCAM/UIInfo/UIMovieMapping.h"
+#endif
 #include "FileSysTsk.h"
 //#include "ImageApp_Movie.h"
 #include "ImageApp/ImageApp_MovieMulti.h"
@@ -42,4 +46,3 @@ UINT32 MovieExe_GetFreeRecSec(void)
 	DBG_IND("tmp free sec %d\r\n", sec);
 	return sec ;
 }
-

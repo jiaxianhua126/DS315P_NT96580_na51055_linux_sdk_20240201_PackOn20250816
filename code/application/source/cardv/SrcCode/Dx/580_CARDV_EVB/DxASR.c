@@ -8,7 +8,11 @@
 #include <string.h>
 #include <kwrap/type.h>
 #include "ImageApp/ImageApp_MovieMulti.h"
+#if defined(_UI_STYLE_LVGL_)
+#include "UIWnd/LVGL_SPORTCAM/UIInfo/UIInfo.h"
+#else
 #include "UIWnd/SPORTCAM/UIInfo/UIInfo.h"
+#endif
 #include <pthread.h>
 #define Test_Param    0
 const char *engineCfg_en = "{\

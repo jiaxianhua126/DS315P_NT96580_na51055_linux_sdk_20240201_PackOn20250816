@@ -333,7 +333,9 @@ INT32 WiFiCmd_OnExeMovieRec(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray
 
     if (System_GetState(SYS_STATE_CARD) == CARD_REMOVED) {
 		FlowMovie_SetLedFlash_BeepWrn(TRUE);
+#if !defined(_UI_STYLE_LVGL_)
         Ux_OpenWindow(&UIFlowWndWrnMsgCtrl, 2, UIFlowWndWrnMsg_StatusTXT_Msg_STRID_PLEASE_INSERT_SD, FLOWWRNMSG_TIMER_2SEC);
+#endif
         bWiFiRec_AutoStart = FALSE;
         WifiCmd_Done(WIFIFLAG_RECORD_DONE, WIFIAPP_RET_FAIL);
         return NVTEVT_CONSUME;
@@ -1869,4 +1871,3 @@ INT32 WiFiCmd_OnExeVideoFormat(VControl *pCtrl, UINT32 paramNum, UINT32 *paramAr
 	SysSetFlag(FL_VIDEO_FORMAT_MENU, Data);
 	return NVTEVT_CONSUME;
 }
-

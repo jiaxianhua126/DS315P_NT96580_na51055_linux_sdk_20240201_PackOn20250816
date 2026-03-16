@@ -6,7 +6,11 @@
 #include <errno.h>
 #include <linux/ioctl.h>
 #include <sys/ioctl.h>
+#if defined(_UI_STYLE_LVGL_)
+#include "UIWnd/LVGL_SPORTCAM/Resource/SoundData.h"
+#else
 #include "UIWnd/SPORTCAM/Resource/SoundData.h"
+#endif
 
 
 //local debug level: THIS_DBGLVL
@@ -1153,4 +1157,3 @@ MAINFUNC_ENTRY(ts, argc, argv)
 
 	return 0;
 }
-

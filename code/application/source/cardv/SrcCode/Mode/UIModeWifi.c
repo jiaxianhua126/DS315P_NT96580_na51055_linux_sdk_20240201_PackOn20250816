@@ -17,27 +17,27 @@ void SubModeWiFi_Open(void)
 	//if (System_GetState(SYS_STATE_CURRSUBMODE) != System_GetState(SYS_STATE_PREVSUBMODE)) 
 	{
 #if defined(_UI_STYLE_LVGL_)
-#if(WIFI_UI_FLOW_VER == WIFI_UI_VER_1_0)
-	lv_plugin_scr_open(UIFlowWifiLink, NULL);
-#elif(WIFI_UI_FLOW_VER == WIFI_UI_VER_2_0)
-	lv_plugin_scr_open(UIFlowWifiLinkOK, NULL);
-#endif
+	#if(WIFI_UI_FLOW_VER == WIFI_UI_VER_1_0)
+		lv_plugin_scr_open(UIFlowWifiLink, NULL);
+	#elif(WIFI_UI_FLOW_VER == WIFI_UI_VER_2_0)
+		lv_plugin_scr_open(UIFlowWifiLinkOK, NULL);
+	#endif
 #else
 //#NT#2016/03/23#Isiah Chang -begin
 //#NT#add new Wi-Fi UI flow.
-        #if 0
-        #if(WIFI_UI_FLOW_VER == WIFI_UI_VER_1_0)
+		#if 0
+		#if(WIFI_UI_FLOW_VER == WIFI_UI_VER_1_0)
 		Ux_OpenWindow(&UIMenuWndWiFiModuleLinkCtrl, 0);
-        #elif(WIFI_UI_FLOW_VER == WIFI_UI_VER_2_0)
+		#elif(WIFI_UI_FLOW_VER == WIFI_UI_VER_2_0)
 		Ux_OpenWindow(&UIMenuWndWiFiMobileLinkOKCtrl, 0);
-        #endif
-        #else
-        Ux_OpenWindow(&UIFlowWndWiFiMovieCtrl, 0);
-        #endif
+		#endif
+		#else
+		Ux_OpenWindow(&UIFlowWndWiFiMovieCtrl, 0);
+		#endif
+#endif
 	}
-#endif
-#endif
 //#NT#2016/03/23#Isiah Chang -end
+#endif
 }
 
 void SubModeWiFi_Close(void)
@@ -47,23 +47,23 @@ void SubModeWiFi_Close(void)
 	{
 //#NT#2016/03/23#Isiah Chang -begin
 //#NT#add new Wi-Fi UI flow.
-        #if 0
-        #if(WIFI_UI_FLOW_VER == WIFI_UI_VER_1_0)
-        #if defined(_UI_STYLE_LVGL_)
-        lv_plugin_scr_close(UIFlowWifiLink, NULL);
-        #else
-        Ux_CloseWindow(&UIMenuWndWiFiModuleLinkCtrl, 0);
-        #endif   
-        #elif(WIFI_UI_FLOW_VER == WIFI_UI_VER_2_0)
-        #if defined(_UI_STYLE_LVGL_)
-        lv_plugin_scr_close(UIFlowWifiLinkOK, NULL);
-        #else
-        Ux_CloseWindow(&UIMenuWndWiFiMobileLinkOKCtrl, 0);
-        #endif  
-        #endif
-        #else
-        Ux_CloseWindow(&UIFlowWndWiFiMovieCtrl, 0);
-        #endif
+		#if defined(_UI_STYLE_LVGL_)
+			#if(WIFI_UI_FLOW_VER == WIFI_UI_VER_1_0)
+				lv_plugin_scr_close(UIFlowWifiLink, NULL);
+			#elif(WIFI_UI_FLOW_VER == WIFI_UI_VER_2_0)
+				lv_plugin_scr_close(UIFlowWifiLinkOK, NULL);
+			#endif
+		#else
+			#if 0
+			#if(WIFI_UI_FLOW_VER == WIFI_UI_VER_1_0)
+			Ux_CloseWindow(&UIMenuWndWiFiModuleLinkCtrl, 0);
+			#elif(WIFI_UI_FLOW_VER == WIFI_UI_VER_2_0)
+			Ux_CloseWindow(&UIMenuWndWiFiMobileLinkOKCtrl, 0);
+			#endif
+			#else
+			Ux_CloseWindow(&UIFlowWndWiFiMovieCtrl, 0);
+			#endif
+		#endif
 //#NT#2016/03/23#Isiah Chang -end
 	}
 #endif

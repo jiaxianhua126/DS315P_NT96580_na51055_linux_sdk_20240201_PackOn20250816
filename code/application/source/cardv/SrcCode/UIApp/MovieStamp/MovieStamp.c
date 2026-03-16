@@ -145,6 +145,22 @@ const UINT16 g_ucStamp_Null[8*8] = {0};
 #define LV_USER_FONT_CONV_ALIGN_W 8
 #define LV_USER_FONT_CONV_ALIGN_H 2
 
+char CarNo_Buf[13] = "           ";
+char Customize_Buf[13] = "           ";
+char gUICarNo_StrBuf[13] = {""};
+char gUICustomize_StrBuf[13] = {""};
+
+char gUIDateTime_NullStrBuf[20] = {"                   "};
+#if (MACHINE_TYPE==MACHINE_TYPE_DS315P)
+char gUICustomer_Model[20] = {"PERNIS DS315WG"};
+#else
+char gUICustomer_Model[20] = {"PERNIS S2P"};
+#endif
+
+char gUICustomer_Null[20] = {"  "};
+char gUICustomer_StrBuf[20] = {"  "};
+char g_GPSstamp_buffer[128] = {0};
+
 
 
 static inline uint32_t lv_color4444_to32(lv_user_color4444_t color)
