@@ -2,6 +2,7 @@
 #include "GxTime.h"
 #include "GxStrg.h"
 #include "UIFlowLVGL/UIFlowLVGL.h"
+#include "UIFlowLVGL/LVGLCompat.h"
 #include "UIFlowLVGL/UIFlowWrnMsg/UIFlowWrnMsgAPI.h"
 #include <kwrap/debug.h>
 #include "SysMain.h"
@@ -18,6 +19,7 @@ static lv_task_t* task_1sec_period = NULL;
 static lv_task_t* 	gUIMotionDetTimerID = NULL;
 static BOOL    	g_uiRecordIngMotionDet = TRUE;
 //#NT#2021/09/13#Philex Lin - end
+static UINT32 g_uiAdasAlertSecCnt = 0;
 
 uint16_t warn_msgbox_auto_close_ms = 6000;
 uint32_t warn_msgbox_auto_infinite_ms = 0xffffffff;
@@ -374,6 +376,14 @@ static void task_1sec_period_cb(lv_task_t* task)
 {
 //	update_icons();
 	update_date_time();
+	if ((image_adas_alert_scr_uiflowmovie != NULL) && !lv_obj_get_hidden(image_adas_alert_scr_uiflowmovie)) {
+		g_uiAdasAlertSecCnt++;
+		if (g_uiAdasAlertSecCnt >= 4) {
+			FlowWiFiMovie_IconHideADASDisplayType();
+			FlowWiFiMovie_IconHideADASDistance();
+			g_uiAdasAlertSecCnt = 0;
+		}
+	}
 }
 
 static void task_motionDet_cb(lv_task_t* task)
@@ -886,6 +896,18 @@ static void UIFlowMovie_WR_ERROR(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA*
 	}
 }
 
+static void UIFlowMovie_ADASShowAlarm(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* msg)
+{
+	(void)obj;
+
+	if ((msg == NULL) || (msg->paramNum == 0)) {
+		return;
+	}
+
+	g_uiAdasAlertSecCnt = 0;
+	FlowWiFiMovie_IconDrawADASDisplayType(msg->paramArray[0]);
+}
+
 static void UIFlowMovie_SLOW(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* msg)
 {
 		// stop recoding when slow card event is happening
@@ -1042,6 +1064,12 @@ static void UIFlowMovie_NVTMSG(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* m
 	case NVTEVT_CB_MOVIE_WR_ERROR:
 	{
 		UIFlowMovie_WR_ERROR(obj,msg);
+		break;
+	}
+
+	case NVTEVT_CB_ADAS_SHOWALARM:
+	{
+		UIFlowMovie_ADASShowAlarm(obj, msg);
 		break;
 	}
 

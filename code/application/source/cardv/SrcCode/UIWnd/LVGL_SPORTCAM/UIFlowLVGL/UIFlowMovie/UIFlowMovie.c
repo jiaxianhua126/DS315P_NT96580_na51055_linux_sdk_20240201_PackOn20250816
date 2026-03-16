@@ -27,6 +27,9 @@ lv_obj_t* image_audio_scr_uiflowmovie;
 lv_obj_t* image_motiondetect_scr_uiflowmovie;
 lv_obj_t* image_timelapse_scr_uiflowmovie;
 lv_obj_t* image_sos_scr_uiflowmovie;
+lv_obj_t* image_adas_alert_scr_uiflowmovie;
+lv_obj_t* label_adas_alert_scr_uiflowmovie;
+lv_obj_t* label_adas_distance_scr_uiflowmovie;
 lv_obj_t* label_zoom_scr_uiflowmovie;
 lv_obj_t* label_maxtime_scr_uiflowmovie;
 
@@ -846,6 +849,66 @@ lv_obj_t* UIFlowMovie_create(){
 	lv_obj_add_style(image_sos, 0, &image_sos_s0);
 
 	image_sos_scr_uiflowmovie = image_sos;
+
+	static lv_style_t image_adas_alert_s0;
+	lv_style_init(&image_adas_alert_s0);
+	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&image_adas_alert_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&image_adas_alert_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&image_adas_alert_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_outline_color(&image_adas_alert_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_image_recolor(&image_adas_alert_s0, LV_STATE_DEFAULT, color);
+	lv_obj_t *image_adas_alert = lv_img_create(parent, NULL);
+	lv_obj_set_hidden(image_adas_alert, true);
+	lv_obj_set_click(image_adas_alert, false);
+	lv_obj_set_drag(image_adas_alert, false);
+	lv_obj_set_pos(image_adas_alert, 130, 56);
+	lv_obj_set_size(image_adas_alert, 60, 60);
+	lv_img_set_src(image_adas_alert, &icon_adas_on);
+	lv_obj_add_style(image_adas_alert, 0, &image_adas_alert_s0);
+
+	image_adas_alert_scr_uiflowmovie = image_adas_alert;
+
+	static lv_style_t label_adas_alert_s0;
+	lv_style_init(&label_adas_alert_s0);
+	STYLE_COLOR_PROP(0x02, 0x00, 0x00, 0x00) ; lv_style_set_bg_color(&label_adas_alert_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x02, 0x00, 0x00, 0x00) ; lv_style_set_bg_grad_color(&label_adas_alert_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_adas_alert_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_text_color(&label_adas_alert_s0, LV_STATE_DEFAULT, color);
+	lv_style_set_text_font(&label_adas_alert_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_obj_t *label_adas_alert = lv_label_create(parent, NULL);
+	lv_obj_set_hidden(label_adas_alert, true);
+	lv_obj_set_click(label_adas_alert, false);
+	lv_obj_set_drag(label_adas_alert, false);
+	lv_plugin_label_allocate_ext_attr(label_adas_alert);
+	lv_plugin_label_set_font_type(label_adas_alert, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
+	lv_label_set_align(label_adas_alert, LV_LABEL_ALIGN_CENTER);
+	lv_label_set_text(label_adas_alert, "ADAS");
+	lv_obj_set_pos(label_adas_alert, 110, 120);
+	lv_obj_set_size(label_adas_alert, 100, 24);
+	lv_obj_add_style(label_adas_alert, 0, &label_adas_alert_s0);
+
+	label_adas_alert_scr_uiflowmovie = label_adas_alert;
+
+	static lv_style_t label_adas_distance_s0;
+	lv_style_init(&label_adas_distance_s0);
+	STYLE_COLOR_PROP(0x02, 0x00, 0x00, 0x00) ; lv_style_set_bg_color(&label_adas_distance_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x02, 0x00, 0x00, 0x00) ; lv_style_set_bg_grad_color(&label_adas_distance_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_adas_distance_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_text_color(&label_adas_distance_s0, LV_STATE_DEFAULT, color);
+	lv_style_set_text_font(&label_adas_distance_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_obj_t *label_adas_distance = lv_label_create(parent, NULL);
+	lv_obj_set_hidden(label_adas_distance, true);
+	lv_obj_set_click(label_adas_distance, false);
+	lv_obj_set_drag(label_adas_distance, false);
+	lv_plugin_label_allocate_ext_attr(label_adas_distance);
+	lv_plugin_label_set_font_type(label_adas_distance, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
+	lv_label_set_align(label_adas_distance, LV_LABEL_ALIGN_RIGHT);
+	lv_label_set_text(label_adas_distance, "00FT");
+	lv_obj_set_pos(label_adas_distance, 232, 144);
+	lv_obj_set_size(label_adas_distance, 76, 24);
+	lv_obj_add_style(label_adas_distance, 0, &label_adas_distance_s0);
+
+	label_adas_distance_scr_uiflowmovie = label_adas_distance;
 
 
 	static lv_style_t label_zoom_s0;

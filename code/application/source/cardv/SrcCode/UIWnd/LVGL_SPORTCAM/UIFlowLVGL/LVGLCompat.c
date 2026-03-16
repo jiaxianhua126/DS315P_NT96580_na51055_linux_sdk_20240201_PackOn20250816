@@ -155,6 +155,19 @@ static void LVGLCompat_UpdateSOSIcon(BOOL show)
     lv_obj_set_hidden(image_sos_scr_uiflowmovie, false);
 }
 
+static void LVGLCompat_SetADASAlert(const void *src, const char *text)
+{
+    if (image_adas_alert_scr_uiflowmovie != NULL) {
+        lv_img_set_src(image_adas_alert_scr_uiflowmovie, src);
+        lv_obj_set_hidden(image_adas_alert_scr_uiflowmovie, false);
+    }
+
+    if (label_adas_alert_scr_uiflowmovie != NULL) {
+        lv_label_set_text(label_adas_alert_scr_uiflowmovie, text);
+        lv_obj_set_hidden(label_adas_alert_scr_uiflowmovie, false);
+    }
+}
+
 void FlowMovie_BaseDaySet(int year, int month, int day)
 {
     UI_SetData(FL_FORMAT_WARNING_DATE, year * 10000 + month * 100 + day);
@@ -335,6 +348,79 @@ void FlowWiFiMovie_IconDrawWiFiDisConnected(BOOL show)
     bWiFiConnected = FALSE;
     UIFlowMovie_update_icons();
     LVGLCompat_UpdateWiFiOverlay();
+}
+
+void FlowWiFiMovie_IconDrawADASAnimation(void)
+{
+}
+
+void FlowWiFiMovie_IconDrawADASUpdateCar(void)
+{
+}
+
+void FlowWiFiMovie_IconDrawADASHideCar(void)
+{
+}
+
+void FlowWiFiMovie_IconDrawADASDistance(UINT32 distance)
+{
+    if (label_adas_distance_scr_uiflowmovie == NULL) {
+        return;
+    }
+
+    lv_label_set_text_fmt(label_adas_distance_scr_uiflowmovie, "%02uFT", distance % 100);
+    lv_obj_set_hidden(label_adas_distance_scr_uiflowmovie, false);
+}
+
+void FlowWiFiMovie_IconHideADASDistance(void)
+{
+    if (label_adas_distance_scr_uiflowmovie != NULL) {
+        lv_obj_set_hidden(label_adas_distance_scr_uiflowmovie, true);
+    }
+}
+
+void FlowWiFiMovie_IconDrawADASDisplayType(UINT32 id)
+{
+    switch (id) {
+    case ADAS_ALARM_LD_LEFT:
+        LVGLCompat_SetADASAlert(&icon_ldws_left_alert, "LDWS");
+        break;
+    case ADAS_ALARM_LD_RIGHT:
+        LVGLCompat_SetADASAlert(&icon_ldws_right_alert, "LDWS");
+        break;
+    case ADAS_ALARM_GO:
+        LVGLCompat_SetADASAlert(&icon_sng_alert, "SNG");
+        break;
+    case ADAS_ALARM_LCA_LEFT:
+        LVGLCompat_SetADASAlert(&icon_ldws_left_alert, "LCA");
+        break;
+    case ADAS_ALARM_LCA_RIGHT:
+        LVGLCompat_SetADASAlert(&icon_ldws_right_alert, "LCA");
+        break;
+    case ADAS_ALARM_RCW_REAR:
+        LVGLCompat_SetADASAlert(&icon_adas_on, "RCW");
+        break;
+    case ADAS_ALARM_FPW:
+        LVGLCompat_SetADASAlert(&icon_adas_on, "PDW");
+        break;
+    case ADAS_ALARM_VIRTUAL_BUMPERS:
+        LVGLCompat_SetADASAlert(&icon_adas_on, "VBW");
+        break;
+    case ADAS_ALARM_FC:
+    default:
+        LVGLCompat_SetADASAlert(&icon_adas_on, "FCW");
+        break;
+    }
+}
+
+void FlowWiFiMovie_IconHideADASDisplayType(void)
+{
+    if (image_adas_alert_scr_uiflowmovie != NULL) {
+        lv_obj_set_hidden(image_adas_alert_scr_uiflowmovie, true);
+    }
+    if (label_adas_alert_scr_uiflowmovie != NULL) {
+        lv_obj_set_hidden(label_adas_alert_scr_uiflowmovie, true);
+    }
 }
 
 void UIFlowWndWiFiMovie_UpdateWiFiData(BOOL bShow)

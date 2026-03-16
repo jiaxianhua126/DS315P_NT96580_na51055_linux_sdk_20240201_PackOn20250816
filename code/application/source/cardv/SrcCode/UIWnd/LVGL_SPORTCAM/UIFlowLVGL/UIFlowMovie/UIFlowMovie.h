@@ -35,6 +35,9 @@ extern lv_obj_t* image_audio_scr_uiflowmovie;
 extern lv_obj_t* image_motiondetect_scr_uiflowmovie;
 extern lv_obj_t* image_timelapse_scr_uiflowmovie;
 extern lv_obj_t* image_sos_scr_uiflowmovie;
+extern lv_obj_t* image_adas_alert_scr_uiflowmovie;
+extern lv_obj_t* label_adas_alert_scr_uiflowmovie;
+extern lv_obj_t* label_adas_distance_scr_uiflowmovie;
 extern lv_obj_t* label_zoom_scr_uiflowmovie;
 extern lv_obj_t* label_maxtime_scr_uiflowmovie;
 
