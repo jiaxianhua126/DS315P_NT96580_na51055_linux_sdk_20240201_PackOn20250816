@@ -399,21 +399,21 @@ static void UIFlowPlay_IconDate(BOOL bShow)
 	PB_GetParam(PBPRMID_CURR_FILEPATH, (UINT32 *)&gchaFullName);
 
 	if(strlen(gchaFullName)){
-		if (FST_STA_OK == FileSys_GetDateTime(gchaFullName, creDateTime, modDateTime)) {
-			modDateTime[0] %= 100;
+			if (FST_STA_OK == FileSys_GetDateTime(gchaFullName, creDateTime, modDateTime)) {
+				modDateTime[0] %= 100;
 
-			if (modDateTime[0] > 50) {
-				modDateTime[0] = 50;
-			}
-			if (modDateTime[1] > 12) {
-				modDateTime[0] = 12;
-			}
-			if (modDateTime[2] > 31) {
-				modDateTime[0] = 31;
-			}
-			snprintf(item1_Buf, 20, "%02lu/%02lu/%02lu", modDateTime[0], modDateTime[1], modDateTime[2]);
-			lv_label_set_text(label_file_date_scr_uiflowplay, item1_Buf);
-			lv_obj_set_hidden(label_file_date_scr_uiflowplay, false);
+				if (modDateTime[0] > 50) {
+					modDateTime[0] = 50;
+				}
+				if (modDateTime[1] > 12) {
+					modDateTime[1] = 12;
+				}
+				if (modDateTime[2] > 31) {
+					modDateTime[2] = 31;
+				}
+				snprintf(item1_Buf, 20, "%02lu/%02lu/%02lu", modDateTime[0], modDateTime[1], modDateTime[2]);
+				lv_label_set_text(label_file_date_scr_uiflowplay, item1_Buf);
+				lv_obj_set_hidden(label_file_date_scr_uiflowplay, false);
 		}
 	}
 }
@@ -1379,12 +1379,16 @@ static void UIFlowPlay_CB_OneSec(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA*
 
 static void UIFlowPlay_Battery(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* msg)
 {
-
+	(void)obj;
+	(void)msg;
+	UIFlowPlay_IconBattery(true);
 }
 
 static void UIFlowPlay_StorageChange(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* msg)
 {
-
+	(void)obj;
+	(void)msg;
+	UIFlowPlay_IconStorage(true);
 }
 
 static void UIFlowPlay_CB_Error(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* msg)
@@ -1576,4 +1580,3 @@ void UIFlowPlayEventCallback(lv_obj_t* obj, lv_event_t event)
 
     }
 }
-

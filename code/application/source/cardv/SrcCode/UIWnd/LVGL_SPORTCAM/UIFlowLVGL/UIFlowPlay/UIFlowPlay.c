@@ -197,7 +197,6 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_obj_set_drag(label_file_name, false);
 	lv_plugin_label_allocate_ext_attr(label_file_name);
 	lv_label_set_text(label_file_name,"FileName");
-	lv_plugin_label_allocate_ext_attr(label_file_name);
 	lv_plugin_label_set_font_type(label_file_name, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_label_set_align(label_file_name, LV_LABEL_ALIGN_RIGHT);
 	lv_label_set_long_mode(label_file_name, LV_LABEL_LONG_CROP);
