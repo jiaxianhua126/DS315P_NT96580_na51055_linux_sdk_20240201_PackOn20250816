@@ -138,6 +138,23 @@ static void LVGLCompat_UpdateGPSIcon(BOOL show)
     lv_obj_set_hidden(image_gps_scr_uiflowmovie, false);
 }
 
+static void LVGLCompat_UpdateSOSIcon(BOOL show)
+{
+    if (image_sos_scr_uiflowmovie == NULL) {
+        return;
+    }
+
+    if (!show) {
+        lv_obj_set_hidden(image_sos_scr_uiflowmovie, true);
+        FlowMovie_SetSOSStatusNow(FALSE);
+        return;
+    }
+
+    lv_img_set_src(image_sos_scr_uiflowmovie,
+                   (GetGPSSignalStatus() < 0) ? &icon_urgent_protect_auto : &icon_urgent_protect_manual);
+    lv_obj_set_hidden(image_sos_scr_uiflowmovie, false);
+}
+
 void FlowMovie_BaseDaySet(int year, int month, int day)
 {
     UI_SetData(FL_FORMAT_WARNING_DATE, year * 10000 + month * 100 + day);
@@ -201,6 +218,7 @@ void FlowWiFiMovie_UpdateIcons(BOOL force)
 {
     (void)force;
     UIFlowMovie_update_icons();
+    LVGLCompat_UpdateSOSIcon(FlowMovie_GetSOSStatusNow());
     LVGLCompat_UpdateAudioIcon(TRUE);
     LVGLCompat_UpdateTimelapseIcon(TRUE);
     LVGLCompat_UpdateGPSIcon(TRUE);
@@ -224,9 +242,18 @@ void FlowWiFiMovie_IconDrawAudio(BOOL show)
     LVGLCompat_UpdateAudioIcon(show);
 }
 
+void FlowWiFiMovie_IconDrawSOS(BOOL show)
+{
+    if (show) {
+        FlowMovie_SetSOSStatusNow(TRUE);
+    }
+    LVGLCompat_UpdateSOSIcon(show);
+}
+
 void FlowWiFiMovie_IconDrawGPSSignal(BOOL show)
 {
     LVGLCompat_UpdateGPSIcon(show);
+    LVGLCompat_UpdateSOSIcon(FlowMovie_GetSOSStatusNow());
 }
 
 void FlowWiFiMovie_IconDrawWiFiConnected(BOOL show)
