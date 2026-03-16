@@ -1,22 +1,68 @@
 #include "PrjInc.h"
 #include "UIApp/Network/UIAppWiFiCmdMovie.h"
+#include "UIApp/Network/UIAppNetwork.h"
+#include "UIFlowLVGL/UIFlowLVGL.h"
+#include "UIFlowLVGL/UIFlowMovie/UIFlowMovie.h"
 #include "UIFlowLVGL/UIFlowMovie/UIFlowMovieFuncs.h"
+#include "UIFlowLVGL/UIFlowWifiLink/UIFlowWifiLink.h"
+#include "UIFlowLVGL/UIFlowWifiLinkOK/UIFlowWifiLinkOK.h"
 #include "algo_manager.h"
 
 BOOL ParkingM_PreRecord_EMR = FALSE;
 BOOL WifiStarting = FALSE;
+BOOL bWiFiConnected = FALSE;
+BOOL bWndWiFiMovieOpenFirst = FALSE;
 BOOL bWiFiModeChanged = FALSE;
 BOOL g_NotRecordWrn = FALSE;
 BOOL g_uiWiFiRecordIngMotionDet = FALSE;
 BOOL g_uiWiFiParkingModeMotionDet = FALSE;
 BOOL bWiFiRec_AutoStart = FALSE;
 BOOL bWiFiRec_AutoStop = FALSE;
+BOOL WiFiManualSetSOS = FALSE;
 BOOL autoWifi = FALSE;
 BOOL WifiMotionLed_EN = FALSE;
 BOOL g_bWiFiMovieHDR_changed = FALSE;
+BOOL g_WiFiAutoRec = FALSE;
 AlgoEventData adas_eventData_app = {0};
 AlgoEventData rcw_eventData_app = {0};
 static BOOL sSOSStatusNow = FALSE;
+
+extern void UIFlowMovie_update_icons(void);
+
+static void LVGLCompat_UpdateWiFiOverlay(void)
+{
+    static char ssid_buf[32];
+    static char key_buf[32];
+    const BOOL connected = (UI_GetData(FL_WIFI_LINK) == WIFI_LINK_OK) || bWiFiConnected;
+
+    if (connected) {
+        snprintf(ssid_buf, sizeof(ssid_buf), "%s", UINet_GetConnectedMAC());
+        if (label_mac_scr_uiflowwifilinkok != NULL) {
+            lv_label_set_text_static(label_mac_scr_uiflowwifilinkok, ssid_buf);
+        }
+
+        lv_plugin_scr_close(UIFlowWifiLink, NULL);
+        if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
+            lv_plugin_scr_open(UIFlowWifiLinkOK, NULL);
+        }
+        return;
+    }
+
+    snprintf(ssid_buf, sizeof(ssid_buf), "%s", UINet_GetSSID());
+    snprintf(key_buf, sizeof(key_buf), "%s", UINet_GetPASSPHRASE());
+
+    if (label_ssid_scr_uiflowwifilink != NULL) {
+        lv_label_set_text_static(label_ssid_scr_uiflowwifilink, ssid_buf);
+    }
+    if (label_pwa2_scr_uiflowwifilink != NULL) {
+        lv_label_set_text_static(label_pwa2_scr_uiflowwifilink, key_buf);
+    }
+
+    lv_plugin_scr_close(UIFlowWifiLinkOK, NULL);
+    if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
+        lv_plugin_scr_open(UIFlowWifiLink, NULL);
+    }
+}
 
 void FlowMovie_BaseDaySet(int year, int month, int day)
 {
@@ -80,6 +126,8 @@ void FlowWiFiMovie_SetRecCurrTime(UINT32 time)
 void FlowWiFiMovie_UpdateIcons(BOOL force)
 {
     (void)force;
+    UIFlowMovie_update_icons();
+    LVGLCompat_UpdateWiFiOverlay();
 }
 
 void FlowWiFiMovie_IconDrawTimelapse(BOOL show)
@@ -89,12 +137,32 @@ void FlowWiFiMovie_IconDrawTimelapse(BOOL show)
 
 void FlowWiFiMovie_IconDrawMotionDet(BOOL show)
 {
-    (void)show;
+    if (image_motiondetect_scr_uiflowmovie != NULL) {
+        lv_obj_set_hidden(image_motiondetect_scr_uiflowmovie, !show);
+    }
 }
 
 void FlowWiFiMovie_IconDrawAudio(BOOL show)
 {
     (void)show;
+}
+
+void FlowWiFiMovie_IconDrawWiFiConnected(BOOL show)
+{
+    bWiFiConnected = show;
+    UIFlowMovie_update_icons();
+    LVGLCompat_UpdateWiFiOverlay();
+}
+
+void UIFlowWndWiFiMovie_UpdateWiFiData(BOOL bShow)
+{
+    if (!bShow && (System_GetState(SYS_STATE_CURRSUBMODE) != SYS_SUBMODE_WIFI)) {
+        lv_plugin_scr_close(UIFlowWifiLink, NULL);
+        lv_plugin_scr_close(UIFlowWifiLinkOK, NULL);
+        return;
+    }
+
+    LVGLCompat_UpdateWiFiOverlay();
 }
 
 void FlowMovie_USBRemovePowerOff(void)
