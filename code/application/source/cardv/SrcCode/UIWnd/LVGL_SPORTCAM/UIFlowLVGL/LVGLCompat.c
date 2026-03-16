@@ -225,6 +225,65 @@ void FlowWiFiMovie_UpdateIcons(BOOL force)
     LVGLCompat_UpdateWiFiOverlay();
 }
 
+void FlowWiFiMovie_IconDrawMaxRecTime(BOOL show)
+{
+    if (label_maxtime_scr_uiflowmovie == NULL || label_rec_time_scr_uiflowmovie == NULL) {
+        return;
+    }
+
+    if (!show || (WiFiCmd_GetStatus() == WIFI_MOV_ST_RECORD)) {
+        lv_obj_set_hidden(label_maxtime_scr_uiflowmovie, true);
+        return;
+    }
+
+    UIFlowMovie_update_icons();
+    lv_obj_set_hidden(label_rec_time_scr_uiflowmovie, true);
+    lv_obj_set_hidden(label_maxtime_scr_uiflowmovie, false);
+}
+
+void FlowWiFiMovie_IconDrawRecTime(BOOL show)
+{
+    if (label_maxtime_scr_uiflowmovie == NULL || label_rec_time_scr_uiflowmovie == NULL) {
+        return;
+    }
+
+    if (!show) {
+        lv_obj_set_hidden(label_rec_time_scr_uiflowmovie, true);
+        return;
+    }
+
+    UIFlowMovie_update_icons();
+    lv_obj_set_hidden(label_maxtime_scr_uiflowmovie, true);
+    lv_obj_set_hidden(label_rec_time_scr_uiflowmovie, false);
+}
+
+void FlowWiFiMovie_IconDrawDateTime(BOOL show)
+{
+    if ((label_date_scr_uiflowmovie == NULL) || (label_time_scr_uiflowmovie == NULL)) {
+        return;
+    }
+
+    if (show) {
+        UIFlowMovie_update_icons();
+    }
+
+    lv_obj_set_hidden(label_date_scr_uiflowmovie, !show);
+    lv_obj_set_hidden(label_time_scr_uiflowmovie, !show);
+}
+
+void FlowWiFiMovie_IconDrawRec(BOOL show)
+{
+    if (image_rec_ellipse_scr_uiflowmovie == NULL) {
+        return;
+    }
+
+    if (show) {
+        UIFlowMovie_update_icons();
+    } else {
+        lv_obj_set_hidden(image_rec_ellipse_scr_uiflowmovie, true);
+    }
+}
+
 void FlowWiFiMovie_IconDrawTimelapse(BOOL show)
 {
     LVGLCompat_UpdateTimelapseIcon(show);
@@ -234,6 +293,13 @@ void FlowWiFiMovie_IconDrawMotionDet(BOOL show)
 {
     if (image_motiondetect_scr_uiflowmovie != NULL) {
         lv_obj_set_hidden(image_motiondetect_scr_uiflowmovie, !show);
+    }
+}
+
+void FlowWiFiMovie_DrawPIM(BOOL show)
+{
+    if (image_pim_scr_uiflowmovie != NULL) {
+        lv_obj_set_hidden(image_pim_scr_uiflowmovie, !show);
     }
 }
 
@@ -259,6 +325,14 @@ void FlowWiFiMovie_IconDrawGPSSignal(BOOL show)
 void FlowWiFiMovie_IconDrawWiFiConnected(BOOL show)
 {
     bWiFiConnected = show;
+    UIFlowMovie_update_icons();
+    LVGLCompat_UpdateWiFiOverlay();
+}
+
+void FlowWiFiMovie_IconDrawWiFiDisConnected(BOOL show)
+{
+    (void)show;
+    bWiFiConnected = FALSE;
     UIFlowMovie_update_icons();
     LVGLCompat_UpdateWiFiOverlay();
 }
