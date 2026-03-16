@@ -106,3 +106,7 @@ modules.builtin
 *_no_tracer.c
 ._*
 .DS_Store
+.DS_Store
+._*
+*~
+*.z~
