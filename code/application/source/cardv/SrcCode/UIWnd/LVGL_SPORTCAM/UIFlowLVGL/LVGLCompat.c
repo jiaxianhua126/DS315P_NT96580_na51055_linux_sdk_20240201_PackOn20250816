@@ -64,6 +64,60 @@ static void LVGLCompat_UpdateWiFiOverlay(void)
     }
 }
 
+static void LVGLCompat_UpdateAudioIcon(BOOL show)
+{
+    if (image_audio_scr_uiflowmovie == NULL) {
+        return;
+    }
+
+    if (!show) {
+        lv_obj_set_hidden(image_audio_scr_uiflowmovie, true);
+        return;
+    }
+
+    lv_img_set_src(image_audio_scr_uiflowmovie,
+                   (UI_GetData(FL_MOVIE_AUDIO) == MOVIE_AUDIO_ON) ? &icon_sound_rec_on : &icon_sound_rec_off);
+    lv_obj_set_hidden(image_audio_scr_uiflowmovie, false);
+}
+
+static void LVGLCompat_UpdateTimelapseIcon(BOOL show)
+{
+    if (image_timelapse_scr_uiflowmovie == NULL) {
+        return;
+    }
+
+    if (!show || !isACCTrigParkMode) {
+        lv_obj_set_hidden(image_timelapse_scr_uiflowmovie, true);
+        return;
+    }
+
+    switch (UI_GetData(FL_PARKING_MODE)) {
+    case PARKING_MODE_MOTION_DET:
+        lv_img_set_src(image_timelapse_scr_uiflowmovie, &icon_motion_det_on);
+        lv_obj_set_hidden(image_timelapse_scr_uiflowmovie, false);
+        break;
+
+    case PARKING_MODE_ON_1FPS:
+    case PARKING_MODE_ON_2FPS:
+    case PARKING_MODE_ON_3FPS:
+    case PARKING_MODE_ON_5FPS:
+    case PARKING_MODE_ON_10FPS:
+        lv_img_set_src(image_timelapse_scr_uiflowmovie, &icon_time_lapse_on);
+        lv_obj_set_hidden(image_timelapse_scr_uiflowmovie, false);
+        break;
+
+    case PARKING_MODE_LOW_BITRATE:
+        lv_img_set_src(image_timelapse_scr_uiflowmovie, &icon_time_lapse_off);
+        lv_obj_set_hidden(image_timelapse_scr_uiflowmovie, false);
+        break;
+
+    case PARKING_MODE_OFF:
+    default:
+        lv_obj_set_hidden(image_timelapse_scr_uiflowmovie, true);
+        break;
+    }
+}
+
 void FlowMovie_BaseDaySet(int year, int month, int day)
 {
     UI_SetData(FL_FORMAT_WARNING_DATE, year * 10000 + month * 100 + day);
@@ -127,12 +181,14 @@ void FlowWiFiMovie_UpdateIcons(BOOL force)
 {
     (void)force;
     UIFlowMovie_update_icons();
+    LVGLCompat_UpdateAudioIcon(TRUE);
+    LVGLCompat_UpdateTimelapseIcon(TRUE);
     LVGLCompat_UpdateWiFiOverlay();
 }
 
 void FlowWiFiMovie_IconDrawTimelapse(BOOL show)
 {
-    (void)show;
+    LVGLCompat_UpdateTimelapseIcon(show);
 }
 
 void FlowWiFiMovie_IconDrawMotionDet(BOOL show)
@@ -144,7 +200,7 @@ void FlowWiFiMovie_IconDrawMotionDet(BOOL show)
 
 void FlowWiFiMovie_IconDrawAudio(BOOL show)
 {
-    (void)show;
+    LVGLCompat_UpdateAudioIcon(show);
 }
 
 void FlowWiFiMovie_IconDrawWiFiConnected(BOOL show)

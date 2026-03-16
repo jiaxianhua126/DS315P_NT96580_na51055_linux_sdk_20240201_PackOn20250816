@@ -22,7 +22,9 @@ lv_obj_t* label_size_scr_uiflowmovie;
 lv_obj_t* image_cyclic_rec_scr_uiflowmovie;
 lv_obj_t* image_hdr_scr_uiflowmovie;
 lv_obj_t* image_wifi_scr_uiflowmovie;
+lv_obj_t* image_audio_scr_uiflowmovie;
 lv_obj_t* image_motiondetect_scr_uiflowmovie;
+lv_obj_t* image_timelapse_scr_uiflowmovie;
 lv_obj_t* label_zoom_scr_uiflowmovie;
 lv_obj_t* label_maxtime_scr_uiflowmovie;
 
@@ -722,6 +724,24 @@ lv_obj_t* UIFlowMovie_create(){
 
 	image_wifi_scr_uiflowmovie = image_wifi;
 
+	static lv_style_t image_audio_s0;
+	lv_style_init(&image_audio_s0);
+	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&image_audio_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&image_audio_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&image_audio_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_outline_color(&image_audio_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_image_recolor(&image_audio_s0, LV_STATE_DEFAULT, color);
+	lv_obj_t *image_audio = lv_img_create(parent, NULL);
+	lv_obj_set_hidden(image_audio, true);
+	lv_obj_set_click(image_audio, false);
+	lv_obj_set_drag(image_audio, false);
+	lv_obj_set_pos(image_audio, 12, 38);
+	lv_obj_set_size(image_audio, 28, 28);
+	lv_img_set_src(image_audio, &icon_sound_rec_on);
+	lv_obj_add_style(image_audio, 0, &image_audio_s0);
+
+	image_audio_scr_uiflowmovie = image_audio;
+
 
 	static lv_style_t image_motiondetect_s0;
 	lv_style_init(&image_motiondetect_s0);
@@ -770,6 +790,24 @@ lv_obj_t* UIFlowMovie_create(){
 	lv_obj_add_style(image_motiondetect, 0, &image_motiondetect_s0);
 
 	image_motiondetect_scr_uiflowmovie = image_motiondetect;
+
+	static lv_style_t image_timelapse_s0;
+	lv_style_init(&image_timelapse_s0);
+	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&image_timelapse_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&image_timelapse_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&image_timelapse_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_outline_color(&image_timelapse_s0, LV_STATE_DEFAULT, color);
+	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_image_recolor(&image_timelapse_s0, LV_STATE_DEFAULT, color);
+	lv_obj_t *image_timelapse = lv_img_create(parent, NULL);
+	lv_obj_set_hidden(image_timelapse, true);
+	lv_obj_set_click(image_timelapse, false);
+	lv_obj_set_drag(image_timelapse, false);
+	lv_obj_set_pos(image_timelapse, 12, 104);
+	lv_obj_set_size(image_timelapse, 28, 28);
+	lv_img_set_src(image_timelapse, &icon_time_lapse_on);
+	lv_obj_add_style(image_timelapse, 0, &image_timelapse_s0);
+
+	image_timelapse_scr_uiflowmovie = image_timelapse;
 
 
 	static lv_style_t label_zoom_s0;
