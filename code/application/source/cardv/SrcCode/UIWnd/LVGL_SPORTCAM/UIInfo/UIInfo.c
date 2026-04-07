@@ -1264,6 +1264,7 @@ void SysCheckFlag(void)
 	SysLimitFlag(FL_AudioPlayIndex,     0,  AUDIO_VOL_MAX,          DEFAULT_AUDIO_PLAY_VOLUME);
 	SysLimitFlag(FL_LANGUAGE,           0,  LANG_ID_MAX,            DEFAULT_LANGUAGE);
 	SysLimitFlag(FL_BEEP,               0,  BEEP_ID_MAX,            DEFAULT_BEEP);
+	SysLimitFlag(FL_ASR,                0,  ASR_ID_MAX,             DEFAULT_ASR);
 	SysLimitFlag(FL_AUTO_POWER_OFF,     0,  POWEROFF_SETTING_MAX,   DEFAULT_AUTO_POWER_OFF);
 	SysLimitFlag(FL_FREQUENCY,          0,  FREQUENCY_ID_MAX,       DEFAULT_FREQUENCY);
 	SysLimitFlag(FL_TV_MODE,            0,  TV_MODE_ID_MAX,         DEFAULT_TV_MODE);
@@ -1275,6 +1276,11 @@ void SysCheckFlag(void)
 	SysLimitFlag(FL_LCD_BRIGHTNESS,     0,  LCDBRT_LVL_ID_MAX,      DEFAULT_LCD_BRIGHTNESS);
 	SysLimitFlag(FL_MACRO,              0,  MACRO_ID_MAX,           DEFAULT_MACRO);
 	SysLimitFlag(FL_USB_MODE,           0,  USB_MODE_ID_MAX,        DEFAULT_USB_MODE);
+	SysLimitFlag(FL_FIRSTPOWERON,       0,  FIRSTPOWERON_MAX,       DEFAULT_FIRSTPOWERON);
+	SysLimitFlag(FL_PARKING_MODE,       0,  PARKING_MODE_ID_MAX,    DEFAULT_PARKING_MODE);
+	SysLimitFlag(FL_PARKING_MODE_TIMELAPSE_REC, 0, PARKING_MODE_TIMELAPSEREC_ID_MAX, DEFAULT_PARKING_MODE_TIMELAPSE_REC);
+	SysLimitFlag(FL_MOVIE_BITRATE,      0,  MOVIE_BITRATE_ID_MAX,   DEFAULT_MOVIE_BITRATE);
+	SysLimitFlag(FL_PARKING_OFF_GPS,    0,  PGPS_ID_MAX,            DEFAULT_PARKING_OFF_GPS);
 
 #if (USE_DCF==ENABLE)
 	// Sepcial flags
@@ -1457,6 +1463,7 @@ void SysResetFlag(void)
 	SysSetFlag(FL_LCD_OFF,              DEFAULT_LCD_OFF);
 	SysSetFlag(FL_BEEP,                 DEFAULT_BEEP);
 	SysSetFlag(FL_LANGUAGE,             DEFAULT_LANGUAGE);
+	SysSetFlag(FL_ASR,                  DEFAULT_ASR);
 	SysSetFlag(FL_FREQUENCY,            DEFAULT_FREQUENCY);
 	SysSetFlag(FL_TV_MODE,              DEFAULT_TV_MODE);
 	SysSetFlag(FL_HDMI_MODE,            DEFAULT_HDMI_MODE);
@@ -1472,6 +1479,12 @@ void SysResetFlag(void)
 	SysSetFlag(FL_GSENSOR,              DEFAULT_GSENSOR);
 	SysSetFlag(FL_EDGE,                 DEFAULT_EDGE);
 	SysSetFlag(FL_NR,                   DEFAULT_NR);
+	SysSetFlag(FL_FIRSTPOWERON,         DEFAULT_FIRSTPOWERON);
+	SysSetFlag(FL_PARKING_MODE,         DEFAULT_PARKING_MODE);
+	SysSetFlag(FL_PARKING_MODE_TIMELAPSE_REC, DEFAULT_PARKING_MODE_TIMELAPSE_REC);
+	SysSetFlag(FL_MOVIE_BITRATE,        DEFAULT_MOVIE_BITRATE);
+	SysSetFlag(FL_LAST_DATETIME,        DEFAULT_LAST_DATETIME);
+	SysSetFlag(FL_PARKING_OFF_GPS,      DEFAULT_PARKING_OFF_GPS);
 
 	//#NT#2016/06/14#Charlie Chang -begin
 	//#NT#support contrast, two way audio in and sample rate, flip, movie qualiity set

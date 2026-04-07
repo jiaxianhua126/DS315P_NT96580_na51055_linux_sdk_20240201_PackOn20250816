@@ -105,7 +105,7 @@ lv_obj_t* UIFlowWifiLinkOK_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_select_msg_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_select_msg_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xf8, 0xfd, 0xfd, 0xfd) ; lv_style_set_text_color(&label_select_msg_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_select_msg_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_select_msg_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_select_msg_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_select_msg_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_select_msg_s0, LV_STATE_CHECKED, color);
@@ -152,8 +152,8 @@ lv_obj_t* UIFlowWifiLinkOK_create(){
 	lv_label_set_text(label_select_msg,"Press Select to Disconnect");
 	lv_plugin_label_allocate_ext_attr(label_select_msg);
 	lv_plugin_label_set_font_type(label_select_msg, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
-	lv_obj_set_pos(label_select_msg, 28, 8);
-	lv_obj_set_size(label_select_msg, 214, 19);
+	lv_obj_set_pos(label_select_msg, 29, 8);
+	lv_obj_set_size(label_select_msg, 213, 18);
 	lv_obj_add_style(label_select_msg, 0, &label_select_msg_s0);
 
 	label_select_msg_scr_uiflowwifilinkok = label_select_msg;
@@ -201,7 +201,7 @@ lv_obj_t* UIFlowWifiLinkOK_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_2_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_2_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xc4, 0xff, 0xa8, 0x00) ; lv_style_set_text_color(&label_2_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_2_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_2_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_2_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_2_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_2_s0, LV_STATE_CHECKED, color);
@@ -249,7 +249,7 @@ lv_obj_t* UIFlowWifiLinkOK_create(){
 	lv_plugin_label_allocate_ext_attr(label_2);
 	lv_plugin_label_set_font_type(label_2, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_obj_set_pos(label_2, 15, 18);
-	lv_obj_set_size(label_2, 37, 19);
+	lv_obj_set_size(label_2, 39, 18);
 	lv_obj_add_style(label_2, 0, &label_2_s0);
 
 	label_2_scr_uiflowwifilinkok = label_2;
@@ -261,7 +261,7 @@ lv_obj_t* UIFlowWifiLinkOK_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_mac_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_mac_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xf8, 0xfd, 0xfd, 0xfd) ; lv_style_set_text_color(&label_mac_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_mac_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_mac_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_mac_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_mac_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_mac_s0, LV_STATE_CHECKED, color);
@@ -309,7 +309,7 @@ lv_obj_t* UIFlowWifiLinkOK_create(){
 	lv_plugin_label_allocate_ext_attr(label_mac);
 	lv_plugin_label_set_font_type(label_mac, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_obj_set_pos(label_mac, 92, 18);
-	lv_obj_set_size(label_mac, 137, 19);
+	lv_obj_set_size(label_mac, 156, 18);
 	lv_obj_add_style(label_mac, 0, &label_mac_s0);
 
 	label_mac_scr_uiflowwifilinkok = label_mac;
@@ -321,7 +321,7 @@ lv_obj_t* UIFlowWifiLinkOK_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_wifista_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_wifista_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xf8, 0xfd, 0xfd, 0xfd) ; lv_style_set_text_color(&label_wifista_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_wifista_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_wifista_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_wifista_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_wifista_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_wifista_s0, LV_STATE_CHECKED, color);
@@ -369,7 +369,7 @@ lv_obj_t* UIFlowWifiLinkOK_create(){
 	lv_plugin_label_allocate_ext_attr(label_wifista);
 	lv_plugin_label_set_font_type(label_wifista, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_obj_set_pos(label_wifista, 92, 65);
-	lv_obj_set_size(label_wifista, 123, 19);
+	lv_obj_set_size(label_wifista, 120, 18);
 	lv_obj_add_style(label_wifista, 0, &label_wifista_s0);
 
 	label_wifista_scr_uiflowwifilinkok = label_wifista;
@@ -381,7 +381,7 @@ lv_obj_t* UIFlowWifiLinkOK_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_1_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_1_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xc4, 0xff, 0xa8, 0x00) ; lv_style_set_text_color(&label_1_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_1_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_1_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_1_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_1_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_1_s0, LV_STATE_CHECKED, color);
@@ -429,7 +429,7 @@ lv_obj_t* UIFlowWifiLinkOK_create(){
 	lv_plugin_label_allocate_ext_attr(label_1);
 	lv_plugin_label_set_font_type(label_1, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_obj_set_pos(label_1, 15, 65);
-	lv_obj_set_size(label_1, 52, 19);
+	lv_obj_set_size(label_1, 53, 18);
 	lv_obj_add_style(label_1, 0, &label_1_s0);
 
 	label_1_scr_uiflowwifilinkok = label_1;

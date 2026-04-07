@@ -276,7 +276,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	lv_obj_set_hidden(image_battery, false);
 	lv_obj_set_click(image_battery, false);
 	lv_obj_set_drag(image_battery, false);
-	lv_obj_set_pos(image_battery, 284, 206);
+	lv_obj_set_pos(image_battery, 584, 206);
 	lv_obj_set_size(image_battery, 28, 28);
 	lv_img_set_src(image_battery, &icon_battery_full);
 	lv_obj_add_style(image_battery, 0, &image_battery_s0);
@@ -325,7 +325,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	lv_obj_set_hidden(image_storage, false);
 	lv_obj_set_click(image_storage, false);
 	lv_obj_set_drag(image_storage, false);
-	lv_obj_set_pos(image_storage, 284, 166);
+	lv_obj_set_pos(image_storage, 584, 166);
 	lv_obj_set_size(image_storage, 28, 28);
 	lv_img_set_src(image_storage, &icon_sd_card);
 	lv_obj_add_style(image_storage, 0, &image_storage_s0);
@@ -374,7 +374,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	lv_obj_set_hidden(image_quality, false);
 	lv_obj_set_click(image_quality, false);
 	lv_obj_set_drag(image_quality, false);
-	lv_obj_set_pos(image_quality, 283, 66);
+	lv_obj_set_pos(image_quality, 583, 66);
 	lv_obj_set_size(image_quality, 28, 28);
 	lv_img_set_src(image_quality, &icon_quality_normal);
 	lv_obj_add_style(image_quality, 0, &image_quality_s0);
@@ -388,7 +388,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_size_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_size_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_text_color(&label_size_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_size_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_size_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_size_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_size_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_size_s0, LV_STATE_CHECKED, color);
@@ -438,7 +438,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	lv_label_set_align(label_size, LV_LABEL_ALIGN_RIGHT);
 	lv_label_set_long_mode(label_size, LV_LABEL_LONG_CROP);
 	lv_obj_set_pos(label_size, 173, 35);
-	lv_obj_set_size(label_size, 135, 19);
+	lv_obj_set_size(label_size, 435, 19);
 	lv_obj_add_style(label_size, 0, &label_size_s0);
 
 	label_size_scr_uiflowphoto = label_size;
@@ -499,7 +499,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_free_pic_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_free_pic_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_text_color(&label_free_pic_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_free_pic_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_free_pic_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_free_pic_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_free_pic_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_free_pic_s0, LV_STATE_CHECKED, color);
@@ -549,7 +549,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	lv_label_set_align(label_free_pic, LV_LABEL_ALIGN_RIGHT);
 	lv_label_set_long_mode(label_free_pic, LV_LABEL_LONG_CROP);
 	lv_obj_set_pos(label_free_pic, 174, 9);
-	lv_obj_set_size(label_free_pic, 135, 19);
+	lv_obj_set_size(label_free_pic, 435, 19);
 	lv_obj_add_style(label_free_pic, 0, &label_free_pic_s0);
 
 	label_free_pic_scr_uiflowphoto = label_free_pic;
@@ -659,7 +659,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_self_timer_cnt_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_self_timer_cnt_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_text_color(&label_self_timer_cnt_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_self_timer_cnt_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_self_timer_cnt_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_self_timer_cnt_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_self_timer_cnt_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_self_timer_cnt_s0, LV_STATE_CHECKED, color);
@@ -707,7 +707,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	lv_plugin_label_allocate_ext_attr(label_self_timer_cnt);
 	lv_plugin_label_set_font_type(label_self_timer_cnt, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_obj_set_pos(label_self_timer_cnt, 61, 11);
-	lv_obj_set_size(label_self_timer_cnt, 9, 19);
+	lv_obj_set_size(label_self_timer_cnt, 9, 18);
 	lv_obj_add_style(label_self_timer_cnt, 0, &label_self_timer_cnt_s0);
 
 	label_self_timer_cnt_scr_uiflowphoto = label_self_timer_cnt;
@@ -803,7 +803,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_dzoom_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_dzoom_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_text_color(&label_dzoom_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_dzoom_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_dzoom_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_dzoom_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_dzoom_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_dzoom_s0, LV_STATE_CHECKED, color);
@@ -853,7 +853,7 @@ lv_obj_t* UIFlowPhoto_create(){
 	lv_label_set_align(label_dzoom, LV_LABEL_ALIGN_RIGHT);
 	lv_label_set_long_mode(label_dzoom, LV_LABEL_LONG_CROP);
 	lv_obj_set_pos(label_dzoom, 217, 121);
-	lv_obj_set_size(label_dzoom, 91, 19);
+	lv_obj_set_size(label_dzoom, 391, 19);
 	lv_obj_add_style(label_dzoom, 0, &label_dzoom_s0);
 
 	label_dzoom_scr_uiflowphoto = label_dzoom;

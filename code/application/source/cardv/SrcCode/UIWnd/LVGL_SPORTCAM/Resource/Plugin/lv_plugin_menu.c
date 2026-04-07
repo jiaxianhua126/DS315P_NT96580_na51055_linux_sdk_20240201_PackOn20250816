@@ -1528,3 +1528,19 @@ static LV_PLUG_RET _lv_plugin_menu_calculate_distance_ext(lv_plugin_menu_ext_t* 
 
     return LV_PLUG_SUCCESS;
 }
+
+void lv_plugin_menu_set_item_state(lv_obj_t* menu, uint8_t item_idx, lv_plugin_menu_item_stat_t state)
+{
+    LV_ASSERT_OBJ(menu, LV_PLUGIN_MENU_OBJ_NAME)
+
+    lv_plugin_menu_ext_t* ext = menu->ext_attr;
+
+    if(ext->items == NULL || item_idx >= ext->item_cnt)
+        return;
+
+    lv_plugin_menu_item_t* data = &ext->items[item_idx];
+
+    data->state = state;
+
+    _lv_plugin_menu_refresh_items(ext);
+}

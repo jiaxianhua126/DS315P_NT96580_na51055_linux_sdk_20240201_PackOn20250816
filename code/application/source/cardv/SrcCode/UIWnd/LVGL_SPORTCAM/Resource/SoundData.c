@@ -132,4 +132,17 @@ void UISound_Play(UINT32 index)
 	}
 	#endif
 }
+
+UINT32 UIVoice_GetIndex(UINT32 index)
+{
+	if (index >= DEMOSOUND_SOUND_MAX_CNT) {
+		return DEMOSOUND_SOUND_KEY_TONE;
+	}
+	return index;
+}
+
+void UIVoice_Play(UINT32 index)
+{
+	UISound_Play(UIVoice_GetIndex(index));
+}
 //@}

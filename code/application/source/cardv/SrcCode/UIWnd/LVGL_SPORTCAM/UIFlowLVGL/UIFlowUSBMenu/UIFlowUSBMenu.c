@@ -149,7 +149,7 @@ lv_obj_t* UIFlowUSBMenu_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_usbt_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_usbt_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xc4, 0xff, 0xa8, 0x00) ; lv_style_set_text_color(&label_usbt_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_usbt_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_usbt_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_usbt_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_usbt_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_usbt_s0, LV_STATE_CHECKED, color);
@@ -198,7 +198,7 @@ lv_obj_t* UIFlowUSBMenu_create(){
 	lv_plugin_label_allocate_ext_attr(label_usbt);
 	lv_plugin_label_set_font_type(label_usbt, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_obj_set_pos(label_usbt, 33, 13);
-	lv_obj_set_size(label_usbt, 32, 19);
+	lv_obj_set_size(label_usbt, 35, 18);
 	lv_obj_add_style(label_usbt, 0, &label_usbt_s0);
 
 	label_usbt_scr_uiflowusbmenu = label_usbt;
@@ -245,7 +245,7 @@ lv_obj_t* UIFlowUSBMenu_create(){
 	lv_obj_set_hidden(image_1, false);
 	lv_obj_set_click(image_1, false);
 	lv_obj_set_drag(image_1, false);
-	lv_obj_set_pos(image_1, 81, 8);
+	lv_obj_set_pos(image_1, 84, 8);
 	lv_obj_set_size(image_1, 28, 28);
 	lv_img_set_src(image_1, &icon_usb_on);
 	lv_obj_add_style(image_1, 0, &image_1_s0);
@@ -328,7 +328,7 @@ lv_obj_t* UIFlowUSBMenu_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_msdc_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_msdc_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xf0, 0xea, 0xea, 0xea) ; lv_style_set_text_color(&label_msdc_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_msdc_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_msdc_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_msdc_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_msdc_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_msdc_s0, LV_STATE_CHECKED, color);
@@ -377,7 +377,7 @@ lv_obj_t* UIFlowUSBMenu_create(){
 	lv_plugin_label_allocate_ext_attr(label_msdc);
 	lv_plugin_label_set_font_type(label_msdc, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_obj_set_pos(label_msdc, 33, 12);
-	lv_obj_set_size(label_msdc, 109, 19);
+	lv_obj_set_size(label_msdc, 108, 18);
 	lv_obj_add_style(label_msdc, 0, &label_msdc_s0);
 
 	label_msdc_scr_uiflowusbmenu = label_msdc;
@@ -424,7 +424,7 @@ lv_obj_t* UIFlowUSBMenu_create(){
 	lv_obj_set_hidden(image_2, false);
 	lv_obj_set_click(image_2, false);
 	lv_obj_set_drag(image_2, false);
-	lv_obj_set_pos(image_2, 158, 12);
+	lv_obj_set_pos(image_2, 157, 12);
 	lv_obj_set_size(image_2, 28, 28);
 	lv_img_set_src(image_2, &icon_usb_msdc);
 	lv_obj_add_style(image_2, 0, &image_2_s0);
@@ -507,7 +507,7 @@ lv_obj_t* UIFlowUSBMenu_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_pcc_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_pcc_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xf0, 0xea, 0xea, 0xea) ; lv_style_set_text_color(&label_pcc_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_pcc_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_pcc_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&label_pcc_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&label_pcc_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_pcc_s0, LV_STATE_CHECKED, color);
@@ -556,7 +556,7 @@ lv_obj_t* UIFlowUSBMenu_create(){
 	lv_plugin_label_allocate_ext_attr(label_pcc);
 	lv_plugin_label_set_font_type(label_pcc, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_obj_set_pos(label_pcc, 33, 12);
-	lv_obj_set_size(label_pcc, 87, 19);
+	lv_obj_set_size(label_pcc, 92, 18);
 	lv_obj_add_style(label_pcc, 0, &label_pcc_s0);
 
 	label_pcc_scr_uiflowusbmenu = label_pcc;
@@ -603,7 +603,7 @@ lv_obj_t* UIFlowUSBMenu_create(){
 	lv_obj_set_hidden(image_3, false);
 	lv_obj_set_click(image_3, false);
 	lv_obj_set_drag(image_3, false);
-	lv_obj_set_pos(image_3, 136, 12);
+	lv_obj_set_pos(image_3, 141, 12);
 	lv_obj_set_size(image_3, 28, 28);
 	lv_img_set_src(image_3, &icon_usb_uvc);
 	lv_obj_add_style(image_3, 0, &image_3_s0);

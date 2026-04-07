@@ -630,11 +630,9 @@ LV_PLUG_RET	lv_plugin_label_set_text(lv_obj_t* label,  lv_plugin_res_id string_i
 		const lv_plugin_string_t* string = lv_plugin_get_string(string_id);
 
 		if(string){
-
-			lv_label_set_text_static(label, string->ptr);
+            lv_label_set_text(label, string->ptr); /* use lv_label_set_text for arabic */
 		}
 		else{
-
 			return LV_PLUG_ERR_INVALID_RES_ID;
 		}
 	}
@@ -680,6 +678,11 @@ LV_PLUG_RET	lv_plugin_msgbox_set_text(lv_obj_t* msgbox,  lv_plugin_res_id string
 LV_PLUG_RET _lv_plugin_scr_attach(lv_obj_t* scr)
 {
 	lv_plugin_internal_t* inter_param = &g_internal_param;
+	lv_coord_t width = lv_obj_get_width(inter_param->root_scr);
+	lv_coord_t height = lv_obj_get_height(inter_param->root_scr);
+	lv_coord_t value = width > height ? width : height; /* for screen animation if disp size is dynamically changed */
+
+	lv_obj_set_size(scr, value, value);
 
 	lv_obj_set_parent(scr, inter_param->root_scr);
 
@@ -783,6 +786,9 @@ LV_PLUG_RET lv_plugin_scr_close(lv_obj_t* scr, const void * data)
 	if(_lv_plugin_scr_is_attached(scr) == false)
 		return LV_PLUG_SUCCESS;
 
+    /* avoid recursively close */
+    if(lv_plugin_scr_is_ready_to_be_closed(scr))
+        return LV_PLUG_SUCCESS;
 
     /* add all screens ready to be closed LV_STATE_DISABLED */
     child = NULL;
@@ -793,7 +799,7 @@ LV_PLUG_RET lv_plugin_scr_close(lv_obj_t* scr, const void * data)
     do
     {
         next_child = lv_obj_get_child(inter_param->root_scr, child);
-        lv_obj_add_state(scr, LV_STATE_DISABLED);
+        lv_obj_add_state(child, LV_STATE_DISABLED);
 
         if(NULL == next_child)
             break;

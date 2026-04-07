@@ -1872,7 +1872,7 @@
                 {
                     "Text": {
                         "text_color": "0xd9d9d9",
-                        "text_font": "NotoSans-Black 16 1bpp"
+                        "text_font": "montserrat 16 4bpp"
                     },
                     "part": 0,
                     "state": 0
@@ -1946,7 +1946,7 @@
                 {
                     "Text": {
                         "text_color": "0xd9d9d9",
-                        "text_font": "NotoSans-Black 16 1bpp"
+                        "text_font": "montserrat 16 4bpp"
                     },
                     "part": 0,
                     "state": 0

@@ -16,7 +16,7 @@
                             "event callback": "",
                             "font type": "Font_Type0",
                             "geometry": {
-                                "height": 19,
+                                "height": 18,
                                 "width": 64,
                                 "x": 31,
                                 "y": 8
@@ -31,7 +31,7 @@
                                 {
                                     "Text": {
                                         "text_color": "0xeaeaea",
-                                        "text_font": "NotoSans-Black 16 1bpp",
+                                        "text_font": "montserrat 16 4bpp",
                                         "text_sel_bg_color": "0x00b495",
                                         "text_sel_color": "0x3c3c3c"
                                     },
@@ -161,9 +161,9 @@
                             "event callback": "",
                             "font type": "Font_Type0",
                             "geometry": {
-                                "height": 19,
-                                "width": 75,
-                                "x": 25,
+                                "height": 18,
+                                "width": 77,
+                                "x": 24,
                                 "y": 8
                             },
                             "hidden": false,
@@ -176,7 +176,7 @@
                                 {
                                     "Text": {
                                         "text_color": "0xeaeaea",
-                                        "text_font": "NotoSans-Black 16 1bpp",
+                                        "text_font": "montserrat 16 4bpp",
                                         "text_sel_bg_color": "0x00b495",
                                         "text_sel_color": "0x3c3c3c"
                                     },
@@ -368,8 +368,8 @@
                     "event callback": "",
                     "font type": "Font_Type0",
                     "geometry": {
-                        "height": 19,
-                        "width": 37,
+                        "height": 18,
+                        "width": 38,
                         "x": 23,
                         "y": 90
                     },
@@ -383,7 +383,7 @@
                         {
                             "Text": {
                                 "text_color": "0xffa800",
-                                "text_font": "NotoSans-Black 16 1bpp",
+                                "text_font": "montserrat 16 4bpp",
                                 "text_sel_bg_color": "0x00b495",
                                 "text_sel_color": "0x3c3c3c"
                             },
@@ -426,8 +426,8 @@
                     "event callback": "",
                     "font type": "Font_Type0",
                     "geometry": {
-                        "height": 19,
-                        "width": 27,
+                        "height": 18,
+                        "width": 29,
                         "x": 23,
                         "y": 127
                     },
@@ -441,7 +441,7 @@
                         {
                             "Text": {
                                 "text_color": "0xffa800",
-                                "text_font": "NotoSans-Black 16 1bpp",
+                                "text_font": "montserrat 16 4bpp",
                                 "text_sel_bg_color": "0x00b495",
                                 "text_sel_color": "0x3c3c3c"
                             },
@@ -484,7 +484,7 @@
                     "event callback": "",
                     "font type": "Font_Type0",
                     "geometry": {
-                        "height": 19,
+                        "height": 18,
                         "width": 25,
                         "x": 101,
                         "y": 90
@@ -499,7 +499,7 @@
                         {
                             "Text": {
                                 "text_color": "0xfdfdfd",
-                                "text_font": "NotoSans-Black 16 1bpp",
+                                "text_font": "montserrat 16 4bpp",
                                 "text_sel_bg_color": "0x00b495",
                                 "text_sel_color": "0x3c3c3c"
                             },
@@ -542,7 +542,7 @@
                     "event callback": "",
                     "font type": "Font_Type0",
                     "geometry": {
-                        "height": 19,
+                        "height": 18,
                         "width": 25,
                         "x": 103,
                         "y": 128
@@ -557,7 +557,7 @@
                         {
                             "Text": {
                                 "text_color": "0xfdfdfd",
-                                "text_font": "NotoSans-Black 16 1bpp",
+                                "text_font": "montserrat 16 4bpp",
                                 "text_sel_bg_color": "0x00b495",
                                 "text_sel_color": "0x3c3c3c"
                             },
@@ -600,7 +600,7 @@
                     "event callback": "",
                     "font type": "Font_Type0",
                     "geometry": {
-                        "height": 19,
+                        "height": 18,
                         "width": 46,
                         "x": 23,
                         "y": 50
@@ -618,7 +618,7 @@
                             },
                             "Text": {
                                 "text_color": "0xffa800",
-                                "text_font": "NotoSans-Black 16 1bpp",
+                                "text_font": "montserrat 16 4bpp",
                                 "text_sel_bg_color": "0x00b495",
                                 "text_sel_color": "0x3c3c3c"
                             },
@@ -661,8 +661,8 @@
                     "event callback": "",
                     "font type": "Font_Type0",
                     "geometry": {
-                        "height": 19,
-                        "width": 72,
+                        "height": 18,
+                        "width": 76,
                         "x": 101,
                         "y": 50
                     },
@@ -676,7 +676,7 @@
                         {
                             "Text": {
                                 "text_color": "0xfdfdfd",
-                                "text_font": "NotoSans-Black 16 1bpp",
+                                "text_font": "montserrat 16 4bpp",
                                 "text_sel_bg_color": "0x00b495",
                                 "text_sel_color": "0x3c3c3c"
                             },

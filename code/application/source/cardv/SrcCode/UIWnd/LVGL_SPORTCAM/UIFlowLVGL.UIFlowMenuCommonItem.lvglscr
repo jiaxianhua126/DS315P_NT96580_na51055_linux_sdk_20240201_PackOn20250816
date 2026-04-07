@@ -490,7 +490,7 @@
             "event callback": "",
             "geometry": {
                 "height": 191,
-                "width": 320,
+                "width": 620,
                 "x": 0,
                 "y": 45
             },
@@ -586,8 +586,8 @@
                     "event callback": "",
                     "font type": "Font_Type0",
                     "geometry": {
-                        "height": 19,
-                        "width": 88,
+                        "height": 18,
+                        "width": 87,
                         "x": 14,
                         "y": 14
                     },
@@ -601,7 +601,7 @@
                         {
                             "Text": {
                                 "text_color": "0xffffff",
-                                "text_font": "NotoSans-Black 16 1bpp"
+                                "text_font": "montserrat 16 4bpp"
                             },
                             "part": 0,
                             "state": 0
@@ -642,9 +642,9 @@
                     "event callback": "",
                     "font type": "Font_Type0",
                     "geometry": {
-                        "height": 19,
-                        "width": 105,
-                        "x": 107,
+                        "height": 18,
+                        "width": 106,
+                        "x": 106,
                         "y": 14
                     },
                     "hidden": false,
@@ -657,7 +657,7 @@
                         {
                             "Text": {
                                 "text_color": "0xffffff",
-                                "text_font": "NotoSans-Black 16 1bpp"
+                                "text_font": "montserrat 16 4bpp"
                             },
                             "part": 0,
                             "state": 0

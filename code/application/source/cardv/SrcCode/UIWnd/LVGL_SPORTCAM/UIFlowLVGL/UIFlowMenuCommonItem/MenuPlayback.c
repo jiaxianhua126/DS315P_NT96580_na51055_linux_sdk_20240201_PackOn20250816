@@ -58,7 +58,6 @@ static int MenuCustom_Protect(UINT32 uiMessage, UINT32 uiParam)
 // Playback Menu Items
 TMDEF_BEGIN_ITEMS(PLAYBACK)
 TMDEF_ITEM_CUSTOM(PROTECT, MenuCustom_Protect)
-TMDEF_ITEM_TEXTID(VOLUME)
 TMDEF_END_ITEMS()
 
 // --------------------------------------------------------------------------
@@ -93,4 +92,3 @@ int Playback_MenuCallback(UINT32 uiMessage, UINT32 uiParam)
 	return TMF_PROCESSED;
 }
 #endif
-

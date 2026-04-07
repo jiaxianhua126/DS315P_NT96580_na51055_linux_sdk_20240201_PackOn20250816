@@ -152,7 +152,7 @@ lv_obj_t* UIFlowPlay_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_file_name_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_file_name_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_text_color(&label_file_name_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_file_name_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_file_name_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&label_file_name_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&label_file_name_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_file_name_s0, LV_STATE_CHECKED, color);
@@ -202,7 +202,7 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_label_set_align(label_file_name, LV_LABEL_ALIGN_RIGHT);
 	lv_label_set_long_mode(label_file_name, LV_LABEL_LONG_CROP);
 	lv_obj_set_pos(label_file_name, 88, 5);
-	lv_obj_set_size(label_file_name, 228, 28);
+	lv_obj_set_size(label_file_name, 528, 28);
 	lv_obj_add_style(label_file_name, 0, &label_file_name_s0);
 
 	label_file_name_scr_uiflowplay = label_file_name;
@@ -361,7 +361,7 @@ lv_obj_t* UIFlowPlay_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_play_time_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_play_time_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_text_color(&label_play_time_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_play_time_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_play_time_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&label_play_time_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&label_play_time_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_play_time_s0, LV_STATE_CHECKED, color);
@@ -409,7 +409,7 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_plugin_label_allocate_ext_attr(label_play_time);
 	lv_plugin_label_set_font_type(label_play_time, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_label_set_long_mode(label_play_time, LV_LABEL_LONG_CROP);
-	lv_obj_set_pos(label_play_time, 225, 5);
+	lv_obj_set_pos(label_play_time, 525, 5);
 	lv_obj_set_size(label_play_time, 90, 30);
 	lv_obj_add_style(label_play_time, 0, &label_play_time_s0);
 
@@ -446,7 +446,7 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_obj_set_hidden(container_bt_bar, false);
 	lv_obj_set_click(container_bt_bar, true);
 	lv_obj_set_drag(container_bt_bar, false);
-	lv_obj_set_pos(container_bt_bar, 47, 207);
+	lv_obj_set_pos(container_bt_bar, 199, 207);
 	lv_obj_set_size(container_bt_bar, 222, 37);
 	lv_cont_set_layout(container_bt_bar, LV_LAYOUT_ROW_MID);
 	lv_obj_add_style(container_bt_bar, 0, &container_bt_bar_s0);
@@ -1054,7 +1054,7 @@ lv_obj_t* UIFlowPlay_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_file_time_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_file_time_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xc6, 0xf4, 0xd3, 0x2e) ; lv_style_set_text_color(&label_file_time_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_file_time_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_file_time_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&label_file_time_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&label_file_time_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_file_time_s0, LV_STATE_CHECKED, color);
@@ -1103,8 +1103,8 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_plugin_label_set_font_type(label_file_time, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_label_set_align(label_file_time, LV_LABEL_ALIGN_RIGHT);
 	lv_label_set_long_mode(label_file_time, LV_LABEL_LONG_CROP);
-	lv_obj_set_pos(label_file_time, 184, 180);
-	lv_obj_set_size(label_file_time, 128, 21);
+	lv_obj_set_pos(label_file_time, 336, 180);
+	lv_obj_set_size(label_file_time, 280, 21);
 	lv_obj_add_style(label_file_time, 0, &label_file_time_s0);
 
 	label_file_time_scr_uiflowplay = label_file_time;
@@ -1116,7 +1116,7 @@ lv_obj_t* UIFlowPlay_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_file_date_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_file_date_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xc6, 0xf4, 0xd3, 0x2e) ; lv_style_set_text_color(&label_file_date_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_file_date_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_file_date_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&label_file_date_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&label_file_date_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_file_date_s0, LV_STATE_CHECKED, color);
@@ -1165,8 +1165,8 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_plugin_label_set_font_type(label_file_date, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_label_set_align(label_file_date, LV_LABEL_ALIGN_RIGHT);
 	lv_label_set_long_mode(label_file_date, LV_LABEL_LONG_CROP);
-	lv_obj_set_pos(label_file_date, 198, 151);
-	lv_obj_set_size(label_file_date, 114, 22);
+	lv_obj_set_pos(label_file_date, 350, 151);
+	lv_obj_set_size(label_file_date, 266, 22);
 	lv_obj_add_style(label_file_date, 0, &label_file_date_s0);
 
 	label_file_date_scr_uiflowplay = label_file_date;
@@ -1213,7 +1213,7 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_obj_set_hidden(image_quality, false);
 	lv_obj_set_click(image_quality, false);
 	lv_obj_set_drag(image_quality, false);
-	lv_obj_set_pos(image_quality, 284, 58);
+	lv_obj_set_pos(image_quality, 584, 58);
 	lv_obj_set_size(image_quality, 28, 28);
 	lv_img_set_src(image_quality, &icon_quality_fine);
 	lv_obj_add_style(image_quality, 0, &image_quality_s0);
@@ -1262,7 +1262,7 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_obj_set_hidden(image_sharpness, false);
 	lv_obj_set_click(image_sharpness, false);
 	lv_obj_set_drag(image_sharpness, false);
-	lv_obj_set_pos(image_sharpness, 284, 86);
+	lv_obj_set_pos(image_sharpness, 584, 86);
 	lv_obj_set_size(image_sharpness, 28, 28);
 	lv_img_set_src(image_sharpness, &icon_sharpness_high);
 	lv_obj_add_style(image_sharpness, 0, &image_sharpness_s0);
@@ -1311,7 +1311,7 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_obj_set_hidden(image_storage, false);
 	lv_obj_set_click(image_storage, false);
 	lv_obj_set_drag(image_storage, false);
-	lv_obj_set_pos(image_storage, 285, 117);
+	lv_obj_set_pos(image_storage, 585, 117);
 	lv_obj_set_size(image_storage, 28, 28);
 	lv_img_set_src(image_storage, &icon_sd_card);
 	lv_obj_add_style(image_storage, 0, &image_storage_s0);
@@ -1325,7 +1325,7 @@ lv_obj_t* UIFlowPlay_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_file_size_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_file_size_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xc6, 0xf4, 0xd3, 0x2e) ; lv_style_set_text_color(&label_file_size_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_file_size_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_file_size_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&label_file_size_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&label_file_size_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_file_size_s0, LV_STATE_CHECKED, color);
@@ -1375,7 +1375,7 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_label_set_align(label_file_size, LV_LABEL_ALIGN_RIGHT);
 	lv_label_set_long_mode(label_file_size, LV_LABEL_LONG_CROP);
 	lv_obj_set_pos(label_file_size, 166, 33);
-	lv_obj_set_size(label_file_size, 146, 19);
+	lv_obj_set_size(label_file_size, 450, 19);
 	lv_obj_add_style(label_file_size, 0, &label_file_size_s0);
 
 	label_file_size_scr_uiflowplay = label_file_size;
@@ -1422,7 +1422,7 @@ lv_obj_t* UIFlowPlay_create(){
 	lv_obj_set_hidden(image_battery, false);
 	lv_obj_set_click(image_battery, false);
 	lv_obj_set_drag(image_battery, false);
-	lv_obj_set_pos(image_battery, 286, 212);
+	lv_obj_set_pos(image_battery, 586, 212);
 	lv_obj_set_size(image_battery, 28, 28);
 	lv_img_set_src(image_battery, &icon_battery_full);
 	lv_obj_add_style(image_battery, 0, &image_battery_s0);

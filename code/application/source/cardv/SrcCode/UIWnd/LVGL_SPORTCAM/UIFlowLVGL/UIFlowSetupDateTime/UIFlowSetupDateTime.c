@@ -68,7 +68,7 @@ lv_obj_t* UIFlowSetupDateTime_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&button_matrix_datetime_s1, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_value_color(&button_matrix_datetime_s1, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xdc, 0xb5, 0xb5, 0xb5) ; lv_style_set_text_color(&button_matrix_datetime_s1, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&button_matrix_datetime_s1,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&button_matrix_datetime_s1,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&button_matrix_datetime_s1, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&button_matrix_datetime_s1, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xd2, 0x30, 0x30, 0x30) ; lv_style_set_bg_color(&button_matrix_datetime_s1, LV_STATE_CHECKED, color);
@@ -80,7 +80,6 @@ lv_obj_t* UIFlowSetupDateTime_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&button_matrix_datetime_s1, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_value_color(&button_matrix_datetime_s1, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0xdc, 0xb5, 0xb5, 0xb5) ; lv_style_set_text_color(&button_matrix_datetime_s1, LV_STATE_CHECKED, color);
-	lv_style_set_text_font(&button_matrix_datetime_s1,LV_STATE_CHECKED,&notosanscjksc_black_16_1bpp);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&button_matrix_datetime_s1, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&button_matrix_datetime_s1, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0xd5, 0x57, 0x57, 0x57) ; lv_style_set_bg_color(&button_matrix_datetime_s1, LV_STATE_FOCUSED, color);
@@ -91,7 +90,6 @@ lv_obj_t* UIFlowSetupDateTime_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&button_matrix_datetime_s1, LV_STATE_FOCUSED, color);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_value_color(&button_matrix_datetime_s1, LV_STATE_FOCUSED, color);
 	STYLE_COLOR_PROP(0xf3, 0xf2, 0xf2, 0xf2) ; lv_style_set_text_color(&button_matrix_datetime_s1, LV_STATE_FOCUSED, color);
-	lv_style_set_text_font(&button_matrix_datetime_s1,LV_STATE_FOCUSED,&notosanscjksc_black_16_1bpp);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&button_matrix_datetime_s1, LV_STATE_FOCUSED, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&button_matrix_datetime_s1, LV_STATE_FOCUSED, color);
 	STYLE_COLOR_PROP(0xd2, 0x30, 0x30, 0x30) ; lv_style_set_bg_color(&button_matrix_datetime_s1, LV_STATE_EDITED, color);
@@ -102,7 +100,6 @@ lv_obj_t* UIFlowSetupDateTime_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&button_matrix_datetime_s1, LV_STATE_EDITED, color);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_value_color(&button_matrix_datetime_s1, LV_STATE_EDITED, color);
 	STYLE_COLOR_PROP(0xdc, 0xb5, 0xb5, 0xb5) ; lv_style_set_text_color(&button_matrix_datetime_s1, LV_STATE_EDITED, color);
-	lv_style_set_text_font(&button_matrix_datetime_s1,LV_STATE_EDITED,&notosanscjksc_black_16_1bpp);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&button_matrix_datetime_s1, LV_STATE_EDITED, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&button_matrix_datetime_s1, LV_STATE_EDITED, color);
 	STYLE_COLOR_PROP(0xd2, 0x30, 0x30, 0x30) ; lv_style_set_bg_color(&button_matrix_datetime_s1, LV_STATE_HOVERED, color);
@@ -113,7 +110,6 @@ lv_obj_t* UIFlowSetupDateTime_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&button_matrix_datetime_s1, LV_STATE_HOVERED, color);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_value_color(&button_matrix_datetime_s1, LV_STATE_HOVERED, color);
 	STYLE_COLOR_PROP(0xdc, 0xb5, 0xb5, 0xb5) ; lv_style_set_text_color(&button_matrix_datetime_s1, LV_STATE_HOVERED, color);
-	lv_style_set_text_font(&button_matrix_datetime_s1,LV_STATE_HOVERED,&notosanscjksc_black_16_1bpp);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&button_matrix_datetime_s1, LV_STATE_HOVERED, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&button_matrix_datetime_s1, LV_STATE_HOVERED, color);
 	STYLE_COLOR_PROP(0x83, 0x56, 0x56, 0x56) ; lv_style_set_bg_color(&button_matrix_datetime_s1, LV_STATE_PRESSED, color);
@@ -124,7 +120,6 @@ lv_obj_t* UIFlowSetupDateTime_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&button_matrix_datetime_s1, LV_STATE_PRESSED, color);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_value_color(&button_matrix_datetime_s1, LV_STATE_PRESSED, color);
 	STYLE_COLOR_PROP(0xf3, 0xf2, 0xf2, 0xf2) ; lv_style_set_text_color(&button_matrix_datetime_s1, LV_STATE_PRESSED, color);
-	lv_style_set_text_font(&button_matrix_datetime_s1,LV_STATE_PRESSED,&notosanscjksc_black_16_1bpp);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&button_matrix_datetime_s1, LV_STATE_PRESSED, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&button_matrix_datetime_s1, LV_STATE_PRESSED, color);
 	STYLE_COLOR_PROP(0xd2, 0x30, 0x30, 0x30) ; lv_style_set_bg_color(&button_matrix_datetime_s1, LV_STATE_DISABLED, color);
@@ -135,7 +130,6 @@ lv_obj_t* UIFlowSetupDateTime_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&button_matrix_datetime_s1, LV_STATE_DISABLED, color);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_value_color(&button_matrix_datetime_s1, LV_STATE_DISABLED, color);
 	STYLE_COLOR_PROP(0xdc, 0xb5, 0xb5, 0xb5) ; lv_style_set_text_color(&button_matrix_datetime_s1, LV_STATE_DISABLED, color);
-	lv_style_set_text_font(&button_matrix_datetime_s1,LV_STATE_DISABLED,&notosanscjksc_black_16_1bpp);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&button_matrix_datetime_s1, LV_STATE_DISABLED, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&button_matrix_datetime_s1, LV_STATE_DISABLED, color);
 	lv_obj_t *button_matrix_datetime = lv_btnmatrix_create(parent, NULL);

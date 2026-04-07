@@ -1,5 +1,13 @@
 #include "PrjInc.h"
 #include "UIWnd/UIFlow.h"
+#include "UIFlowLVGL/UIFlowMenuCommonConfirm/UIFlowMenuCommonConfirmAPI.h"
+
+extern TM_OPTION gTM_OPTIONS_AUTO_POWER_OFF[6];
+extern TM_OPTION gTM_OPTIONS_BEEP[2];
+extern TM_OPTION gTM_OPTIONS_SCREEN_SAVE[5];
+extern TM_OPTION gTM_OPTIONS_LANGUAGE[LANG_ID_MAX];
+extern TM_OPTION gTM_OPTIONS_TV_MODE[2];
+extern TM_OPTION gTM_OPTIONS_FREQUENCY[2];
 
 // --------------------------------------------------------------------------
 // OPTIONS
@@ -140,6 +148,11 @@ TMDEF_OPTION_TEXT_S(MOVIE_AUDIO_OFF, TM_OPTION_ENABLE)
 TMDEF_OPTION_TEXT_S(MOVIE_AUDIO_ON, TM_OPTION_ENABLE)
 TMDEF_END_OPTIONS()
 
+TMDEF_BEGIN_OPTIONS(MOVIE_VOICE)
+TMDEF_OPTION_TEXT_S(MOVIE_VOICE_OFF, TM_OPTION_ENABLE)
+TMDEF_OPTION_TEXT_S(MOVIE_VOICE_ON, TM_OPTION_ENABLE)
+TMDEF_END_OPTIONS()
+
 TMDEF_BEGIN_OPTIONS(MOVIE_DATEIMPRINT)
 TMDEF_OPTION_TEXT_S(MOVIE_DATEIMPRINT_OFF, TM_OPTION_ENABLE)
 TMDEF_OPTION_TEXT_S(MOVIE_DATEIMPRINT_ON, TM_OPTION_ENABLE)
@@ -243,6 +256,64 @@ TMDEF_OPTION_TEXT_S(MOVIE_H265, TM_OPTION_ENABLE)
 TMDEF_OPTION_TEXT_S(MOVIE_MJPG, TM_OPTION_DISABLE)
 TMDEF_END_OPTIONS()
 
+static int MenuCustom_DateTime(UINT32 uiMessage, UINT32 uiParam)
+{
+	(void)uiMessage;
+	(void)uiParam;
+	lv_plugin_scr_open(UIFlowSetupDateTime, NULL);
+	return TMF_PROCESSED;
+}
+
+static int MenuCustom_Format(UINT32 uiMessage, UINT32 uiParam)
+{
+	(void)uiMessage;
+	UIFlowMenuCommonConfirmAPI_Open(uiParam);
+	return TMF_PROCESSED;
+}
+
+static int MenuCustom_Default(UINT32 uiMessage, UINT32 uiParam)
+{
+	(void)uiMessage;
+	UIFlowMenuCommonConfirmAPI_Open(uiParam);
+	return TMF_PROCESSED;
+}
+
+static int MenuCustom_Version(UINT32 uiMessage, UINT32 uiParam)
+{
+	(void)uiMessage;
+	(void)uiParam;
+	return TMF_PROCESSED;
+}
+
+static int MenuCustom_Wifi(UINT32 uiMessage, UINT32 uiParam)
+{
+	(void)uiMessage;
+	(void)uiParam;
+
+#if (WIFI_AP_FUNC == ENABLE)
+	if (UI_GetData(FL_WIFI_LINK) == WIFI_LINK_OK) {
+		lv_plugin_scr_open(UIFlowWifiLink, NULL);
+		return TMF_PROCESSED;
+	}
+
+	if (CheckWiFiMapTbl() != E_OK) {
+		UI_SetData(FL_WIFI_LINK, WIFI_LINK_NG);
+		return TMF_PROCESSED;
+	}
+
+	UI_SetData(FL_WIFI_LINK, WIFI_LINK_LINKING);
+#if (WIFI_UI_FLOW_VER == WIFI_UI_VER_1_0)
+	lv_plugin_scr_open(UIFlowWifiWait, NULL);
+#endif
+	BKG_PostEvent(NVTEVT_BKW_WIFI_ON);
+#endif
+
+	return TMF_PROCESSED;
+}
+
+extern TM_OPTION gTM_OPTIONS_AUTO_POWER_OFF[];
+extern TM_OPTION gTM_OPTIONS_TV_MODE[];
+
 // --------------------------------------------------------------------------
 // ITEMS
 // --------------------------------------------------------------------------
@@ -253,18 +324,27 @@ TMDEF_ITEM_TEXTID(MOVIE_CYCLIC_REC)
 #if (SHDR_FUNC == ENABLE)
 TMDEF_ITEM_TEXTID(MOVIE_HDR)
 #endif
+TMDEF_ITEM_CUSTOM(DATE_TIME, MenuCustom_DateTime)
+TMDEF_ITEM_CUSTOM(WIFI, MenuCustom_Wifi)
+TMDEF_ITEM_TEXTID(AUTO_POWER_OFF)
 TMDEF_ITEM_TEXTID(MOVIE_WDR)
 #if (PHOTO_MODE == ENABLE)
 TMDEF_ITEM_TEXTID(EV)
 #endif
+TMDEF_ITEM_TEXTID(BEEP)
+TMDEF_ITEM_TEXTID(SCREEN_SAVE)
+TMDEF_ITEM_TEXTID(LANGUAGE)
+TMDEF_ITEM_TEXTID(TV_MODE)
+TMDEF_ITEM_TEXTID(FREQUENCY)
 TMDEF_ITEM_TEXTID(MOVIE_MOTION_DET)
 TMDEF_ITEM_TEXTID(MOVIE_AUDIO)
+TMDEF_ITEM_TEXTID(MOVIE_VOICE)
 TMDEF_ITEM_TEXTID(MOVIE_DATEIMPRINT)
 #if (MOVIE_EIS == ENABLE)
 TMDEF_ITEM_TEXTID(MOVIE_RSC)
 TMDEF_ITEM_TEXTID(MOVIE_RSC_EFFECT)
 #endif
-////TMDEF_ITEM_TEXTID(MOVIE_GSENSOR)
+TMDEF_ITEM_TEXTID(MOVIE_GSENSOR)
 TMDEF_ITEM_TEXTID(MOVIE_TIMELAPSE_REC)
 ////TMDEF_ITEM_TEXTID(MOVIE_IR_CUT)
 TMDEF_ITEM_TEXTID(MOVIE_SENSOR_ROTATE)
@@ -275,11 +355,14 @@ TMDEF_ITEM_TEXTID(MOVIE_PIM)
 ////TMDEF_ITEM_TEXTID(MOVIE_LDWS)
 ////TMDEF_ITEM_TEXTID(MOVIE_FCW)
 ////TMDEF_ITEM_TEXTID(MOVIE_DDD)
-////TMDEF_ITEM_TEXTID(MOVIE_ADAS_CAL)
+TMDEF_ITEM_TEXTID(MOVIE_ADAS_CAL)
 #if (SENSOR_CAPS_COUNT > 1)
 TMDEF_ITEM_TEXTID(MOVIE_DUAL_CAM)
 #endif
 TMDEF_ITEM_TEXTID(MOVIE_CODEC)
+TMDEF_ITEM_CUSTOM(FORMAT, MenuCustom_Format)
+TMDEF_ITEM_CUSTOM(DEFAULT, MenuCustom_Default)
+TMDEF_ITEM_CUSTOM(VERSION, MenuCustom_Version)
 TMDEF_END_ITEMS()
 
 // --------------------------------------------------------------------------
@@ -325,10 +408,34 @@ int Movie_MenuCallback(UINT32 uiMessage, UINT32 uiParam)
 			//Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_SHDR, 1, uwOption);
 			break;
 
+		case IDM_AUTO_POWER_OFF:
+			Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_POWEROFF, 1, uwOption);
+			break;
+
 		case IDM_EV:
 #if (PHOTO_MODE==ENABLE)
 			Ux_SendEvent(&CustomPhotoObjCtrl, NVTEVT_EXE_EV, 1, uwOption);
 #endif
+			break;
+
+		case IDM_BEEP:
+			Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_BEEPKEY, 1, uwOption);
+			break;
+
+		case IDM_SCREEN_SAVE:
+			Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_LCDOFF, 1, uwOption);
+			break;
+
+		case IDM_LANGUAGE:
+			Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_LANGUAGE, 1, uwOption);
+			break;
+
+		case IDM_TV_MODE:
+			Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_TVFORMAT, 1, uwOption);
+			break;
+
+		case IDM_FREQUENCY:
+			Ux_SendEvent(&UISetupObjCtrl, NVTEVT_EXE_FREQ, 1, uwOption);
 			break;
 
 		case IDM_MOVIE_MOTION_DET:
@@ -337,6 +444,10 @@ int Movie_MenuCallback(UINT32 uiMessage, UINT32 uiParam)
 
 		case IDM_MOVIE_AUDIO:
 			Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_AUDIO, 1, uwOption);
+			break;
+
+		case IDM_MOVIE_VOICE:
+			Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_VOICE, 1, uwOption);
 			break;
 
 		case IDM_MOVIE_DATEIMPRINT:

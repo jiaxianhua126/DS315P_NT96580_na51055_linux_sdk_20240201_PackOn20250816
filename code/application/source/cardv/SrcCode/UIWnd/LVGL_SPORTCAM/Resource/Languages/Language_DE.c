@@ -575,7 +575,7 @@ lv_plugin_string_t lv_plugin_DE_string_table[] = {
 	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_UDFW_SEND */ 
 	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_UDFW_START */ 
 	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_UDFW_FINISH */ 
-	{ "40M", 3 },			/* LV_PLUGIN_STRING_ID_STRID_40M */
+	{ "40M", 3 },			/* LV_PLUGIN_STRING_ID_STRID_40M */ 
 };
 
 

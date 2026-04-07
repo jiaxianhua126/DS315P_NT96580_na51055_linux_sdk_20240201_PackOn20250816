@@ -41,6 +41,7 @@ EXTRA_LIB_DIR += \
 	-L$(KFLOW_DIR)/output \
 	-L$(HDAL_SAMPLE_DIR)/output \
 	-L$(LIBRARY_DIR)/output \
+	-L$(LIBRARY_DIR)/external/__install/lib \
 	-L$(VOS_DRIVER_DIR)/output \
 	-L$(NVT_VOS_DIR)/output \
 	-L$(NVT_DRIVER_DIR)/output \

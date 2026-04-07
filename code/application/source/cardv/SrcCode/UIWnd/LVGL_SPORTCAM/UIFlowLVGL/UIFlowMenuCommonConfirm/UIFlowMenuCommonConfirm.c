@@ -36,7 +36,7 @@ lv_obj_t* UIFlowMenuCommonConfirm_create(){
 	lv_style_set_shadow_opa(&message_box_1_s0,LV_STATE_DEFAULT,0);
 	lv_style_set_shadow_width(&message_box_1_s0,LV_STATE_DEFAULT,0);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_text_color(&message_box_1_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&message_box_1_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&message_box_1_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&message_box_1_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&message_box_1_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xcc, 0x02, 0x62, 0xb6) ; lv_style_set_bg_color(&message_box_1_s0, LV_STATE_CHECKED, color);
@@ -125,7 +125,7 @@ lv_obj_t* UIFlowMenuCommonConfirm_create(){
 	STYLE_COLOR_PROP(0xd3, 0x31, 0x40, 0x4f) ; lv_style_set_value_color(&message_box_1_s2, LV_STATE_DEFAULT, color);
 	lv_style_set_value_font(&message_box_1_s2,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_color(&message_box_1_s2, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&message_box_1_s2,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&message_box_1_s2,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&message_box_1_s2, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&message_box_1_s2, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_bg_color(&message_box_1_s2, LV_STATE_CHECKED, color);
@@ -137,7 +137,6 @@ lv_obj_t* UIFlowMenuCommonConfirm_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&message_box_1_s2, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_value_color(&message_box_1_s2, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_color(&message_box_1_s2, LV_STATE_CHECKED, color);
-	lv_style_set_text_font(&message_box_1_s2,LV_STATE_CHECKED,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&message_box_1_s2, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&message_box_1_s2, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&message_box_1_s2, LV_STATE_FOCUSED, color);
@@ -161,7 +160,6 @@ lv_obj_t* UIFlowMenuCommonConfirm_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&message_box_1_s2, LV_STATE_EDITED, color);
 	STYLE_COLOR_PROP(0xd3, 0x31, 0x40, 0x4f) ; lv_style_set_value_color(&message_box_1_s2, LV_STATE_EDITED, color);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_color(&message_box_1_s2, LV_STATE_EDITED, color);
-	lv_style_set_text_font(&message_box_1_s2,LV_STATE_EDITED,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&message_box_1_s2, LV_STATE_EDITED, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&message_box_1_s2, LV_STATE_EDITED, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&message_box_1_s2, LV_STATE_HOVERED, color);
@@ -173,7 +171,6 @@ lv_obj_t* UIFlowMenuCommonConfirm_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&message_box_1_s2, LV_STATE_HOVERED, color);
 	STYLE_COLOR_PROP(0xd3, 0x31, 0x40, 0x4f) ; lv_style_set_value_color(&message_box_1_s2, LV_STATE_HOVERED, color);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_color(&message_box_1_s2, LV_STATE_HOVERED, color);
-	lv_style_set_text_font(&message_box_1_s2,LV_STATE_HOVERED,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&message_box_1_s2, LV_STATE_HOVERED, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&message_box_1_s2, LV_STATE_HOVERED, color);
 	STYLE_COLOR_PROP(0xbd, 0xc7, 0xfb, 0xe7) ; lv_style_set_bg_color(&message_box_1_s2, LV_STATE_PRESSED, color);
@@ -196,7 +193,6 @@ lv_obj_t* UIFlowMenuCommonConfirm_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_pattern_recolor(&message_box_1_s2, LV_STATE_DISABLED, color);
 	STYLE_COLOR_PROP(0x9c, 0x88, 0x88, 0x88) ; lv_style_set_value_color(&message_box_1_s2, LV_STATE_DISABLED, color);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_color(&message_box_1_s2, LV_STATE_DISABLED, color);
-	lv_style_set_text_font(&message_box_1_s2,LV_STATE_DISABLED,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3c, 0x3c, 0x3c) ; lv_style_set_text_sel_color(&message_box_1_s2, LV_STATE_DISABLED, color);
 	STYLE_COLOR_PROP(0x3a, 0x00, 0xb4, 0x95) ; lv_style_set_text_sel_bg_color(&message_box_1_s2, LV_STATE_DISABLED, color);
 	lv_obj_t *message_box_1 = lv_msgbox_create(parent, NULL);
@@ -204,7 +200,7 @@ lv_obj_t* UIFlowMenuCommonConfirm_create(){
 	lv_obj_set_click(message_box_1, true);
 	lv_obj_set_drag(message_box_1, false);
 	lv_obj_set_pos(message_box_1, 21, 63);
-	lv_obj_set_size(message_box_1, 279, 118);
+	lv_obj_set_size(message_box_1, 279, 116);
 	static const char* message_box_1_LVGLPropertyMsgBoxBtnmatrixButtonsText[] = {"AAAAAA","BBBBBB","",""};
 	lv_msgbox_add_btns(message_box_1, message_box_1_LVGLPropertyMsgBoxBtnmatrixButtonsText);
 	lv_plugin_msgbox_allocate_ext_attr(message_box_1);

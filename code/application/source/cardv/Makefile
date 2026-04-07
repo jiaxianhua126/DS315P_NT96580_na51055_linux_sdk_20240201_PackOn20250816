@@ -186,10 +186,10 @@ ifeq "$(UI_STYLE)" "UI_STYLE_LVGL"
 SRC += \
 	./SrcCode/UIApp/lv_user_font_conv/lv_user_font_conv.c \
 	./SrcCode/UIApp/lv_user_font_conv/lv_user_font_conv_cmd.c \
-	./SrcCode/UIWnd/LVGL_SPORTCAM/UIInfo/UIInfo.c \
-	./SrcCode/UIWnd/LVGL_SPORTCAM/UIInfo/UIMovieMapping.c \
-	./SrcCode/UIWnd/LVGL_SPORTCAM/UIInfo/UIPhotoMapping.c \
-	./SrcCode/UIWnd/LVGL_SPORTCAM/UIInfo/DateTimeInfo.c \
+	./SrcCode/UIWnd/SPORTCAM/UIInfo/UIInfo.c \
+	./SrcCode/UIWnd/SPORTCAM/UIInfo/UIMovieMapping.c \
+	./SrcCode/UIWnd/SPORTCAM/UIInfo/UIPhotoMapping.c \
+	./SrcCode/UIWnd/SPORTCAM/UIInfo/DateTimeInfo.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/Resource/BG_Opening.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/Resource/UIResource.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/Resource/SoundData.c \
@@ -215,6 +215,7 @@ SRC += \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/Resource/Plugin/lv_plugin_common.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/Resource/Plugin/lv_plugin_menu.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/Resource/Palette/palette.c \
+	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowCompat.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowLVGL.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowUSB/UIFlowUSB.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowUSB/UIFlowUSBEventCallback.c \

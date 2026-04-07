@@ -68,7 +68,7 @@
 		 * UI_STYLE_SPORTCAM
 		 * UI_STYLE_LVGL
 		 */
-		UI_STYLE = "UI_STYLE_SPORTCAM";
+		UI_STYLE = "UI_STYLE_LVGL";
 
 		/**
 		 * [TSE]

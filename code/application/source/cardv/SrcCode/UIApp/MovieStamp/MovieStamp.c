@@ -138,6 +138,18 @@ static UINT32 g_MultiWaterLogoVEncHDPathId[VENC_OUT_PORTID_MAX][MOVIE_MULTI_WATE
 #define VS_MULTIWATERLOGO_REGION 	(VS_MULTISTAMP_REGION- MOVIE_MULTI_WATERLOGO_CNT_MAX)
 
 const UINT16 g_ucStamp_Null[8*8] = {0};
+
+#if defined(_UI_STYLE_LVGL_)
+extern char CarNo_Buf[13];
+extern char Customize_Buf[13];
+extern char gUICarNo_StrBuf[13];
+extern char gUICustomize_StrBuf[13];
+extern char g_GPSstamp_buffer[128];
+extern char gUICustomer_Model[20];
+extern char gUICustomer_Null[20];
+extern char gUICustomer_StrBuf[20];
+#endif
+
 #if defined(_UI_STYLE_LVGL_)
 
 #include "UIApp/lv_user_font_conv/lv_user_font_conv.h"

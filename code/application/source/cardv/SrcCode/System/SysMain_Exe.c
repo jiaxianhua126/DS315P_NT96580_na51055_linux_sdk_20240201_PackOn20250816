@@ -24,7 +24,6 @@
 #include "DxDisplay.h"
 #include "comm/hwclock.h"
 #include "UIWnd/UIFlow.h"
-#include "UIWnd/SPORTCAM/UIInfo/UICfgDefault.h"
 #include "UIApp/Network/EthCamAppNetwork.h"
 #include "UIApp/Network/UIAppNetwork.h"
 #include "UIApp/Network/UIAppWiFiCmdMovie.h"
@@ -2244,4 +2243,3 @@ EVENT_ENTRY SystemObjCmdMap[] = {
 };
 
 CREATE_APP(SystemObj, 0)
-

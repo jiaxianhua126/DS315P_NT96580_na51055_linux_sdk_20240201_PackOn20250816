@@ -338,6 +338,8 @@ int16_t lv_plugin_menu_current_page_index(lv_obj_t *menu);
  */
 int16_t lv_plugin_menu_page_cnt(lv_obj_t *menu);
 
+void lv_plugin_menu_set_item_state(lv_obj_t* menu, uint8_t item_idx, lv_plugin_menu_item_stat_t state);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

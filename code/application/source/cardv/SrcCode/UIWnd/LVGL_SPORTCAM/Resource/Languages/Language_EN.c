@@ -575,7 +575,7 @@ lv_plugin_string_t lv_plugin_EN_string_table[] = {
 	{ "Send FW to Tx...", 16 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_UDFW_SEND */ 
 	{ "Tx Start Update FW...", 21 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_UDFW_START */ 
 	{ "Tx UpdateFW Finish!", 19 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_UDFW_FINISH */ 
-	{ "40M", 3 },			/* LV_PLUGIN_STRING_ID_STRID_40M */
+	{ "40M", 3 },			/* LV_PLUGIN_STRING_ID_STRID_40M */ 
 };
 
 

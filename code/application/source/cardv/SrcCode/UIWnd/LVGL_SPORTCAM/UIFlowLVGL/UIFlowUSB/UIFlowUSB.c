@@ -70,7 +70,7 @@ lv_obj_t* UIFlowUSB_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_usbmode_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_usbmode_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xf8, 0xfd, 0xfd, 0xfd) ; lv_style_set_text_color(&label_usbmode_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_usbmode_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_usbmode_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0x2f, 0x00, 0x9e, 0x84) ; lv_style_set_text_sel_color(&label_usbmode_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x0e, 0x00, 0x00, 0xff) ; lv_style_set_text_sel_bg_color(&label_usbmode_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_usbmode_s0, LV_STATE_CHECKED, color);
@@ -119,7 +119,7 @@ lv_obj_t* UIFlowUSB_create(){
 	lv_plugin_label_allocate_ext_attr(label_usbmode);
 	lv_plugin_label_set_font_type(label_usbmode, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_obj_set_pos(label_usbmode, 99, 14);
-	lv_obj_set_size(label_usbmode, 109, 19);
+	lv_obj_set_size(label_usbmode, 108, 18);
 	lv_obj_add_style(label_usbmode, 0, &label_usbmode_s0);
 
 	label_usbmode_scr_uiflowusb = label_usbmode;
@@ -166,7 +166,7 @@ lv_obj_t* UIFlowUSB_create(){
 	lv_obj_set_hidden(image_usb, false);
 	lv_obj_set_click(image_usb, false);
 	lv_obj_set_drag(image_usb, false);
-	lv_obj_set_pos(image_usb, 139, 45);
+	lv_obj_set_pos(image_usb, 139, 44);
 	lv_obj_set_size(image_usb, 28, 28);
 	lv_img_set_src(image_usb, &icon_usb_on);
 	lv_obj_add_style(image_usb, 0, &image_usb_s0);

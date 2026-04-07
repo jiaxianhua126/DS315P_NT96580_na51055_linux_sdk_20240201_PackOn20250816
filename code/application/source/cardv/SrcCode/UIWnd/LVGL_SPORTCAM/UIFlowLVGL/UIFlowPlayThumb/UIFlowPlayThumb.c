@@ -1543,7 +1543,7 @@ lv_obj_t* UIFlowPlayThumb_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_page_info_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_page_info_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xe7, 0xd9, 0xd9, 0xd9) ; lv_style_set_text_color(&label_page_info_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_page_info_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_page_info_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&label_page_info_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&label_page_info_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_page_info_s0, LV_STATE_CHECKED, color);
@@ -1605,7 +1605,7 @@ lv_obj_t* UIFlowPlayThumb_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&label_file_name_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_border_color(&label_file_name_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xe7, 0xd9, 0xd9, 0xd9) ; lv_style_set_text_color(&label_file_name_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_text_font(&label_file_name_s0,LV_STATE_DEFAULT,&notosans_black_16_1bpp);
+	lv_style_set_text_font(&label_file_name_s0,LV_STATE_DEFAULT,&lv_font_montserrat_16);
 	STYLE_COLOR_PROP(0xd3, 0x3b, 0x3e, 0x42) ; lv_style_set_text_sel_color(&label_file_name_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x3a, 0x01, 0xa2, 0xb1) ; lv_style_set_text_sel_bg_color(&label_file_name_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&label_file_name_s0, LV_STATE_CHECKED, color);

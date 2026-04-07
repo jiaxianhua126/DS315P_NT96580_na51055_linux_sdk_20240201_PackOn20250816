@@ -6069,6 +6069,7 @@
             ]
         }
     ],
+    "max font type": 5,
     "string id": [
         "STRID_NULL_",
         "STRID_MODE",
@@ -6643,7 +6644,7 @@
         "STRID_ETHCAM_STOP_REC",
         "STRID_ETHCAM_UDFW_SEND",
         "STRID_ETHCAM_UDFW_START",
-        "STRID_ETHCAM_UDFW_FINISH"
+        "STRID_ETHCAM_UDFW_FINISH",
         "STRID_40M"
     ]
 }

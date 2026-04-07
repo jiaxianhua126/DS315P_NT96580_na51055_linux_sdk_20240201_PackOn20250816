@@ -74,7 +74,8 @@ endif
 
 install:
 	@mkdir -p $(OUTPUT_DIR)
-	@cp -avf *.so* *.a $(OUTPUT_DIR)
+	@cp -avf *.a $(OUTPUT_DIR)
+	@if ls *.so* >/dev/null 2>&1; then cp -avf *.so* $(OUTPUT_DIR); fi
 ###############################################################################
 # rtos Makefile                                                               #
 ###############################################################################

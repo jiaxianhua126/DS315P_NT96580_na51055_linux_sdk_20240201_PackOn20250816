@@ -2,7 +2,7 @@
 #define _BG_OPENING_H
 
 #include "kwrap/type.h"
-#define LOGO_SIZE_W    320
+#define LOGO_SIZE_W    620
 #define LOGO_SIZE_H    240
 #define LOGO_FMT       HD_VIDEO_PXLFMT_YUV420
 
