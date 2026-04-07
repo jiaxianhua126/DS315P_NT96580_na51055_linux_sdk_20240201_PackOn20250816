@@ -2309,58 +2309,10 @@
         ],
         "resolution": {
             "height": 240,
-            "width": 320
+            "width": 620
         }
     },
     "fonts": [
-        {
-            "bpp": 1,
-            "compressed": false,
-            "custom code range": "",
-            "file path": "fonts/NotoSansCJKjp-Black.otf",
-            "include language table": true,
-            "name": "NotoSansCJKjp-Black",
-            "size": 16,
-            "unicode range names": [
-                "Ascii"
-            ]
-        },
-        {
-            "bpp": 1,
-            "compressed": false,
-            "custom code range": "",
-            "file path": "fonts/NotoSansCJKsc-Black.otf",
-            "include language table": true,
-            "name": "NotoSansCJKsc-Black",
-            "size": 16,
-            "unicode range names": [
-                "Ascii"
-            ]
-        },
-        {
-            "bpp": 1,
-            "compressed": false,
-            "custom code range": "",
-            "file path": "fonts/NotoSansCJKtc-Black.otf",
-            "include language table": true,
-            "name": "NotoSansCJKtc-Black",
-            "size": 16,
-            "unicode range names": [
-                "Ascii"
-            ]
-        },
-        {
-            "bpp": 1,
-            "compressed": false,
-            "custom code range": "",
-            "file path": "fonts/NotoSans-Black.ttf",
-            "include language table": true,
-            "name": "NotoSans-Black",
-            "size": 16,
-            "unicode range names": [
-                "Ascii"
-            ]
-        },
         {
             "bpp": 1,
             "compressed": false,
@@ -2413,6 +2365,126 @@
     "images": [
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/BYE_EN.bmp",
+            "name": "BYE_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/BYE_JP.bmp",
+            "name": "BYE_JP"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/BYE_SC.bmp",
+            "name": "BYE_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/BYE_TC.bmp",
+            "name": "BYE_TC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_0B.bmp",
+            "name": "ICON_0B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_0R.bmp",
+            "name": "ICON_0R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_1B.bmp",
+            "name": "ICON_1B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_1R.bmp",
+            "name": "ICON_1R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_2B.bmp",
+            "name": "ICON_2B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_2R.bmp",
+            "name": "ICON_2R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_3B.bmp",
+            "name": "ICON_3B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_3R.bmp",
+            "name": "ICON_3R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_4B.bmp",
+            "name": "ICON_4B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_4R.bmp",
+            "name": "ICON_4R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_5B.bmp",
+            "name": "ICON_5B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_5R.bmp",
+            "name": "ICON_5R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_6B.bmp",
+            "name": "ICON_6B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_6R.bmp",
+            "name": "ICON_6R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_7B.bmp",
+            "name": "ICON_7B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_7R.bmp",
+            "name": "ICON_7R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_8B.bmp",
+            "name": "ICON_8B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_8R.bmp",
+            "name": "ICON_8R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_9B.bmp",
+            "name": "ICON_9B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_9R.bmp",
+            "name": "ICON_9R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_ACT_PUSH_BTN.bmp",
             "name": "ICON_ACT_PUSH_BTN"
         },
@@ -2423,6 +2495,131 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_00.bmp",
+            "name": "ICON_ADAS_00"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_01.bmp",
+            "name": "ICON_ADAS_01"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_02.bmp",
+            "name": "ICON_ADAS_02"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_03.bmp",
+            "name": "ICON_ADAS_03"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_04.bmp",
+            "name": "ICON_ADAS_04"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_05.bmp",
+            "name": "ICON_ADAS_05"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_06.bmp",
+            "name": "ICON_ADAS_06"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_07.bmp",
+            "name": "ICON_ADAS_07"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_08.bmp",
+            "name": "ICON_ADAS_08"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_09.bmp",
+            "name": "ICON_ADAS_09"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_01.bmp",
+            "name": "ICON_ADAS_ANIMATION_01"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_02.bmp",
+            "name": "ICON_ADAS_ANIMATION_02"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_03.bmp",
+            "name": "ICON_ADAS_ANIMATION_03"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_04.bmp",
+            "name": "ICON_ADAS_ANIMATION_04"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_05.bmp",
+            "name": "ICON_ADAS_ANIMATION_05"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_06.bmp",
+            "name": "ICON_ADAS_ANIMATION_06"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_07.bmp",
+            "name": "ICON_ADAS_ANIMATION_07"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_08.bmp",
+            "name": "ICON_ADAS_ANIMATION_08"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_09.bmp",
+            "name": "ICON_ADAS_ANIMATION_09"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_10.bmp",
+            "name": "ICON_ADAS_ANIMATION_10"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_11.bmp",
+            "name": "ICON_ADAS_ANIMATION_11"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_12.bmp",
+            "name": "ICON_ADAS_ANIMATION_12"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_13.bmp",
+            "name": "ICON_ADAS_ANIMATION_13"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_14.bmp",
+            "name": "ICON_ADAS_ANIMATION_14"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ANIMATION_BG.bmp",
+            "name": "ICON_ADAS_ANIMATION_BG"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_ADAS_CAL.bmp",
             "name": "ICON_ADAS_CAL"
         },
@@ -2430,6 +2627,71 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_ADAS_CAL_M.bmp",
             "name": "ICON_ADAS_CAL_M"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_CAR_BLUE.bmp",
+            "name": "ICON_ADAS_CAR_BLUE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_CAR_RED.bmp",
+            "name": "ICON_ADAS_CAR_RED"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_CAR_WHITE.bmp",
+            "name": "ICON_ADAS_CAR_WHITE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_CHANGE_LANE_LEFT.bmp",
+            "name": "ICON_ADAS_CHANGE_LANE_LEFT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_CHANGE_LANE_RIGHT.bmp",
+            "name": "ICON_ADAS_CHANGE_LANE_RIGHT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_DIS_ALERT.bmp",
+            "name": "ICON_ADAS_DIS_ALERT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_DIS_SEPERATE.bmp",
+            "name": "ICON_ADAS_DIS_SEPERATE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_FRONT_ALERT.bmp",
+            "name": "ICON_ADAS_FRONT_ALERT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_FRONT_CAR_DIS_BG.bmp",
+            "name": "ICON_ADAS_FRONT_CAR_DIS_BG"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_FT.bmp",
+            "name": "ICON_ADAS_FT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_GO_ALERT.bmp",
+            "name": "ICON_ADAS_GO_ALERT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_LANE_LEFT.bmp",
+            "name": "ICON_ADAS_LANE_LEFT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_LANE_RIGHT.bmp",
+            "name": "ICON_ADAS_LANE_RIGHT"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -2450,6 +2712,71 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_ADAS_ON_M.bmp",
             "name": "ICON_ADAS_ON_M"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_PEOPLE_ALERT.bmp",
+            "name": "ICON_ADAS_PEOPLE_ALERT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_REAR_ALERT.bmp",
+            "name": "ICON_ADAS_REAR_ALERT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ROAD.bmp",
+            "name": "ICON_ADAS_ROAD"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ROAD_01.bmp",
+            "name": "ICON_ADAS_ROAD_01"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ROAD_02.bmp",
+            "name": "ICON_ADAS_ROAD_02"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ROAD_03.bmp",
+            "name": "ICON_ADAS_ROAD_03"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ROAD_04.bmp",
+            "name": "ICON_ADAS_ROAD_04"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ROAD_05.bmp",
+            "name": "ICON_ADAS_ROAD_05"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_ROAD_06.bmp",
+            "name": "ICON_ADAS_ROAD_06"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_VIRTUAL_BUMPER.bmp",
+            "name": "ICON_ADAS_VIRTUAL_BUMPER"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_ADAS_WARN_BG.bmp",
+            "name": "ICON_ADAS_WARN_BG"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_AP_MACHINE_OFF.bmp",
+            "name": "ICON_AP_MACHINE_OFF"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_AP_MACHINE_ON.bmp",
+            "name": "ICON_AP_MACHINE_ON"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -2480,6 +2807,21 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_AUTOSHUTDOWN_OFF.bmp",
             "name": "ICON_AUTOSHUTDOWN_OFF"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_AUTO_1FPS.bmp",
+            "name": "ICON_AUTO_1FPS"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_AUTO_1FPS1.bmp",
+            "name": "ICON_AUTO_1FPS1"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_BACK.bmp",
+            "name": "ICON_BACK"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -2598,6 +2940,11 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_CAMERA_MODE.bmp",
+            "name": "ICON_CAMERA_MODE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_CAM_PTZ_OFF.bmp",
             "name": "ICON_CAM_PTZ_OFF"
         },
@@ -2620,6 +2967,26 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_CANCEL_M.bmp",
             "name": "ICON_CANCEL_M"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_CAR_CAMERA.bmp",
+            "name": "ICON_CAR_CAMERA"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_CAR_NO.bmp",
+            "name": "ICON_CAR_NO"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_CLOSE.bmp",
+            "name": "ICON_CLOSE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_CLOSE_WIFI.bmp",
+            "name": "ICON_CLOSE_WIFI"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -2688,6 +3055,16 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_CODEC_H265.bmp",
+            "name": "ICON_CODEC_H265"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_COLN.bmp",
+            "name": "ICON_COLN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_COLOR.bmp",
             "name": "ICON_COLOR"
         },
@@ -2695,6 +3072,11 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_COPY_FROM_CARD.bmp",
             "name": "ICON_COPY_FROM_CARD"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_CORRECT.bmp",
+            "name": "ICON_CORRECT"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -2818,8 +3200,18 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_DIR_D.bmp",
+            "name": "ICON_DIR_D"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_DIR_DOWN.bmp",
             "name": "ICON_DIR_DOWN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_DIR_L.bmp",
+            "name": "ICON_DIR_L"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -2828,8 +3220,18 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_DIR_R.bmp",
+            "name": "ICON_DIR_R"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_DIR_RIGHT.bmp",
             "name": "ICON_DIR_RIGHT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_DIR_U.bmp",
+            "name": "ICON_DIR_U"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -2860,6 +3262,446 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_DUALCAM_FRONT.bmp",
             "name": "ICON_DUALCAM_FRONT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_00KM.bmp",
+            "name": "ICON_EDOG_00KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_100KM.bmp",
+            "name": "ICON_EDOG_100KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_110KM.bmp",
+            "name": "ICON_EDOG_110KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_120KM.bmp",
+            "name": "ICON_EDOG_120KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_20KM.bmp",
+            "name": "ICON_EDOG_20KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_30KM.bmp",
+            "name": "ICON_EDOG_30KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_40KM.bmp",
+            "name": "ICON_EDOG_40KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_50KM.bmp",
+            "name": "ICON_EDOG_50KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_60KM.bmp",
+            "name": "ICON_EDOG_60KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_70KM.bmp",
+            "name": "ICON_EDOG_70KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_80KM.bmp",
+            "name": "ICON_EDOG_80KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_90KM.bmp",
+            "name": "ICON_EDOG_90KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_AVERAGE_SPEED.bmp",
+            "name": "ICON_EDOG_AVERAGE_SPEED"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_BG.bmp",
+            "name": "ICON_EDOG_BG"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_CAPTUR.bmp",
+            "name": "ICON_EDOG_CAPTUR"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_DIS.bmp",
+            "name": "ICON_EDOG_DIS"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_DISTANCE.bmp",
+            "name": "ICON_EDOG_DISTANCE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_KM.bmp",
+            "name": "ICON_EDOG_KM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_KMH_BIG.bmp",
+            "name": "ICON_EDOG_KMH_BIG"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_KMH_RED.bmp",
+            "name": "ICON_EDOG_KMH_RED"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_KMH_SMALL.bmp",
+            "name": "ICON_EDOG_KMH_SMALL"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_KM_SMALL.bmp",
+            "name": "ICON_EDOG_KM_SMALL"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_M.bmp",
+            "name": "ICON_EDOG_M"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_MIN_SMALL.bmp",
+            "name": "ICON_EDOG_MIN_SMALL"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_M_SMALL.bmp",
+            "name": "ICON_EDOG_M_SMALL"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_0.bmp",
+            "name": "ICON_EDOG_NUM_RED_0"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_1.bmp",
+            "name": "ICON_EDOG_NUM_RED_1"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_2.bmp",
+            "name": "ICON_EDOG_NUM_RED_2"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_3.bmp",
+            "name": "ICON_EDOG_NUM_RED_3"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_4.bmp",
+            "name": "ICON_EDOG_NUM_RED_4"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_5.bmp",
+            "name": "ICON_EDOG_NUM_RED_5"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_6.bmp",
+            "name": "ICON_EDOG_NUM_RED_6"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_7.bmp",
+            "name": "ICON_EDOG_NUM_RED_7"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_8.bmp",
+            "name": "ICON_EDOG_NUM_RED_8"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_9.bmp",
+            "name": "ICON_EDOG_NUM_RED_9"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_SMALL_0.bmp",
+            "name": "ICON_EDOG_NUM_RED_SMALL_0"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_SMALL_1.bmp",
+            "name": "ICON_EDOG_NUM_RED_SMALL_1"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_SMALL_2.bmp",
+            "name": "ICON_EDOG_NUM_RED_SMALL_2"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_SMALL_3.bmp",
+            "name": "ICON_EDOG_NUM_RED_SMALL_3"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_SMALL_4.bmp",
+            "name": "ICON_EDOG_NUM_RED_SMALL_4"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_SMALL_5.bmp",
+            "name": "ICON_EDOG_NUM_RED_SMALL_5"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_SMALL_6.bmp",
+            "name": "ICON_EDOG_NUM_RED_SMALL_6"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_SMALL_7.bmp",
+            "name": "ICON_EDOG_NUM_RED_SMALL_7"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_SMALL_8.bmp",
+            "name": "ICON_EDOG_NUM_RED_SMALL_8"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_RED_SMALL_9.bmp",
+            "name": "ICON_EDOG_NUM_RED_SMALL_9"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_0.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_0"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_1.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_1"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_2.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_2"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_3.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_3"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_4.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_4"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_5.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_5"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_6.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_6"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_7.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_7"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_8.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_8"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_9.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_9"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_SMALL_0.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_SMALL_0"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_SMALL_1.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_SMALL_1"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_SMALL_2.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_SMALL_2"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_SMALL_3.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_SMALL_3"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_SMALL_4.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_SMALL_4"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_SMALL_5.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_SMALL_5"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_SMALL_6.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_SMALL_6"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_SMALL_7.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_SMALL_7"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_SMALL_8.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_SMALL_8"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_NUM_YELLOW_SMALL_9.bmp",
+            "name": "ICON_EDOG_NUM_YELLOW_SMALL_9"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_REDGREEN.bmp",
+            "name": "ICON_EDOG_REDGREEN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_SEC_SMALL.bmp",
+            "name": "ICON_EDOG_SEC_SMALL"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TIME.bmp",
+            "name": "ICON_EDOG_TIME"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_ACCIDENT.bmp",
+            "name": "ICON_EDOG_TYPE_ACCIDENT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_BUS.bmp",
+            "name": "ICON_EDOG_TYPE_BUS"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_DAWANDAO.bmp",
+            "name": "ICON_EDOG_TYPE_DAWANDAO"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_DOWN_HILL.bmp",
+            "name": "ICON_EDOG_TYPE_DOWN_HILL"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_ENTRY.bmp",
+            "name": "ICON_EDOG_TYPE_ENTRY"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_EXIT.bmp",
+            "name": "ICON_EDOG_TYPE_EXIT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_JIAOLIUDAO.bmp",
+            "name": "ICON_EDOG_TYPE_JIAOLIUDAO"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_MONITOR.bmp",
+            "name": "ICON_EDOG_TYPE_MONITOR"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_NO_DRINKING.bmp",
+            "name": "ICON_EDOG_TYPE_NO_DRINKING"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_NO_LEFT_TURN.bmp",
+            "name": "ICON_EDOG_TYPE_NO_LEFT_TURN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_NO_PARKING.bmp",
+            "name": "ICON_EDOG_TYPE_NO_PARKING"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_OIL_STATION.bmp",
+            "name": "ICON_EDOG_TYPE_OIL_STATION"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_POLICE.bmp",
+            "name": "ICON_EDOG_TYPE_POLICE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_SCHOOL.bmp",
+            "name": "ICON_EDOG_TYPE_SCHOOL"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_SERVICE_CENTER.bmp",
+            "name": "ICON_EDOG_TYPE_SERVICE_CENTER"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_STRAIGHT_LINE.bmp",
+            "name": "ICON_EDOG_TYPE_STRAIGHT_LINE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_TRAIN_WAY.bmp",
+            "name": "ICON_EDOG_TYPE_TRAIN_WAY"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_TYPE_TUNNEL.bmp",
+            "name": "ICON_EDOG_TYPE_TUNNEL"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_WARN_BG.bmp",
+            "name": "ICON_EDOG_WARN_BG"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_EDOG_WARN_BG_SINGLE.bmp",
+            "name": "ICON_EDOG_WARN_BG_SINGLE"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -2953,8 +3795,23 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_FATIGUE_DRIVING.bmp",
+            "name": "ICON_FATIGUE_DRIVING"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_FATIGUE_DRIVING_ALERT.bmp",
+            "name": "ICON_FATIGUE_DRIVING_ALERT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_FB_LEFT.bmp",
             "name": "ICON_FB_LEFT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_FB_LEFT_ORI.bmp",
+            "name": "ICON_FB_LEFT_ORI"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -2990,6 +3847,16 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_FF_RIGHT.bmp",
             "name": "ICON_FF_RIGHT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_FF_RIGHT_ORI.bmp",
+            "name": "ICON_FF_RIGHT_ORI"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_FILE_LOCK.bmp",
+            "name": "ICON_FILE_LOCK"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3073,6 +3940,11 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_GPS.bmp",
+            "name": "ICON_GPS"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_GPS_OFF.bmp",
             "name": "ICON_GPS_OFF"
         },
@@ -3085,6 +3957,11 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_GPS_ON_M.bmp",
             "name": "ICON_GPS_ON_M"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_GSENSOR.bmp",
+            "name": "ICON_GSENSOR"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3140,6 +4017,11 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_HELP_M.bmp",
             "name": "ICON_HELP_M"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_HINT_BAR.bmp",
+            "name": "ICON_HINT_BAR"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3278,6 +4160,21 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_LED_DET.bmp",
+            "name": "ICON_LED_DET"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_LOCAL_STATION__OFF.bmp",
+            "name": "ICON_LOCAL_STATION__OFF"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_LOCAL_STATION__ON.bmp",
+            "name": "ICON_LOCAL_STATION__ON"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_LOCK.bmp",
             "name": "ICON_LOCK"
         },
@@ -3348,6 +4245,16 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_FLASH_REC.bmp",
+            "name": "ICON_MENU_FLASH_REC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_HDR.bmp",
+            "name": "ICON_MENU_HDR"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_MENU_MODECHANG.bmp",
             "name": "ICON_MENU_MODECHANG"
         },
@@ -3355,6 +4262,16 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_MENU_MODECHANG_M.bmp",
             "name": "ICON_MENU_MODECHANG_M"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_PLAYBACK_OFF.bmp",
+            "name": "ICON_MENU_PLAYBACK_OFF"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_PLAYBACK_ON.bmp",
+            "name": "ICON_MENU_PLAYBACK_ON"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3373,8 +4290,43 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_SETUP_OFF.bmp",
+            "name": "ICON_MENU_SETUP_OFF"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_SETUP_ON.bmp",
+            "name": "ICON_MENU_SETUP_ON"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_MENU_SETUP_ON_M.bmp",
             "name": "ICON_MENU_SETUP_ON_M"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_STILL_OFF.bmp",
+            "name": "ICON_MENU_STILL_OFF"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_STILL_ON.bmp",
+            "name": "ICON_MENU_STILL_ON"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_UNDERBAR.bmp",
+            "name": "ICON_MENU_UNDERBAR"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_VIDEO_OFF.bmp",
+            "name": "ICON_MENU_VIDEO_OFF"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MENU_VIDEO_ON.bmp",
+            "name": "ICON_MENU_VIDEO_ON"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3448,6 +4400,11 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_MOVIE_MENU_WARING.bmp",
+            "name": "ICON_MOVIE_MENU_WARING"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_NO.bmp",
             "name": "ICON_NO"
         },
@@ -3475,6 +4432,46 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_OK_M_2.bmp",
             "name": "ICON_OK_M_2"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_OK_PAUSE.bmp",
+            "name": "ICON_OK_PAUSE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_OK_PLAY.bmp",
+            "name": "ICON_OK_PLAY"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_OK_S.bmp",
+            "name": "ICON_OK_S"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_PARKINGMODE_GSENSOR.bmp",
+            "name": "ICON_PARKINGMODE_GSENSOR"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_PARKINGMODE_LB.bmp",
+            "name": "ICON_PARKINGMODE_LB"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_PARKINGMODE_MD.bmp",
+            "name": "ICON_PARKINGMODE_MD"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_PARKINGMODE_TL.bmp",
+            "name": "ICON_PARKINGMODE_TL"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_PAUSE.bmp",
+            "name": "ICON_PAUSE"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3523,8 +4520,23 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_PLAY.bmp",
+            "name": "ICON_PLAY"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_PLAY_BACKWARD.bmp",
             "name": "ICON_PLAY_BACKWARD"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_PLAY_FF_B.bmp",
+            "name": "ICON_PLAY_FF_B"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_PLAY_FF_F.bmp",
+            "name": "ICON_PLAY_FF_F"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3613,6 +4625,11 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_REC_ELIPPSE.bmp",
+            "name": "ICON_REC_ELIPPSE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_REC_ELLIPSE.bmp",
             "name": "ICON_REC_ELLIPSE"
         },
@@ -3625,6 +4642,16 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_REC_TRANSPAENT.bmp",
             "name": "ICON_REC_TRANSPAENT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_REMIND_LIGHT.bmp",
+            "name": "ICON_REMIND_LIGHT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_REMIND_LIGHT_ALERT.bmp",
+            "name": "ICON_REMIND_LIGHT_ALERT"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3713,6 +4740,11 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SCREEN_SAVER.bmp",
+            "name": "ICON_SCREEN_SAVER"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_SD_CARD.bmp",
             "name": "ICON_SD_CARD"
         },
@@ -3753,8 +4785,63 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SEL_BAR.bmp",
+            "name": "ICON_SEL_BAR"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SEL_BAR_BEGIN.bmp",
+            "name": "ICON_SEL_BAR_BEGIN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SEL_BAR_CARNO.bmp",
+            "name": "ICON_SEL_BAR_CARNO"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SEL_BAR_DATE.bmp",
+            "name": "ICON_SEL_BAR_DATE"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SEL_BAR_END.bmp",
+            "name": "ICON_SEL_BAR_END"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SEL_BAR_ITEM.bmp",
+            "name": "ICON_SEL_BAR_ITEM"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SEL_BAR_MED.bmp",
+            "name": "ICON_SEL_BAR_MED"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SEL_BAR_YEAR.bmp",
+            "name": "ICON_SEL_BAR_YEAR"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SEL_FOCUS.bmp",
+            "name": "ICON_SEL_FOCUS"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_SEQUENCE_NO.bmp",
             "name": "ICON_SEQUENCE_NO"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SET.bmp",
+            "name": "ICON_SET"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SET_LOCK.bmp",
+            "name": "ICON_SET_LOCK"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3858,6 +4945,11 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SLIDE_SHOW.bmp",
+            "name": "ICON_SLIDE_SHOW"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_SMILE.bmp",
             "name": "ICON_SMILE"
         },
@@ -3868,8 +4960,18 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SNG.bmp",
+            "name": "ICON_SNG"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_SNG_ALERT.bmp",
             "name": "ICON_SNG_ALERT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SNG_ALERT_ORI.bmp",
+            "name": "ICON_SNG_ALERT_ORI"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3913,6 +5015,11 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_SSID.bmp",
+            "name": "ICON_SSID"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_SYS_CAL.bmp",
             "name": "ICON_SYS_CAL"
         },
@@ -3935,6 +5042,16 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_TIME_LAPSE_ON_M.bmp",
             "name": "ICON_TIME_LAPSE_ON_M"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_TITLE_BAR.bmp",
+            "name": "ICON_TITLE_BAR"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_TSR.bmp",
+            "name": "ICON_TSR"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -3998,6 +5115,11 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_USB.bmp",
+            "name": "ICON_USB"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_USB_MSDC.bmp",
             "name": "ICON_USB_MSDC"
         },
@@ -4020,6 +5142,11 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_USB_UVC.bmp",
             "name": "ICON_USB_UVC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_U_STOP_ORI.bmp",
+            "name": "ICON_U_STOP_ORI"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -4058,6 +5185,16 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_VOICE_OFF.bmp",
+            "name": "ICON_VOICE_OFF"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_VOICE_ON.bmp",
+            "name": "ICON_VOICE_ON"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_VOL_0.bmp",
             "name": "ICON_VOL_0"
         },
@@ -4070,6 +5207,21 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_VOL_2.bmp",
             "name": "ICON_VOL_2"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WARING.bmp",
+            "name": "ICON_WARING"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WARING_BIG.bmp",
+            "name": "ICON_WARING_BIG"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WARN_MOVIE_CAPTURE.bmp",
+            "name": "ICON_WARN_MOVIE_CAPTURE"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -4108,8 +5260,38 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WDR.bmp",
+            "name": "ICON_WDR"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WIFI.bmp",
+            "name": "ICON_WIFI"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WIFI_ANDROID.bmp",
+            "name": "ICON_WIFI_ANDROID"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WIFI_APP_CONNECTED.bmp",
+            "name": "ICON_WIFI_APP_CONNECTED"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WIFI_CONNECT.bmp",
+            "name": "ICON_WIFI_CONNECT"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_WIFI_CONNECTED.bmp",
             "name": "ICON_WIFI_CONNECTED"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WIFI_CONNECTED_SMALL.bmp",
+            "name": "ICON_WIFI_CONNECTED_SMALL"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -4128,6 +5310,11 @@
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WIFI_DISCONNECTED.bmp",
+            "name": "ICON_WIFI_DISCONNECTED"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_WIFI_DOT_CONNECTING_OFF.bmp",
             "name": "ICON_WIFI_DOT_CONNECTING_OFF"
         },
@@ -4140,6 +5327,11 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_WIFI_FAIL.bmp",
             "name": "ICON_WIFI_FAIL"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_WIFI_IOS.bmp",
+            "name": "ICON_WIFI_IOS"
         },
         {
             "colorFormat": "Indexed 256 in RGB332",
@@ -4170,12 +5362,257 @@
             "colorFormat": "Indexed 256 in RGB332",
             "filename": "icons/ICON_YES_M.bmp",
             "name": "ICON_YES_M"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON__EMPTY.bmp",
+            "name": "ICON__EMPTY"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_gps_err.bmp",
+            "name": "ICON_gps_err"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/ICON_gps_ok.bmp",
+            "name": "ICON_gps_ok"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/OPEN_AUKEY.bmp",
+            "name": "OPEN_AUKEY"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/OPEN_EN.bmp",
+            "name": "OPEN_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/OPEN_JP.bmp",
+            "name": "OPEN_JP"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/OPEN_PAPAGO.bmp",
+            "name": "OPEN_PAPAGO"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/OPEN_SC.bmp",
+            "name": "OPEN_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/OPEN_TC.bmp",
+            "name": "OPEN_TC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/_100.bmp",
+            "name": "_100"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/_110.bmp",
+            "name": "_110"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/_120.bmp",
+            "name": "_120"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/_30.bmp",
+            "name": "_30"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/_40.bmp",
+            "name": "_40"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/_50.bmp",
+            "name": "_50"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/_60.bmp",
+            "name": "_60"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/_70.bmp",
+            "name": "_70"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/_80.bmp",
+            "name": "_80"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/_90.bmp",
+            "name": "_90"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_1.bmp",
+            "name": "off_1"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_10.bmp",
+            "name": "off_10"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_10_EN.bmp",
+            "name": "off_10_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_10_SC.bmp",
+            "name": "off_10_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_1_EN.bmp",
+            "name": "off_1_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_1_SC.bmp",
+            "name": "off_1_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_2.bmp",
+            "name": "off_2"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_2_EN.bmp",
+            "name": "off_2_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_2_SC.bmp",
+            "name": "off_2_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_3.bmp",
+            "name": "off_3"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_3_EN.bmp",
+            "name": "off_3_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_3_SC.bmp",
+            "name": "off_3_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_4.bmp",
+            "name": "off_4"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_4_EN.bmp",
+            "name": "off_4_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_4_SC.bmp",
+            "name": "off_4_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_5.bmp",
+            "name": "off_5"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_5_EN.bmp",
+            "name": "off_5_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_5_SC.bmp",
+            "name": "off_5_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_6.bmp",
+            "name": "off_6"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_6_EN.bmp",
+            "name": "off_6_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_6_SC.bmp",
+            "name": "off_6_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_7.bmp",
+            "name": "off_7"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_7_EN.bmp",
+            "name": "off_7_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_7_SC.bmp",
+            "name": "off_7_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_8.bmp",
+            "name": "off_8"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_8_EN.bmp",
+            "name": "off_8_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_8_SC.bmp",
+            "name": "off_8_SC"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_9.bmp",
+            "name": "off_9"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_9_EN.bmp",
+            "name": "off_9_EN"
+        },
+        {
+            "colorFormat": "Indexed 256 in RGB332",
+            "filename": "icons/off_9_SC.bmp",
+            "name": "off_9_SC"
         }
     ],
     "language table": "UIFlowLVGL.lvgllang",
     "project": {
         "name": "UIFlowLVGL",
-        "version": "1.10.0"
+        "version": "2.0.6"
     },
     "screens": [
         "UIFlowLVGL.UIFlowMovie.lvglscr",
@@ -4192,6 +5629,7 @@
         "UIFlowLVGL.UIFlowUSBMenu.lvglscr",
         "UIFlowLVGL.UIFlowWifiLink.lvglscr",
         "UIFlowLVGL.UIFlowWifiLinkOK.lvglscr",
-        "UIFlowLVGL.UIFlowWifiWait.lvglscr"
+        "UIFlowLVGL.UIFlowWifiWait.lvglscr",
+        "UIFlowLVGL.UIFlowMovieWiFi.lvglscr"
     ]
 }

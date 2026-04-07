@@ -4,6 +4,722 @@
     "screen color": "0x551f57",
     "widgets": [
         {
+            "children": [
+                {
+                    "class": "lv_cont",
+                    "click": false,
+                    "drag": false,
+                    "event callback": "",
+                    "geometry": {
+                        "height": 31,
+                        "width": 1,
+                        "x": 122,
+                        "y": 0
+                    },
+                    "hidden": false,
+                    "locked": false,
+                    "name": "bottom_divider_1",
+                    "styles": [
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 0
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 1
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 2
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 3
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 4
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 5
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 6
+                        }
+                    ],
+                    "widget": "Container"
+                },
+                {
+                    "class": "lv_cont",
+                    "click": false,
+                    "drag": false,
+                    "event callback": "",
+                    "geometry": {
+                        "height": 31,
+                        "width": 1,
+                        "x": 245,
+                        "y": 0
+                    },
+                    "hidden": false,
+                    "locked": false,
+                    "name": "bottom_divider_2",
+                    "styles": [
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 0
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 1
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 2
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 3
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 4
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 5
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 6
+                        }
+                    ],
+                    "widget": "Container"
+                },
+                {
+                    "class": "lv_cont",
+                    "click": false,
+                    "drag": false,
+                    "event callback": "",
+                    "geometry": {
+                        "height": 31,
+                        "width": 1,
+                        "x": 369,
+                        "y": 0
+                    },
+                    "hidden": false,
+                    "locked": false,
+                    "name": "bottom_divider_3",
+                    "styles": [
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 0
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 1
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 2
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 3
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 4
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 5
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 6
+                        }
+                    ],
+                    "widget": "Container"
+                },
+                {
+                    "class": "lv_cont",
+                    "click": false,
+                    "drag": false,
+                    "event callback": "",
+                    "geometry": {
+                        "height": 31,
+                        "width": 1,
+                        "x": 493,
+                        "y": 0
+                    },
+                    "hidden": false,
+                    "locked": false,
+                    "name": "bottom_divider_4",
+                    "styles": [
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 0
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 1
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 2
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 3
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 4
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 5
+                        },
+                        {
+                            "Background": {
+                                "bg_color": "0x8a8a8a",
+                                "bg_grad_color": "0x8a8a8a",
+                                "bg_opa": 255
+                            },
+                            "Border": {
+                                "border_opa": 0,
+                                "border_width": 0
+                            },
+                            "part": 0,
+                            "state": 6
+                        }
+                    ],
+                    "widget": "Container"
+                },
+                {
+                    "auto size": true,
+                    "class": "lv_img",
+                    "click": false,
+                    "drag": false,
+                    "event callback": "",
+                    "geometry": {
+                        "height": 29,
+                        "width": 99,
+                        "x": 22,
+                        "y": 0
+                    },
+                    "hidden": false,
+                    "locked": false,
+                    "name": "image_bottom_power",
+                    "offset": {
+                        "X": 0,
+                        "Y": 0
+                    },
+                    "source": "ICON_POWER_OFF",
+                    "styles": [
+                        {"part": 0, "state": 0},
+                        {"part": 0, "state": 1},
+                        {"part": 0, "state": 2},
+                        {"part": 0, "state": 3},
+                        {"part": 0, "state": 4},
+                        {"part": 0, "state": 5},
+                        {"part": 0, "state": 6}
+                    ],
+                    "widget": "Image"
+                },
+                {
+                    "auto size": true,
+                    "class": "lv_img",
+                    "click": false,
+                    "drag": false,
+                    "event callback": "",
+                    "geometry": {
+                        "height": 29,
+                        "width": 98,
+                        "x": 145,
+                        "y": 0
+                    },
+                    "hidden": false,
+                    "locked": false,
+                    "name": "image_bottom_sos",
+                    "offset": {
+                        "X": 0,
+                        "Y": 0
+                    },
+                    "source": "ICON_VOICE_ON",
+                    "styles": [
+                        {"part": 0, "state": 0},
+                        {"part": 0, "state": 1},
+                        {"part": 0, "state": 2},
+                        {"part": 0, "state": 3},
+                        {"part": 0, "state": 4},
+                        {"part": 0, "state": 5},
+                        {"part": 0, "state": 6}
+                    ],
+                    "widget": "Image"
+                },
+                {
+                    "auto size": true,
+                    "class": "lv_img",
+                    "click": false,
+                    "drag": false,
+                    "event callback": "",
+                    "geometry": {
+                        "height": 29,
+                        "width": 99,
+                        "x": 269,
+                        "y": 0
+                    },
+                    "hidden": false,
+                    "locked": false,
+                    "name": "image_bottom_playback",
+                    "offset": {
+                        "X": 0,
+                        "Y": 0
+                    },
+                    "source": "ICON_PLAY",
+                    "styles": [
+                        {"part": 0, "state": 0},
+                        {"part": 0, "state": 1},
+                        {"part": 0, "state": 2},
+                        {"part": 0, "state": 3},
+                        {"part": 0, "state": 4},
+                        {"part": 0, "state": 5},
+                        {"part": 0, "state": 6}
+                    ],
+                    "widget": "Image"
+                },
+                {
+                    "auto size": true,
+                    "class": "lv_img",
+                    "click": false,
+                    "drag": false,
+                    "event callback": "",
+                    "geometry": {
+                        "height": 29,
+                        "width": 99,
+                        "x": 393,
+                        "y": 0
+                    },
+                    "hidden": false,
+                    "locked": false,
+                    "name": "image_bottom_setting",
+                    "offset": {
+                        "X": 0,
+                        "Y": 0
+                    },
+                    "source": "ICON_SET",
+                    "styles": [
+                        {"part": 0, "state": 0},
+                        {"part": 0, "state": 1},
+                        {"part": 0, "state": 2},
+                        {"part": 0, "state": 3},
+                        {"part": 0, "state": 4},
+                        {"part": 0, "state": 5},
+                        {"part": 0, "state": 6}
+                    ],
+                    "widget": "Image"
+                },
+                {
+                    "auto size": true,
+                    "class": "lv_img",
+                    "click": false,
+                    "drag": false,
+                    "event callback": "",
+                    "geometry": {
+                        "height": 29,
+                        "width": 102,
+                        "x": 518,
+                        "y": 0
+                    },
+                    "hidden": false,
+                    "locked": false,
+                    "name": "image_bottom_closelcd",
+                    "offset": {
+                        "X": 0,
+                        "Y": 0
+                    },
+                    "source": "ICON_CLOSE_WIFI",
+                    "styles": [
+                        {"part": 0, "state": 0},
+                        {"part": 0, "state": 1},
+                        {"part": 0, "state": 2},
+                        {"part": 0, "state": 3},
+                        {"part": 0, "state": 4},
+                        {"part": 0, "state": 5},
+                        {"part": 0, "state": 6}
+                    ],
+                    "widget": "Image"
+                }
+            ],
+            "class": "lv_cont",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 31,
+                "width": 620,
+                "x": 0,
+                "y": 209
+            },
+            "hidden": false,
+            "layout": "Off",
+            "locked": false,
+            "name": "container_bottom_bar",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x101010",
+                        "bg_grad_color": "0x101010",
+                        "bg_opa": 255
+                    },
+                    "Border": {
+                        "border_color": "0x404040",
+                        "border_opa": 255,
+                        "border_width": 1
+                    },
+                    "Padding": {
+                        "pad_bottom": 0,
+                        "pad_left": 0,
+                        "pad_right": 0,
+                        "pad_top": 0
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x101010",
+                        "bg_grad_color": "0x101010",
+                        "bg_opa": 255
+                    },
+                    "Border": {
+                        "border_color": "0x404040",
+                        "border_opa": 255,
+                        "border_width": 1
+                    },
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x101010",
+                        "bg_grad_color": "0x101010",
+                        "bg_opa": 255
+                    },
+                    "Border": {
+                        "border_color": "0x404040",
+                        "border_opa": 255,
+                        "border_width": 1
+                    },
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x101010",
+                        "bg_grad_color": "0x101010",
+                        "bg_opa": 255
+                    },
+                    "Border": {
+                        "border_color": "0x404040",
+                        "border_opa": 255,
+                        "border_width": 1
+                    },
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x101010",
+                        "bg_grad_color": "0x101010",
+                        "bg_opa": 255
+                    },
+                    "Border": {
+                        "border_color": "0x404040",
+                        "border_opa": 255,
+                        "border_width": 1
+                    },
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x101010",
+                        "bg_grad_color": "0x101010",
+                        "bg_opa": 255
+                    },
+                    "Border": {
+                        "border_color": "0x404040",
+                        "border_opa": 255,
+                        "border_width": 1
+                    },
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x101010",
+                        "bg_grad_color": "0x101010",
+                        "bg_opa": 255
+                    },
+                    "Border": {
+                        "border_color": "0x404040",
+                        "border_opa": 255,
+                        "border_width": 1
+                    },
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "widget": "Container"
+        },
+        {
             "auto size": true,
             "class": "lv_img",
             "click": false,
@@ -12,8 +728,8 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 280,
-                "y": 170
+                "x": 286,
+                "y": 211
             },
             "hidden": false,
             "locked": false,
@@ -116,8 +832,8 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 280,
-                "y": 208
+                "x": 580,
+                "y": 211
             },
             "hidden": false,
             "locked": false,
@@ -168,9 +884,9 @@
             "font type": "Font_Type0",
             "geometry": {
                 "height": 21,
-                "width": 121,
-                "x": 56,
-                "y": 214
+                "width": 119,
+                "x": 4,
+                "y": 185
             },
             "hidden": false,
             "locked": false,
@@ -182,7 +898,7 @@
                 {
                     "Text": {
                         "text_color": "0xffffff",
-                        "text_font": "NotoSans-Black 16 1bpp"
+                        "text_font": "montserrat 16 4bpp"
                     },
                     "part": 0,
                     "state": 0
@@ -224,9 +940,9 @@
             "font type": "Font_Type0",
             "geometry": {
                 "height": 21,
-                "width": 87,
-                "x": 182,
-                "y": 214
+                "width": 86,
+                "x": 125,
+                "y": 185
             },
             "hidden": false,
             "locked": false,
@@ -238,7 +954,7 @@
                 {
                     "Text": {
                         "text_color": "0xffffff",
-                        "text_font": "NotoSans-Black 16 1bpp"
+                        "text_font": "montserrat 16 4bpp"
                     },
                     "part": 0,
                     "state": 0
@@ -280,8 +996,8 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 7,
-                "y": 126
+                "x": 3,
+                "y": 104
             },
             "hidden": false,
             "locked": false,
@@ -332,9 +1048,9 @@
             "font type": "Font_Type0",
             "geometry": {
                 "height": 30,
-                "width": 90,
-                "x": 227,
-                "y": 5
+                "width": 87,
+                "x": 25,
+                "y": 1
             },
             "hidden": false,
             "locked": false,
@@ -346,7 +1062,7 @@
                 {
                     "Text": {
                         "text_color": "0xffffff",
-                        "text_font": "NotoSans-Black 16 1bpp"
+                        "text_font": "montserrat 16 4bpp"
                     },
                     "part": 0,
                     "state": 0
@@ -388,8 +1104,8 @@
             "geometry": {
                 "height": 18,
                 "width": 18,
-                "x": 52,
-                "y": 11
+                "x": 5,
+                "y": 6
             },
             "hidden": true,
             "locked": false,
@@ -440,8 +1156,8 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 280,
-                "y": 132
+                "x": 296,
+                "y": 105
             },
             "hidden": false,
             "locked": false,
@@ -492,9 +1208,9 @@
             "font type": "Font_Type0",
             "geometry": {
                 "height": 30,
-                "width": 231,
-                "x": 78,
-                "y": 40
+                "width": 159,
+                "x": 445,
+                "y": 0
             },
             "hidden": false,
             "locked": false,
@@ -506,7 +1222,7 @@
                 {
                     "Text": {
                         "text_color": "0xffffff",
-                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_font": "montserrat 16 4bpp",
                         "text_sel_bg_color": "0x00b495",
                         "text_sel_color": "0x3c3c3c"
                     },
@@ -602,8 +1318,8 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 80,
-                "y": 5
+                "x": 146,
+                "y": 2
             },
             "hidden": false,
             "locked": false,
@@ -654,8 +1370,8 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 115,
-                "y": 5
+                "x": 150,
+                "y": 2
             },
             "hidden": false,
             "locked": false,
@@ -706,7 +1422,7 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 12,
+                "x": 3,
                 "y": 71
             },
             "hidden": false,
@@ -759,8 +1475,8 @@
             "geometry": {
                 "height": 28,
                 "width": 60,
-                "x": 76,
-                "y": 168
+                "x": 3,
+                "y": 136
             },
             "hidden": true,
             "locked": false,
@@ -771,7 +1487,7 @@
             "styles": [
                 {
                     "Text": {
-                        "text_font": "NotoSans-Black 16 1bpp"
+                        "text_font": "montserrat 16 4bpp"
                     },
                     "part": 0,
                     "state": 0
@@ -813,9 +1529,9 @@
             "font type": "Font_Type0",
             "geometry": {
                 "height": 30,
-                "width": 90,
-                "x": 227,
-                "y": 5
+                "width": 87,
+                "x": 25,
+                "y": 1
             },
             "hidden": false,
             "locked": false,
@@ -827,7 +1543,7 @@
                 {
                     "Text": {
                         "text_color": "0xffffff",
-                        "text_font": "NotoSans-Black 16 1bpp"
+                        "text_font": "montserrat 16 4bpp"
                     },
                     "part": 0,
                     "state": 0
