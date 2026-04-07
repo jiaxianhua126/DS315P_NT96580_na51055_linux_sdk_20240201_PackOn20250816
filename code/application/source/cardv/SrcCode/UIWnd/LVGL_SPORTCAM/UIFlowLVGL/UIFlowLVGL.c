@@ -20,6 +20,7 @@ lv_obj_t *UIFlowUSBMenu;
 lv_obj_t *UIFlowWifiLink;
 lv_obj_t *UIFlowWifiLinkOK;
 lv_obj_t *UIFlowWifiWait;
+lv_obj_t *UIFlowMovieWiFi;
 
 
 extern lv_plugin_string_t lv_plugin_EN_string_table[];
@@ -567,6 +568,7 @@ lv_plugin_img_t lv_plugin_UIFlowLVGL_img_table[] =
 	{ &icon_sound_rec_on },
 	{ &icon_sound_rec_on_m },
 	{ &icon_speaker },
+	{ &icon_ssid },
 	{ &icon_sys_cal },
 	{ &icon_sys_cal_m },
 	{ &icon_time_lapse_off },
@@ -704,7 +706,6 @@ lv_plugin_font_t lv_plugin_UIFlowLVGL_font_table[] =
 	{ NULL },
 #endif
 
-	{ &notosans_black_16_1bpp },
 	{ &notosans_black_32_1bpp },
 	{ &notosans_black_48_1bpp },
 	{ &notosans_black_64_1bpp },
@@ -1437,5 +1438,6 @@ void UIFlowLVGL(){
 	UIFlowWifiLink = UIFlowWifiLink_create();
 	UIFlowWifiLinkOK = UIFlowWifiLinkOK_create();
 	UIFlowWifiWait = UIFlowWifiWait_create();
+	UIFlowMovieWiFi = UIFlowMovieWiFi_create();
 
 }

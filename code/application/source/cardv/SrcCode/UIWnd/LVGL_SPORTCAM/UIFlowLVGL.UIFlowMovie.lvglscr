@@ -17,97 +17,43 @@
                         "y": 0
                     },
                     "hidden": false,
+                    "layout": "Off",
                     "locked": false,
                     "name": "bottom_divider_1",
                     "styles": [
                         {
                             "Background": {
                                 "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
+                                "bg_grad_color": "0x8a8a8a"
                             },
                             "Border": {
-                                "border_opa": 0,
+                                "border_opa": 255,
                                 "border_width": 0
                             },
                             "part": 0,
                             "state": 0
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 1
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 2
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 3
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 4
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 5
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 6
                         }
@@ -126,97 +72,43 @@
                         "y": 0
                     },
                     "hidden": false,
+                    "layout": "Off",
                     "locked": false,
                     "name": "bottom_divider_2",
                     "styles": [
                         {
                             "Background": {
                                 "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
+                                "bg_grad_color": "0x8a8a8a"
                             },
                             "Border": {
-                                "border_opa": 0,
+                                "border_opa": 255,
                                 "border_width": 0
                             },
                             "part": 0,
                             "state": 0
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 1
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 2
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 3
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 4
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 5
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 6
                         }
@@ -235,97 +127,43 @@
                         "y": 0
                     },
                     "hidden": false,
+                    "layout": "Off",
                     "locked": false,
                     "name": "bottom_divider_3",
                     "styles": [
                         {
                             "Background": {
                                 "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
+                                "bg_grad_color": "0x8a8a8a"
                             },
                             "Border": {
-                                "border_opa": 0,
+                                "border_opa": 255,
                                 "border_width": 0
                             },
                             "part": 0,
                             "state": 0
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 1
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 2
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 3
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 4
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 5
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 6
                         }
@@ -344,97 +182,43 @@
                         "y": 0
                     },
                     "hidden": false,
+                    "layout": "Off",
                     "locked": false,
                     "name": "bottom_divider_4",
                     "styles": [
                         {
                             "Background": {
                                 "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
+                                "bg_grad_color": "0x8a8a8a"
                             },
                             "Border": {
-                                "border_opa": 0,
+                                "border_opa": 255,
                                 "border_width": 0
                             },
                             "part": 0,
                             "state": 0
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 1
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 2
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 3
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 4
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 5
                         },
                         {
-                            "Background": {
-                                "bg_color": "0x8a8a8a",
-                                "bg_grad_color": "0x8a8a8a",
-                                "bg_opa": 255
-                            },
-                            "Border": {
-                                "border_opa": 0,
-                                "border_width": 0
-                            },
                             "part": 0,
                             "state": 6
                         }
@@ -448,10 +232,10 @@
                     "drag": false,
                     "event callback": "",
                     "geometry": {
-                        "height": 29,
-                        "width": 99,
-                        "x": 22,
-                        "y": 0
+                        "height": 28,
+                        "width": 28,
+                        "x": 43,
+                        "y": 4
                     },
                     "hidden": false,
                     "locked": false,
@@ -462,13 +246,37 @@
                     },
                     "source": "ICON_POWER_OFF",
                     "styles": [
-                        {"part": 0, "state": 0},
-                        {"part": 0, "state": 1},
-                        {"part": 0, "state": 2},
-                        {"part": 0, "state": 3},
-                        {"part": 0, "state": 4},
-                        {"part": 0, "state": 5},
-                        {"part": 0, "state": 6}
+                        {
+                            "Image": {
+                                "image_recolor": "0x3c3c3c"
+                            },
+                            "part": 0,
+                            "state": 0
+                        },
+                        {
+                            "part": 0,
+                            "state": 1
+                        },
+                        {
+                            "part": 0,
+                            "state": 2
+                        },
+                        {
+                            "part": 0,
+                            "state": 3
+                        },
+                        {
+                            "part": 0,
+                            "state": 4
+                        },
+                        {
+                            "part": 0,
+                            "state": 5
+                        },
+                        {
+                            "part": 0,
+                            "state": 6
+                        }
                     ],
                     "widget": "Image"
                 },
@@ -479,10 +287,10 @@
                     "drag": false,
                     "event callback": "",
                     "geometry": {
-                        "height": 29,
-                        "width": 98,
-                        "x": 145,
-                        "y": 0
+                        "height": 28,
+                        "width": 28,
+                        "x": 168,
+                        "y": 1
                     },
                     "hidden": false,
                     "locked": false,
@@ -493,13 +301,37 @@
                     },
                     "source": "ICON_VOICE_ON",
                     "styles": [
-                        {"part": 0, "state": 0},
-                        {"part": 0, "state": 1},
-                        {"part": 0, "state": 2},
-                        {"part": 0, "state": 3},
-                        {"part": 0, "state": 4},
-                        {"part": 0, "state": 5},
-                        {"part": 0, "state": 6}
+                        {
+                            "Image": {
+                                "image_recolor": "0x3c3c3c"
+                            },
+                            "part": 0,
+                            "state": 0
+                        },
+                        {
+                            "part": 0,
+                            "state": 1
+                        },
+                        {
+                            "part": 0,
+                            "state": 2
+                        },
+                        {
+                            "part": 0,
+                            "state": 3
+                        },
+                        {
+                            "part": 0,
+                            "state": 4
+                        },
+                        {
+                            "part": 0,
+                            "state": 5
+                        },
+                        {
+                            "part": 0,
+                            "state": 6
+                        }
                     ],
                     "widget": "Image"
                 },
@@ -510,9 +342,9 @@
                     "drag": false,
                     "event callback": "",
                     "geometry": {
-                        "height": 29,
-                        "width": 99,
-                        "x": 269,
+                        "height": 28,
+                        "width": 28,
+                        "x": 297,
                         "y": 0
                     },
                     "hidden": false,
@@ -524,13 +356,37 @@
                     },
                     "source": "ICON_PLAY",
                     "styles": [
-                        {"part": 0, "state": 0},
-                        {"part": 0, "state": 1},
-                        {"part": 0, "state": 2},
-                        {"part": 0, "state": 3},
-                        {"part": 0, "state": 4},
-                        {"part": 0, "state": 5},
-                        {"part": 0, "state": 6}
+                        {
+                            "Image": {
+                                "image_recolor": "0x3c3c3c"
+                            },
+                            "part": 0,
+                            "state": 0
+                        },
+                        {
+                            "part": 0,
+                            "state": 1
+                        },
+                        {
+                            "part": 0,
+                            "state": 2
+                        },
+                        {
+                            "part": 0,
+                            "state": 3
+                        },
+                        {
+                            "part": 0,
+                            "state": 4
+                        },
+                        {
+                            "part": 0,
+                            "state": 5
+                        },
+                        {
+                            "part": 0,
+                            "state": 6
+                        }
                     ],
                     "widget": "Image"
                 },
@@ -541,10 +397,10 @@
                     "drag": false,
                     "event callback": "",
                     "geometry": {
-                        "height": 29,
-                        "width": 99,
-                        "x": 393,
-                        "y": 0
+                        "height": 28,
+                        "width": 28,
+                        "x": 417,
+                        "y": 2
                     },
                     "hidden": false,
                     "locked": false,
@@ -555,13 +411,37 @@
                     },
                     "source": "ICON_SET",
                     "styles": [
-                        {"part": 0, "state": 0},
-                        {"part": 0, "state": 1},
-                        {"part": 0, "state": 2},
-                        {"part": 0, "state": 3},
-                        {"part": 0, "state": 4},
-                        {"part": 0, "state": 5},
-                        {"part": 0, "state": 6}
+                        {
+                            "Image": {
+                                "image_recolor": "0x3c3c3c"
+                            },
+                            "part": 0,
+                            "state": 0
+                        },
+                        {
+                            "part": 0,
+                            "state": 1
+                        },
+                        {
+                            "part": 0,
+                            "state": 2
+                        },
+                        {
+                            "part": 0,
+                            "state": 3
+                        },
+                        {
+                            "part": 0,
+                            "state": 4
+                        },
+                        {
+                            "part": 0,
+                            "state": 5
+                        },
+                        {
+                            "part": 0,
+                            "state": 6
+                        }
                     ],
                     "widget": "Image"
                 },
@@ -572,10 +452,10 @@
                     "drag": false,
                     "event callback": "",
                     "geometry": {
-                        "height": 29,
-                        "width": 102,
-                        "x": 518,
-                        "y": 0
+                        "height": 28,
+                        "width": 60,
+                        "x": 535,
+                        "y": 1
                     },
                     "hidden": false,
                     "locked": false,
@@ -586,13 +466,37 @@
                     },
                     "source": "ICON_CLOSE_WIFI",
                     "styles": [
-                        {"part": 0, "state": 0},
-                        {"part": 0, "state": 1},
-                        {"part": 0, "state": 2},
-                        {"part": 0, "state": 3},
-                        {"part": 0, "state": 4},
-                        {"part": 0, "state": 5},
-                        {"part": 0, "state": 6}
+                        {
+                            "Image": {
+                                "image_recolor": "0x3c3c3c"
+                            },
+                            "part": 0,
+                            "state": 0
+                        },
+                        {
+                            "part": 0,
+                            "state": 1
+                        },
+                        {
+                            "part": 0,
+                            "state": 2
+                        },
+                        {
+                            "part": 0,
+                            "state": 3
+                        },
+                        {
+                            "part": 0,
+                            "state": 4
+                        },
+                        {
+                            "part": 0,
+                            "state": 5
+                        },
+                        {
+                            "part": 0,
+                            "state": 6
+                        }
                     ],
                     "widget": "Image"
                 }
@@ -614,14 +518,12 @@
             "styles": [
                 {
                     "Background": {
-                        "bg_color": "0x101010",
-                        "bg_grad_color": "0x101010",
-                        "bg_opa": 255
+                        "bg_color": "0x000000",
+                        "bg_grad_color": "0x000000"
                     },
                     "Border": {
-                        "border_color": "0x404040",
-                        "border_opa": 255,
-                        "border_width": 1
+                        "border_color": "0x3c3c3c",
+                        "border_width": 0
                     },
                     "Padding": {
                         "pad_bottom": 0,
@@ -635,12 +537,10 @@
                 {
                     "Background": {
                         "bg_color": "0x101010",
-                        "bg_grad_color": "0x101010",
-                        "bg_opa": 255
+                        "bg_grad_color": "0x101010"
                     },
                     "Border": {
                         "border_color": "0x404040",
-                        "border_opa": 255,
                         "border_width": 1
                     },
                     "part": 0,
@@ -649,12 +549,10 @@
                 {
                     "Background": {
                         "bg_color": "0x101010",
-                        "bg_grad_color": "0x101010",
-                        "bg_opa": 255
+                        "bg_grad_color": "0x101010"
                     },
                     "Border": {
                         "border_color": "0x404040",
-                        "border_opa": 255,
                         "border_width": 1
                     },
                     "part": 0,
@@ -663,12 +561,10 @@
                 {
                     "Background": {
                         "bg_color": "0x101010",
-                        "bg_grad_color": "0x101010",
-                        "bg_opa": 255
+                        "bg_grad_color": "0x101010"
                     },
                     "Border": {
                         "border_color": "0x404040",
-                        "border_opa": 255,
                         "border_width": 1
                     },
                     "part": 0,
@@ -677,12 +573,10 @@
                 {
                     "Background": {
                         "bg_color": "0x101010",
-                        "bg_grad_color": "0x101010",
-                        "bg_opa": 255
+                        "bg_grad_color": "0x101010"
                     },
                     "Border": {
                         "border_color": "0x404040",
-                        "border_opa": 255,
                         "border_width": 1
                     },
                     "part": 0,
@@ -691,12 +585,10 @@
                 {
                     "Background": {
                         "bg_color": "0x101010",
-                        "bg_grad_color": "0x101010",
-                        "bg_opa": 255
+                        "bg_grad_color": "0x101010"
                     },
                     "Border": {
                         "border_color": "0x404040",
-                        "border_opa": 255,
                         "border_width": 1
                     },
                     "part": 0,
@@ -705,12 +597,10 @@
                 {
                     "Background": {
                         "bg_color": "0x101010",
-                        "bg_grad_color": "0x101010",
-                        "bg_opa": 255
+                        "bg_grad_color": "0x101010"
                     },
                     "Border": {
                         "border_color": "0x404040",
-                        "border_opa": 255,
                         "border_width": 1
                     },
                     "part": 0,
@@ -728,10 +618,10 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 286,
-                "y": 211
+                "x": 579,
+                "y": 157
             },
-            "hidden": false,
+            "hidden": true,
             "locked": false,
             "name": "image_storage",
             "offset": {
@@ -780,10 +670,10 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 12,
-                "y": 5
+                "x": 16,
+                "y": 38
             },
-            "hidden": false,
+            "hidden": true,
             "locked": false,
             "name": "image_mode_video",
             "offset": {
@@ -832,10 +722,10 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 580,
-                "y": 211
+                "x": 581,
+                "y": 166
             },
-            "hidden": false,
+            "hidden": true,
             "locked": false,
             "name": "image_battery",
             "offset": {
@@ -898,7 +788,9 @@
                 {
                     "Text": {
                         "text_color": "0xffffff",
-                        "text_font": "montserrat 16 4bpp"
+                        "text_font": "montserrat 16 4bpp",
+                        "text_sel_bg_color": "0x00b495",
+                        "text_sel_color": "0x3c3c3c"
                     },
                     "part": 0,
                     "state": 0
@@ -954,7 +846,9 @@
                 {
                     "Text": {
                         "text_color": "0xffffff",
-                        "text_font": "montserrat 16 4bpp"
+                        "text_font": "montserrat 16 4bpp",
+                        "text_sel_bg_color": "0x00b495",
+                        "text_sel_color": "0x3c3c3c"
                     },
                     "part": 0,
                     "state": 0
@@ -996,10 +890,10 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 3,
-                "y": 104
+                "x": 8,
+                "y": 123
             },
-            "hidden": false,
+            "hidden": true,
             "locked": false,
             "name": "image_ev",
             "offset": {
@@ -1062,7 +956,9 @@
                 {
                     "Text": {
                         "text_color": "0xffffff",
-                        "text_font": "montserrat 16 4bpp"
+                        "text_font": "montserrat 16 4bpp",
+                        "text_sel_bg_color": "0x00b495",
+                        "text_sel_color": "0x3c3c3c"
                     },
                     "part": 0,
                     "state": 0
@@ -1266,10 +1162,10 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 12,
-                "y": 38
+                "x": 16,
+                "y": 81
             },
-            "hidden": false,
+            "hidden": true,
             "locked": false,
             "name": "image_cyclic_rec",
             "offset": {
@@ -1370,7 +1266,7 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 150,
+                "x": 111,
                 "y": 2
             },
             "hidden": false,
@@ -1422,10 +1318,10 @@
             "geometry": {
                 "height": 28,
                 "width": 28,
-                "x": 3,
-                "y": 71
+                "x": 16,
+                "y": 112
             },
-            "hidden": false,
+            "hidden": true,
             "locked": false,
             "name": "image_MotionDetect",
             "offset": {
@@ -1475,8 +1371,8 @@
             "geometry": {
                 "height": 28,
                 "width": 60,
-                "x": 3,
-                "y": 136
+                "x": 19,
+                "y": 138
             },
             "hidden": true,
             "locked": false,
@@ -1487,7 +1383,10 @@
             "styles": [
                 {
                     "Text": {
-                        "text_font": "montserrat 16 4bpp"
+                        "text_color": "0x3c3c3c",
+                        "text_font": "montserrat 16 4bpp",
+                        "text_sel_bg_color": "0x00b495",
+                        "text_sel_color": "0x3c3c3c"
                     },
                     "part": 0,
                     "state": 0
@@ -1543,7 +1442,9 @@
                 {
                     "Text": {
                         "text_color": "0xffffff",
-                        "text_font": "montserrat 16 4bpp"
+                        "text_font": "montserrat 16 4bpp",
+                        "text_sel_bg_color": "0x00b495",
+                        "text_sel_color": "0x3c3c3c"
                     },
                     "part": 0,
                     "state": 0

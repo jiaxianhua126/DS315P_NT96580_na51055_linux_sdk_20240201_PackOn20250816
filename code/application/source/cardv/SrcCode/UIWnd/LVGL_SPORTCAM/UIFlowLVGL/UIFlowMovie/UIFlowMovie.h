@@ -17,6 +17,16 @@ extern "C" {
 void UIFlowMovieEventCallback(lv_obj_t* obj, lv_event_t event);
 
 
+extern lv_obj_t* container_bottom_bar_scr_uiflowmovie;
+extern lv_obj_t* bottom_divider_1_scr_uiflowmovie;
+extern lv_obj_t* bottom_divider_2_scr_uiflowmovie;
+extern lv_obj_t* bottom_divider_3_scr_uiflowmovie;
+extern lv_obj_t* bottom_divider_4_scr_uiflowmovie;
+extern lv_obj_t* image_bottom_power_scr_uiflowmovie;
+extern lv_obj_t* image_bottom_sos_scr_uiflowmovie;
+extern lv_obj_t* image_bottom_playback_scr_uiflowmovie;
+extern lv_obj_t* image_bottom_setting_scr_uiflowmovie;
+extern lv_obj_t* image_bottom_closelcd_scr_uiflowmovie;
 extern lv_obj_t* image_storage_scr_uiflowmovie;
 extern lv_obj_t* image_mode_video_scr_uiflowmovie;
 extern lv_obj_t* image_battery_scr_uiflowmovie;

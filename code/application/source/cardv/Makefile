@@ -227,6 +227,8 @@ SRC += \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowWifiLink/UIFlowWifiLinkEventCallback.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowWifiLinkOK/UIFlowWifiLinkOK.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowWifiLinkOK/UIFlowWifiLinkOKEventCallback.c \
+	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowMovieWiFi/UIFlowMovieWiFi.c \
+	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowMovieWiFi/UIFlowMovieWiFiEventCallback.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowMovie/UIFlowMovie.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowMovie/UIFlowMovieEventCallback.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowMovie/UIFlowMovieFuncs.c \
