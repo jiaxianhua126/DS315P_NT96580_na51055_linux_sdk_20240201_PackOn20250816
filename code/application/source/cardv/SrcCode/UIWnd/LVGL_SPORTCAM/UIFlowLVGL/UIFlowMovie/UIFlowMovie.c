@@ -99,7 +99,6 @@ lv_obj_t* UIFlowMovie_create(){
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_color(&bottom_divider_1_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_grad_color(&bottom_divider_1_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xe9, 0xd6, 0xdd, 0xe3) ; lv_style_set_border_color(&bottom_divider_1_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_border_opa(&bottom_divider_1_s0,LV_STATE_DEFAULT,255);
 	lv_style_set_border_width(&bottom_divider_1_s0,LV_STATE_DEFAULT,0);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_color(&bottom_divider_1_s0, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_grad_color(&bottom_divider_1_s0, LV_STATE_CHECKED, color);
@@ -135,7 +134,6 @@ lv_obj_t* UIFlowMovie_create(){
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_color(&bottom_divider_2_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_grad_color(&bottom_divider_2_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xe9, 0xd6, 0xdd, 0xe3) ; lv_style_set_border_color(&bottom_divider_2_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_border_opa(&bottom_divider_2_s0,LV_STATE_DEFAULT,255);
 	lv_style_set_border_width(&bottom_divider_2_s0,LV_STATE_DEFAULT,0);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_color(&bottom_divider_2_s0, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_grad_color(&bottom_divider_2_s0, LV_STATE_CHECKED, color);
@@ -171,7 +169,6 @@ lv_obj_t* UIFlowMovie_create(){
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_color(&bottom_divider_3_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_grad_color(&bottom_divider_3_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xe9, 0xd6, 0xdd, 0xe3) ; lv_style_set_border_color(&bottom_divider_3_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_border_opa(&bottom_divider_3_s0,LV_STATE_DEFAULT,255);
 	lv_style_set_border_width(&bottom_divider_3_s0,LV_STATE_DEFAULT,0);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_color(&bottom_divider_3_s0, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_grad_color(&bottom_divider_3_s0, LV_STATE_CHECKED, color);
@@ -207,7 +204,6 @@ lv_obj_t* UIFlowMovie_create(){
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_color(&bottom_divider_4_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_grad_color(&bottom_divider_4_s0, LV_STATE_DEFAULT, color);
 	STYLE_COLOR_PROP(0xe9, 0xd6, 0xdd, 0xe3) ; lv_style_set_border_color(&bottom_divider_4_s0, LV_STATE_DEFAULT, color);
-	lv_style_set_border_opa(&bottom_divider_4_s0,LV_STATE_DEFAULT,255);
 	lv_style_set_border_width(&bottom_divider_4_s0,LV_STATE_DEFAULT,0);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_color(&bottom_divider_4_s0, LV_STATE_CHECKED, color);
 	STYLE_COLOR_PROP(0x9d, 0x8a, 0x8a, 0x8a) ; lv_style_set_bg_grad_color(&bottom_divider_4_s0, LV_STATE_CHECKED, color);

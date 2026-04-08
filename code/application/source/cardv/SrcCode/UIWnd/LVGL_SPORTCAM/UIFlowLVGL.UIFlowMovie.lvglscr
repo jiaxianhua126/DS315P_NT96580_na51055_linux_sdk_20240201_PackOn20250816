@@ -27,7 +27,6 @@
                                 "bg_grad_color": "0x8a8a8a"
                             },
                             "Border": {
-                                "border_opa": 255,
                                 "border_width": 0
                             },
                             "part": 0,
@@ -82,7 +81,6 @@
                                 "bg_grad_color": "0x8a8a8a"
                             },
                             "Border": {
-                                "border_opa": 255,
                                 "border_width": 0
                             },
                             "part": 0,
@@ -137,7 +135,6 @@
                                 "bg_grad_color": "0x8a8a8a"
                             },
                             "Border": {
-                                "border_opa": 255,
                                 "border_width": 0
                             },
                             "part": 0,
@@ -192,7 +189,6 @@
                                 "bg_grad_color": "0x8a8a8a"
                             },
                             "Border": {
-                                "border_opa": 255,
                                 "border_width": 0
                             },
                             "part": 0,

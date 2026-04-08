@@ -101,10 +101,6 @@ extern INT32 UIFlowWndWiFiMovie_OnCustom2(VControl *pCtrl, UINT32 paramNum, UINT
 extern void UIVoice_Play(UINT32 index);
 extern UINT32 UIMenuWndPlayFileType_GetFileType(void);
 
-#ifndef DEMOSOUND_SOUND_PARRECORDSTART_TONE
-#define DEMOSOUND_SOUND_PARRECORDSTART_TONE DEMOSOUND_SOUND_KEY_TONE
-#endif
-
 #ifndef FLOWWRNMSG_TIMER_KEEP
 typedef enum {
 	FLOWWRNMSG_TIMER_KEEP = 0,
