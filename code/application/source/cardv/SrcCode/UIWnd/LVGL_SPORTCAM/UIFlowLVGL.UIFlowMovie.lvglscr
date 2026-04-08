@@ -1269,7 +1269,7 @@
                 "x": 111,
                 "y": 2
             },
-            "hidden": false,
+            "hidden": true,
             "locked": false,
             "name": "image_wifi",
             "offset": {

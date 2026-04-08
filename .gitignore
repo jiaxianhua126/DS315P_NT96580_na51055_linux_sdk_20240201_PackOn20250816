@@ -110,3 +110,7 @@ modules.builtin
 ._*
 *~
 *.z~
+
+NT9852x_Document/
+.codex/
+AGENTS.md

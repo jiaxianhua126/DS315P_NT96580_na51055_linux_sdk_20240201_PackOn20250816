@@ -1156,7 +1156,7 @@ lv_obj_t* UIFlowMovie_create(){
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_outline_color(&image_wifi_s0, LV_STATE_DISABLED, color);
 	STYLE_COLOR_PROP(0x01, 0x00, 0x00, 0x00) ; lv_style_set_image_recolor(&image_wifi_s0, LV_STATE_DISABLED, color);
 	lv_obj_t *image_wifi = lv_img_create(parent, NULL);
-	lv_obj_set_hidden(image_wifi, false);
+	lv_obj_set_hidden(image_wifi, true);
 	lv_obj_set_click(image_wifi, false);
 	lv_obj_set_drag(image_wifi, false);
 	lv_obj_set_pos(image_wifi, 111, 2);
