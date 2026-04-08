@@ -33,13 +33,18 @@ static void UIFlowWifiWait_NVTMSG(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA
             	bIsWiFiRecorded =  FALSE;
 #if (WIFI_FUNC==ENABLE)
                 if (System_GetState(SYS_STATE_CURRMODE) != PRIMARY_MODE_MOVIE){
-                    #if _TODO
+                    #if 1//_TODO
                     Ux_PostEvent(NVTEVT_SYSTEM_MODE, 1, PRIMARY_MODE_MOVIE);
                     #endif
                 }
+				#if 0
                 //Ux_PostEvent(NVTEVT_OPEN_WINDOW, 1, &UIMenuWndWiFiModuleLinkCtrl);
                 lv_plugin_scr_open(UIFlowWifiLink, NULL);
                 Ux_PostEvent(NVTEVT_EXE_MOVIE_STRM_START,0);
+				#else
+				Ux_PostEvent(NVTEVT_SYSTEM_MODE, 2, PRIMARY_MODE_MOVIE, SYS_SUBMODE_WIFI);
+				DBG_ERR("change mode========00.\r\n");
+				#endif
 
 #endif
 		    } else {
