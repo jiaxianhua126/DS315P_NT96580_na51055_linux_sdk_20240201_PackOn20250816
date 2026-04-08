@@ -241,6 +241,7 @@ LV_USER_KEYMAP_ADD(NVTEVT_KEY_MENU, 		LV_USER_KEY_MENU)
 LV_USER_KEYMAP_ADD(NVTEVT_KEY_ZOOMOUT, 		LV_USER_KEY_ZOOMOUT)
 LV_USER_KEYMAP_ADD(NVTEVT_KEY_MODE, 		LV_USER_KEY_MODE)
 LV_USER_KEYMAP_ADD(NVTEVT_KEY_CALIBRATION, 	LV_USER_KEY_CALIBRATION)
+LV_USER_KEYMAP_ADD(NVTEVT_KEY_CUSTOM1, 		LV_USER_KEY_CUSTOM1)
 LV_USER_KEYMAP_ENTRY_END()
 
 /**********************
@@ -524,6 +525,142 @@ bool pointer_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
     return false;
 }
 
+void lv_user_event_task_cb(lv_task_t *lv_task)//lv_task_t *lv_task
+{
+	NVTEVT evt = 0;
+	UINT32 paramNum = 0; //fix for CID 45082
+	ULONG paramArray[MAX_MESSAGE_PARAM_NUM] = {0};
+	VOS_TICK ttick=0;
+    INT32 result = NVTEVT_PASS;
+	UINT32 queue_used = 0;
+
+	Ux_Get(UX_EVENT_QUEUE_USED,&queue_used);
+
+	if (queue_used) {
+		Ux_WaitEvent(&evt, &paramNum, paramArray);
+	}
+	else {
+		evt = 0;
+	}
+
+	if (evt) {
+		if (IS_KEY_EVENT(evt)) {
+            //for sleep mode,filter key and any key wake up
+			result = System_UserKeyFilter(evt, paramNum, paramArray);
+	        if (result != NVTEVT_CONSUME) {
+				vos_perf_mark(&ttick);
+
+				if (paramNum >= 1) {
+					/*DBG_WRN("key event[0x%08x] time[%d] paramNum[%u] key state[0x%08x]\r\n",
+							evt,
+							ttick/1000,
+							paramNum,
+							paramArray[0]);*/
+				}
+				else {
+					DBG_WRN("received key event(%lx) without key state\r\n", evt);
+				}
+
+				g_keyboard_value = evt;
+
+				if ((paramArray[0] > NVTEVT_KEY_PRESS_START && paramArray[0] < NVTEVT_KEY_PRESS_END) ||
+					(paramArray[0] > NVTEVT_KEY_CONTINUE_START && paramArray[0] < NVTEVT_KEY_CONTINUE_END)
+				) {
+					g_keyboard_pressed = true;
+				}
+				else {
+					g_keyboard_pressed = false;
+				}
+                //call input task immediately for read key state
+                if (indev_keypad) {
+					//DBG_WRN("88888============\r\n");
+                    indev_keypad->driver.read_task->task_cb(indev_keypad->driver.read_task);
+                }
+
+                /***************************************************************************************************
+                * Extend key release event for lvgl, config Input_SetKeyMask if event is not fired.
+                * Event is sent to focused object, not to top level plugin screen.
+                * Focus setting can be found(set_keypad_group) in ui event callback of each screen.
+                ****************************************************************************************************/
+				if ((paramArray[0] > NVTEVT_KEY_RELEASE_START) && (paramArray[0] < NVTEVT_KEY_RELEASE_END)) {
+					uint32_t nvt_user_key = lv_user_keymap_find(evt);
+					// DBG_DUMP("%s line = %d, nvt_user_key = %d\r\n", __func__, __LINE__, nvt_user_key);
+					if (nvt_user_key != LV_USER_KEY_UNKNOWN) {
+						if (indev_keypad && indev_keypad->group) {
+							// DBG_WRN("22222============\r\n");
+							lv_obj_t* focused = lv_group_get_focused(indev_keypad->group);
+							if (focused) {
+								lv_event_send(focused, LV_USER_EVENT_KEY_RELEASE, &nvt_user_key);
+								// DBG_WRN("33333============\r\n");
+							}
+						}
+					}
+				}
+                /******************************************************************************************************
+                * Extend key long press event for lvgl.
+                * Default all key cont state is masked, config Input_SetKeyMask if event is not fired.
+                *
+                * GxKey.c
+                * #define   KEY_CONTINUE_DEBOUNCE  30//30x20=600ms (20ms is the sw timer interval)
+                * KEY_CONTINUE_DEBOUNCE determines NVTEVT_KEY_CONTINUE fires every 600 ms.
+                ******************************************************************************************************/
+                if (paramArray[0] == NVTEVT_KEY_CONTINUE) {
+					DBG_DUMP("%s line = %d, NVTEVT_KEY_CONTINUE = %d\r\n", __func__, __LINE__, NVTEVT_KEY_CONTINUE);
+					uint32_t nvt_user_key = lv_user_keymap_find(evt);
+
+					if (nvt_user_key != LV_USER_KEY_UNKNOWN) {
+						if (indev_keypad && indev_keypad->group) {
+							lv_obj_t* focused = lv_group_get_focused(indev_keypad->group);
+							if (focused) {
+								lv_event_send(focused, LV_USER_EVENT_KEY_LONG_PRESS, &nvt_user_key);
+							}
+						}
+					}
+				}
+
+				if (paramArray[0] == NVTEVT_KEY_LONG_PRESS_REACH_CNT) {
+					uint32_t nvt_user_key = lv_user_keymap_find(evt);
+
+					if (nvt_user_key != LV_USER_KEY_UNKNOWN) {
+						if (indev_keypad && indev_keypad->group) {
+							lv_obj_t* focused = lv_group_get_focused(indev_keypad->group);
+							if (focused) {
+								lv_event_send(focused, LV_USER_EVENT_KEY_SUPER_LONG_PRESS, &nvt_user_key);
+							}
+						}
+					}
+                }
+
+	        }
+        }
+		else {
+
+			if (IS_APP_EVENT(evt)) {
+				DBG_IND("app event[0x%08x] time[%d] paramNum[%u]\r\n", evt, ttick/1000, paramNum);
+				Ux_AppDispatchMessage(evt, paramNum, paramArray);
+			}
+			else {
+				DBG_IND("nvtmsg event[0x%08x] time[%d] paramNum[%u]\r\n", evt, ttick/1000, paramNum);
+			}
+
+
+			lv_obj_t *scr = lv_plugin_scr_act();
+
+			if (NULL == scr) {
+				DBG_WRN("no active screen, drop nvtmsg event[0x%08x]\r\n", evt);
+				return;
+			}
+
+			LV_USER_EVENT_NVTMSG_DATA data;
+
+			data.event = evt;
+			data.paramNum = paramNum;
+			data.paramArray = paramArray;
+			lv_event_send(scr, LV_USER_EVENT_NVTMSG, &data);
+        }
+	}
+}
+
 void UserMainProc(void)
 {
 	TM_BOOT_BEGIN("flow", "preboot");
@@ -547,11 +684,11 @@ void UserMainProc(void)
 	TM_BOOT_END("flow", "preboot");
 
 	Ux_SendEvent(0, NVTEVT_SYSTEM_BOOT, 1, 1);
-	NVTEVT evt = 0;
-	UINT32 paramNum = 0; //fix for CID 45082
-	UINT32 paramArray[MAX_MESSAGE_PARAM_NUM] = {0};
-	VOS_TICK ttick=0;
-    INT32 result = NVTEVT_PASS;
+	//NVTEVT evt = 0;
+	//UINT32 paramNum = 0; //fix for CID 45082
+	//UINT32 paramArray[MAX_MESSAGE_PARAM_NUM] = {0};
+	//VOS_TICK ttick=0;
+    //INT32 result = NVTEVT_PASS;
 
     g_ui_task_id = LV_USER_GET_TID();
 
@@ -563,101 +700,12 @@ void UserMainProc(void)
 	/* keypad is event driven */
 	lv_task_set_prio(indev_keypad->driver.read_task, LV_TASK_PRIO_OFF);
 
+	lv_task_t *lv_user_event_task = lv_task_create(lv_user_event_task_cb, 1, LV_TASK_PRIO_HIGH, NULL);
+	lv_task_ready(lv_user_event_task);
+
 	while(!bUI_Quit) {
 
-		Ux_WaitEvent(&evt, &paramNum, paramArray);
-
-		if(!evt) {
-			continue;
-		} else {
-
-			if (IS_KEY_EVENT(evt)) {
-                //for sleep mode,filter key and any key wake up
-				result = System_UserKeyFilter(evt, paramNum, paramArray);
-    	        if(result != NVTEVT_CONSUME) {
-
-    				vos_perf_mark(&ttick);
-
-    				if(paramNum >= 1){
-
-						DBG_DUMP_EVENT_STATE("key event[0x%08x] time[%d] paramNum[%u] key state[0x%08x]\r\n",
-								evt,
-								ttick/1000,
-								paramNum,
-								paramArray[0]);
-    				}
-					else{
-						DBG_WRN("received key event(%lx) without key state\r\n", evt);
-					}
-
-    				g_keyboard_value = evt;
-
-    				if((paramArray[0] > NVTEVT_KEY_PRESS_START && paramArray[0] < NVTEVT_KEY_PRESS_END) ||
-    				   (paramArray[0] > NVTEVT_KEY_CONTINUE_START && paramArray[0] < NVTEVT_KEY_CONTINUE_END)
-    				){
-    					g_keyboard_pressed = true;
-    				}
-    				else{
-    					g_keyboard_pressed = false;
-    				}
-                    //call input task immediately for read key state
-                    if(indev_keypad){
-                    	_lv_user_task_handler_lock();
-                        indev_keypad->driver.read_task->task_cb(indev_keypad->driver.read_task);
-                        _lv_user_task_handler_unlock();
-                    }
-
-                    /* workaround to extend key release event for lvgl */
-                    if((paramArray[0] > NVTEVT_KEY_RELEASE_START) && (paramArray[0] < NVTEVT_KEY_RELEASE_END)){
-
-                    	uint32_t nvt_user_key = lv_user_keymap_find(evt);
-
-                    	if(nvt_user_key != LV_USER_KEY_UNKNOWN){
-                    		_lv_user_task_handler_lock();
-                    		lv_event_send(lv_plugin_scr_act(), LV_USER_EVENT_KEY_RELEASE, &nvt_user_key);
-                    		_lv_user_task_handler_unlock();
-                    	}
-                    	else{
-                    		DBG_WRN("evt = %lx\r\n", evt);
-                    	}
-                    }
-
-    	        }
-            }
-			else if(evt==NVTEVT_UPDATE_LVGL){
-                //for lvlg lv_task_handler,needless send to user
-
-	        }
-			else {
-
-	        	if (IS_APP_EVENT(evt)){
-	        		DBG_DUMP_EVENT_STATE("app event[0x%08x] time[%d] paramNum[%u]\r\n", evt, ttick/1000, paramNum);
-	        		Ux_AppDispatchMessage(evt, paramNum, paramArray);
-	        	}
-	        	else{
-	        		DBG_DUMP_EVENT_STATE("nvtmsg event[0x%08x] time[%d] paramNum[%u]\r\n", evt, ttick/1000, paramNum);
-	        	}
-
-
-	        	lv_obj_t *scr = lv_plugin_scr_act();
-
-	        	if(NULL == scr){
-	        		DBG_WRN("no active screen, drop nvtmsg event[0x%08x]\r\n", evt);
-	        		continue;
-	        	}
-
-	        	LV_USER_EVENT_NVTMSG_DATA data;
-
-	        	data.event = evt;
-	        	data.paramNum = paramNum;
-	        	data.paramArray = paramArray;
-
-	        	_lv_user_task_handler_lock();
-	        	lv_event_send(scr, LV_USER_EVENT_NVTMSG, &data);
-	        	_lv_user_task_handler_unlock();
-	        }
-		}
-
+	//lv_user_event_task_cb();
 
 		/* critical section lock */
 		_lv_user_task_handler_lock();
@@ -691,8 +739,8 @@ unsigned int custom_tick_get(void)
     vos_perf_mark(&ttick1);
 
     /* us overflow */
-    if(ttick1 < ttick2){
-    	us_overflow_cnt++;
+    if (ttick1 < ttick2) {
+		us_overflow_cnt++;
     }
 
     ttick2 = ttick1;
