@@ -26,6 +26,7 @@ typedef struct {
 	const CHAR *String;
 } PHOTO_SIZE_PARAM;
 
+
 static PHOTO_SIZE_PARAM g_PhotoCapSizeTable[PHOTO_SIZE_ID_MAX + 2] = {
 
 #if PHOTO_PREVIEW_SLICE_ENC_FUNC

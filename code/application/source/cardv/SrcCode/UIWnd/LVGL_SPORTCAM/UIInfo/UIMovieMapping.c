@@ -63,7 +63,7 @@ typedef struct {
 #if (_BOARD_DRAM_SIZE_ == 0x04000000)
 #define MOVIE_SIZE_WIFI_STREAMING	MOVIE_SIZE_848x480P30_WIFI	// always use 848x480 for WiFi streaming temporarily
 #else
-#define MOVIE_SIZE_WIFI_STREAMING	MOVIE_SIZE_848x480P30	// always use 848x480 for WiFi streaming temporarily
+#define MOVIE_SIZE_WIFI_STREAMING	MOVIE_SIZE_640x360P30//MOVIE_SIZE_848x480P30	// always use 848x480 for WiFi streaming temporarily
 #endif
 
 typedef struct {
@@ -77,7 +77,7 @@ typedef struct {
 	UINT32 SizeIdx[SENSOR_MAX_NUM];		// movie size index for main movie, max 4 sensors
 	UINT32 SizeIdxClone[SENSOR_MAX_NUM];	// movie size index for clone movie, max 4 sensors
 } MOVIE_SIZE_MAPPING;
-
+#if (!defined(COUNTRY_JP))
 // movie size table
 static MOVIE_SIZE_ITEM g_MovieSizeTable[] = {
 
@@ -97,10 +97,16 @@ static MOVIE_SIZE_ITEM g_MovieSizeTable[] = {
 		{1, 3, 36, 8, -8, 0},
 		{1, 4, 30, 3900 * 1024, 30, 26, 10, 50, 26, 10, 50, 0, 1, 8, 4},
 #else
-		{3840, 2160, 30, 3900 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{3840, 2160, 30, 3500 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
 		{1, 3, 36, 8, -8, 0},
-		{1, 4, 30, 3900 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+		{1, 4, 30, 3500 * 1024, 30, 26, 10, 50, 26, 10, 50, 0, 1, 8, 4},
 #endif
+	},
+
+	[MOVIE_SIZE_3840x2160P25] = {
+		{3840, 2160, 25, 3500 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 25, 3500 * 1024, 25, 26, 10, 50, 26, 10, 50, -20, 1, 8, 4},
 	},
 
 	[MOVIE_SIZE_2880x2160P24] = {
@@ -115,6 +121,18 @@ static MOVIE_SIZE_ITEM g_MovieSizeTable[] = {
 		{1, 4, 60, 5200 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
 	},
 
+     [MOVIE_SIZE_2592x1944P30] = {
+		{2592, 1944, 30, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 2, 36, 6, -6, 0},
+		{1, 4, 30, 1750 * 1024, 15, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
+     },
+
+    [MOVIE_SIZE_2560x1600P30] = {
+        {2560, 1600, 30, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_10},
+        {1, 2, 36, 6, -6, 0},
+        {1, 4, 30, 1750 * 1024, 15, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
+    },
+
 	[MOVIE_SIZE_2560x1440P80] = {
 		{2560, 1440, 80, 3800 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
 		{1, 3, 36, 8, -8, 0},
@@ -124,19 +142,37 @@ static MOVIE_SIZE_ITEM g_MovieSizeTable[] = {
 	[MOVIE_SIZE_2560x1440P60] = {
 		{2560, 1440, 60, 3500 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
 		{1, 3, 36, 8, -8, 0},
-		{1, 4, 60, 3500 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+		{1, 4, 60, 3500 * 1024, 30, 26, 20, 50,26, 20, 50,-20, 1, 8, 4},
 	},
 
 	[MOVIE_SIZE_2560x1440P30] = {
 		{2560, 1440, 30, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
 		{1, 3, 36, 8, -8, 0},
-		{1, 4, 30, 1750 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+		{1, 4, 30, 1750 * 1024, 15, 26, 20, 50, 26, 20, 50, -20, 1, 8, 4},
+	},
+
+    [MOVIE_SIZE_2560x1080P60] = {
+        {2560, 1080, 60, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_21_9},
+        {1, 2, 36, 6, -6, 0},
+        {1, 4, 60, 1750 * 1024, 15, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
+    },
+
+    [MOVIE_SIZE_2560x1080P30] = {
+        {2560, 1080, 30, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_21_9},
+        {1, 2, 36, 6, -6, 0},
+        {1, 4, 30, 1750 * 1024, 15, 26, 10, 40, 26, 10, 40,-20, 1, 8, 4},
+    },
+
+	[MOVIE_SIZE_2304x1296P60] = {
+		{2304, 1296, 60, 1400 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 60, 1400 * 1024, 15, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
 	},
 
 	[MOVIE_SIZE_2304x1296P30] = {
 		{2304, 1296, 30, 1400 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
 		{1, 3, 36, 8, -8, 0},
-		{1, 4, 30, 1400 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+		{1, 4, 30, 1400 * 1024, 15, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
 	},
 
 	[MOVIE_SIZE_1920x1080P120] = {
@@ -154,13 +190,19 @@ static MOVIE_SIZE_ITEM g_MovieSizeTable[] = {
 	[MOVIE_SIZE_1920x1080P60] = {
 		{1920, 1080, 60, 1950 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
 		{1, 3, 36, 8, -8, 0},
-		{1, 4, 60, 1950 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+		{1, 4, 60, 1950 * 1024, 15, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
 	},
 
 	[MOVIE_SIZE_1920x1080P30] = {
 		{1920, 1080, 30, 1200 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
 		{1, 3, 36, 8, -8, 0},
 		{1, 4, 30, 1200 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_1920x1080P25] = {
+		{1920, 1080, 25, 1200 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 25, 1200 * 1024, 15, 26, 20, 50, 26, 20, 50, 0, 1, 8, 4},
 	},
 
 	[MOVIE_SIZE_1280x720P240] = {
@@ -243,37 +285,223 @@ static MOVIE_SIZE_ITEM g_MovieSizeTable[] = {
 	},
 
 };
+#else
+// movie size table
+static MOVIE_SIZE_ITEM g_MovieSizeTable[] = {
+
+	[MOVIE_SIZE_2880x2160P50] = {
+		{2880, 2160, 50, 3800 * 1024, MEDIAREC_DAR_16_9, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 50, 4900 * 1024, 25, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_3840x2160P30] = {
+#if (defined(_NVT_ETHREARCAM_RX_))
+		{3840, 2160, 30, 3900 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 3900 * 1024, 15, 26, 10, 50, 26, 10, 50, 0, 1, 8, 4},
+#elif (defined(_NVT_ETHREARCAM_TX_))
+		{3840, 2160, 30, 3900 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 3900 * 1024, 30, 26, 10, 50, 26, 10, 50, 0, 1, 8, 4},
+#else
+		{3840, 2160, 25, 3900 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 25, 3900 * 1024, 25, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+#endif
+	},
+
+	[MOVIE_SIZE_3840x2160P25] = {
+		{3840, 2160, 25, 3500 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 25, 3500 * 1024, 25, 26, 20, 50, 26, 20, 50, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_2880x2160P24] = {
+		{2880, 2160, 24, 2350 * 1024, MEDIAREC_DAR_16_9, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 24, 2350 * 1024, 12, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_2704x2032P60] = {
+		{2704, 2032, 60, 3800 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_4_3},
+		{1, 3, 36, 8, -8,	0},
+		{1, 4, 60, 5200 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+     [MOVIE_SIZE_2592x1944P30] = {
+		{2592, 1944, 28, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 2, 36, 6, -6, 0},
+		{1, 4, 28, 1750 * 1024, 28, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
+     },
+
+    [MOVIE_SIZE_2560x1600P30] = {
+        {2560, 1600, 28, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_10},
+        {1, 2, 36, 6, -6, 0},
+        {1, 4, 28, 1750 * 1024, 28, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
+    },
+
+	[MOVIE_SIZE_2560x1440P80] = {
+		{2560, 1440, 80, 3800 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 80, 4650 * 1024, 20, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_2560x1440P60] = {
+		{2560, 1440, 55, 3500 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 55, 3500 * 1024, 55, 26, 20, 50,26, 20, 50,-20, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_2560x1440P30] = {
+		{2560, 1440, 28, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 28, 1750 * 1024, 28, 26, 20, 50, 26, 20, 50, -20, 1, 8, 4},
+	},
+
+    [MOVIE_SIZE_2560x1080P60] = {
+        {2560, 1080, 55, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_21_9},
+        {1, 2, 36, 6, -6, 0},
+        {1, 4, 55, 1750 * 1024, 55, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
+    },
+
+    [MOVIE_SIZE_2560x1080P30] = {
+        {2560, 1080, 28, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_21_9},
+        {1, 2, 36, 6, -6, 0},
+        {1, 4, 28, 1750 * 1024, 28, 26, 10, 40, 26, 10, 40,-20, 1, 8, 4},
+    },
+
+	[MOVIE_SIZE_2304x1296P60] = {
+		{2304, 1296, 55, 1400 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 55, 1400 * 1024, 55, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_2304x1296P30] = {
+		{2304, 1296, 28, 1400 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 28, 1400 * 1024, 28, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_1920x1080P120] = {
+		{1920, 1080, 110, 3900 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 110, 3900 * 1024, 55, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_1920x1080P96] = {
+		{1920, 1080, 96, 3150 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 96, 3150 * 1024, 12, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_1920x1080P60] = {
+		{1920, 1080, 55, 1950 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 55, 1950 * 1024, 55, 26, 10, 40, 26, 10, 40, -20, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_1920x1080P30] = {
+		{1920, 1080, 28, 1200 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 28, 1200 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_1920x1080P25] = {
+		{1920, 1080, 25, 1200 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 25, 1200 * 1024, 25, 26, 10, 50, 26, 10, 50, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_1280x720P240] = {
+		{1280, 720, 240, 3500 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 240, 3500 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_1280x720P120] = {
+		{1280, 720, 110, 1750 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 110, 1750 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_1280x720P60] = {
+		{1280, 720, 60, 850 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 60,	850 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_1280x720P30] = {
+		{1280, 720, 30, 450 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 450 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_848x480P30] = {
+#if (defined(_NVT_ETHREARCAM_TX_))
+		{848, 480, 30, 200 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 200 * 1024, 30, 26, 10, 50, 26, 10, 50, 0, 1, 8, 4},
+
+#else
+		{848, 480, 30, 200 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 200 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+#endif
+	},
+
+	[MOVIE_SIZE_848x480P30_WIFI] = {
+		{848, 480, 30, 100 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 100 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_640x480P240] = {
+		{ 640, 480, 240, 1150 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_4_3},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 240, 1150 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_640x480P30] = {
+		{ 640, 480, 30, 150 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_4_3},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 150 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_320x240P30] = {
+		{ 320, 240, 30, 50 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_4_3},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 50 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_640x360P30] = {
+		{ 640, 360, 30, 150 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_16_9},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 150 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_2048x2048P30] = {
+		{2048, 2048, 30, 2000 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_1_1},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 2000 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+	[MOVIE_SIZE_480x480P30] = {
+		{ 480, 480, 30, 100 * 1024, MEDIAREC_DAR_DEFAULT, IMAGERATIO_1_1},
+		{1, 3, 36, 8, -8, 0},
+		{1, 4, 30, 100 * 1024, 15, 26, 10, 40, 26, 10, 40, 0, 1, 8, 4},
+	},
+
+};
+
+#endif
 
 // movie recording table, mapping to movie menu
 static MOVIE_SIZE_MAPPING g_MovieRecMappingTable[MOVIE_SIZE_ID_MAX] = {
 
-	[MOVIE_SIZE_FRONT_2880x2160P50] = {
-		MOVIE_REC_TYPE_FRONT,			// TYPE_FRONT means single recording
-		{MOVIE_SIZE_2880x2160P50, 0, 0, 0},	// main movie
-		{0, 0, 0, 0},							// no clone movie
-	},
-
 	[MOVIE_SIZE_FRONT_3840x2160P30] = {
 		MOVIE_REC_TYPE_FRONT,
 		{MOVIE_SIZE_3840x2160P30, 0, 0, 0},
-		{0, 0, 0, 0},
-	},
-
-	[MOVIE_SIZE_FRONT_2880x2160P24] = {
-		MOVIE_REC_TYPE_FRONT,
-		{MOVIE_SIZE_2880x2160P24, 0, 0, 0},
-		{0, 0, 0, 0},
-	},
-
-	[MOVIE_SIZE_FRONT_2704x2032P60] = {
-		MOVIE_REC_TYPE_FRONT,
-		{MOVIE_SIZE_2704x2032P60, 0, 0, 0},
-		{0, 0, 0, 0},
-	},
-
-	[MOVIE_SIZE_FRONT_2560x1440P80] = {
-		MOVIE_REC_TYPE_FRONT,
-		{MOVIE_SIZE_2560x1440P80, 0, 0, 0},
 		{0, 0, 0, 0},
 	},
 
@@ -289,21 +517,15 @@ static MOVIE_SIZE_MAPPING g_MovieRecMappingTable[MOVIE_SIZE_ID_MAX] = {
 		{0, 0, 0, 0},
 	},
 
+	[MOVIE_SIZE_FRONT_2304x1296P60] = {
+		MOVIE_REC_TYPE_FRONT,
+		{MOVIE_SIZE_2304x1296P60, 0, 0, 0},
+		{0, 0, 0, 0},
+	},
+
 	[MOVIE_SIZE_FRONT_2304x1296P30] = {
 		MOVIE_REC_TYPE_FRONT,
 		{MOVIE_SIZE_2304x1296P30, 0, 0, 0},
-		{0, 0, 0, 0},
-	},
-
-	[MOVIE_SIZE_FRONT_1920x1080P120] = {
-		MOVIE_REC_TYPE_FRONT,
-		{MOVIE_SIZE_1920x1080P120, 0, 0, 0},
-		{0, 0, 0, 0},
-	},
-
-	[MOVIE_SIZE_FRONT_1920x1080P96] = {
-		MOVIE_REC_TYPE_FRONT,
-		{MOVIE_SIZE_1920x1080P96, 0, 0, 0},
 		{0, 0, 0, 0},
 	},
 
@@ -319,6 +541,24 @@ static MOVIE_SIZE_MAPPING g_MovieRecMappingTable[MOVIE_SIZE_ID_MAX] = {
 		{0, 0, 0, 0},
 	},
 
+	[MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30] = {
+		MOVIE_REC_TYPE_DUAL,
+		{MOVIE_SIZE_3840x2160P25, MOVIE_SIZE_1920x1080P25, 0, 0},
+		{0, 0, 0, 0},
+	},
+
+	[MOVIE_SIZE_DUAL_2560x1440P30_1920x1080P30] = {
+		MOVIE_REC_TYPE_DUAL,
+		{MOVIE_SIZE_2560x1440P30, MOVIE_SIZE_1920x1080P30, 0, 0},
+		{0, 0, 0, 0},
+	},
+
+	[MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30] = {
+		MOVIE_REC_TYPE_DUAL,
+		{MOVIE_SIZE_1920x1080P30, MOVIE_SIZE_1920x1080P30, 0, 0},
+		{0, 0, 0, 0},
+	},
+#if 0
 	[MOVIE_SIZE_FRONT_1280x720P240] = {
 		MOVIE_REC_TYPE_FRONT,
 		{MOVIE_SIZE_1280x720P240, 0, 0, 0},
@@ -367,21 +607,9 @@ static MOVIE_SIZE_MAPPING g_MovieRecMappingTable[MOVIE_SIZE_ID_MAX] = {
 		{0, 0, 0, 0},
 	},
 
-	[MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30] = {
-		MOVIE_REC_TYPE_DUAL,
-		{MOVIE_SIZE_3840x2160P30, MOVIE_SIZE_1920x1080P30, 0, 0},
-		{0, 0, 0, 0},
-	},
-
 	[MOVIE_SIZE_DUAL_2560x1440P30_1280x720P30] = {
 		MOVIE_REC_TYPE_DUAL,
 		{MOVIE_SIZE_2560x1440P30, MOVIE_SIZE_1280x720P30, 0, 0},
-		{0, 0, 0, 0},
-	},
-
-	[MOVIE_SIZE_DUAL_2560x1440P30_1920x1080P30] = {
-		MOVIE_REC_TYPE_DUAL,
-		{MOVIE_SIZE_2560x1440P30, MOVIE_SIZE_1920x1080P30, 0, 0},
 		{0, 0, 0, 0},
 	},
 
@@ -394,12 +622,6 @@ static MOVIE_SIZE_MAPPING g_MovieRecMappingTable[MOVIE_SIZE_ID_MAX] = {
 	[MOVIE_SIZE_DUAL_2304x1296P30_1280x720P30] = {
 		MOVIE_REC_TYPE_DUAL,
 		{MOVIE_SIZE_2304x1296P30, MOVIE_SIZE_1280x720P30, 0, 0},
-		{0, 0, 0, 0},
-	},
-
-	[MOVIE_SIZE_DUAL_1920x1080P30_1920x1080P30] = {
-		MOVIE_REC_TYPE_DUAL,
-		{MOVIE_SIZE_1920x1080P30, MOVIE_SIZE_1920x1080P30, 0, 0},
 		{0, 0, 0, 0},
 	},
 
@@ -541,6 +763,43 @@ static MOVIE_SIZE_MAPPING g_MovieRecMappingTable[MOVIE_SIZE_ID_MAX] = {
 		{MOVIE_SIZE_320x240P30, 0, 0, 0},
 		{MOVIE_SIZE_320x240P30, 0, 0, 0},
 	},
+
+	[MOVIE_SIZE_FRONT_2880x2160P50] = {
+		MOVIE_REC_TYPE_FRONT,			// TYPE_FRONT means single recording
+		{MOVIE_SIZE_2880x2160P50, 0, 0, 0},	// main movie
+		{0, 0, 0, 0},							// no clone movie
+	},
+
+	[MOVIE_SIZE_FRONT_2880x2160P24] = {
+		MOVIE_REC_TYPE_FRONT,
+		{MOVIE_SIZE_2880x2160P24, 0, 0, 0},
+		{0, 0, 0, 0},
+	},
+
+	[MOVIE_SIZE_FRONT_2704x2032P60] = {
+		MOVIE_REC_TYPE_FRONT,
+		{MOVIE_SIZE_2704x2032P60, 0, 0, 0},
+		{0, 0, 0, 0},
+	},
+
+	[MOVIE_SIZE_FRONT_2560x1440P80] = {
+		MOVIE_REC_TYPE_FRONT,
+		{MOVIE_SIZE_2560x1440P80, 0, 0, 0},
+		{0, 0, 0, 0},
+	},
+
+	[MOVIE_SIZE_FRONT_1920x1080P120] = {
+		MOVIE_REC_TYPE_FRONT,
+		{MOVIE_SIZE_1920x1080P120, 0, 0, 0},
+		{0, 0, 0, 0},
+	},
+
+	[MOVIE_SIZE_FRONT_1920x1080P96] = {
+		MOVIE_REC_TYPE_FRONT,
+		{MOVIE_SIZE_1920x1080P96, 0, 0, 0},
+		{0, 0, 0, 0},
+	},
+	#endif
 };
 
 // for main movie
@@ -686,8 +945,14 @@ UINT32 GetMovieFrameRate(UINT32 uiIndex)
 
 void SetMovieTargetBitrate(UINT32 uiType, UINT32 uiIndex, UINT32 uiBitRate)
 {
+#if 0
 	UINT32 movie_size = g_MovieRecMappingTable[uiIndex].SizeIdx[uiType];
 	g_MovieSizeTable[movie_size].SizeInfo.uiTargetBitrate = uiBitRate;
+    g_MovieSizeTable[movie_size].CbrInfo.uiByteRate = uiBitRate; //add for FL_MOVIE_BITRATE
+#else
+	g_MovieSizeTable[uiIndex].SizeInfo.uiTargetBitrate = uiBitRate;
+    g_MovieSizeTable[uiIndex].CbrInfo.uiByteRate = uiBitRate; //add for FL_MOVIE_BITRATE
+#endif
 }
 
 UINT32 GetMovieSizeRatio(UINT32 uiIndex)
@@ -769,10 +1034,10 @@ UINT32 GetMovieDispAspectRatio_2p(UINT32 uiPath, UINT32 uiIndex)
 MOVIE_REC_TYPE GetMovieRecType_2p(UINT32 uiIndex)
 {
 #if (WIFI_FUNC == ENABLE)
-	if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
+	/*if (System_GetState(SYS_STATE_CURRSUBMODE) == SYS_SUBMODE_WIFI) {
 		// always use clone type for WiFi streaming (NovaCam will check clone type for WiFi streaming)
 		return MOVIE_REC_TYPE_CLONE;
-	} else {
+	} else */{
 		return MovieMapping_GetRecType(uiIndex);
 	}
 #else
@@ -799,6 +1064,18 @@ UINT32 Get_MovieTimeLapseValue(UINT32 uiIndex)
 	case MOVIE_TIMELAPSEREC_1SEC:
 		uiTimeLapse = 1000;
 		break;
+    case MOVIE_TIMELAPSEREC_100MS:
+        uiTimeLapse = 100;
+        break;
+    case MOVIE_TIMELAPSEREC_200MS:
+        uiTimeLapse = 200;
+        break;
+    case MOVIE_TIMELAPSEREC_500MS:
+        uiTimeLapse = 500;
+        break;
+    case MOVIE_TIMELAPSEREC_2SEC:
+        uiTimeLapse = 2000;
+        break;
 	case MOVIE_TIMELAPSEREC_5SEC:
 		uiTimeLapse = 5000;
 		break;
@@ -835,6 +1112,40 @@ UINT32 Get_MovieTimeLapseValue(UINT32 uiIndex)
 	}
 
 	return uiTimeLapse;
+}
+
+UINT32 Get_ParkingModeTimeLapseValue(UINT32 uiIndex)
+{
+    UINT32 uiTimeLapse = 1000;
+
+    switch (SysGetFlag(FL_PARKING_MODE_TIMELAPSE_REC)) {
+    case PARKING_MODE_TIMELAPSEREC_66MS:
+        uiTimeLapse = 66;
+        break;
+
+    case PARKING_MODE_TIMELAPSEREC_100MS:
+        uiTimeLapse = 100;
+        break;
+
+    case PARKING_MODE_TIMELAPSEREC_200MS:
+        uiTimeLapse = 200;
+        break;
+
+    case PARKING_MODE_TIMELAPSEREC_333MS:
+        uiTimeLapse = 333;
+        break;
+
+    case PARKING_MODE_TIMELAPSEREC_500MS:
+        uiTimeLapse = 500;
+        break;
+
+    default:
+    case PARKING_MODE_TIMELAPSEREC_1SEC:
+        uiTimeLapse = 1000;
+        break;
+    }
+
+    return uiTimeLapse;
 }
 
 UINT32 CheckWiFiMapTbl(void)
