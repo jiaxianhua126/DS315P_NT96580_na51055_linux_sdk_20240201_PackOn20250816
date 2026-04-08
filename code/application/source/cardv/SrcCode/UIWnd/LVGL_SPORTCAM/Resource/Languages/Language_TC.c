@@ -38,11 +38,14 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "WVGA 848x480", 12 },			/* LV_PLUGIN_STRING_ID_STRID_WVGAWXH */ 
 	{ "VGA 640x480", 11 },			/* LV_PLUGIN_STRING_ID_STRID_VGAWXH */ 
 	{ "QVGA 320x240", 12 },			/* LV_PLUGIN_STRING_ID_STRID_QVGAWXH */ 
-	{ "1080P60,720x480P30", 18 },			/* LV_PLUGIN_STRING_ID_STRID_1080P60_D1P30 */ 
 	{ "D1 720x480", 10 },			/* LV_PLUGIN_STRING_ID_STRID_D1WXH */ 
 	{ "720P 1280x720", 13 },			/* LV_PLUGIN_STRING_ID_STRID_720PWXH */ 
 	{ "1080P 1440x1080", 15 },			/* LV_PLUGIN_STRING_ID_STRID_1080PWXH */ 
 	{ "1080FHD 1920x1080", 17 },			/* LV_PLUGIN_STRING_ID_STRID_1080FHDWXH */ 
+	{ "720P60 1280x720", 15 },			/* LV_PLUGIN_STRING_ID_STRID_720P60FPSWXH */ 
+	{ "720P30 1280x720", 15 },			/* LV_PLUGIN_STRING_ID_STRID_720P30FPSWXH */ 
+	{ "VGA30 640x480", 13 },			/* LV_PLUGIN_STRING_ID_STRID_VGA30FPSWXH */ 
+	{ "VGA120 640x480", 14 },			/* LV_PLUGIN_STRING_ID_STRID_VGA120FPSWXH */ 
 	{ "壓縮率", 9 },			/* LV_PLUGIN_STRING_ID_STRID_COMPRESSION */ 
 	{ "影像品質", 12 },			/* LV_PLUGIN_STRING_ID_STRID_QUALITY */ 
 	{ "最佳", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SUPER */ 
@@ -62,9 +65,6 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "100", 3 },			/* LV_PLUGIN_STRING_ID_STRID_ISO100 */ 
 	{ "200", 3 },			/* LV_PLUGIN_STRING_ID_STRID_ISO200 */ 
 	{ "400", 3 },			/* LV_PLUGIN_STRING_ID_STRID_ISO400 */ 
-	{ "800", 3 },			/* LV_PLUGIN_STRING_ID_STRID_ISO800 */ 
-	{ "1600", 4 },			/* LV_PLUGIN_STRING_ID_STRID_ISO1600 */ 
-	{ "3200", 4 },			/* LV_PLUGIN_STRING_ID_STRID_ISO3200 */ 
 	{ "測光", 6 },			/* LV_PLUGIN_STRING_ID_STRID_METERING */ 
 	{ "中央重點測光", 18 },			/* LV_PLUGIN_STRING_ID_STRID_METER_CENTER */ 
 	{ "點測光", 9 },			/* LV_PLUGIN_STRING_ID_STRID_METER_SPOT */ 
@@ -89,8 +89,8 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "Av 設定:", 10 },			/* LV_PLUGIN_STRING_ID_STRID_AVSETTING */ 
 	{ "Tv 設定:", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TVSETTING */ 
 	{ "Av/Tv 設定:", 13 },			/* LV_PLUGIN_STRING_ID_STRID_AVTVSETTING */ 
-	{ "景色模式", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SCENESETTING */ 
-	{ "景色模式", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SCENE */ 
+	{ "場景模式", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SCENESETTING */ 
+	{ "場景模式", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SCENE */ 
 	{ "風景", 6 },			/* LV_PLUGIN_STRING_ID_STRID_LANDSCAPE */ 
 	{ "夜景", 6 },			/* LV_PLUGIN_STRING_ID_STRID_NIGHTSCENE */ 
 	{ "運動", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SPORTS */ 
@@ -115,8 +115,8 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "y/m/d", 5 },			/* LV_PLUGIN_STRING_ID_STRID_Y_M_D */ 
 	{ "d/m/y", 5 },			/* LV_PLUGIN_STRING_ID_STRID_D_M_Y */ 
 	{ "m/d/y", 5 },			/* LV_PLUGIN_STRING_ID_STRID_M_D_Y */ 
-	{ "開", 3 },			/* LV_PLUGIN_STRING_ID_STRID_ON */ 
-	{ "關", 3 },			/* LV_PLUGIN_STRING_ID_STRID_OFF */ 
+	{ "開啟", 6 },			/* LV_PLUGIN_STRING_ID_STRID_ON */ 
+	{ "關閉", 6 },			/* LV_PLUGIN_STRING_ID_STRID_OFF */ 
 	{ "數位變焦", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DZ */ 
 	{ "快速檢視", 12 },			/* LV_PLUGIN_STRING_ID_STRID_QUICK_VIEW */ 
 	{ "彩度", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SATURATION */ 
@@ -124,25 +124,27 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "格數", 6 },			/* LV_PLUGIN_STRING_ID_STRID_FRAMERATE */ 
 	{ "30 fps", 6 },			/* LV_PLUGIN_STRING_ID_STRID_30FPS */ 
 	{ "15 fps", 6 },			/* LV_PLUGIN_STRING_ID_STRID_15FPS */ 
+	{ "10 fps", 6 },			/* LV_PLUGIN_STRING_ID_STRID_10FPS */ 
+	{ "1 fps", 5 },			/* LV_PLUGIN_STRING_ID_STRID_1FPS */ 
 	{ "視訊", 6 },			/* LV_PLUGIN_STRING_ID_STRID_VIDEO */ 
 	{ "錄音", 6 },			/* LV_PLUGIN_STRING_ID_STRID_AUDIO */ 
 	{ "設定", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SETUP */ 
-	{ "頻率", 6 },			/* LV_PLUGIN_STRING_ID_STRID_FREQUENCY */ 
+	{ "光源頻率", 12 },			/* LV_PLUGIN_STRING_ID_STRID_FREQUENCY */ 
 	{ "50 Hz", 5 },			/* LV_PLUGIN_STRING_ID_STRID_50HZ */ 
 	{ "60 Hz", 5 },			/* LV_PLUGIN_STRING_ID_STRID_60HZ */ 
-	{ "媒體選擇", 12 },			/* LV_PLUGIN_STRING_ID_STRID_MEDIA */ 
-	{ "儲存媒體", 12 },			/* LV_PLUGIN_STRING_ID_STRID_STORAGE */ 
+	{ "儲存裝置", 12 },			/* LV_PLUGIN_STRING_ID_STRID_MEDIA */ 
+	{ "儲存裝置", 12 },			/* LV_PLUGIN_STRING_ID_STRID_STORAGE */ 
 	{ "內建記憶體", 15 },			/* LV_PLUGIN_STRING_ID_STRID_INT_FLASH */ 
-	{ "記憶卡", 9 },			/* LV_PLUGIN_STRING_ID_STRID_EXT_CARD */ 
+	{ "TF卡", 5 },			/* LV_PLUGIN_STRING_ID_STRID_EXT_CARD */ 
 	{ "開機畫面", 12 },			/* LV_PLUGIN_STRING_ID_STRID_LOGO_DISPLAY */ 
 	{ "開機畫面", 12 },			/* LV_PLUGIN_STRING_ID_STRID_OPENING */ 
-	{ "格式化", 9 },			/* LV_PLUGIN_STRING_ID_STRID_FORMAT */ 
+	{ "格式化記憶卡", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FORMAT */ 
 	{ "確認", 6 },			/* LV_PLUGIN_STRING_ID_STRID_OK */ 
 	{ "取消", 6 },			/* LV_PLUGIN_STRING_ID_STRID_CANCEL */ 
-	{ "提示音", 9 },			/* LV_PLUGIN_STRING_ID_STRID_BEEPER */ 
+	{ "按鍵音", 9 },			/* LV_PLUGIN_STRING_ID_STRID_BEEPER */ 
 	{ "高音量", 9 },			/* LV_PLUGIN_STRING_ID_STRID_BEEP_LOUD */ 
 	{ "柔和", 6 },			/* LV_PLUGIN_STRING_ID_STRID_BEEP_SOFT */ 
-	{ "語系", 6 },			/* LV_PLUGIN_STRING_ID_STRID_LANGUAGE */ 
+	{ "系统語系", 12 },			/* LV_PLUGIN_STRING_ID_STRID_LANGUAGE */ 
 	{ "English", 7 },			/* LV_PLUGIN_STRING_ID_STRID_LANG_EN */ 
 	{ "Français", 9 },			/* LV_PLUGIN_STRING_ID_STRID_LANG_FR */ 
 	{ "Español", 8 },			/* LV_PLUGIN_STRING_ID_STRID_LANG_ES */ 
@@ -158,8 +160,8 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "磁碟機", 9 },			/* LV_PLUGIN_STRING_ID_STRID_MSDC */ 
 	{ "網路攝影機", 15 },			/* LV_PLUGIN_STRING_ID_STRID_PCC */ 
 	{ "PictBridge", 10 },			/* LV_PLUGIN_STRING_ID_STRID_PICTBRIDGE */ 
-	{ "充電中", 9 },			/* LV_PLUGIN_STRING_ID_STRID_USBCHARGE */ 
-	{ "電視輸出", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TV_MODE */ 
+	{ "供電模式", 12 },			/* LV_PLUGIN_STRING_ID_STRID_USBCHARGE */ 
+	{ "影像輸出格式", 18 },			/* LV_PLUGIN_STRING_ID_STRID_TV_MODE */ 
 	{ "NTSC", 4 },			/* LV_PLUGIN_STRING_ID_STRID_TV_NTSC */ 
 	{ "PAL", 3 },			/* LV_PLUGIN_STRING_ID_STRID_TV_PAL */ 
 	{ "LCD亮度", 9 },			/* LV_PLUGIN_STRING_ID_STRID_BRIGHTNESS */ 
@@ -178,19 +180,12 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "20 分鐘", 9 },			/* LV_PLUGIN_STRING_ID_STRID_20MIN */ 
 	{ "25 分鐘", 9 },			/* LV_PLUGIN_STRING_ID_STRID_25MIN */ 
 	{ "30 分鐘", 9 },			/* LV_PLUGIN_STRING_ID_STRID_30MIN */ 
-	{ "60 分鐘", 9 },			/* LV_PLUGIN_STRING_ID_STRID_60MIN */ 
-	{ "Screen Save", 11 },			/* LV_PLUGIN_STRING_ID_STRID_SCREEN_SAVE */ 
 	{ "循環錄影", 12 },			/* LV_PLUGIN_STRING_ID_STRID_CYCLIC_REC */ 
 	{ "預錄", 6 },			/* LV_PLUGIN_STRING_ID_STRID_FLASH_REC */ 
 	{ "高速錄影", 12 },			/* LV_PLUGIN_STRING_ID_STRID_GOLF_REC */ 
-	{ "雙路錄影", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_REC */ 
-	{ "間隔錄影", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TIMELAPSE_REC */ 
-	{ "間隔拍照", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TIMELAPSE_CAP */ 
-	{ "照片合成影片", 18 },			/* LV_PLUGIN_STRING_ID_STRID_MAKE_MOVIE */ 
-	{ "處理中…", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PROCESSING */ 
 	{ "無", 3 },			/* LV_PLUGIN_STRING_ID_STRID_NONE */ 
 	{ "重設數字", 12 },			/* LV_PLUGIN_STRING_ID_STRID_RESET_NUM */ 
-	{ "預設值", 9 },			/* LV_PLUGIN_STRING_ID_STRID_DEFAULT_SETTING */ 
+	{ "出廠設置", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DEFAULT_SETTING */ 
 	{ "是", 3 },			/* LV_PLUGIN_STRING_ID_STRID_YES */ 
 	{ "否", 3 },			/* LV_PLUGIN_STRING_ID_STRID_NO */ 
 	{ "版本", 6 },			/* LV_PLUGIN_STRING_ID_STRID_VERSION */ 
@@ -212,20 +207,20 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "10 秒", 6 },			/* LV_PLUGIN_STRING_ID_STRID_10SEC */ 
 	{ "保護", 6 },			/* LV_PLUGIN_STRING_ID_STRID_PROTECT */ 
 	{ "保護單張", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PROTECTONE */ 
-	{ "保護所有", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PROTECTALL */ 
+	{ "保護所有檔案", 18 },			/* LV_PLUGIN_STRING_ID_STRID_PROTECTALL */ 
 	{ "保護", 6 },			/* LV_PLUGIN_STRING_ID_STRID_LOCK */ 
 	{ "保護目前檔案", 18 },			/* LV_PLUGIN_STRING_ID_STRID_LOCKONE */ 
 	{ "保護所有檔案", 18 },			/* LV_PLUGIN_STRING_ID_STRID_LOCKALL */ 
-	{ "保護選擇", 12 },			/* LV_PLUGIN_STRING_ID_STRID_LOCKSELECTED */ 
+	{ "保護選擇檔案", 18 },			/* LV_PLUGIN_STRING_ID_STRID_LOCKSELECTED */ 
 	{ "未鎖定", 9 },			/* LV_PLUGIN_STRING_ID_STRID_UNLOCK */ 
 	{ "解除保護目前檔案", 24 },			/* LV_PLUGIN_STRING_ID_STRID_UNLOCKONE */ 
 	{ "解除保護所有檔案", 24 },			/* LV_PLUGIN_STRING_ID_STRID_UNLOCKALL */ 
-	{ "解除保護", 12 },			/* LV_PLUGIN_STRING_ID_STRID_UNLOCKSELECTED */ 
+	{ "解除保護選擇檔案", 24 },			/* LV_PLUGIN_STRING_ID_STRID_UNLOCKSELECTED */ 
 	{ "DPOF", 4 },			/* LV_PLUGIN_STRING_ID_STRID_DPOF */ 
-	{ "一張相片", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ONEIMAGE */ 
+	{ "單張相片", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ONEIMAGE */ 
 	{ "所有相片", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ALL_IMAGES */ 
-	{ "此影像", 9 },			/* LV_PLUGIN_STRING_ID_STRID_THIS_IMAGE */ 
-	{ "此影片", 9 },			/* LV_PLUGIN_STRING_ID_STRID_THIS_VIDEO */ 
+	{ "目前影像", 12 },			/* LV_PLUGIN_STRING_ID_STRID_THIS_IMAGE */ 
+	{ "目前影片", 12 },			/* LV_PLUGIN_STRING_ID_STRID_THIS_VIDEO */ 
 	{ "選擇圖片", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SELECT_IMAGES */ 
 	{ "索引", 6 },			/* LV_PLUGIN_STRING_ID_STRID_ALL_INDEX */ 
 	{ "全部", 6 },			/* LV_PLUGIN_STRING_ID_STRID_ALL */ 
@@ -234,15 +229,15 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "返回", 6 },			/* LV_PLUGIN_STRING_ID_STRID_RETURN */ 
 	{ "調整尺寸 ", 13 },			/* LV_PLUGIN_STRING_ID_STRID_RESIZE */ 
 	{ "更改畫質", 12 },			/* LV_PLUGIN_STRING_ID_STRID_QUALITYCHANGE */ 
-	{ "複製到記憶卡", 18 },			/* LV_PLUGIN_STRING_ID_STRID_COPY_TO_CARD */ 
+	{ "複製到TF卡", 14 },			/* LV_PLUGIN_STRING_ID_STRID_COPY_TO_CARD */ 
 	{ "從記憶卡複製", 18 },			/* LV_PLUGIN_STRING_ID_STRID_COPY_FROM_CARD */ 
 	{ "複製", 6 },			/* LV_PLUGIN_STRING_ID_STRID_COPY */ 
-	{ "記憶卡", 9 },			/* LV_PLUGIN_STRING_ID_STRID_TOSD */ 
+	{ "TF卡", 5 },			/* LV_PLUGIN_STRING_ID_STRID_TOSD */ 
 	{ "內建記憶體", 15 },			/* LV_PLUGIN_STRING_ID_STRID_TOINTERNAL */ 
-	{ "删除", 6 },			/* LV_PLUGIN_STRING_ID_STRID_DELETE */ 
-	{ "目前檔案", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DELETECURRENT */ 
+	{ "文件删除", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DELETE */ 
+	{ "檔案是否删除", 18 },			/* LV_PLUGIN_STRING_ID_STRID_DELETECURRENT */ 
 	{ "全部檔案", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DELETEALL */ 
-	{ "删除選擇", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DELETESELECTED */ 
+	{ "删除選擇檔案", 18 },			/* LV_PLUGIN_STRING_ID_STRID_DELETESELECTED */ 
 	{ "資料處理", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DATAPROCESSED */ 
 	{ "選擇", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SELECT */ 
 	{ "頁數", 6 },			/* LV_PLUGIN_STRING_ID_STRID_PAGE */ 
@@ -256,12 +251,12 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "無相片", 9 },			/* LV_PLUGIN_STRING_ID_STRID_NO_IMAGE */ 
 	{ "設定", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SET */ 
 	{ "記憶體已滿", 15 },			/* LV_PLUGIN_STRING_ID_STRID_MEMORY_FULL */ 
-	{ "記憶卡已滿", 15 },			/* LV_PLUGIN_STRING_ID_STRID_CARD_FULL */ 
-	{ "檔案夾已滿", 15 },			/* LV_PLUGIN_STRING_ID_STRID_FOLDERFULL */ 
-	{ "記憶卡錯誤", 15 },			/* LV_PLUGIN_STRING_ID_STRID_CARDERROR */ 
+	{ "記憶卡已滿, 請格式化", 29 },			/* LV_PLUGIN_STRING_ID_STRID_CARD_FULL */ 
+	{ "資料夾已滿", 15 },			/* LV_PLUGIN_STRING_ID_STRID_FOLDERFULL */ 
+	{ "TF卡錯誤", 11 },			/* LV_PLUGIN_STRING_ID_STRID_CARDERROR */ 
 	{ "記憶體錯誤", 15 },			/* LV_PLUGIN_STRING_ID_STRID_MEMORYERROR */ 
 	{ "鏡頭錯誤", 12 },			/* LV_PLUGIN_STRING_ID_STRID_LENSERROR */ 
-	{ "卡片鎖定", 12 },			/* LV_PLUGIN_STRING_ID_STRID_CARD_LOCKED */ 
+	{ "TF卡防寫", 11 },			/* LV_PLUGIN_STRING_ID_STRID_CARD_LOCKED */ 
 	{ "檔案保護", 12 },			/* LV_PLUGIN_STRING_ID_STRID_FILE_PROTECT */ 
 	{ "影像錯誤", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PICTUREERROR */ 
 	{ "電量不足 ", 13 },			/* LV_PLUGIN_STRING_ID_STRID_BATTERY_LOW */ 
@@ -274,14 +269,14 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "日期記錄", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DATE_STAMPING */ 
 	{ "檔名", 6 },			/* LV_PLUGIN_STRING_ID_STRID_FILE_NAME */ 
 	{ "列印數量", 12 },			/* LV_PLUGIN_STRING_ID_STRID_NO_OF_COPY */ 
-	{ "預設值", 9 },			/* LV_PLUGIN_STRING_ID_STRID_DEFAULT */ 
+	{ "恢復出廠設置", 18 },			/* LV_PLUGIN_STRING_ID_STRID_DEFAULT */ 
 	{ "選單", 6 },			/* LV_PLUGIN_STRING_ID_STRID_MENU */ 
 	{ "結束", 6 },			/* LV_PLUGIN_STRING_ID_STRID_EXIT */ 
 	{ "請稍待", 9 },			/* LV_PLUGIN_STRING_ID_STRID_PLEASE_WAIT */ 
 	{ "開始: 快門", 14 },			/* LV_PLUGIN_STRING_ID_STRID_STARTSHUTTER */ 
 	{ "停止: 快門", 14 },			/* LV_PLUGIN_STRING_ID_STRID_STOPSHUTTER */ 
 	{ "沒有檔案", 12 },			/* LV_PLUGIN_STRING_ID_STRID_NO_FILE */ 
-	{ "沒有記憶卡", 15 },			/* LV_PLUGIN_STRING_ID_STRID_NO_CARD */ 
+	{ "沒有TF卡", 11 },			/* LV_PLUGIN_STRING_ID_STRID_NO_CARD */ 
 	{ "無相片", 9 },			/* LV_PLUGIN_STRING_ID_STRID_NO_PHOTO */ 
 	{ "不是JPEG檔", 13 },			/* LV_PLUGIN_STRING_ID_STRID_NOT_JPEG */ 
 	{ "閃光燈充電中", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FLASHNOTREADY */ 
@@ -295,14 +290,14 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "保存", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SAVE */ 
 	{ "下一項", 9 },			/* LV_PLUGIN_STRING_ID_STRID_NEXT */ 
 	{ "更改", 6 },			/* LV_PLUGIN_STRING_ID_STRID_CHANGE */ 
-	{ "音量", 6 },			/* LV_PLUGIN_STRING_ID_STRID_VOLUME */ 
+	{ "音量設置", 12 },			/* LV_PLUGIN_STRING_ID_STRID_VOLUME */ 
 	{ "拍照", 6 },			/* LV_PLUGIN_STRING_ID_STRID_STILL */ 
 	{ "Battery Type", 12 },			/* LV_PLUGIN_STRING_ID_STRID_BATTERY_TYPE */ 
 	{ "Alkaline", 8 },			/* LV_PLUGIN_STRING_ID_STRID_ALKALINE */ 
 	{ "NiMH", 4 },			/* LV_PLUGIN_STRING_ID_STRID_NIMH */ 
-	{ "格式化記憶體\n將删除所有資料", 41 },			/* LV_PLUGIN_STRING_ID_STRID_DELETE_WARNING */ 
+	{ "格式化後記憶卡\n將删除所有資料", 44 },			/* LV_PLUGIN_STRING_ID_STRID_DELETE_WARNING */ 
 	{ "檔案編號", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SEQUENCE_NO */ 
-	{ "恢复默认设置", 18 },			/* LV_PLUGIN_STRING_ID_STRID_RESET_WARNING */ 
+	{ "恢復出廠設置及子菜單", 30 },			/* LV_PLUGIN_STRING_ID_STRID_RESET_WARNING */ 
 	{ "删除單張", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ERASE_THIS */ 
 	{ "删除全部?", 13 },			/* LV_PLUGIN_STRING_ID_STRID_ERASE_ALL */ 
 	{ "張", 3 },			/* LV_PLUGIN_STRING_ID_STRID_IMAGES */ 
@@ -323,7 +318,7 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "+1.0", 4 },			/* LV_PLUGIN_STRING_ID_STRID_EV_P1P0 */ 
 	{ "+4/3", 4 },			/* LV_PLUGIN_STRING_ID_STRID_EV_P1P3 */ 
 	{ "+5/3", 4 },			/* LV_PLUGIN_STRING_ID_STRID_EV_P1P6 */ 
-	{ "+2.0", 4 },			/* LV_PLUGIN_STRING_ID_STRID_EV_P2P0 */ 
+	{ "2", 1 },			/* LV_PLUGIN_STRING_ID_STRID_EV_P2P0 */ 
 	{ "列印所有照片", 18 },			/* LV_PLUGIN_STRING_ID_STRID_PRINT_ALL */ 
 	{ "索引", 6 },			/* LV_PLUGIN_STRING_ID_STRID_PRINT_INDEX */ 
 	{ "DPOF 列印", 11 },			/* LV_PLUGIN_STRING_ID_STRID_PRINT_DPOF */ 
@@ -341,10 +336,10 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "明信片", 9 },			/* LV_PLUGIN_STRING_ID_STRID_POSTCARD */ 
 	{ "卡片", 6 },			/* LV_PLUGIN_STRING_ID_STRID_CARD */ 
 	{ "100x150", 7 },			/* LV_PLUGIN_STRING_ID_STRID_100X150 */ 
-	{ "4\"\"x6\"\"", 11 },			/* LV_PLUGIN_STRING_ID_STRID_4X6 */ 
-	{ "8\"\"x10\"\"", 12 },			/* LV_PLUGIN_STRING_ID_STRID_8X10 */ 
+	{ "4\"x6\"", 7 },			/* LV_PLUGIN_STRING_ID_STRID_4X6 */ 
+	{ "8\"x10\"", 8 },			/* LV_PLUGIN_STRING_ID_STRID_8X10 */ 
 	{ "信封", 6 },			/* LV_PLUGIN_STRING_ID_STRID_LETTER */ 
-	{ "11\"\"x17\"\"", 13 },			/* LV_PLUGIN_STRING_ID_STRID_11X17 */ 
+	{ "11\"x17\"", 9 },			/* LV_PLUGIN_STRING_ID_STRID_11X17 */ 
 	{ "A0", 2 },			/* LV_PLUGIN_STRING_ID_STRID_A0 */ 
 	{ "A1", 2 },			/* LV_PLUGIN_STRING_ID_STRID_A1 */ 
 	{ "A2", 2 },			/* LV_PLUGIN_STRING_ID_STRID_A2 */ 
@@ -373,7 +368,7 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "相片紙", 9 },			/* LV_PLUGIN_STRING_ID_STRID_PHOTO_PAPER */ 
 	{ "普通紙", 9 },			/* LV_PLUGIN_STRING_ID_STRID_PLAIN_PAPER */ 
 	{ "快速相片紙", 15 },			/* LV_PLUGIN_STRING_ID_STRID_FAST_PHOTO */ 
-	{ "文件類型", 12 },			/* LV_PLUGIN_STRING_ID_STRID_FILE_TYPE */ 
+	{ "回放列表", 12 },			/* LV_PLUGIN_STRING_ID_STRID_FILE_TYPE */ 
 	{ "Exif/JPEG", 9 },			/* LV_PLUGIN_STRING_ID_STRID_EXIF_JPEG */ 
 	{ "Exif", 4 },			/* LV_PLUGIN_STRING_ID_STRID_EXIF */ 
 	{ "JPEG", 4 },			/* LV_PLUGIN_STRING_ID_STRID_JPEG */ 
@@ -395,8 +390,8 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "索引", 6 },			/* LV_PLUGIN_STRING_ID_STRID_INDEX */ 
 	{ "滿版列印", 12 },			/* LV_PLUGIN_STRING_ID_STRID_1UP_BORDERLESS */ 
 	{ "固定大小", 12 },			/* LV_PLUGIN_STRING_ID_STRID_FIXED_SIZE */ 
-	{ "2.5\"\"x3.25\"\"", 16 },			/* LV_PLUGIN_STRING_ID_STRID_25X325 */ 
-	{ "3.5\"\"x5\"\"", 13 },			/* LV_PLUGIN_STRING_ID_STRID_35X5 */ 
+	{ "2.5\"x3.25\"", 12 },			/* LV_PLUGIN_STRING_ID_STRID_25X325 */ 
+	{ "3.5\"x5\"", 9 },			/* LV_PLUGIN_STRING_ID_STRID_35X5 */ 
 	{ "254x178", 7 },			/* LV_PLUGIN_STRING_ID_STRID_254X178 */ 
 	{ "110x74", 6 },			/* LV_PLUGIN_STRING_ID_STRID_110X74 */ 
 	{ "89x55", 5 },			/* LV_PLUGIN_STRING_ID_STRID_89X55 */ 
@@ -431,54 +426,361 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "印表機錯誤", 15 },			/* LV_PLUGIN_STRING_ID_STRID_HW_NO_MARKING_AGENT */ 
 	{ "墨水盒蓋未關閉", 21 },			/* LV_PLUGIN_STRING_ID_STRID_HW_INK_COVER_OPEN */ 
 	{ "墨水盒未裝載", 18 },			/* LV_PLUGIN_STRING_ID_STRID_HW_NO_INK_CARTRIDGE */ 
-	{ "照片錯誤", 12 },			/* LV_PLUGIN_STRING_ID_STRID_FILE_ERROR */ 
+	{ "文件錯誤", 12 },			/* LV_PLUGIN_STRING_ID_STRID_FILE_ERROR */ 
 	{ "列印資訊錯誤", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FILE_PRINT_INFO */ 
 	{ "檔案解碼錯誤", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FILE_DECODE_ERROR */ 
 	{ "未知錯誤", 12 },			/* LV_PLUGIN_STRING_ID_STRID_UNKNOW_ERROR */ 
 	{ "XML語法錯誤", 15 },			/* LV_PLUGIN_STRING_ID_STRID_XML_SYNTAX_ERROR */ 
-	{ "運動檢測", 12 },			/* LV_PLUGIN_STRING_ID_STRID_MOTION_DET */ 
+	{ "移動偵測", 12 },			/* LV_PLUGIN_STRING_ID_STRID_MOTION_DET */ 
 	{ "人臉偵測", 12 },			/* LV_PLUGIN_STRING_ID_STRID_FACE_DET */ 
 	{ "笑臉偵測", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SMILE_DET */ 
 	{ "防手震", 9 },			/* LV_PLUGIN_STRING_ID_STRID_ANTI_SHAKING */ 
-	{ "無錄影", 9 },			/* LV_PLUGIN_STRING_ID_STRID_NO_MOVIE */ 
+	{ "沒有錄影文件", 18 },			/* LV_PLUGIN_STRING_ID_STRID_NO_MOVIE */ 
 	{ "MP3", 3 },			/* LV_PLUGIN_STRING_ID_STRID_MP3PLAY */ 
 	{ "沒有MP3檔案", 15 },			/* LV_PLUGIN_STRING_ID_STRID_NO_MP3FILE */ 
 	{ "影像旋轉", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SENSOR_ROTATE */ 
 	{ "錄影", 6 },			/* LV_PLUGIN_STRING_ID_STRID_RECORD */ 
-	{ "錄影聲音", 12 },			/* LV_PLUGIN_STRING_ID_STRID_RECORD_AUDIO */ 
-	{ "夜光燈設定", 15 },			/* LV_PLUGIN_STRING_ID_STRID_LED_SETTING */ 
+	{ "錄音", 6 },			/* LV_PLUGIN_STRING_ID_STRID_RECORD_AUDIO */ 
+	{ "夜视燈設置", 15 },			/* LV_PLUGIN_STRING_ID_STRID_LED_SETTING */ 
 	{ "再見", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GOOD_BYE */ 
-	{ "請插入SD卡", 14 },			/* LV_PLUGIN_STRING_ID_STRID_PLEASE_INSERT_SD */ 
+	{ "請插入記憶卡", 18 },			/* LV_PLUGIN_STRING_ID_STRID_PLEASE_INSERT_SD */ 
 	{ "IR LED", 6 },			/* LV_PLUGIN_STRING_ID_STRID_IR_LED */ 
 	{ "microfone", 9 },			/* LV_PLUGIN_STRING_ID_STRID_MICROPHONE */ 
-	{ "Custer size wrong.\nPlease format", 33 },			/* LV_PLUGIN_STRING_ID_STRID_CLUSTER_WRONG */ 
-	{ "Need Class6 or Higher SD Card", 29 },			/* LV_PLUGIN_STRING_ID_STRID_SD_CLASS6 */ 
-	{ "Need Class4 or Higher SD Card", 29 },			/* LV_PLUGIN_STRING_ID_STRID_SD_CLASS4 */ 
+	{ "記憶卡格式錯誤.\n請格式化", 36 },			/* LV_PLUGIN_STRING_ID_STRID_CLUSTER_WRONG */ 
+	{ "卡速過低，\n請更換高速卡", 35 },			/* LV_PLUGIN_STRING_ID_STRID_SD_CLASS10 */ 
+	{ "需要 Class6 以上 TF 卡", 27 },			/* LV_PLUGIN_STRING_ID_STRID_SD_CLASS6 */ 
+	{ "需要 Class6 以上 TF 卡", 27 },			/* LV_PLUGIN_STRING_ID_STRID_SD_CLASS4 */ 
 	{ "HDR", 3 },			/* LV_PLUGIN_STRING_ID_STRID_HDR */ 
-	{ "Time Lapse", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TIME_LPASE */ 
-	{ "100 ms", 6 },			/* LV_PLUGIN_STRING_ID_STRID_100MS */ 
-	{ "200 ms", 6 },			/* LV_PLUGIN_STRING_ID_STRID_200MS */ 
-	{ "500 ms", 6 },			/* LV_PLUGIN_STRING_ID_STRID_500MS */ 
-	{ "_", 1 },			/* LV_PLUGIN_STRING_ID_STRID_UNDERSCORE */ 
+	{ "GPS", 3 },			/* LV_PLUGIN_STRING_ID_STRID_GPS */ 
+	{ "碰撞靈敏度", 15 },			/* LV_PLUGIN_STRING_ID_STRID_GSENSOR */ 
+	{ "螢幕保護", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SCREEN_SAVER */ 
+	{ "低靈敏度", 12 },			/* LV_PLUGIN_STRING_ID_STRID_LOW_SENSITIVITY */ 
+	{ "中靈敏度", 12 },			/* LV_PLUGIN_STRING_ID_STRID_MIDDLE_SENSITIVITY */ 
+	{ "高靈敏度", 12 },			/* LV_PLUGIN_STRING_ID_STRID_HIGH_SENSITIVITY */ 
+	{ "車牌號", 9 },			/* LV_PLUGIN_STRING_ID_STRID_CARNO */ 
+	{ "監控模式", 12 },			/* LV_PLUGIN_STRING_ID_STRID_CAMERA_MODE */ 
+	{ "時鐘-1", 8 },			/* LV_PLUGIN_STRING_ID_STRID_COLOCK_1MIN */ 
+	{ "時鐘-3", 8 },			/* LV_PLUGIN_STRING_ID_STRID_COLOCK_3MIN */ 
+	{ "關閉螢幕", 12 },			/* LV_PLUGIN_STRING_ID_STRID_LCD_BACKLIGHT_OFF */ 
+	{ "_", 1 },			/* LV_PLUGIN_STRING_ID_STRID_UNDERLINE */ 
+	{ "縮時錄影", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TIMER_LAPSE */ 
+	{ "1 小時", 8 },			/* LV_PLUGIN_STRING_ID_STRID_1_HOUR */ 
+	{ "2 小時", 8 },			/* LV_PLUGIN_STRING_ID_STRID_2_HOUR */ 
+	{ "3 小時", 8 },			/* LV_PLUGIN_STRING_ID_STRID_3_HOUR */ 
+	{ "监控模式关闭中", 21 },			/* LV_PLUGIN_STRING_ID_STRID_CAMERA_MODE_OFF */ 
+	{ "车辆行驶中，\n不能使用监控模式", 44 },			/* LV_PLUGIN_STRING_ID_STRID_NOT_USED_CAMERA_MODE */ 
+	{ "车辆行驶中，\n切换到正常录影模式", 47 },			/* LV_PLUGIN_STRING_ID_STRID_CHANGE_TO_NORMAL_MODE */ 
+	{ "移動偵測使用中,無法使用該模式", 43 },			/* LV_PLUGIN_STRING_ID_STRID_NOT_USED_CAMERA_MODE_IN_MOTIONDET */ 
+	{ "為確保行車安全\n請格式化記憶卡及\n重新設置系統時間", 73 },			/* LV_PLUGIN_STRING_ID_STRID_PLEASE_RESETING_DATE */ 
+	{ "自動校正", 12 },			/* LV_PLUGIN_STRING_ID_STRID_GSENSOR_ADJUST */ 
+	{ "格式化提示", 15 },			/* LV_PLUGIN_STRING_ID_STRID_FORMAT_WARNING */ 
+	{ "15 天", 6 },			/* LV_PLUGIN_STRING_ID_STRID_FORMAT_WARNING_15_DAY */ 
+	{ "30 天", 6 },			/* LV_PLUGIN_STRING_ID_STRID_FORMAT_WARNING_30_DAY */ 
+	{ "60 天", 6 },			/* LV_PLUGIN_STRING_ID_STRID_FORMAT_WARNING_60_DAY */ 
+	{ "播放列表", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PLAY_FILE */ 
+	{ "錄影文件", 12 },			/* LV_PLUGIN_STRING_ID_STRID_VIDEO_FLIE */ 
+	{ "照片", 6 },			/* LV_PLUGIN_STRING_ID_STRID_PHOTO_FILE */ 
+	{ "錄影文件列表", 18 },			/* LV_PLUGIN_STRING_ID_STRID_VIDEO_FILE_LIST */ 
+	{ "照片文件列表", 18 },			/* LV_PLUGIN_STRING_ID_STRID_PHOTO_FILE_LIST */ 
+	{ "為確保行車安全\n及錄像品質\n請格式化儲存卡", 61 },			/* LV_PLUGIN_STRING_ID_STRID_FORMAT_WARNING1 */ 
+	{ "播放", 6 },			/* LV_PLUGIN_STRING_ID_STRID_MOVIEWND_PLAYBACK */ 
+	{ "選單", 6 },			/* LV_PLUGIN_STRING_ID_STRID_MOVIEWND_SETTING */ 
+	{ "關螢幕", 9 },			/* LV_PLUGIN_STRING_ID_STRID_MOVIEWND_CLOSELCD */ 
+	{ "OK", 2 },			/* LV_PLUGIN_STRING_ID_STRID_MOVIEWND_OK */ 
+	{ "播放列表", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PLAYBACK_PLAY_LIST */ 
+	{ "為了您的行車安全\r\n車輛行駛中請勿操作", 55 },			/* LV_PLUGIN_STRING_ID_STRID_LOGOL_OPEN */ 
+	{ "感謝您的使用\r\n再見", 28 },			/* LV_PLUGIN_STRING_ID_STRID_LOGOL_BYE */ 
+	{ "本次關機倒數 10 秒", 25 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_10S */ 
+	{ "本次關機倒數 9 秒", 24 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_9S */ 
+	{ "本次關機倒數 8 秒", 24 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_8S */ 
+	{ "本次關機倒數 7 秒", 24 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_7S */ 
+	{ "本次關機倒數 6 秒", 24 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_6S */ 
+	{ "本次關機倒數 5 秒", 24 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_5S */ 
+	{ "本次關機倒數 4 秒", 24 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_4S */ 
+	{ "本次關機倒數 3 秒", 24 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_3S */ 
+	{ "本次關機倒數 2 秒", 24 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_2S */ 
+	{ "本次關機倒數 1 秒", 24 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_1S */ 
+	{ "本次關機倒數 0 秒", 24 },			/* LV_PLUGIN_STRING_ID_STRID_POWER_OFF_0S */ 
+	{ "停車衛士", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PARKINGGUARD */ 
+	{ "時區", 6 },			/* LV_PLUGIN_STRING_ID_STRID_TIME_ZONE */ 
+	{ "GMT -12", 7 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N12 */ 
+	{ "GMT -11", 7 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N11 */ 
+	{ "GMT -10", 7 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N10 */ 
+	{ "GMT -9", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N9 */ 
+	{ "GMT -8", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N8 */ 
+	{ "GMT -7", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N7 */ 
+	{ "GMT -6", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N6 */ 
+	{ "GMT -5", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N5 */ 
+	{ "GMT -4", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N4 */ 
+	{ "GMT -3", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N3 */ 
+	{ "GMT -2", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N2 */ 
+	{ "GMT -1", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N1 */ 
+	{ "GMT 0", 5 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N0 */ 
+	{ "GMT +1", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P1 */ 
+	{ "GMT +2", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P2 */ 
+	{ "GMT +3", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P3 */ 
+	{ "GMT +4", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P4 */ 
+	{ "GMT +5", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P5 */ 
+	{ "GMT +6", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P6 */ 
+	{ "GMT +7", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P7 */ 
+	{ "GMT +8", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P8 */ 
+	{ "GMT +9", 6 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P9 */ 
+	{ "GMT +10", 7 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P10 */ 
+	{ "GMT +11", 7 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P11 */ 
+	{ "GMT +12", 7 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P12 */ 
+	{ "GMT +13", 7 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P13 */ 
+	{ "GMT -3:30", 9 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N330 */ 
+	{ "GMT +3:30", 9 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P330 */ 
+	{ "GMT +4:30", 9 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P430 */ 
+	{ "GMT +5:30", 9 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P530 */ 
+	{ "GMT +9:30", 9 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P930 */ 
+	{ "GMT +10:30", 10 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P1030 */ 
+	{ "行車安全", 12 },			/* LV_PLUGIN_STRING_ID_STRID_CAR_SAFE */ 
+	{ "限速標誌辨識", 18 },			/* LV_PLUGIN_STRING_ID_STRID_TSR */ 
+	{ "REC :", 5 },			/* LV_PLUGIN_STRING_ID_STRID_REC */ 
+	{ "前車起步提醒", 18 },			/* LV_PLUGIN_STRING_ID_STRID_SNG */ 
+	{ "疲勞駕駛警示", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FATIGUE_DRIVING */ 
+	{ "開燈提醒", 12 },			/* LV_PLUGIN_STRING_ID_STRID_REMIND_LIGHT */ 
+	{ "30分鐘", 8 },			/* LV_PLUGIN_STRING_ID_STRID_FATIGUE_30MIN */ 
+	{ "1小時", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FATIGUE_1HOUR */ 
+	{ "2小時", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FATIGUE_2HOUR */ 
+	{ "4小時", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FATIGUE_4HOUR */ 
+	{ "速度單位", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SPEED_UNIT */ 
+	{ "MPH", 3 },			/* LV_PLUGIN_STRING_ID_STRID_SPEED_MPH */ 
+	{ "KM/H", 4 },			/* LV_PLUGIN_STRING_ID_STRID_SPEED_KPH */ 
+	{ "C0", 2 },			/* LV_PLUGIN_STRING_ID_STRID_C0 */ 
+	{ "C1", 2 },			/* LV_PLUGIN_STRING_ID_STRID_C1 */ 
+	{ "C2", 2 },			/* LV_PLUGIN_STRING_ID_STRID_C2 */ 
+	{ "C3", 2 },			/* LV_PLUGIN_STRING_ID_STRID_C3 */ 
+	{ "C4", 2 },			/* LV_PLUGIN_STRING_ID_STRID_C4 */ 
+	{ "C5", 2 },			/* LV_PLUGIN_STRING_ID_STRID_C5 */ 
+	{ "C6", 2 },			/* LV_PLUGIN_STRING_ID_STRID_C6 */ 
+	{ "C7", 2 },			/* LV_PLUGIN_STRING_ID_STRID_C7 */ 
+	{ "C8", 2 },			/* LV_PLUGIN_STRING_ID_STRID_C8 */ 
+	{ "C9", 2 },			/* LV_PLUGIN_STRING_ID_STRID_C9 */ 
+	{ "D0", 2 },			/* LV_PLUGIN_STRING_ID_STRID_D0 */ 
+	{ "偵測燈", 9 },			/* LV_PLUGIN_STRING_ID_STRID_LED_DET */ 
+	{ "1080P30,1080P30", 15 },			/* LV_PLUGIN_STRING_ID_STRID_1080P30_1080P30 */ 
+	{ "單鏡頭", 9 },			/* LV_PLUGIN_STRING_ID_STRID_ONE_CAMERA */ 
+	{ "雙鏡頭", 9 },			/* LV_PLUGIN_STRING_ID_STRID_TWO_CAMERA */ 
+	{ "螢幕顯示方式", 18 },			/* LV_PLUGIN_STRING_ID_STRID_DISPLAY_MODE */ 
+	{ "前鏡頭", 9 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_CAMERA */ 
+	{ "中鏡頭", 9 },			/* LV_PLUGIN_STRING_ID_STRID_MIDDLE_CAMERA */ 
+	{ "後鏡頭", 9 },			/* LV_PLUGIN_STRING_ID_STRID_BACK_CAMERA */ 
+	{ "子母畫面", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PICTURE_IN_PICTURE */ 
+	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FILL_ASCII */ 
+	{ "20%", 3 },			/* LV_PLUGIN_STRING_ID_STRID_PERCENT20 */ 
+	{ "40%", 3 },			/* LV_PLUGIN_STRING_ID_STRID_PERCENT40 */ 
+	{ "60%", 3 },			/* LV_PLUGIN_STRING_ID_STRID_PERCENT60 */ 
+	{ "80%", 3 },			/* LV_PLUGIN_STRING_ID_STRID_PERCENT80 */ 
+	{ "100%", 4 },			/* LV_PLUGIN_STRING_ID_STRID_PERCENT100 */ 
+	{ "靜音", 6 },			/* LV_PLUGIN_STRING_ID_STRID_MUTE */ 
+	{ "前鏡頭", 9 },			/* LV_PLUGIN_STRING_ID_STRID_CAMERA1 */ 
+	{ "後鏡頭", 9 },			/* LV_PLUGIN_STRING_ID_STRID_CAMERA2 */ 
+	{ "正常", 6 },			/* LV_PLUGIN_STRING_ID_STRID_CAMERA_NORMAL */ 
+	{ "倒立", 6 },			/* LV_PLUGIN_STRING_ID_STRID_CAMERA_INVERTED */ 
 	{ "WiFi", 4 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI */ 
 	{ "WiFi_OFF", 8 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI_OFF */ 
 	{ "Refresh", 7 },			/* LV_PLUGIN_STRING_ID_STRID_REFRESH */ 
 	{ "AP mode", 7 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI_AP_MODE */ 
 	{ "Client mode", 11 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI_CLIENT_MODE */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FILL_ASCII */ 
+	{ "SSID", 4 },			/* LV_PLUGIN_STRING_ID_STRID_SSID */ 
+	{ "Wi-Fi自動啟動", 17 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI_AUTO */ 
+	{ "延時開機", 12 },			/* LV_PLUGIN_STRING_ID_STRID_BOOT_DELAY */ 
+	{ "15 秒", 6 },			/* LV_PLUGIN_STRING_ID_STRID_15SEC */ 
+	{ "30 秒", 6 },			/* LV_PLUGIN_STRING_ID_STRID_30SEC */ 
+	{ "座標記錄", 12 },			/* LV_PLUGIN_STRING_ID_STRID_GPS_STAMP */ 
+	{ "經緯度", 9 },			/* LV_PLUGIN_STRING_ID_STRID_COORDINATES */ 
+	{ "時速", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SPEED */ 
+	{ "經緯度+時速", 16 },			/* LV_PLUGIN_STRING_ID_STRID_COORDINATES_SPEED */ 
+	{ "GPS狀態", 9 },			/* LV_PLUGIN_STRING_ID_STRID_GPS_STATUS */ 
+	{ "2160P24  2880x2160", 18 },			/* LV_PLUGIN_STRING_ID_STRID_2160P24 */ 
+	{ "1440P30  2560x1440", 18 },			/* LV_PLUGIN_STRING_ID_STRID_1440P30 */ 
+	{ "1296P30  2304x1296", 18 },			/* LV_PLUGIN_STRING_ID_STRID_1296P30 */ 
+	{ "1080P60  1920x1080", 18 },			/* LV_PLUGIN_STRING_ID_STRID_1080P60 */ 
+	{ "1080P30  1920x1080", 18 },			/* LV_PLUGIN_STRING_ID_STRID_1080P30 */ 
+	{ "720P120  1280x720", 17 },			/* LV_PLUGIN_STRING_ID_STRID_720P120 */ 
+	{ "前鏡頭曝光補償", 21 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_EV */ 
+	{ "中鏡頭曝光補償", 21 },			/* LV_PLUGIN_STRING_ID_STRID_MIDDLE_EV */ 
+	{ "後鏡頭曝光補償", 21 },			/* LV_PLUGIN_STRING_ID_STRID_REAR_EV */ 
+	{ "影像格式", 12 },			/* LV_PLUGIN_STRING_ID_STRID_VIDEO_FORMAT */ 
+	{ "MP4", 3 },			/* LV_PLUGIN_STRING_ID_STRID_VIDEO_FORMAT_MP4 */ 
+	{ "Super MP4", 9 },			/* LV_PLUGIN_STRING_ID_STRID_VIDEO_FORMAT_SUPER_MP4 */ 
+	{ "TS", 2 },			/* LV_PLUGIN_STRING_ID_STRID_VIDEO_FORMAT_TS */ 
+	{ "中鏡頭鏡像", 15 },			/* LV_PLUGIN_STRING_ID_STRID_MIDDLE_CAMERA_MIRROR */ 
+	{ "後鏡頭鏡像", 15 },			/* LV_PLUGIN_STRING_ID_STRID_REAR_CAMERA_MIRROR */ 
+	{ "胎壓設定", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_SET */ 
+	{ "參數設定", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PARM_SETTING */ 
+	{ "胎壓狀態", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_STATUS */ 
+	{ "胎壓單位", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PRESSURE_UNIT */ 
+	{ "溫度單位", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TEMP_UNIT */ 
+	{ "前輪/後輪", 13 },			/* LV_PLUGIN_STRING_ID_STRID_SERIAL_PORT */ 
+	{ "胎壓上限", 12 },			/* LV_PLUGIN_STRING_ID_STRID_HIGH_PRESSURE */ 
+	{ "胎壓下限", 12 },			/* LV_PLUGIN_STRING_ID_STRID_LOW_PRESSURE */ 
+	{ "溫度上限", 12 },			/* LV_PLUGIN_STRING_ID_STRID_HIGH_TEMP */ 
+	{ "充氣對碼", 12 },			/* LV_PLUGIN_STRING_ID_STRID_INFLATING_PROGRAMMING */ 
+	{ "輪胎互換", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_SWAP */ 
+	{ "psi", 3 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_PSI */ 
+	{ "bar", 3 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_BAR */ 
+	{ "°C", 3 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_C */ 
+	{ "°F", 3 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_F */ 
+	{ "前輪", 6 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_FW */ 
+	{ "後輪", 6 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_RW */ 
+	{ "胎壓感測器異常！", 24 },			/* LV_PLUGIN_STRING_ID_STRID_TPMS_SIGNAL_UNNORMAL */ 
+	{ "按鍵不可用", 15 },			/* LV_PLUGIN_STRING_ID_STRID_DISABLECONNECTING */ 
+	{ "輪胎配對中，請稍待", 27 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_PAIRING */ 
+	{ "輪胎配對成功", 18 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_PAIRING_OK */ 
+	{ "輪胎配對失敗", 18 },			/* LV_PLUGIN_STRING_ID_STRID_TIRE_PAIRING_FAIL */ 
+	{ "TPMS", 4 },			/* LV_PLUGIN_STRING_ID_STRID_TPMS */ 
+	{ "氣氛燈", 9 },			/* LV_PLUGIN_STRING_ID_STRID_AMBIANCE_LIGHT */ 
+	{ "呼吸燈", 9 },			/* LV_PLUGIN_STRING_ID_STRID_BREATHING_LIGHT */ 
+	{ "恆亮", 6 },			/* LV_PLUGIN_STRING_ID_STRID_PERMANENT_LIGHT */ 
+	{ "跑馬燈", 9 },			/* LV_PLUGIN_STRING_ID_STRID_HORSE_RACE_LIGHT */ 
+	{ "主機燈", 9 },			/* LV_PLUGIN_STRING_ID_STRID_HOST_LIGHT */ 
+	{ "車廂燈", 9 },			/* LV_PLUGIN_STRING_ID_STRID_TRUNK_LIGHT */ 
+	{ "影像編輯格式", 18 },			/* LV_PLUGIN_STRING_ID_STRID_CODEC */ 
+	{ "WDR", 3 },			/* LV_PLUGIN_STRING_ID_STRID_WDR */ 
+	{ "開啟HDR需手動開啟\r\nWIFI功能", 38 },			/* LV_PLUGIN_STRING_ID_STRID_HDR_WIFI_ON_WRN */ 
+	{ "GPS天線", 9 },			/* LV_PLUGIN_STRING_ID_STRID_GPS_MODULE */ 
+	{ "MGC-3", 5 },			/* LV_PLUGIN_STRING_ID_STRID_MGC_3 */ 
+	{ "MGC-2", 5 },			/* LV_PLUGIN_STRING_ID_STRID_MGC_2 */ 
+	{ "緊急錄影", 12 },			/* LV_PLUGIN_STRING_ID_STRID_VIDEO_FLIE_RO */ 
+	{ "語音播報", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SPEEDLIMIT_VOICE */ 
+	{ "警示音", 9 },			/* LV_PLUGIN_STRING_ID_STRID_SPEEDLIMIT_BEEP */ 
+	{ "HDR開啟", 9 },			/* LV_PLUGIN_STRING_ID_STRID_HDR_ON */ 
+	{ "HDR關閉", 9 },			/* LV_PLUGIN_STRING_ID_STRID_HDR_OFF */ 
+	{ "HDR定時", 9 },			/* LV_PLUGIN_STRING_ID_STRID_HDR_TIMER */ 
+	{ "停車監控下禁用GPS", 24 },			/* LV_PLUGIN_STRING_ID_STRID_DISABLE_GPS_IN_PARKINGMODE */ 
+	{ "語音辨識", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR */ 
+	{ "標準", 6 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_STANDARD */ 
+	{ "語音內容", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_CONTENT */ 
+	{ "我要拍照", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_TAKEPHOTO */ 
+	{ "我要錄像", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_VIDEOSTART */ 
+	{ "打開錄音", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_TURNONAUDIO */ 
+	{ "關閉錄音", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_TURNOFFAUDIO */ 
+	{ "打開螢幕", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_TURNONSCREEN */ 
+	{ "關閉螢幕", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_TURNOFFSCREEN */ 
+	{ "打開熱點", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_TURNONHOTSPOT */ 
+	{ "關閉熱點", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_TURNOFFHOTSPOT */ 
+	{ "視頻加鎖", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_LOCKVIDEO */ 
+	{ "打開wifi", 10 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_TURNONWIFI */ 
+	{ "關閉wifi", 10 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_TURNOFFWIFI */ 
+	{ "停止錄像", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_VIDEOSTOP */ 
+	{ "打開前錄", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_SHOW_FRONT_CAMERA */ 
+	{ "打開後錄", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_SHOW_REAR_CAMERA */ 
+	{ "查看全部", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_SHOW_BOTH_CAMERAS */ 
+	{ "打開內錄", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_INSIDE_VIDEO_ON */ 
+	{ "返回主頁", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ASR_BACK_TO_HOMEPAGE */ 
+	{ "90 秒", 6 },			/* LV_PLUGIN_STRING_ID_STRID_90SEC */ 
+	{ "12 小時", 9 },			/* LV_PLUGIN_STRING_ID_STRID_12HOUR */ 
+	{ "24 小時", 9 },			/* LV_PLUGIN_STRING_ID_STRID_24HOUR */ 
+	{ "48 小時", 9 },			/* LV_PLUGIN_STRING_ID_STRID_48HOUR */ 
+	{ "72 小時", 9 },			/* LV_PLUGIN_STRING_ID_STRID_72HOUR */ 
+	{ "縮時錄像", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TL_1FPS */ 
+	{ "2幀錄影", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TL_2FPS */ 
+	{ "3幀錄影", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TL_3FPS */ 
+	{ "4幀錄影", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TL_4FPS */ 
+	{ "5幀錄影", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TL_5FPS */ 
+	{ "6幀錄影", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TL_6FPS */ 
+	{ "7幀錄影", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TL_7FPS */ 
+	{ "8幀錄影", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TL_8FPS */ 
+	{ "9幀錄影", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TL_9FPS */ 
+	{ "10幀錄影", 11 },			/* LV_PLUGIN_STRING_ID_STRID_TL_10FPS */ 
+	{ "碰撞啟動", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PARKING_GSENSOR */ 
+	{ "監控移動偵測", 18 },			/* LV_PLUGIN_STRING_ID_STRID_PARKING_MOTION_DET */ 
+	{ "H.264", 5 },			/* LV_PLUGIN_STRING_ID_STRID_H264 */ 
+	{ "H.265", 5 },			/* LV_PLUGIN_STRING_ID_STRID_H265 */ 
+	{ "監控時長", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SHUTDOWN_TIMER */ 
+	{ "延遲進入停車監控", 24 },			/* LV_PLUGIN_STRING_ID_STRID_ENTERPARKING_TIMER */ 
+	{ "停車監控", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PARKING_MODE */ 
+	{ "移動偵測", 12 },			/* LV_PLUGIN_STRING_ID_STRID_AUTO_EVENT_DETECTION */ 
+	{ "低碼流錄影", 15 },			/* LV_PLUGIN_STRING_ID_STRID_LOW_BITRATE */ 
+	{ "打開此功能，請設定\r\n幀率30或者以下", 51 },			/* LV_PLUGIN_STRING_ID_STRID_CAN_NOT_BE_SET */ 
+	{ "EIS", 3 },			/* LV_PLUGIN_STRING_ID_STRID_EIS */ 
+	{ "系統準備中", 15 },			/* LV_PLUGIN_STRING_ID_STRID_IN_PREPARATION */ 
+	{ "2.4GHz", 6 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI_24G */ 
+	{ "5GHz", 4 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI_5G */ 
+	{ "5.2GHz", 6 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI_52G */ 
+	{ "5.8GHz", 6 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI_58G */ 
+	{ "影片鏡像", 12 },			/* LV_PLUGIN_STRING_ID_STRID_IMAGE_MIRROR */ 
+	{ "顯示鏡像", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DISPLAY_MIRROR */ 
+	{ "影像設定", 12 },			/* LV_PLUGIN_STRING_ID_STRID_MOVIE_SETTING */ 
+	{ "功能設定", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SYSTEM_SETTING */ 
+	{ "偵測設定", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DETECT_SETTING */ 
+	{ "開機音", 9 },			/* LV_PLUGIN_STRING_ID_STRID_START_SOUND */ 
+	{ "場景模式", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SCENE_MODE */ 
+	{ "一般", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SCENE_MODE_GENERAL */ 
+	{ "都會", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SCENE_MODE_CITY */ 
+	{ "越野", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SCENE_MODE_MOTOCROSS */ 
+	{ "專業", 6 },			/* LV_PLUGIN_STRING_ID_STRID_SCENE_MODE_PRO */ 
+	{ "星期一", 9 },			/* LV_PLUGIN_STRING_ID_STRID_MON */ 
+	{ "星期二", 9 },			/* LV_PLUGIN_STRING_ID_STRID_TUE */ 
+	{ "星期三", 9 },			/* LV_PLUGIN_STRING_ID_STRID_WED */ 
+	{ "星期四", 9 },			/* LV_PLUGIN_STRING_ID_STRID_THU */ 
+	{ "星期五", 9 },			/* LV_PLUGIN_STRING_ID_STRID_FRI */ 
+	{ "星期六", 9 },			/* LV_PLUGIN_STRING_ID_STRID_SAT */ 
+	{ "星期日", 9 },			/* LV_PLUGIN_STRING_ID_STRID_SUN */ 
+	{ "測速提醒", 12 },			/* LV_PLUGIN_STRING_ID_STRID_SPEED_ALERT */ 
+	{ "時間顯示", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TIME_DISPLAY */ 
+	{ "請先關閉WiFi再執行此操作", 34 },			/* LV_PLUGIN_STRING_ID_STRID_WARN_OFF_WIFI */ 
+	{ "後影像訊號異常", 21 },			/* LV_PLUGIN_STRING_ID_STRID_REAR_ERROR */ 
+	{ "燈柱控制", 12 },			/* LV_PLUGIN_STRING_ID_STRID_LIGHT_CTRL */ 
+	{ "燈柱亮度", 12 },			/* LV_PLUGIN_STRING_ID_STRID_BRGITHNESS_LEVEL */ 
+	{ "蜂鳴器音量", 15 },			/* LV_PLUGIN_STRING_ID_STRID_BUZZER_VOLUME */ 
+	{ "傾倒警報音", 15 },			/* LV_PLUGIN_STRING_ID_STRID_REVERSE_ALARM_SOUND */ 
+	{ "測速警報音", 15 },			/* LV_PLUGIN_STRING_ID_STRID_SPEED_ALERT_SOUND */ 
+	{ "主機位置", 12 },			/* LV_PLUGIN_STRING_ID_STRID_MACHINE_POS */ 
+	{ "車厢平放横向", 18 },			/* LV_PLUGIN_STRING_ID_STRID_BOTTOM_HORIZONTAL */ 
+	{ "車厢平放直向", 18 },			/* LV_PLUGIN_STRING_ID_STRID_BOTTOM_VERTICAL */ 
+	{ "車厢侧放横向", 18 },			/* LV_PLUGIN_STRING_ID_STRID_SIDE_HORIZONTAL */ 
+	{ "車厢侧放直向", 18 },			/* LV_PLUGIN_STRING_ID_STRID_SIDE_VERTICAL */ 
+	{ "車廂尾側放橫向", 21 },			/* LV_PLUGIN_STRING_ID_STRID_BACK_HORIZONTAL */ 
+	{ "車廂尾側放直向", 21 },			/* LV_PLUGIN_STRING_ID_STRID_BACK_VERTICAL */ 
+	{ "傾倒校準", 12 },			/* LV_PLUGIN_STRING_ID_STRID_GSENSOR_CAL */ 
+	{ "事故傾倒", 12 },			/* LV_PLUGIN_STRING_ID_STRID_ACCIDENT_ALARM */ 
+	{ "傾倒警報", 12 },			/* LV_PLUGIN_STRING_ID_STRID_REVERSE_ALARM */ 
+	{ "請進行校準", 15 },			/* LV_PLUGIN_STRING_ID_STRID_GSENSOR_CAL_WARN */ 
+	{ "開啟功能\n請使用停車監控線", 38 },			/* LV_PLUGIN_STRING_ID_STRID_REQUIRE_ACC_HW_CABLE */ 
+	{ "長按3秒警報", 16 },			/* LV_PLUGIN_STRING_ID_STRID_HOLD3S_TOGGLE_ALARM */ 
+	{ "車距過近預警", 18 },			/* LV_PLUGIN_STRING_ID_STRID_HMW */ 
+	{ "行人碰撞預警", 18 },			/* LV_PLUGIN_STRING_ID_STRID_PCW */ 
+	{ "後車碰撞預警", 18 },			/* LV_PLUGIN_STRING_ID_STRID_RCW */ 
+	{ "盲點偵測", 12 },			/* LV_PLUGIN_STRING_ID_STRID_BSD */ 
+	{ "車道偏離預警", 18 },			/* LV_PLUGIN_STRING_ID_STRID_LDWS */ 
+	{ "前車碰撞預警", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FCW */ 
+	{ "虛擬保險杠", 15 },			/* LV_PLUGIN_STRING_ID_STRID_VIRTUAL_BUMPER */ 
+	{ "前車起步預警", 18 },			/* LV_PLUGIN_STRING_ID_STRID_LCWS */ 
+	{ "ADAS校準", 10 },			/* LV_PLUGIN_STRING_ID_STRID_ADAS_CALIBRATION */ 
+	{ "警戒線", 9 },			/* LV_PLUGIN_STRING_ID_STRID_ADAS_CORDON */ 
+	{ "與地平綫對齊，\n垂直綫對準車頭中間", 50 },			/* LV_PLUGIN_STRING_ID_STRID_ADAS_CORDON_LINE */ 
+	{ "App讀取檔案中…", 21 },			/* LV_PLUGIN_STRING_ID_STRID_APP_CONNECTTING */ 
+	{ "ADAS", 4 },			/* LV_PLUGIN_STRING_ID_STRID_ADAS */ 
+	{ "1080P60,720x480P30", 18 },			/* LV_PLUGIN_STRING_ID_STRID_1080P60_D1P30 */ 
+	{ "800", 3 },			/* LV_PLUGIN_STRING_ID_STRID_ISO800 */ 
+	{ "1600", 4 },			/* LV_PLUGIN_STRING_ID_STRID_ISO1600 */ 
+	{ "3200", 4 },			/* LV_PLUGIN_STRING_ID_STRID_ISO3200 */ 
+	{ "60 分鐘", 9 },			/* LV_PLUGIN_STRING_ID_STRID_60MIN */ 
+	{ "Screen Save", 11 },			/* LV_PLUGIN_STRING_ID_STRID_SCREEN_SAVE */ 
+	{ "雙路錄影", 12 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_REC */ 
+	{ "間隔錄影", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TIMELAPSE_REC */ 
+	{ "間隔拍照", 12 },			/* LV_PLUGIN_STRING_ID_STRID_TIMELAPSE_CAP */ 
+	{ "照片合成影片", 18 },			/* LV_PLUGIN_STRING_ID_STRID_MAKE_MOVIE */ 
+	{ "處理中…", 12 },			/* LV_PLUGIN_STRING_ID_STRID_PROCESSING */ 
+	{ "Time Lapse", 10 },			/* LV_PLUGIN_STRING_ID_STRID_TIME_LPASE */ 
+	{ "100 ms", 6 },			/* LV_PLUGIN_STRING_ID_STRID_100MS */ 
+	{ "200 ms", 6 },			/* LV_PLUGIN_STRING_ID_STRID_200MS */ 
+	{ "500 ms", 6 },			/* LV_PLUGIN_STRING_ID_STRID_500MS */ 
+	{ "_", 1 },			/* LV_PLUGIN_STRING_ID_STRID_UNDERSCORE */ 
 	{ "Switch Mode", 11 },			/* LV_PLUGIN_STRING_ID_STRID_MODE_SWITCH */ 
 	{ "2880x2160P24", 12 },			/* LV_PLUGIN_STRING_ID_STRID_2880X2160P24 */ 
 	{ "2560x1440P30", 12 },			/* LV_PLUGIN_STRING_ID_STRID_2560X1440P30 */ 
 	{ "2304x1296P30", 12 },			/* LV_PLUGIN_STRING_ID_STRID_2304X1296P30 */ 
 	{ "1080P96", 7 },			/* LV_PLUGIN_STRING_ID_STRID_1080P96 */ 
-	{ "1080P60", 7 },			/* LV_PLUGIN_STRING_ID_STRID_1080P60 */ 
 	{ "1080P_DUAL", 10 },			/* LV_PLUGIN_STRING_ID_STRID_1080P_DUAL */ 
 	{ "720P120", 7 },			/* LV_PLUGIN_STRING_ID_STRID_720P120WXH */ 
-	{ "WDR", 3 },			/* LV_PLUGIN_STRING_ID_STRID_WDR */ 
 	{ "RSC", 3 },			/* LV_PLUGIN_STRING_ID_STRID_RSC */ 
 	{ "G Sensor", 8 },			/* LV_PLUGIN_STRING_ID_STRID_G_SENSOR */ 
 	{ "1 Sec", 5 },			/* LV_PLUGIN_STRING_ID_STRID_1SEC */ 
-	{ "30 Sec", 6 },			/* LV_PLUGIN_STRING_ID_STRID_30SEC */ 
 	{ "1 Hour", 6 },			/* LV_PLUGIN_STRING_ID_STRID_1HOUR */ 
 	{ "2 Hour", 6 },			/* LV_PLUGIN_STRING_ID_STRID_2HOUR */ 
 	{ "3 Hour", 6 },			/* LV_PLUGIN_STRING_ID_STRID_3HOUR */ 
@@ -492,10 +794,7 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "Auto Urgent Protect", 19 },			/* LV_PLUGIN_STRING_ID_STRID_URGENT_PROTECT_AUTO */ 
 	{ "Manual Urgent Protect", 21 },			/* LV_PLUGIN_STRING_ID_STRID_URGENT_PROTECT_MANUAL */ 
 	{ "PIM", 3 },			/* LV_PLUGIN_STRING_ID_STRID_PIM */ 
-	{ "FCW", 3 },			/* LV_PLUGIN_STRING_ID_STRID_FCW */ 
-	{ "LDWS", 4 },			/* LV_PLUGIN_STRING_ID_STRID_LDWS */ 
 	{ "DDD", 3 },			/* LV_PLUGIN_STRING_ID_STRID_DDD */ 
-	{ "ADAS", 4 },			/* LV_PLUGIN_STRING_ID_STRID_ADAS */ 
 	{ "File Recovery", 13 },			/* LV_PLUGIN_STRING_ID_STRID_REC_RECOVERY */ 
 	{ "Self Timer", 10 },			/* LV_PLUGIN_STRING_ID_STRID_SELFTIMER */ 
 	{ "Portrial", 8 },			/* LV_PLUGIN_STRING_ID_STRID_PORTRIAL */ 
@@ -515,67 +814,92 @@ lv_plugin_string_t lv_plugin_TC_string_table[] = {
 	{ "Firmware Update", 15 },			/* LV_PLUGIN_STRING_ID_STRID_FW_UPDATE */ 
 	{ "UVC", 3 },			/* LV_PLUGIN_STRING_ID_STRID_UVC */ 
 	{ "Resume", 6 },			/* LV_PLUGIN_STRING_ID_STRID_RESUME */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_MCTF */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_EDGE */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_NR */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI_ETH */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_ISO6400 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_ISO12800 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2880X2160P50 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_3840X2160P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2880X2160P24 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2704X2032P60 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2560X1440P80 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2560X1440P60 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2560X1440P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2304X1296P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1920X1080P120 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1920X1080P96 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1920X1080P60 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1920X1080P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1280X720P240 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1280X720P120 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1280X720P60 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1280X720P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_848X480P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_640X480P240 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_640X480P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_320X240P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_2560X1440P30_1280X720P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_2560X1440P30_1920X1080P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_2304X1296P30_1280X720P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_1080P30_1080P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_1920X1080P30_1280X720P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_1920X1080P30_848X480P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_1920X1080P30_1920X1080P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_1920X1080P30_1280X720P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_2560X1440P30_848X480P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_2304X1296P30_848X480P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_1920X1080P60_848X480P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_1920X1080P60_640X360P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_1920X1080P30_848X480P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_2048X2048P30_480X480P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_BOTH2 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CAP_SIDE */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CAP_BURST_30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_5MWXH_USR */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_CODEC */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_MJPG */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_H264 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_H265 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_2880X2160P50 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_3840X2160P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_848X480P60 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_TRI_1920X1080P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_TRI_2560X1440P30_1920X1080P30_1920X1080P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_QUAD_1920X1080P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_3840X2160P30_1920X1080P30 */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_RESTART_REC */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_STOP_REC */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_UDFW_SEND */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_UDFW_START */ 
-	{ "", 0 },			/* LV_PLUGIN_STRING_ID_STRID_ETHCAM_UDFW_FINISH */ 
-	{ "40M", 3 },			/* LV_PLUGIN_STRING_ID_STRID_40M */ 
+	{ "MCTF", 4 },			/* LV_PLUGIN_STRING_ID_STRID_MCTF */ 
+	{ "Edge", 4 },			/* LV_PLUGIN_STRING_ID_STRID_EDGE */ 
+	{ "NR", 2 },			/* LV_PLUGIN_STRING_ID_STRID_NR */ 
+	{ "WiFi/ETH", 8 },			/* LV_PLUGIN_STRING_ID_STRID_WIFI_ETH */ 
+	{ "6400", 4 },			/* LV_PLUGIN_STRING_ID_STRID_ISO6400 */ 
+	{ "12800", 5 },			/* LV_PLUGIN_STRING_ID_STRID_ISO12800 */ 
+	{ "UHD P50", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2880X2160P50 */ 
+	{ "UHD P30", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_3840X2160P30 */ 
+	{ "UHD P24", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2880X2160P24 */ 
+	{ "2.7K P60", 8 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2704X2032P60 */ 
+	{ "QHD P80", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2560X1440P80 */ 
+	{ "QHD P60", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2560X1440P60 */ 
+	{ "QHD P30", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2560X1440P30 */ 
+	{ "3MHD P30", 8 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2304X1296P30 */ 
+	{ "FHD P120", 8 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1920X1080P120 */ 
+	{ "FHD P96", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1920X1080P96 */ 
+	{ "FHD P60", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1920X1080P60 */ 
+	{ "FHD P30", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1920X1080P30 */ 
+	{ "HD P240", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1280X720P240 */ 
+	{ "HD P120", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1280X720P120 */ 
+	{ "HD P60", 6 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1280X720P60 */ 
+	{ "HD P30", 6 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_1280X720P30 */ 
+	{ "WVGA P30", 8 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_848X480P30 */ 
+	{ "VGA P240", 8 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_640X480P240 */ 
+	{ "VGA P30", 7 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_640X480P30 */ 
+	{ "QVGA P30", 8 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_320X240P30 */ 
+	{ "QHD P30+HD P30", 14 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_2560X1440P30_1280X720P30 */ 
+	{ "QHD P30+FHD P30", 15 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_2560X1440P30_1920X1080P30 */ 
+	{ "3MHD P30+HD P30", 15 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_2304X1296P30_1280X720P30 */ 
+	{ "FHD P30+FHD P30", 15 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_1080P30_1080P30 */ 
+	{ "FHD P30+HD P30", 14 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_1920X1080P30_1280X720P30 */ 
+	{ "FHD P30+WVGA P30", 16 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_1920X1080P30_848X480P30 */ 
+	{ "FHD P30+FHD P30", 15 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_1920X1080P30_1920X1080P30 */ 
+	{ "FHD P30+HD P30", 14 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_1920X1080P30_1280X720P30 */ 
+	{ "QHD P30+WVGA P30", 16 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_2560X1440P30_848X480P30 */ 
+	{ "3MHD P30+WVGA P30", 17 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_2304X1296P30_848X480P30 */ 
+	{ "FHD P60+WVGA P30", 16 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_1920X1080P60_848X480P30 */ 
+	{ "FHD P60+VGA P30", 15 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_1920X1080P60_640X360P30 */ 
+	{ "FHD P30+WVGA P30", 16 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_1920X1080P30_848X480P30 */ 
+	{ "2048x2048 P30 + 480x480 P30", 27 },			/* LV_PLUGIN_STRING_ID_STRID_CLONE_2048X2048P30_480X480P30 */ 
+	{ "Both2", 5 },			/* LV_PLUGIN_STRING_ID_STRID_BOTH2 */ 
+	{ "SideBySide", 10 },			/* LV_PLUGIN_STRING_ID_STRID_CAP_SIDE */ 
+	{ "Burst 30", 8 },			/* LV_PLUGIN_STRING_ID_STRID_CAP_BURST_30 */ 
+	{ "5M 2992x1696", 12 },			/* LV_PLUGIN_STRING_ID_STRID_5MWXH_USR */ 
+	{ "MJPG", 4 },			/* LV_PLUGIN_STRING_ID_STRID_MJPG */ 
+	{ "2880X2160P50", 12 },			/* LV_PLUGIN_STRING_ID_STRID_2880X2160P50 */ 
+	{ "3840X2160P30", 12 },			/* LV_PLUGIN_STRING_ID_STRID_3840X2160P30 */ 
+	{ "18HOUR", 6 },			/* LV_PLUGIN_STRING_ID_STRID_18HOUR */ 
+	{ "2560X1440P60", 12 },			/* LV_PLUGIN_STRING_ID_STRID_2560X1440P60 */ 
+	{ "2560X1440P80", 12 },			/* LV_PLUGIN_STRING_ID_STRID_2560X1440P80 */ 
+	{ "2704X2032P60", 12 },			/* LV_PLUGIN_STRING_ID_STRID_2704X2032P60 */ 
+	{ "4HOUR", 5 },			/* LV_PLUGIN_STRING_ID_STRID_4HOUR */ 
+	{ "6HOUR", 5 },			/* LV_PLUGIN_STRING_ID_STRID_6HOUR */ 
+	{ "8HOUR", 5 },			/* LV_PLUGIN_STRING_ID_STRID_8HOUR */ 
+	{ "COLOR_MONO", 10 },			/* LV_PLUGIN_STRING_ID_STRID_COLOR_MONO */ 
+	{ "CUSTOMIZE", 9 },			/* LV_PLUGIN_STRING_ID_STRID_CUSTOMIZE */ 
+	{ "DUAL_1080P60_1080P60", 20 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_1080P60_1080P60 */ 
+	{ "DUAL_3840x2160P30_1920x1080P30", 30 },			/* LV_PLUGIN_STRING_ID_STRID_DUAL_3840X2160P30_1920X1080P30 */ 
+	{ "FRONT_2304X1296P60", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2304X1296P60 */ 
+	{ "FRONT_2560X1080P30", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2560X1080P30 */ 
+	{ "FRONT_2560X1080P60", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2560X1080P60 */ 
+	{ "FRONT_2560X1600P30", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2560X1600P30 */ 
+	{ "FRONT_2592X1944P30", 18 },			/* LV_PLUGIN_STRING_ID_STRID_FRONT_2592X1944P30 */ 
+	{ "GMT_N230", 8 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_N230 */ 
+	{ "GMT_P630", 8 },			/* LV_PLUGIN_STRING_ID_STRID_GMT_P630 */ 
+	{ "IR_CAMERA_COLOR", 15 },			/* LV_PLUGIN_STRING_ID_STRID_IR_CAMERA_COLOR */ 
+	{ "IR_COLOR", 8 },			/* LV_PLUGIN_STRING_ID_STRID_IR_COLOR */ 
+	{ "LANG_AZ", 7 },			/* LV_PLUGIN_STRING_ID_STRID_LANG_AZ */ 
+	{ "LANG_CZ", 7 },			/* LV_PLUGIN_STRING_ID_STRID_LANG_CZ */ 
+	{ "LANG_NL", 7 },			/* LV_PLUGIN_STRING_ID_STRID_LANG_NL */ 
+	{ "LANG_NO", 7 },			/* LV_PLUGIN_STRING_ID_STRID_LANG_NO */ 
+	{ "LANG_RO", 7 },			/* LV_PLUGIN_STRING_ID_STRID_LANG_RO */ 
+	{ "LANG_SK", 7 },			/* LV_PLUGIN_STRING_ID_STRID_LANG_SK */ 
+	{ "LANG_TR", 7 },			/* LV_PLUGIN_STRING_ID_STRID_LANG_TR */ 
+	{ "LIVESTREAM", 10 },			/* LV_PLUGIN_STRING_ID_STRID_LIVESTREAM */ 
+	{ "MODEL_STAMP", 11 },			/* LV_PLUGIN_STRING_ID_STRID_MODEL_STAMP */ 
+	{ "MOVIE_BITRATE", 13 },			/* LV_PLUGIN_STRING_ID_STRID_MOVIE_BITRATE */ 
+	{ "PERIPHERAL", 10 },			/* LV_PLUGIN_STRING_ID_STRID_PERIPHERAL */ 
+	{ "PM_15FPS", 8 },			/* LV_PLUGIN_STRING_ID_STRID_PM_15FPS */ 
+	{ "QUAD_1920x1080P30", 17 },			/* LV_PLUGIN_STRING_ID_STRID_QUAD_1920X1080P30 */ 
+	{ "RSC_EFFECT", 10 },			/* LV_PLUGIN_STRING_ID_STRID_RSC_EFFECT */ 
+	{ "SUPER_HIGH", 10 },			/* LV_PLUGIN_STRING_ID_STRID_SUPER_HIGH */ 
+	{ "TPMS_PRSR_UNIT", 14 },			/* LV_PLUGIN_STRING_ID_STRID_TPMS_PRSR_UNIT */ 
+	{ "TPMS_TEMP_UNIT", 14 },			/* LV_PLUGIN_STRING_ID_STRID_TPMS_TEMP_UNIT */ 
+	{ "TRI_1920x1080P30", 16 },			/* LV_PLUGIN_STRING_ID_STRID_TRI_1920X1080P30 */ 
+	{ "TRI_2560x1440P30_1920x1080P30_1920x1080P30", 42 },			/* LV_PLUGIN_STRING_ID_STRID_TRI_2560X1440P30_1920X1080P30_1920X1080P30 */ 
 };
 
 

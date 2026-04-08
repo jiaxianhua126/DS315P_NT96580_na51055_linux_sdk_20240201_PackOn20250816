@@ -1,5 +1,6 @@
 #ifndef _UI_RESORUCE_H_
 #define _UI_RESORUCE_H_
+#include "GxGfx/GxGfx.h"
 #include "BG_Opening.h"
 
 
