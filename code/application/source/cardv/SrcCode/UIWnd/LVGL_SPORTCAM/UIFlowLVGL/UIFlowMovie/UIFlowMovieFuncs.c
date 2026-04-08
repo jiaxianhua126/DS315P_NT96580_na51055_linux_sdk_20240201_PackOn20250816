@@ -17,9 +17,15 @@ static UINT32  g_MovRecCurrTime = 0;
 static UINT32  g_MovRecSelfTimerSec = 0;
 static UINT32  g_MovRecSelfTimerID = NULL_TIMER;
 
+static UINT32 g_rec_Cnt = 0;
+
 extern uint16_t warn_msgbox_auto_close_ms;
 extern uint32_t warn_msgbox_auto_infinite_ms;
 extern void UIFlowWrnMsgAPI_Open_StringID(lv_plugin_res_id id, uint16_t auto_close_time_ms);
+extern void GPIOMap_TurnOnLCDBacklight(void);
+extern void GPIOMap_TurnOffLCDBacklight(void);
+extern BOOL GPIOMap_IsLCDBacklightOn(void);
+extern BOOL ASR_GetPCMData_EN;
 
 UINT8 FlowMovie_GetMovDataState(void)
 {
@@ -35,7 +41,9 @@ void FlowMovie_StartRec(void)
 			// wait playing sound stop
 			////GxSound_WaitStop();
 		}
+		ASR_GetPCMData_EN = FALSE;
 		Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_START, 0);
+		ASR_GetPCMData_EN = TRUE;
 
 		// disable auto power off/USB detect timer
 		////KeyScan_EnableMisc(FALSE);
@@ -52,6 +60,7 @@ void FlowMovie_StopRec(void)
 	UxCtrl_SetShow(&UIFlowWndMovie_Panel_Normal_DisplayCtrl, TRUE);
 	UxCtrl_SetShow(&UIFlowWndMovie_ADAS_Alert_DisplayCtrl, FALSE);
 #endif  // #if (_ADAS_FUNC_ == ENABLE)
+	FlowMovie_SetSOSStatusNow(FALSE);
 
 	////UxState_SetData(&UIFlowWndMovie_Status_RECCtrl, STATE_CURITEM, UIFlowWndMovie_Status_REC_ICON_REC_TRANSPAENT);
 	Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_REC_STOP, 0);
@@ -191,3 +200,116 @@ void FlowMovie_OnTimer1SecIndex(void)
 	}
 }
 
+static volatile UINT32 g_uiMovieAutoLcdPowerSaveCnt = 0;
+
+void FlowMovie_LCDDimDsiable(UINT8 uCount)
+{
+    g_uiMovieAutoLcdPowerSaveCnt = uCount;
+}
+void FlowMovie_DetLCDDim(void)
+{
+}
+static volatile BOOL g_PreviewStable_Record = FALSE;
+
+BOOL Get_PreviewStable_Record(void)
+{
+	DBG_IND("%d\r\n",g_PreviewStable_Record);
+	return 	g_PreviewStable_Record;
+}
+void Set_PreviewStable_Record(BOOL value)
+{
+	g_PreviewStable_Record = value;
+	DBG_IND("%d\r\n",g_PreviewStable_Record);
+}
+BOOL autoWifi = FALSE;
+UINT32 g_uiPreTimelapse = 0;
+void UIFlowWndMovie_OnAutoStartRec(void)
+{
+	// DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+	{
+		if (Get_PreviewStable_Record() == TRUE)
+		{
+			// DBG_DUMP("%s line = %d g_rec_Cnt = %d\r\n", __func__, __LINE__, g_rec_Cnt);
+			g_rec_Cnt++;
+			if (gMovData.State != MOV_ST_REC && g_rec_Cnt >= 4) {
+				// DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+				Set_PreviewStable_Record(FALSE);
+				g_rec_Cnt = 0;
+				Ux_PostEvent(NVTEVT_KEY_SHUTTER2, 1, NVTEVT_KEY_RELEASE);
+			}
+		}
+		else {
+			// DBG_DUMP("%s line = %d g_rec_Cnt = %d\r\n", __func__, __LINE__, g_rec_Cnt);
+			g_rec_Cnt = 0;
+		}
+	}
+}
+
+void FlowMovie_SetCrash(void)
+{
+	//if (SysGetFlag(FL_MOVIE_URGENT_PROTECT_AUTO) == MOVIE_URGENT_PROTECT_AUTO_ON)
+	DBG_DUMP("^GFlowMovie_SetCrash type=%d\r\n",GetMovieRecType_2p(UI_GetData(FL_MOVIE_SIZE)));
+#if(defined(_NVT_ETHREARCAM_RX_))
+	if (1) {
+		ImageApp_MovieMulti_SetCrash(_CFG_REC_ID_1, TRUE);
+		UINT32 i;
+		for (i = 0; i < ETH_REARCAM_CAPS_COUNT; i++) {
+			if(socketCliEthData1_IsRecv(ETHCAM_PATH_ID_1 +i)){
+				ImageApp_MovieMulti_SetCrash(_CFG_ETHCAM_ID_1+i, TRUE);
+			}
+			#if (ETH_REARCAM_CLONE_FOR_DISPLAY == ENABLE)
+			if(g_EthCamCfgDisplayPathWriteFile){
+				if(socketCliEthData2_IsRecv(ETHCAM_PATH_ID_1 +i)){
+					ImageApp_MovieMulti_SetCrash(_CFG_ETHCAM_CLONE_ID_1+i, TRUE);
+				}
+			}
+			#endif
+		}
+	}
+	else
+#endif
+	{
+		UINT32 i, mask, movie_rec_mask;
+
+			movie_rec_mask = Movie_GetMovieRecMask();
+		mask = 1;
+		for (i = 0; i < (SENSOR_CAPS_COUNT& SENSOR_ON_MASK); i++) {
+			if (movie_rec_mask & mask) {
+				ImageApp_MovieMulti_SetCrash(_CFG_REC_ID_1 + i, TRUE);
+			}
+			mask <<= 1;
+		}
+		#if(defined(_NVT_ETHREARCAM_RX_))
+		for (i = 0; i < ETH_REARCAM_CAPS_COUNT; i++) {
+			if(socketCliEthData1_IsRecv(ETHCAM_PATH_ID_1 +i)){
+				ImageApp_MovieMulti_SetCrash(_CFG_ETHCAM_ID_1+i, TRUE);
+			}
+			#if (ETH_REARCAM_CLONE_FOR_DISPLAY == ENABLE)
+			if(g_EthCamCfgDisplayPathWriteFile){
+				if(socketCliEthData2_IsRecv(ETHCAM_PATH_ID_1 +i)){
+					ImageApp_MovieMulti_SetCrash(_CFG_ETHCAM_CLONE_ID_1+i, TRUE);
+				}
+			}
+			#endif
+		}
+		#endif
+	}
+}
+static BOOL SOS_Status_now = FALSE;
+
+void FlowMovie_SetSOSStatusNow(BOOL En)
+{
+    SOS_Status_now = En;
+}
+BOOL FlowMovie_GetSOSStatusNow(void)
+{
+    return SOS_Status_now;
+}
+BOOL FlowMovie_WakeUpLCDBacklight(void)
+{
+	DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+    return FALSE;
+}
+void FlowMovie_UpdateLED(void)
+{
+}

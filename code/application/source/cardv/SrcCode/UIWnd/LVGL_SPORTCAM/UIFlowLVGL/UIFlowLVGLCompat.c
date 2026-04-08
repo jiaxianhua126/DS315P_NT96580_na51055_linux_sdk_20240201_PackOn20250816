@@ -138,24 +138,6 @@ void FlowMovie_USBRemovePowerOff(void)
 	}
 }
 
-INT32 UIFlowWndWiFiMovie_OnCustom2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray)
-{
-	(void)pCtrl;
-	(void)paramNum;
-	(void)paramArray;
-
-	bWndWiFiMovieOpenFirst = FALSE;
-
-	if (FlowMovie_GetMovDataState() == MOV_ST_REC ||
-		FlowMovie_GetMovDataState() == (MOV_ST_REC | MOV_ST_ZOOM)) {
-		FlowMovie_StopRec();
-		Delay_DelayMs(100);
-	}
-
-	Ux_PostEvent(NVTEVT_EXE_WIFI_STOP, 0);
-	return NVTEVT_CONSUME;
-}
-
 void UIVoice_Play(UINT32 index)
 {
 	(void)index;

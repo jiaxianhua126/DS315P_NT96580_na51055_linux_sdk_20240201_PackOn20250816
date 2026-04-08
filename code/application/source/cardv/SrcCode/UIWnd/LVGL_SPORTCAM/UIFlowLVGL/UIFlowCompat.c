@@ -1,24 +1,17 @@
 #include "PrjInc.h"
 #include "UIWnd/UIFlow.h"
+#include "UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowMovie/UIFlowMovieFuncs.h"
 #include "UIApp/Network/WifiAppCmd.h"
 #include "UIApp/Network/UIAppWiFiCmdMovie.h"
 #include "Dx/include/DxInput.h"
 
 static UINT32 g_uiCompatBaseDay = 0;
 static UINT32 g_wifi_movie_rec_curr_time = 0;
-static BOOL g_movie_sos_status_now = FALSE;
 
 BOOL ParkingM_PreRecord_EMR = FALSE;
 BOOL g_NotRecordWrn = FALSE;
-BOOL bWndWiFiMovieOpenFirst = FALSE;
 BOOL WifiStarting = FALSE;
-BOOL bWiFiModeChanged = FALSE;
-BOOL autoWifi = FALSE;
 BOOL WifiMotionLed_EN = FALSE;
-BOOL g_uiWiFiRecordIngMotionDet = FALSE;
-BOOL g_uiWiFiParkingModeMotionDet = FALSE;
-BOOL bWiFiRec_AutoStart = FALSE;
-BOOL bWiFiRec_AutoStop = FALSE;
 BOOL g_bWiFiMovieHDR_changed = FALSE;
 char CarNo_Buf[13] = "           ";
 char Customize_Buf[13] = "           ";
@@ -44,16 +37,6 @@ void FlowMovie_BaseDaySet(int year, int month, int day)
 {
 	g_uiCompatBaseDay = (year * 10000U) + (month * 100U) + day;
 	(void)g_uiCompatBaseDay;
-}
-
-BOOL FlowMovie_WakeUpLCDBacklight(void)
-{
-	if (GPIOMap_IsLCDBacklightOn() == FALSE) {
-		GPIOMap_TurnOnLCDBacklight();
-		return TRUE;
-	}
-
-	return FALSE;
 }
 
 UINT32 FlowWiFiMovie_GetRecCurrTime(void)
@@ -112,16 +95,6 @@ void FlowMovie_USBRemovePowerOff(void)
 	default:
 		break;
 	}
-}
-
-void FlowMovie_SetSOSStatusNow(BOOL En)
-{
-	g_movie_sos_status_now = En;
-}
-
-BOOL FlowMovie_GetSOSStatusNow(void)
-{
-	return g_movie_sos_status_now;
 }
 
 void FlowMovie_SetLedFlash_BeepWrn(BOOL std)

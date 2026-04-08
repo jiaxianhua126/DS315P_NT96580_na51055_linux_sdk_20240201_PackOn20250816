@@ -45,4 +45,16 @@ extern void   FlowMovie_OnTimer1SecIndex(void);
 
 //Callback function
 extern void FlowMovie_RawEncCB(UINT32 uiEventID);
+extern void   FlowMovie_LCDDimDsiable(UINT8 uCount);
+extern void   FlowMovie_DetLCDDim(void);
+void Set_PreviewStable_Record(BOOL value);
+BOOL Get_PreviewStable_Record(void);
+void UIFlowWndMovie_OnAutoStartRec(void);
+extern void FlowMovie_UpdateLED(void);
+extern void FlowMovie_SetCrash(void);
+extern void FlowMovie_SetSOSStatusNow(BOOL En);
+extern BOOL FlowMovie_GetSOSStatusNow(void);
+extern BOOL   FlowMovie_WakeUpLCDBacklight(void);
+extern void GPIOMap_TurnOnLCDBacklight(void);
+extern void GPIOMap_TurnOffLCDBacklight(void);
 #endif //_UIFLOWMOVIEFUNCS_H
