@@ -8,7 +8,14 @@
 #include <string.h>
 #include <kwrap/type.h>
 #include "ImageApp/ImageApp_MovieMulti.h"
+
+#if defined(_UI_STYLE_SPORTCAM_)
 #include "UIWnd/SPORTCAM/UIInfo/UIInfo.h"
+#elif defined(_UI_STYLE_LVGL_)
+#include "UIWnd/LVGL_SPORTCAM/UIInfo/UIInfo.h"
+#else
+	#error "Unknown UI Style, please check UI_Style in nvt-info.dtsi"
+#endif
 #include <pthread.h>
 #define Test_Param    0
 const char *engineCfg_en = "{\

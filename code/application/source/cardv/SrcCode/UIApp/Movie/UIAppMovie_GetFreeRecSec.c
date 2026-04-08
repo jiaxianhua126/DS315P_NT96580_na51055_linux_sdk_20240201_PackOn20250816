@@ -3,7 +3,15 @@
 #include "PrjInc.h"
 ////////////////////////////////////////////////////////////////////////////////
 #include "UIApp/Movie/UIAppMovie.h"
+
+#if defined(_UI_STYLE_SPORTCAM_)
 #include "UIWnd/SPORTCAM/UIInfo/UIMovieMapping.h"
+#elif defined(_UI_STYLE_LVGL_)
+#include "UIWnd/LVGL_SPORTCAM/UIInfo/UIMovieMapping.h"
+#else
+	#error "Unknown UI Style, please check UI_Style in nvt-info.dtsi"
+#endif
+
 #include "FileSysTsk.h"
 //#include "ImageApp_Movie.h"
 #include "ImageApp/ImageApp_MovieMulti.h"
