@@ -1029,13 +1029,13 @@
 #define LV_USER_CFG_STAMP_LETTER_SPACE			0
 #define	LV_USER_CFG_STAMP_TEXT_ALIGN			LV_ALIGN_CENTER
 #define	LV_USER_CFG_STAMP_RADIUS				5
-#define	LV_USER_CFG_STAMP_BORDER_WIDTH			3
+#define	LV_USER_CFG_STAMP_BORDER_WIDTH			0
 #define	LV_USER_CFG_STAMP_EXT_WIDTH				10
 #define	LV_USER_CFG_STAMP_EXT_HEIGHT			10
 
 /* please always fill ARGB8888, alpha channel will be discarded if output format is yuv (Photo UIDateImprint) */
 #define LV_USER_CFG_STAMP_COLOR_TEXT			0xFFFFFFFF	/* text color */
-#define LV_USER_CFG_STAMP_COLOR_BACKGROUND		0XFF000088	/* background color */
+#define LV_USER_CFG_STAMP_COLOR_BACKGROUND		0X00551F57	/* background color */
 #define LV_USER_CFG_STAMP_COLOR_FRAME			0xFF880088	/* frame color */
 
 /*******************************************************************************************
