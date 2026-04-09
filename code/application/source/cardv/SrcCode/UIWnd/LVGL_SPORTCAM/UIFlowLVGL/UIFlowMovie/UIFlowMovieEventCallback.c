@@ -21,12 +21,11 @@ static BOOL    	g_uiRecordIngMotionDet = TRUE;
 
 uint16_t warn_msgbox_auto_close_ms = 6000;
 uint32_t warn_msgbox_auto_infinite_ms = 0xffffffff;
+static lv_event_t key_event = LV_USER_EVENT_KEY_RELEASE;
+extern BOOL ASR_GetPCMData_EN;
+void UIFlowWndMovie_GetASR_Flag(void);
 
 //MOVIE_SIZE_TAG
-/*
- * SPORTCAM and LVGL UIInfo revisions do not agree on MOVIE_SIZE_ID_MAX.
- * Keep a generous sparse table here so designated initializers remain valid.
- */
 static CHAR    *resolution_Buf[MOVIE_SIZE_ID_MAX] = {
 	[MOVIE_SIZE_FRONT_3840x2160P30] = "4K",
 	[MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30] = "4K+1K",
@@ -39,6 +38,7 @@ static bool rec_status = false;
 static bool pim_status = false;
 
 static void update_icons(void);
+void UIFlowMovie_OnWiFi(void);
 
 static bool get_pim_status(void)
 {
@@ -60,7 +60,7 @@ static void set_rec_status(bool status)
 	rec_status = status;
 
 	if(status){
-		lv_obj_set_hidden(image_rec_ellipse_scr_uiflowmovie, false);
+		lv_obj_set_hidden(image_status_rec_scr_uiflowmovie, false);
 		FlowMovie_StartRec();
 		gMovData.State = MOV_ST_REC;
 	}
@@ -107,11 +107,11 @@ static void update_date_time(void)
 static void update_rec_ellipse(void)
 {
 	if (get_rec_status()){
-		bool is_hidden = lv_obj_get_hidden(image_rec_ellipse_scr_uiflowmovie);
-		lv_obj_set_hidden(image_rec_ellipse_scr_uiflowmovie, !is_hidden);
+		bool is_hidden = lv_obj_get_hidden(image_status_rec_scr_uiflowmovie);
+		lv_obj_set_hidden(image_status_rec_scr_uiflowmovie, !is_hidden);
 	}
 	else{
-		lv_obj_set_hidden(image_rec_ellipse_scr_uiflowmovie, true);
+		lv_obj_set_hidden(image_status_rec_scr_uiflowmovie, true);
 	}
 }
 
@@ -129,11 +129,11 @@ static void update_pim(void)
 static void update_max_rec_time(void)
 {
 
-	lv_obj_set_hidden(label_rec_time_scr_uiflowmovie,true);
-	lv_obj_set_hidden(label_maxtime_scr_uiflowmovie,false);
+	lv_obj_set_hidden(label_status_time_scr_uiflowmovie,true);
+	lv_obj_set_hidden(label_status_maxtime_scr_uiflowmovie,false);
 	if (System_GetState(SYS_STATE_CARD)  == CARD_REMOVED) {
 
-		lv_label_set_text_fmt(label_maxtime_scr_uiflowmovie, "%02d:%02d:%02d", 0, 0, 0);
+		lv_label_set_text_fmt(label_status_maxtime_scr_uiflowmovie, "%02d:%02d:%02d", 0, 0, 0);
 
 	} else {
 		UINT32 free_sec = Movie_GetFreeSec();
@@ -148,7 +148,7 @@ static void update_max_rec_time(void)
 		} else {
 			FlowMovie_SetRecMaxTime(free_sec);
 		}
-		lv_label_set_text_fmt(label_maxtime_scr_uiflowmovie, "%02d:%02d:%02d", free_sec / 3600, (free_sec % 3600) / 60, (free_sec % 3600) % 60);
+		lv_label_set_text_fmt(label_status_maxtime_scr_uiflowmovie, "%02d:%02d:%02d", free_sec / 3600, (free_sec % 3600) / 60, (free_sec % 3600) % 60);
 	}
 }
 
@@ -156,23 +156,23 @@ static void update_rec_time(void)
 {
    UINT32 rec_sec = FlowMovie_GetRecCurrTime();
 
-	if(lv_obj_get_hidden(label_rec_time_scr_uiflowmovie))
+	if(lv_obj_get_hidden(label_status_time_scr_uiflowmovie))
 	{
-		lv_obj_set_hidden(label_rec_time_scr_uiflowmovie,false);
-		lv_obj_set_hidden(label_maxtime_scr_uiflowmovie,true);
+		lv_obj_set_hidden(label_status_time_scr_uiflowmovie,false);
+		lv_obj_set_hidden(label_status_maxtime_scr_uiflowmovie,true);
 	}
 
-	lv_label_set_text_fmt(label_rec_time_scr_uiflowmovie, "%02d:%02d:%02d", rec_sec / 3600, (rec_sec % 3600) / 60, (rec_sec % 3600) % 60);
+	lv_label_set_text_fmt(label_status_time_scr_uiflowmovie, "%02d:%02d:%02d", rec_sec / 3600, (rec_sec % 3600) / 60, (rec_sec % 3600) % 60);
 }
 
 static void update_size(void)
 {
-	lv_label_set_text(label_size_scr_uiflowmovie, resolution_Buf[SysGetFlag(FL_MOVIE_SIZE)]);
+	lv_label_set_text(label_status_resolution_scr_uiflowmovie, resolution_Buf[SysGetFlag(FL_MOVIE_SIZE)]);
 }
 
 static void update_hdr(void)
 {
-	lv_obj_set_hidden(image_hdr_scr_uiflowmovie,!SysGetFlag(FL_MOVIE_HDR));
+	lv_obj_set_hidden(image_status_hdr_scr_uiflowmovie,!SysGetFlag(FL_MOVIE_HDR));
 }
 
 static void update_motionDet(void)
@@ -274,9 +274,33 @@ static void update_wifi(void)
 		      LV_PLUGIN_IMG_ID_ICON_CLOUD_ON,
 	};
 
-	lv_plugin_img_set_src(image_wifi_scr_uiflowmovie, res[SysGetFlag(FL_WIFI)]);
+	lv_plugin_img_set_src(image_status_wifi_scr_uiflowmovie, res[SysGetFlag(FL_WIFI)]);
+	lv_obj_set_hidden(image_status_wifi_scr_uiflowmovie, true);
 }
 
+static void update_sos(void)
+{
+	if(FlowMovie_GetSOSStatusNow())
+	{
+		lv_obj_set_hidden(image_status_waring_scr_uiflowmovie, false);
+	}
+	else
+	{
+		lv_obj_set_hidden(image_status_waring_scr_uiflowmovie, true);
+	}
+}
+
+static void update_audio(void)
+{
+	if (UI_GetData(FL_MOVIE_AUDIO) == MOVIE_AUDIO_ON)
+	{
+		lv_plugin_img_set_src(image_status_audio_scr_uiflowmovie, LV_PLUGIN_IMG_ID_ICON_VOICE_ON);
+	}
+	else
+	{
+		lv_plugin_img_set_src(image_status_audio_scr_uiflowmovie, LV_PLUGIN_IMG_ID_ICON_VOICE_OFF);
+	}
+}
 
 void UIFlowMovie_update_icons(void)
 {
@@ -297,7 +321,8 @@ static void update_icons(void)
 	update_cyclic_rec();
 	update_battery();
 	update_max_rec_time();
-
+	update_sos();
+	update_audio();
 }
 
 static void UIFlowMovie_MotionDetect(void)
@@ -346,6 +371,13 @@ static void task_1sec_period_cb(lv_task_t* task)
 {
 //	update_icons();
 	update_date_time();
+	// DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+	UIFlowWndMovie_OnAutoStartRec();
+
+	//ASR
+#if (ASR_FUNCTION == ENABLE)
+	UIFlowWndMovie_GetASR_Flag();
+#endif
 }
 
 static void task_motionDet_cb(lv_task_t* task)
@@ -416,6 +448,15 @@ static void UIFlowMovie_ScrOpen(lv_obj_t* obj)
 
 	set_indev_keypad_group(obj);
 
+#if (GSENSOR_FUNCTION == ENABLE)
+	if (UI_GetData(FL_MOVIE_SIZE) == MOVIE_SIZE_FRONT_640x480P240
+		&& UI_GetData(FL_GSENSOR) != GSENSOR_OFF) {
+		UI_SetData(FL_GSENSOR, GSENSOR_OFF);
+		DBG_ERR("G-Sensor is not support on fps=240, because i2c is too busy.\r\n");
+	}
+    //MUST open before UIFlowWndMovie_Initparam, because Initparam call GSensor_SetSensitivity.
+	GSensorRec_Open();
+#endif
 //	if(gp == NULL){
 //		gp = lv_group_create();
 //		lv_group_add_obj(gp, obj);
@@ -466,7 +507,12 @@ static void UIFlowMovie_ScrOpen(lv_obj_t* obj)
 		}
 	}
 	//#NT#2018/08/10#KCHong -end
+	Set_PreviewStable_Record(TRUE);
 
+#if (ASR_FUNCTION == ENABLE)
+	Dx_SetASR_Flag(0);
+	ASR_GetPCMData_EN = FALSE;
+#endif
 }
 
 static void UIFlowMovie_ChildScrClose(lv_obj_t* obj, LV_USER_EVENT_NVTMSG_DATA* data)
@@ -525,6 +571,7 @@ static void UIFlowMovie_ChildScrClose(lv_obj_t* obj, LV_USER_EVENT_NVTMSG_DATA* 
 		//#NT#2021/9/13#Philex Lin - end
 
 		gMovData.State = MOV_ST_VIEW;
+		Set_PreviewStable_Record(TRUE);
 		break;
 
 	case MOV_ST_VIEW:
@@ -592,11 +639,15 @@ static void UIFlowMovie_ScrClose(lv_obj_t* obj)
 		gUIMotionDetTimerID = NULL;
 	}
 
+#if (ASR_FUNCTION == ENABLE)
+	ASR_GetPCMData_EN = FALSE;
+#endif
 }
 
 
 static void UIFlowMovie_OnExeRecord(lv_obj_t* obj)
 {
+	DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
 	if (System_GetState(SYS_STATE_POWERON) == SYSTEM_POWERON_SAFE) {
 
 		if (System_GetState(SYS_STATE_CARD)  == CARD_REMOVED) {
@@ -673,7 +724,16 @@ static void UIFlowMovie_OnKeyEnter(lv_obj_t* obj)
 
 static void UIFlowMovie_OnKeyMenu(lv_obj_t* obj)
 {
-UINT32  uiSoundMask;
+	DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+
+	UINT32  uiSoundMask;
+//coming menu close ASR
+#if (ASR_FUNCTION == ENABLE)
+	if (SysGetFlag(FL_ASR) == ASR_STANDARD) {
+		//printf("call ASR_STANDARD \r\n",SysGetFlag(FL_ASR) );
+		ASR_Uninstall();
+	}
+#endif
 
 	switch (gMovData.State) {
 		case MOV_ST_VIEW:
@@ -735,7 +795,137 @@ UINT32  uiSoundMask;
 
 static void UIFlowMovie_OnKeyUp(lv_obj_t* obj)
 {
+	static BOOL bUpKeyPressed = FALSE;
 
+	switch (key_event) {
+	case LV_EVENT_KEY:
+		bUpKeyPressed = TRUE;
+		break;
+
+	case LV_USER_EVENT_KEY_RELEASE:
+		if (!bUpKeyPressed) {
+			break;
+		}
+		bUpKeyPressed = FALSE;
+
+		if (FlowMovie_WakeUpLCDBacklight()) {
+		}
+		Delay_DelayMs(200);
+		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_OFF) {
+            SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_ON);
+			#if PLAY_SOUND_IN_OTHER_TASK
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_MICEN_TONE));
+			UIDogSound_Enable(TRUE);
+			#else
+			UIVoice_Play(DEMOSOUND_SOUND_MICEN_TONE);
+			#endif
+			Delay_DelayMs(50);
+        } else {
+            SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_OFF);
+			#if PLAY_SOUND_IN_OTHER_TASK
+			UIDogSound_Enable(FALSE);
+			DogSoundPlayID(UIVoice_GetIndex(DEMOSOUND_SOUND_MICDIS_TONE));
+			UIDogSound_Enable(TRUE);
+			#else
+			UIVoice_Play(DEMOSOUND_SOUND_MICDIS_TONE);
+			#endif
+			Delay_DelayMs(50);
+        }
+        Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_AUDIO, 1, SysGetFlag(FL_MOVIE_AUDIO));
+        update_audio();
+		break;
+
+	case LV_USER_EVENT_KEY_LONG_PRESS:
+		if (bUpKeyPressed)
+		{
+			bUpKeyPressed = FALSE;
+			if (FlowMovie_WakeUpLCDBacklight()){
+		        return ;
+		    }
+
+		    if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_OFF){
+		        SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_ON);
+		    }else{
+		        SysSetFlag(FL_MOVIE_AUDIO, MOVIE_AUDIO_OFF);
+		    }
+		    Ux_SendEvent(&CustomMovieObjCtrl, NVTEVT_EXE_MOVIE_AUDIO, 1, SysGetFlag(FL_MOVIE_AUDIO));
+			update_icons();
+		}
+		break;
+	}
+}
+
+void UIFlowWndMovie_OnCustom1(void)
+{
+	DBG_WRN("======== UIFlowWndMovie_OnCustom1 ========\n");
+
+	FlowMovie_SetCrash();
+	if (FlowMovie_GetSOSStatusNow() == FALSE)
+	{
+		FlowMovie_SetSOSStatusNow(TRUE);
+		update_sos();
+	}
+}
+
+static void UIFlowMovie_OnKeyLeft(lv_obj_t* obj)
+{
+	static BOOL bLeftKeyPressed = FALSE;
+
+	switch (key_event) {
+	case LV_EVENT_KEY:
+		bLeftKeyPressed = TRUE;
+		break;
+
+	case LV_USER_EVENT_KEY_RELEASE:
+		DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+		if (!bLeftKeyPressed) {
+			break;
+		}
+		bLeftKeyPressed = FALSE;
+
+		if (FlowMovie_WakeUpLCDBacklight()) {
+		}
+		Delay_DelayMs(200);
+		break;
+	case LV_USER_EVENT_KEY_LONG_PRESS:
+		DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+		if (bLeftKeyPressed)
+		{
+			bLeftKeyPressed = FALSE;
+			if (FlowMovie_WakeUpLCDBacklight()) {
+		    }
+
+			if (task_1sec_period)
+			{
+				lv_task_del(task_1sec_period);
+				task_1sec_period = NULL;
+			}
+
+			if (gUIMotionDetTimerID)
+			{
+				lv_task_del(gUIMotionDetTimerID);
+				gUIMotionDetTimerID = NULL;
+			}
+
+			DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+			#if (WIFI_AP_FUNC==ENABLE)
+				Delay_DelayMs(150);
+				UIVoice_Play(DEMOSOUND_SOUND_WIFIENADLE_TONE);
+				//test wifi
+				#if ASR_FUNCTION
+				//coming wifi close ASR
+				if (SysGetFlag(FL_ASR) == ASR_STANDARD) {
+					//printf("call ASR_STANDARD \r\n",SysGetFlag(FL_ASR));
+					ASR_Uninstall();
+				}
+				#endif
+				DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+				UIFlowMovie_OnWiFi();
+			#endif
+		}
+		break;
+	}
 }
 
 static void UIFlowMovie_FULL(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* msg)
@@ -745,7 +935,7 @@ static void UIFlowMovie_FULL(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* msg
 	gMovData.State = MOV_ST_WARNING_MENU;
 	UIFlowWrnMsgAPI_Open_StringID(LV_PLUGIN_STRING_ID_STRID_CARD_FULL, warn_msgbox_auto_close_ms);
 	update_icons();
-	lv_obj_set_hidden(image_rec_ellipse_scr_uiflowmovie, true);
+	lv_obj_set_hidden(image_status_rec_scr_uiflowmovie, true);
 }
 
 static void UIFlowMovie_OneSec(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* msg)
@@ -755,7 +945,7 @@ static void UIFlowMovie_OneSec(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA* m
 	case MOV_ST_REC|MOV_ST_ZOOM:
 		if (msg->paramNum) {
 			update_rec_ellipse();
-			//lv_obj_set_hidden(label_maxtime_scr_uiflowmovie,true);
+			//lv_obj_set_hidden(label_status_maxtime_scr_uiflowmovie,true);
 			FlowMovie_SetRecCurrTime(msg->paramArray[0]);
 			if(get_rec_status())
 				update_rec_time();
@@ -796,9 +986,9 @@ static void UIFlowMovie_REC_FINISH(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DAT
 		// enable auto power off/USB detect timer
 		KeyScan_EnableMisc(TRUE);
 		//#NT#2012/10/23#Philex Lin - end
-		//lv_obj_set_hidden(label_rec_time_scr_uiflowmovie, true);
+		//lv_obj_set_hidden(label_status_time_scr_uiflowmovie, true);
 		update_icons();
-		lv_obj_set_hidden(image_rec_ellipse_scr_uiflowmovie, true);
+		lv_obj_set_hidden(image_status_rec_scr_uiflowmovie, true);
 
 		//if (FlowMovie_ChkDrawStoreFullFolderFull() == FALSE)
 		if (SysGetFlag(FL_MOVIE_CYCLIC_REC) == MOVIE_CYCLICREC_OFF) {
@@ -844,7 +1034,7 @@ static void UIFlowMovie_WR_ERROR(lv_obj_t* obj, const LV_USER_EVENT_NVTMSG_DATA*
 //		FlowMovie_StopRec();
 		set_rec_status(false);
 		update_max_rec_time();
-		lv_obj_set_hidden(image_rec_ellipse_scr_uiflowmovie, true);
+		lv_obj_set_hidden(image_status_rec_scr_uiflowmovie, true);
 		if (System_GetState(SYS_STATE_CARD)  == CARD_LOCKED) {
 			gMovData.State = MOV_ST_WARNING_MENU;
 			UIFlowWrnMsgAPI_Open_StringID(LV_PLUGIN_IMG_ID_ICON_SD_LOCK, warn_msgbox_auto_close_ms);
@@ -958,15 +1148,16 @@ static void UIFlowMovie_Key(lv_obj_t* obj, uint32_t key)
 		break;
 	}
 
-
 	case LV_USER_KEY_MODE:
 	{
+		DBG_DUMP("%s LV_USER_KEY_MODE\r\n", __func__);
 		UIFlowMovie_OnKeyMode(obj);
 		break;
 	}
 
 	case LV_KEY_ENTER:
 	{
+		DBG_DUMP("%s LV_KEY_ENTER\r\n", __func__);
 		UIFlowMovie_OnKeyEnter(obj);
 		break;
 	}
@@ -974,17 +1165,42 @@ static void UIFlowMovie_Key(lv_obj_t* obj, uint32_t key)
 
 	case LV_KEY_UP:
 	{
+		DBG_DUMP("%s LV_KEY_UP\r\n", __func__);
 		UIFlowMovie_OnKeyUp(obj);
 		break;
 	}
 
 	case LV_KEY_DOWN:
 	{
+		DBG_DUMP("%s LV_KEY_DOWN\r\n", __func__);
 		UIFlowMovie_OnExePIM(obj);
 		break;
 	}
 
+	case LV_KEY_LEFT:
+	{
+		DBG_DUMP("%s LV_KEY_LEFT\r\n", __func__);
+		UIFlowMovie_OnKeyLeft(obj);
+		break;
+	}
 
+	case LV_KEY_RIGHT:
+	{
+		DBG_DUMP("%s LV_KEY_RIGHT\r\n", __func__);
+		UIFlowWndMovie_OnCustom1();
+		break;
+	}
+
+	case LV_USER_KEY_CUSTOM1:
+	{
+		DBG_DUMP("%s LV_USER_KEY_CUSTOM1\r\n", __func__);
+		UIFlowWndMovie_OnCustom1();
+		break;
+	}
+	default:
+		// DBG_DUMP("%s default\r\n", __func__);
+		UIFlowWndMovie_OnCustom1();
+		break;
 	}
 
 }
@@ -1096,8 +1312,15 @@ void UIFlowMovieEventCallback(lv_obj_t* obj, lv_event_t event)
 		break;
 
 	case LV_EVENT_KEY:
+	case LV_USER_EVENT_KEY_RELEASE:
+	case LV_USER_EVENT_KEY_LONG_PRESS:
+	case LV_USER_EVENT_KEY_SUPER_LONG_PRESS:
 	{
 		uint32_t* key = (uint32_t*)lv_event_get_data();
+
+		if (*key != LV_USER_KEY_CUSTOM1) {
+			key_event = event;
+		}
 
 		/* handle key event */
 		UIFlowMovie_Key(obj, *key);
@@ -1109,7 +1332,7 @@ void UIFlowMovieEventCallback(lv_obj_t* obj, lv_event_t event)
 		 * the event will not be sent again until released
 		 *
 		 ***********************************************************************************/
-		if(*key != LV_KEY_ENTER)
+		if(*key != LV_KEY_ENTER && *key != LV_USER_EVENT_KEY_RELEASE)
 			lv_indev_wait_release(lv_indev_get_act());
 		break;
 	}
@@ -1122,5 +1345,129 @@ void UIFlowMovieEventCallback(lv_obj_t* obj, lv_event_t event)
 		UIFlowMovie_NVTMSG(obj, msg);
 		break;
 	}
+	default:
+		// DBG_DUMP("%s default line = %d, event = %d\r\n", __func__, __LINE__, event);
+		break;
 	}
 }
+
+void UIFlowWndMovie_GetASR_Flag(void)
+{
+	// DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+#if (ASR_FUNCTION == ENABLE)
+	int MovieGetAsr_Flag = 0;
+	MovieGetAsr_Flag = Dx_GetASR_Flag();
+	// DBG_DUMP("%s default line = %d, MovieGetAsr_Flag = %d\r\n", __func__, __LINE__, MovieGetAsr_Flag);
+	switch(MovieGetAsr_Flag) {
+	case ASR_PHOTO :
+		printf("call MovieGetAsr_Flag = %d\r\n", MovieGetAsr_Flag);
+		if (gMovData.State == MOV_ST_REC) {
+			FlowMovie_WakeUpLCDBacklight();
+			Ux_PostEvent(NVTEVT_KEY_DOWN, 1, NVTEVT_KEY_PRESS);
+			Ux_PostEvent(NVTEVT_KEY_DOWN, 1, NVTEVT_KEY_LONG_PRESS);
+		}
+		Dx_SetASR_Flag(0);
+	break;
+	#if 0
+	case ASR_STARTVIDEO :
+		printf("call MovieGetAsr_Flag = %d\r\n", MovieGetAsr_Flag);
+		FlowMovie_WakeUpLCDBacklight();
+		if (gMovData.State == MOV_ST_VIEW) {
+			Ux_PostEvent(NVTEVT_KEY_SHUTTER2, 1, NVTEVT_KEY_PRESS);
+		}
+		Dx_SetASR_Flag(0);
+
+	break;
+	#endif
+	case ASR_CLOSEVIDEO :
+		printf("call MovieGetAsr_Flag = %d\r\n", MovieGetAsr_Flag);
+		FlowMovie_WakeUpLCDBacklight();
+		if (gMovData.State == MOV_ST_REC) {
+			Ux_PostEvent(NVTEVT_KEY_SHUTTER2, 1, NVTEVT_KEY_PRESS);
+		}
+		Dx_SetASR_Flag(0);
+	break;
+
+	case ASR_CLOSELCD :
+		printf("call MovieGetAsr_Flag = %d\r\n", MovieGetAsr_Flag);
+		GPIOMap_TurnOffLCDBacklight();
+		Dx_SetASR_Flag(0);
+	break;
+
+	case ASR_OPENLCD :
+		printf("call MovieGetAsr_Flag = %d\r\n", MovieGetAsr_Flag);
+		//GPIOMap_TurnOnLCDBacklight();
+		FlowMovie_WakeUpLCDBacklight();
+		Dx_SetASR_Flag(0);
+	break;
+
+	case ASR_ENRECODING:
+		printf("call MovieGetAsr_Flag = %d\r\n", MovieGetAsr_Flag);
+		FlowMovie_WakeUpLCDBacklight();
+		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_OFF) {
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_PRESS);
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_RELEASE);
+		}
+		Dx_SetASR_Flag(0);
+	break;
+
+	case ASR_DISRECODING :
+		printf("call MovieGetAsr_Flag = %d\r\n", MovieGetAsr_Flag);
+		FlowMovie_WakeUpLCDBacklight();
+		if (SysGetFlag(FL_MOVIE_AUDIO) == MOVIE_AUDIO_ON) {
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_PRESS);
+			Ux_PostEvent(NVTEVT_KEY_UP, 1, NVTEVT_KEY_RELEASE);
+		}
+		Dx_SetASR_Flag(0);
+	break;
+
+	#if 0
+	case ASR_VLOCKING :
+		printf("call MovieGetAsr_Flag = %d\r\n", MovieGetAsr_Flag);
+		if (gMovData.State == MOV_ST_REC) {
+			FlowMovie_WakeUpLCDBacklight();
+			Ux_PostEvent(NVTEVT_KEY_RIGHT, 1, NVTEVT_KEY_PRESS);
+			Ux_PostEvent(NVTEVT_KEY_RIGHT, 1, NVTEVT_KEY_RELEASE);
+		}
+		Dx_SetASR_Flag(0);
+	break;
+	#endif
+	case ASR_OPENWIFI :
+		printf("call MovieGetAsr_Flag = %d\r\n", MovieGetAsr_Flag);
+		FlowMovie_WakeUpLCDBacklight();
+		Ux_PostEvent(NVTEVT_KEY_LEFT, 1, NVTEVT_KEY_LONG_PRESS);
+		Dx_SetASR_Flag(0);
+	break;
+	default:
+		// printf("default MovieGetAsr_Flag = %d\r\n", MovieGetAsr_Flag);
+		Dx_SetASR_Flag(0);
+	break;
+
+	}
+#endif
+}
+
+#if(WIFI_AP_FUNC==ENABLE)
+void UIFlowMovie_OnWiFi(void)
+{
+	DBG_DUMP("OpenWi_Fi\r\n");
+    if ((gMovData.State == MOV_ST_REC)||(gMovData.State == (MOV_ST_REC|MOV_ST_ZOOM))) {
+        if (FlowMovie_GetRecCurrTime() <= 1) {
+            Delay_DelayMs(1000);
+        }
+        set_rec_status(false);
+        Delay_DelayMs(300);
+    }
+
+
+    //disable timelapse recording
+    UI_SetData(FL_MOVIE_TIMELAPSE_REC, MOVIE_TIMELAPSEREC_OFF);
+    UI_SetData(FL_MOVIE_TIMELAPSE_REC_MENU, MOVIE_TIMELAPSEREC_OFF);
+
+#if(IPCAM_FUNC!=ENABLE)
+	lv_plugin_scr_open(UIFlowWifiWait, NULL);
+#endif
+
+	BKG_PostEvent(NVTEVT_BKW_WIFI_ON);
+}
+#endif

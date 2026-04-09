@@ -1293,8 +1293,8 @@
             "drag": false,
             "event callback": "",
             "geometry": {
-                "height": 24,
-                "width": 24,
+                "height": 28,
+                "width": 28,
                 "x": 296,
                 "y": 5
             },
@@ -1305,7 +1305,7 @@
                 "X": 0,
                 "Y": 0
             },
-            "source": "ICON_gps_err",
+            "source": "ICON_GPS_ON",
             "styles": [
                 {
                     "part": 0,

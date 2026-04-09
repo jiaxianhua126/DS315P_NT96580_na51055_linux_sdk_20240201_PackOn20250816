@@ -33,16 +33,19 @@ extern lv_obj_t* image_battery_scr_uiflowmovie;
 extern lv_obj_t* label_date_scr_uiflowmovie;
 extern lv_obj_t* label_time_scr_uiflowmovie;
 extern lv_obj_t* image_ev_scr_uiflowmovie;
-extern lv_obj_t* label_rec_time_scr_uiflowmovie;
-extern lv_obj_t* image_rec_ellipse_scr_uiflowmovie;
+extern lv_obj_t* label_status_time_scr_uiflowmovie;
+extern lv_obj_t* image_status_rec_scr_uiflowmovie;
 extern lv_obj_t* image_pim_scr_uiflowmovie;
-extern lv_obj_t* label_size_scr_uiflowmovie;
+extern lv_obj_t* label_status_resolution_scr_uiflowmovie;
 extern lv_obj_t* image_cyclic_rec_scr_uiflowmovie;
-extern lv_obj_t* image_hdr_scr_uiflowmovie;
-extern lv_obj_t* image_wifi_scr_uiflowmovie;
+extern lv_obj_t* image_status_hdr_scr_uiflowmovie;
+extern lv_obj_t* image_status_wifi_scr_uiflowmovie;
 extern lv_obj_t* image_motiondetect_scr_uiflowmovie;
 extern lv_obj_t* label_zoom_scr_uiflowmovie;
-extern lv_obj_t* label_maxtime_scr_uiflowmovie;
+extern lv_obj_t* label_status_maxtime_scr_uiflowmovie;
+extern lv_obj_t* image_status_audio_scr_uiflowmovie;
+extern lv_obj_t* image_status_gps_scr_uiflowmovie;
+extern lv_obj_t* image_status_waring_scr_uiflowmovie;
 
 /**********************
  * GLOBAL PROTOTYPES

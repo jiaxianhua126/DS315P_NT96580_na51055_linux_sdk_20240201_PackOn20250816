@@ -1263,8 +1263,8 @@ lv_obj_t* UIFlowMovieWiFi_create(){
 	lv_obj_set_click(image_status_gps, false);
 	lv_obj_set_drag(image_status_gps, false);
 	lv_obj_set_pos(image_status_gps, 296, 5);
-	lv_obj_set_size(image_status_gps, 24, 24);
-	lv_img_set_src(image_status_gps, &icon_gps_err);
+	lv_obj_set_size(image_status_gps, 28, 28);
+	lv_img_set_src(image_status_gps, &icon_gps_on);
 	lv_obj_add_style(image_status_gps, 0, &image_status_gps_s0);
 
 	image_status_gps_scr_uiflowmoviewifi = image_status_gps;

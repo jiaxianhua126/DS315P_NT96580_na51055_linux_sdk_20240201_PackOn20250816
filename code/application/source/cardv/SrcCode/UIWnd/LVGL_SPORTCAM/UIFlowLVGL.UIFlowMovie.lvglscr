@@ -945,7 +945,7 @@
             "hidden": false,
             "locked": false,
             "long mode": "Crop",
-            "name": "label_rec_time",
+            "name": "label_status_time",
             "recolor": false,
             "string id": "None",
             "styles": [
@@ -1001,7 +1001,7 @@
             },
             "hidden": true,
             "locked": false,
-            "name": "image_rec_ellipse",
+            "name": "image_status_rec",
             "offset": {
                 "X": 0,
                 "Y": 0
@@ -1107,7 +1107,7 @@
             "hidden": false,
             "locked": false,
             "long mode": "Crop",
-            "name": "label_size",
+            "name": "label_status_resolution",
             "recolor": false,
             "string id": "None",
             "styles": [
@@ -1215,7 +1215,7 @@
             },
             "hidden": false,
             "locked": false,
-            "name": "image_hdr",
+            "name": "image_status_hdr",
             "offset": {
                 "X": 0,
                 "Y": 0
@@ -1267,7 +1267,7 @@
             },
             "hidden": true,
             "locked": false,
-            "name": "image_wifi",
+            "name": "image_status_wifi",
             "offset": {
                 "X": 0,
                 "Y": 0
@@ -1431,7 +1431,7 @@
             "hidden": false,
             "locked": false,
             "long mode": "Crop",
-            "name": "label_maxtime",
+            "name": "label_status_maxtime",
             "recolor": false,
             "string id": "None",
             "styles": [
@@ -1472,6 +1472,162 @@
             ],
             "text": "",
             "widget": "Label"
+        },
+        {
+            "auto size": true,
+            "class": "lv_img",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 28,
+                "width": 28,
+                "x": 184,
+                "y": 1
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "image_status_audio",
+            "offset": {
+                "X": 0,
+                "Y": 0
+            },
+            "source": "ICON_SOUND_REC_OFF",
+            "styles": [
+                {
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "widget": "Image"
+        },
+        {
+            "auto size": true,
+            "class": "lv_img",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 28,
+                "width": 28,
+                "x": 277,
+                "y": 5
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "image_status_gps",
+            "offset": {
+                "X": 0,
+                "Y": 0
+            },
+            "source": "ICON_GPS_ON",
+            "styles": [
+                {
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "widget": "Image"
+        },
+        {
+            "auto size": true,
+            "class": "lv_img",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 28,
+                "width": 28,
+                "x": 314,
+                "y": 5
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "image_status_waring",
+            "offset": {
+                "X": 0,
+                "Y": 0
+            },
+            "source": "ICON_WARING",
+            "styles": [
+                {
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "widget": "Image"
         }
     ]
 }
