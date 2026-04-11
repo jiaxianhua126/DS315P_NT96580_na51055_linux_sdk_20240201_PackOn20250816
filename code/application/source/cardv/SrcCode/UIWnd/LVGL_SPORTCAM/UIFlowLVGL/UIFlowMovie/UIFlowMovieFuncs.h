@@ -50,6 +50,7 @@ extern void   FlowMovie_DetLCDDim(void);
 void Set_PreviewStable_Record(BOOL value);
 BOOL Get_PreviewStable_Record(void);
 void UIFlowWndMovie_OnAutoStartRec(void);
+void UIFlowMoive_AutoStartWiFi(void);
 extern void FlowMovie_UpdateLED(void);
 extern void FlowMovie_SetCrash(void);
 extern void FlowMovie_SetSOSStatusNow(BOOL En);

@@ -1,5 +1,7 @@
 #include "PrjInc.h"
-//#include "UIWnd/UIFlow.h"
+#include "UIWnd/SPORTCAM/UIInfo/UICfgDefault.h"
+#include "UIApp/Network/UIAppWiFiCmdMovie.h"
+#include "DxInput.h"
 
 #define __MODULE__          UIMovieFuncs
 #define __DBGLVL__          2 // 0=FATAL, 1=ERR, 2=WRN, 3=UNIT, 4=FUNC, 5=IND, 6=MSG, 7=VALUE, 8=USER
@@ -16,8 +18,6 @@ static UINT32  g_MovRecMaxTime = 0;
 static UINT32  g_MovRecCurrTime = 0;
 static UINT32  g_MovRecSelfTimerSec = 0;
 static UINT32  g_MovRecSelfTimerID = NULL_TIMER;
-
-static UINT32 g_rec_Cnt = 0;
 
 extern uint16_t warn_msgbox_auto_close_ms;
 extern uint32_t warn_msgbox_auto_infinite_ms;
@@ -221,28 +221,134 @@ void Set_PreviewStable_Record(BOOL value)
 	g_PreviewStable_Record = value;
 	DBG_IND("%d\r\n",g_PreviewStable_Record);
 }
+static BOOL   isFirstPowerOn = TRUE;
+static UINT32 AutoWiFiCnt = 0;
 BOOL autoWifi = FALSE;
 UINT32 g_uiPreTimelapse = 0;
+
 void UIFlowWndMovie_OnAutoStartRec(void)
 {
-	// DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+	if (Get_PreviewStable_Record() == TRUE)
 	{
-		if (Get_PreviewStable_Record() == TRUE)
+		if(GPIOMap_DetTVIPlugIn())
 		{
-			// DBG_DUMP("%s line = %d g_rec_Cnt = %d\r\n", __func__, __LINE__, g_rec_Cnt);
-			g_rec_Cnt++;
-			if (gMovData.State != MOV_ST_REC && g_rec_Cnt >= 4) {
-				// DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+			if (System_GetEnableSensor() == (SENSOR_1 | SENSOR_2))
+			{
 				Set_PreviewStable_Record(FALSE);
-				g_rec_Cnt = 0;
-				Ux_PostEvent(NVTEVT_KEY_SHUTTER2, 1, NVTEVT_KEY_RELEASE);
+				if (gMovData.State != MOV_ST_REC)
+				{
+					if((!autoWifi) && (/*(SysGetFlag(FL_WIFI) != WIFI_OFF)||*/(SysGetFlag(FL_WIFI_AUTO) == WIFI_AUTO_ON))
+						&&isFirstPowerOn)
+					{
+						DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+						//do not start rec,it starts to wifi
+					}
+					else
+					{
+						DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+						Ux_PostEvent(NVTEVT_KEY_SHUTTER2, 1, NVTEVT_KEY_PRESS);
+					}
+				}
 			}
 		}
-		else {
-			// DBG_DUMP("%s line = %d g_rec_Cnt = %d\r\n", __func__, __LINE__, g_rec_Cnt);
-			g_rec_Cnt = 0;
+		else //no rear connected
+		{
+			Set_PreviewStable_Record(FALSE);
+			if (gMovData.State != MOV_ST_REC)
+			{
+				if((!autoWifi) && (/*(SysGetFlag(FL_WIFI) != WIFI_OFF)||*/(SysGetFlag(FL_WIFI_AUTO) == WIFI_AUTO_ON))
+					&&isFirstPowerOn)
+				{
+					//do not start rec,it starts to wifi
+				}
+				else
+				{
+					Ux_PostEvent(NVTEVT_KEY_SHUTTER2, 1, NVTEVT_KEY_RELEASE);
+				}
+			}
 		}
 	}
+	DBG_IND("%d g_PreviewStable_Record = %d g_isRearOK=%d autoWifi=%d isFirstPowerOn=%d\r\n",(System_GetState(SYS_STATE_POWERON) == SYSTEM_POWERON_SAFE),g_PreviewStable_Record,g_isRearOK,autoWifi,isFirstPowerOn);
+}
+void UIFlowMoive_AutoStartWiFi(void)
+{
+	// DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+
+	// DBG_DUMP("%s SysGetFlag(FL_WIFI_AUTO) = %d line = %d\r\n", __func__, SysGetFlag(FL_WIFI_AUTO), __LINE__);
+#if (!defined(_NVT_ETHREARCAM_TX_))//(AUTO_WIFI==ENABLE)
+	if ((!autoWifi) && (/*(SysGetFlag(FL_WIFI) != WIFI_OFF)||*/(SysGetFlag(FL_WIFI_AUTO) == WIFI_AUTO_ON))) {
+        if (isFirstPowerOn/* && GPIOMap_DetTV()*/) {
+			DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+			AutoWiFiCnt++;
+			DBG_DUMP("AutoWiFiCnt=%d\r\n", AutoWiFiCnt);
+            if ((AutoWiFiCnt >= 4)) {
+				DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+				WifiStarting = TRUE;
+                if ((gMovData.State == MOV_ST_REC)||(gMovData.State == (MOV_ST_REC|MOV_ST_ZOOM))) {
+                    if ((FlowMovie_GetRecCurrTime() <= 1)&&(SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) {
+                        Delay_DelayMs(1000);
+                    }
+                    FlowMovie_StopRec();
+                    Delay_DelayMs(100);
+                }
+
+                //disable timelapse recording
+                UI_SetData(FL_MOVIE_TIMELAPSE_REC, MOVIE_TIMELAPSEREC_OFF);
+                UI_SetData(FL_MOVIE_TIMELAPSE_REC_MENU, MOVIE_TIMELAPSEREC_OFF);
+                g_uiPreTimelapse = UI_GetData(FL_MOVIE_TIMERLAPS);
+                UI_SetData(FL_MOVIE_TIMERLAPS, MOVIE_TIMER_LAPS_OFF);
+
+                SysSetFlag(FL_WIFI_AUTO, WIFI_AUTO_OFF);
+				if (SysGetFlag(FL_LED) == LED_ON) {
+					//LED_TurnOnLED(GPIOMAP_LED_WIFI);
+				}
+				Control_LedTurn(WIFI_LED,1);
+                //GxLED_SetCtrl(KEYSCAN_LED_FCS, TURNON_LED, TRUE);
+                //#NT#2016/03/23#Isiah Chang -begin
+                //#NT#add new Wi-Fi UI flow.
+				DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+                #if(WIFI_UI_FLOW_VER == WIFI_UI_VER_1_0)
+				DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+				lv_plugin_scr_open(UIFlowWifiWait, NULL);
+                #endif
+                //#NT#2016/03/23#Isiah Chang -end
+                BKG_PostEvent(NVTEVT_BKW_WIFI_ON);
+                autoWifi = TRUE;
+                isFirstPowerOn = FALSE;
+                AutoWiFiCnt = 0;
+            }
+        } else {
+			DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+			WifiStarting = TRUE;
+			if ((gMovData.State == MOV_ST_REC) || (gMovData.State == (MOV_ST_REC | MOV_ST_ZOOM))) {
+				if ((FlowMovie_GetRecCurrTime() <= 1) &&
+					(SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) {
+					Delay_DelayMs(1000);
+				}
+				FlowMovie_StopRec();
+				Delay_DelayMs(100);
+			}
+
+			UI_SetData(FL_MOVIE_TIMELAPSE_REC, MOVIE_TIMELAPSEREC_OFF);
+			UI_SetData(FL_MOVIE_TIMELAPSE_REC_MENU, MOVIE_TIMELAPSEREC_OFF);
+			g_uiPreTimelapse = UI_GetData(FL_MOVIE_TIMERLAPS);
+			UI_SetData(FL_MOVIE_TIMERLAPS, MOVIE_TIMER_LAPS_OFF);
+
+			SysSetFlag(FL_WIFI_AUTO, WIFI_AUTO_OFF);
+			Control_LedTurn(WIFI_LED, 1);
+			#if (WIFI_UI_FLOW_VER == WIFI_UI_VER_1_0)
+			lv_plugin_scr_open(UIFlowWifiWait, NULL);
+			#endif
+			BKG_PostEvent(NVTEVT_BKW_WIFI_ON);
+			autoWifi = TRUE;
+			isFirstPowerOn = FALSE;
+		}
+	} else {
+		// DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
+		autoWifi = TRUE;
+		isFirstPowerOn = FALSE;
+	}
+#endif
 }
 
 void FlowMovie_SetCrash(void)

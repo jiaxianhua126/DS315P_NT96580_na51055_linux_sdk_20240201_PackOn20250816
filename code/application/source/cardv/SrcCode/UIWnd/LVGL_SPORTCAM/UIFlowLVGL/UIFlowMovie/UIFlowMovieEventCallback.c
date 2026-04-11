@@ -14,6 +14,7 @@ extern BOOL FlowMovie_IsStorageErr2(lv_obj_t* parent,BOOL IsCheckFull);
 
 static lv_group_t* gp = NULL;
 static lv_task_t* task_1sec_period = NULL;
+static lv_task_t* task_05sec_period = NULL;
 //#NT#2021/09/13#Philex Lin - begin
 static lv_task_t* 	gUIMotionDetTimerID = NULL;
 static BOOL    	g_uiRecordIngMotionDet = TRUE;
@@ -278,6 +279,28 @@ static void update_wifi(void)
 	lv_obj_set_hidden(image_status_wifi_scr_uiflowmovie, true);
 }
 
+static void update_gps(void)
+{
+#if (GPS_FUNCTION == ENABLE)
+	INT8 gpsstatus;
+
+	if (UI_GetData(FL_GPS) == GPS_OFF) {
+		lv_obj_set_hidden(image_status_gps_scr_uiflowmovie, true);
+		return;
+	}
+
+	gpsstatus = GetGPSSignalStatus();
+	if (gpsstatus > 0) {
+		lv_plugin_img_set_src(image_status_gps_scr_uiflowmovie, LV_PLUGIN_IMG_ID_ICON_GPS_OK);
+	} else {
+		lv_plugin_img_set_src(image_status_gps_scr_uiflowmovie, LV_PLUGIN_IMG_ID_ICON_GPS_ERR);
+	}
+	lv_obj_set_hidden(image_status_gps_scr_uiflowmovie, false);
+#else
+	lv_obj_set_hidden(image_status_gps_scr_uiflowmovie, true);
+#endif
+}
+
 static void update_sos(void)
 {
 	if(FlowMovie_GetSOSStatusNow())
@@ -316,6 +339,7 @@ static void update_icons(void)
 	update_ev();
 	update_card();
 	update_wifi();
+	update_gps();
 	update_hdr();
 	update_motionDet();
 	update_cyclic_rec();
@@ -371,6 +395,8 @@ static void task_1sec_period_cb(lv_task_t* task)
 {
 //	update_icons();
 	update_date_time();
+	update_wifi();
+	update_gps();
 	// DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
 	UIFlowWndMovie_OnAutoStartRec();
 
@@ -378,6 +404,11 @@ static void task_1sec_period_cb(lv_task_t* task)
 #if (ASR_FUNCTION == ENABLE)
 	UIFlowWndMovie_GetASR_Flag();
 #endif
+}
+
+static void task_05sec_period_cb(lv_task_t* task)
+{
+	UIFlowMoive_AutoStartWiFi();
 }
 
 static void task_motionDet_cb(lv_task_t* task)
@@ -474,9 +505,13 @@ static void UIFlowMovie_ScrOpen(lv_obj_t* obj)
 	update_icons();
 
 	/* update icons periodically*/
-	if(task_1sec_period == NULL)
+	if (task_1sec_period == NULL)
 	{
 		task_1sec_period = lv_task_create(task_1sec_period_cb, 1000, LV_TASK_PRIO_MID, NULL);
+	}
+	if (task_05sec_period == NULL)
+	{
+		task_05sec_period = lv_task_create(task_05sec_period_cb, 500, LV_TASK_PRIO_MID, NULL);
 	}
 
 	//#NT#2021/9/13#Philex Lin - begin
@@ -557,9 +592,13 @@ static void UIFlowMovie_ChildScrClose(lv_obj_t* obj, LV_USER_EVENT_NVTMSG_DATA* 
 		update_icons();
 
 		/* start timer again when exiting menu */
-		if(task_1sec_period == NULL)
+		if (task_1sec_period == NULL)
 		{
 			task_1sec_period = lv_task_create(task_1sec_period_cb, 1000, LV_TASK_PRIO_MID, NULL);
+		}
+		if (task_05sec_period == NULL)
+		{
+			task_05sec_period = lv_task_create(task_05sec_period_cb, 500, LV_TASK_PRIO_MID, NULL);
 		}
 
 		//#NT#2021/9/13#Philex Lin - begin
@@ -627,10 +666,16 @@ static void UIFlowMovie_ScrClose(lv_obj_t* obj)
 		return;
 	}
 
-	if(task_1sec_period)
+	if (task_1sec_period)
 	{
 		lv_task_del(task_1sec_period);
 		task_1sec_period = NULL;
+	}
+
+	if (task_05sec_period)
+	{
+		lv_task_del(task_05sec_period);
+		task_05sec_period = NULL;
 	}
 
 	if(gUIMotionDetTimerID)
@@ -743,6 +788,12 @@ static void UIFlowMovie_OnKeyMenu(lv_obj_t* obj)
 		{
 			lv_task_del(task_1sec_period);
 			task_1sec_period = NULL;
+		}
+
+		if(task_05sec_period)
+		{
+			lv_task_del(task_05sec_period);
+			task_05sec_period = NULL;
 		}
 
 		if(gUIMotionDetTimerID)
@@ -900,6 +951,12 @@ static void UIFlowMovie_OnKeyLeft(lv_obj_t* obj)
 			{
 				lv_task_del(task_1sec_period);
 				task_1sec_period = NULL;
+			}
+
+			if (task_05sec_period)
+			{
+				lv_task_del(task_05sec_period);
+				task_05sec_period = NULL;
 			}
 
 			if (gUIMotionDetTimerID)
