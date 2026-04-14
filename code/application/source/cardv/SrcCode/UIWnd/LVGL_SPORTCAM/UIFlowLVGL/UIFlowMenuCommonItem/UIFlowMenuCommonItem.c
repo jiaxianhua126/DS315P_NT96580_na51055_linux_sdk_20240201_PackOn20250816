@@ -27,21 +27,58 @@ lv_obj_t* UIFlowMenuCommonItem_create(){
 	lv_obj_set_event_cb(parent, UIFlowMenuCommonItemEventCallback);
 
 	lv_color_t color = {0};
-	STYLE_COLOR_PROP(0x9f, 0x8e, 0x8e, 0x8e);
+	STYLE_COLOR_PROP(0x00, 0x00, 0x00, 0x00);
 	_lv_obj_set_style_local_color(parent,0,LV_STYLE_BG_COLOR, color);
 
 	if(color.full== LV_COLOR_TRANSP.full){
 		_lv_obj_set_style_local_opa(parent,0,LV_STYLE_BG_OPA,0);
 	}
 
+	// Create background
+	static lv_style_t bg_style;
+	lv_style_init(&bg_style);
+	STYLE_COLOR_PROP(0x00, 0x00, 0x00, 0x00) ; lv_style_set_bg_color(&bg_style, LV_STATE_DEFAULT, color);
+	lv_obj_t *bg = lv_obj_create(parent, NULL);
+	lv_obj_set_size(bg, 620, 240);
+	lv_obj_set_pos(bg, 0, 0);
+	lv_obj_add_style(bg, 0, &bg_style);
 
+	// Create title bar
+	static lv_style_t title_bar_style;
+	lv_style_init(&title_bar_style);
+	STYLE_COLOR_PROP(0x00, 0x00, 0x00, 0x00) ; lv_style_set_bg_color(&title_bar_style, LV_STATE_DEFAULT, color);
+	lv_obj_t *title_bar = lv_obj_create(parent, NULL);
+	lv_obj_set_size(title_bar, 620, 30);
+	lv_obj_set_pos(title_bar, 0, 0);
+	lv_obj_add_style(title_bar, 0, &title_bar_style);
+
+	// Create title text
+	static lv_style_t title_text_style;
+	lv_style_init(&title_text_style);
+	STYLE_COLOR_PROP(0xff, 0xff, 0xff, 0xff) ; lv_style_set_text_color(&title_text_style, LV_STATE_DEFAULT, color);
+	lv_style_set_text_font(&title_text_style,LV_STATE_DEFAULT,&lv_font_montserrat_16);
+	lv_obj_t *title_text = lv_label_create(title_bar, NULL);
+	lv_obj_set_pos(title_text, 310, 5);
+	lv_label_set_text(title_text, "SETUP");
+	lv_obj_add_style(title_text, 0, &title_text_style);
+
+	// Create tips bar
+	static lv_style_t tips_bar_style;
+	lv_style_init(&tips_bar_style);
+	STYLE_COLOR_PROP(0x00, 0x00, 0x00, 0x00) ; lv_style_set_bg_color(&tips_bar_style, LV_STATE_DEFAULT, color);
+	lv_obj_t *tips_bar = lv_obj_create(parent, NULL);
+	lv_obj_set_size(tips_bar, 620, 30);
+	lv_obj_set_pos(tips_bar, 0, 210);
+	lv_obj_add_style(tips_bar, 0, &tips_bar_style);
+
+	// Create menu container
 	static lv_style_t container_main_menu_s0;
 	lv_style_init(&container_main_menu_s0);
-	lv_style_set_radius(&container_main_menu_s0,LV_STATE_DEFAULT,0);
+	lv_style_set_radius(&container_main_menu_s0,LV_STATE_DEFAULT,15);
 	lv_style_set_pad_top(&container_main_menu_s0,LV_STATE_DEFAULT,5);
 	lv_style_set_pad_bottom(&container_main_menu_s0,LV_STATE_DEFAULT,5);
-	lv_style_set_pad_left(&container_main_menu_s0,LV_STATE_DEFAULT,30);
-	lv_style_set_pad_right(&container_main_menu_s0,LV_STATE_DEFAULT,30);
+	lv_style_set_pad_left(&container_main_menu_s0,LV_STATE_DEFAULT,16);
+	lv_style_set_pad_right(&container_main_menu_s0,LV_STATE_DEFAULT,16);
 	lv_style_set_pad_inner(&container_main_menu_s0,LV_STATE_DEFAULT,5);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&container_main_menu_s0, LV_STATE_DEFAULT, color);
 	lv_style_set_bg_opa(&container_main_menu_s0,LV_STATE_DEFAULT,0);
@@ -78,18 +115,12 @@ lv_obj_t* UIFlowMenuCommonItem_create(){
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&container_main_menu_s0, LV_STATE_PRESSED, color);
 	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&container_main_menu_s0, LV_STATE_PRESSED, color);
 	STYLE_COLOR_PROP(0xe9, 0xd6, 0xdd, 0xe3) ; lv_style_set_border_color(&container_main_menu_s0, LV_STATE_PRESSED, color);
-	lv_style_set_pad_top(&container_main_menu_s0,LV_STATE_DISABLED,0);
-	lv_style_set_pad_bottom(&container_main_menu_s0,LV_STATE_DISABLED,0);
-	lv_style_set_pad_inner(&container_main_menu_s0,LV_STATE_DISABLED,0);
-	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_color(&container_main_menu_s0, LV_STATE_DISABLED, color);
-	STYLE_COLOR_PROP(0x02, 0xff, 0xff, 0xff) ; lv_style_set_bg_grad_color(&container_main_menu_s0, LV_STATE_DISABLED, color);
-	STYLE_COLOR_PROP(0xe9, 0xd6, 0xdd, 0xe3) ; lv_style_set_border_color(&container_main_menu_s0, LV_STATE_DISABLED, color);
 	lv_obj_t *container_main_menu = lv_cont_create(parent, NULL);
 	lv_obj_set_hidden(container_main_menu, false);
 	lv_obj_set_click(container_main_menu, true);
 	lv_obj_set_drag(container_main_menu, false);
-	lv_obj_set_pos(container_main_menu, 0, 45);
-	lv_obj_set_size(container_main_menu, 620, 191);
+	lv_obj_set_pos(container_main_menu, 12, 30);
+	lv_obj_set_size(container_main_menu, 595, 180);
 	lv_obj_add_style(container_main_menu, 0, &container_main_menu_s0);
 
 	container_main_menu_scr_uiflowmenucommonitem = container_main_menu;
