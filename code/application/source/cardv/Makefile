@@ -297,7 +297,7 @@ SRC += \
 	./SrcCode/UIWnd/SPORTCAM/Resource/SoundData.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowWndMovie.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowMovieFuncs.c \
-	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowWndMovieAddFunc.c \
+	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowMovie/UIFlowWndMovieAddFunc.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowMovie/UIFlowMovieIcons.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowCommon/UIFlowWndUSB.c \
 	./SrcCode/UIWnd/SPORTCAM/UIFlow/UIFlowCommon/UIFlowWndWaitMoment.c \
