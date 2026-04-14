@@ -1,5 +1,5 @@
 #include "PrjInc.h"
-#include "UIWnd/SPORTCAM/UIInfo/UICfgDefault.h"
+#include "UIWnd/LVGL_SPORTCAM/UIInfo/UICfgDefault.h"
 #include "UIApp/Network/UIAppWiFiCmdMovie.h"
 #include "DxInput.h"
 
