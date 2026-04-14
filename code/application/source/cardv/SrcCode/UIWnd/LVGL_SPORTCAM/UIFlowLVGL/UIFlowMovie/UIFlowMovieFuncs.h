@@ -58,4 +58,43 @@ extern BOOL FlowMovie_GetSOSStatusNow(void);
 extern BOOL   FlowMovie_WakeUpLCDBacklight(void);
 extern void GPIOMap_TurnOnLCDBacklight(void);
 extern void GPIOMap_TurnOffLCDBacklight(void);
+
+// Functions from UIFlowLVGLCompat.c and UIFlowCompat.c
+extern BOOL ParkingM_PreRecord_EMR;
+extern BOOL g_NotRecordWrn;
+extern BOOL bWndWiFiMovieOpenFirst;
+extern BOOL bWiFiModeChanged;
+extern BOOL WifiStarting;
+extern BOOL g_uiWiFiRecordIngMotionDet;
+extern BOOL g_uiWiFiParkingModeMotionDet;
+extern BOOL bWiFiRec_AutoStart;
+extern BOOL bWiFiRec_AutoStop;
+extern char CarNo_Buf[13];
+extern char Customize_Buf[13];
+extern char gUICarNo_StrBuf[13];
+extern char gUICustomize_StrBuf[13];
+extern char g_GPSstamp_buffer[128];
+extern char gUICustomer_Model[20];
+extern char gUICustomer_Null[20];
+extern char gUICustomer_StrBuf[20];
+extern VControl UIFlowWndWrnMsgCtrl;
+extern VControl UIFlowWndWiFiMovieCtrl;
+extern VControl UIMenuWndWiFiMobileLinkOKCtrl;
+
+extern void FlowMovie_BaseDaySet(int year, int month, int day);
+extern UINT32 FlowWiFiMovie_GetRecCurrTime(void);
+extern void FlowWiFiMovie_SetRecCurrTime(UINT32 RecCurrTime);
+extern void FlowWiFiMovie_UpdateIcons(BOOL bShow);
+extern void FlowWiFiMovie_IconDrawTimelapse(BOOL bShow);
+extern void FlowWiFiMovie_IconDrawMotionDet(BOOL bShow);
+extern void FlowWiFiMovie_IconDrawAudio(BOOL bShow);
+extern UINT32 Get_ParkingModeTimeLapseValue(UINT32 uiIndex);
+extern BOOL FlowMovie_IsEthCamConnectOK(void);
+extern void FlowMovie_SetLedFlash_BeepWrn(BOOL std);
+extern void FlowMovie_USBRemovePowerOff(void);
+extern void UIVoice_Play(UINT32 index);
+extern void UIFlowWndWiFiMovie_StopTimer(void);
+extern UINT32 UIMenuWndPlayFileType_GetFileType(void);
+extern INT32 UIFlowWndWiFiMovie_OnCustom2(VControl *pCtrl, UINT32 paramNum, UINT32 *paramArray);
+
 #endif //_UIFLOWMOVIEFUNCS_H

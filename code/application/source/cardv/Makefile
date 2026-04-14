@@ -215,7 +215,6 @@ SRC += \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/Resource/Plugin/lv_plugin_common.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/Resource/Plugin/lv_plugin_menu.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/Resource/Palette/palette.c \
-	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowCompat.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowLVGL.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowUSB/UIFlowUSB.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowUSB/UIFlowUSBEventCallback.c \
