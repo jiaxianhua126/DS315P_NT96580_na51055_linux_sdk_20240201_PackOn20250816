@@ -783,6 +783,8 @@ static void UIFlowMovie_OnKeyMenu(lv_obj_t* obj)
 	switch (gMovData.State) {
 		case MOV_ST_VIEW:
 		case MOV_ST_VIEW|MOV_ST_ZOOM:
+		case MOV_ST_REC:
+		case MOV_ST_REC|MOV_ST_ZOOM:
 
 		if(task_1sec_period)
 		{
@@ -808,37 +810,18 @@ static void UIFlowMovie_OnKeyMenu(lv_obj_t* obj)
 		Input_SetKeySoundMask(KEY_PRESS, uiSoundMask);
 		Input_SetKeyMask(KEY_RELEASE, FLGKEY_KEY_MASK_NULL);
 
+		// Stop recording if in recording state
+		if (gMovData.State == MOV_ST_REC || gMovData.State == (MOV_ST_REC | MOV_ST_ZOOM)) {
+			if ((FlowMovie_GetRecCurrTime() <= 1)&&(SysGetFlag(FL_MOVIE_TIMELAPSE_REC) == MOVIE_TIMELAPSEREC_OFF)) {
+				Delay_DelayMs(1000);
+			}
+			set_rec_status(false);
+			Delay_DelayMs(300);
+		}
+
 		// Open common mix (Item + Option) menu
 		lv_plugin_scr_open(UIFlowMenuCommonItem, NULL);
-  		gMovData.State = MOV_ST_MENU;
-		break;
-
-		case MOV_ST_REC:
-		case MOV_ST_REC|MOV_ST_ZOOM:
-		if (SysGetFlag(FL_MOVIE_URGENT_PROTECT_MANUAL) == MOVIE_URGENT_PROTECT_MANUAL_ON) {
-		#if (_BOARD_DRAM_SIZE_ > 0x04000000)
-		if (GetMovieRecType_2p(UI_GetData(FL_MOVIE_SIZE)) == MOVIE_REC_TYPE_FRONT) {
-			if(gMovie_Rec_Option.emr_on == _CFG_EMR_SET_CRASH){
-				ImageApp_MovieMulti_SetCrash(_CFG_REC_ID_1, TRUE);
-			}else{
-				ImageApp_MovieMulti_TrigEMR(_CFG_REC_ID_1);
-			}
-		} else
-		#endif
-		{
-			UINT32 i, mask, movie_rec_mask;
-
-			movie_rec_mask = Movie_GetMovieRecMask();
-			mask = 1;
-			for (i = 0; i < SENSOR_CAPS_COUNT; i++) {
-				if (movie_rec_mask & mask) {
-					ImageApp_MovieMulti_SetCrash(_CFG_REC_ID_1 + i, TRUE);
-				}
-				mask <<= 1;
-			}
-		}
-		}
-
+		gMovData.State = MOV_ST_MENU;
 		break;
 
 	}
@@ -1230,7 +1213,7 @@ static void UIFlowMovie_Key(lv_obj_t* obj, uint32_t key)
 	case LV_KEY_DOWN:
 	{
 		DBG_DUMP("%s LV_KEY_DOWN\r\n", __func__);
-		UIFlowMovie_OnExePIM(obj);
+		UIFlowMovie_OnKeyMenu(obj);
 		break;
 	}
 
