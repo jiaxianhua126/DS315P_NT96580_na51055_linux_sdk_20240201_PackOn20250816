@@ -380,34 +380,8 @@ UINT32 MovieStamp_TriggerUpdateChk(void)
 	return 0;
 }
 
-#if 0
-static void MovieStamp_SwTimerHdl(UINT32 uiEvent)
-{
-	MovieStampTsk_TrigUpdate();
-}
+#if defined(_UI_STYLE_LVGL_)
 
-static void MovieStamp_SwTimerOpen(void)
-{
-	if (g_bMovieStampSwTimerOpen == FALSE) {
-		if (SwTimer_Open(&g_MovieStampSwTimerID, MovieStamp_SwTimerHdl) != E_OK) {
-			DBG_ERR("Sw timer open failed!\r\n");
-			return;
-		}
-
-		SwTimer_Cfg(g_MovieStampSwTimerID, MOVIE_STAMP_CHK_TIME, SWTIMER_MODE_FREE_RUN);
-		SwTimer_Start(g_MovieStampSwTimerID);
-		g_bMovieStampSwTimerOpen = TRUE;
-	}
-}
-
-static void MovieStamp_SwTimerClose(void)
-{
-	if (g_bMovieStampSwTimerOpen) {
-		SwTimer_Stop(g_MovieStampSwTimerID);
-		SwTimer_Close(g_MovieStampSwTimerID);
-		g_bMovieStampSwTimerOpen = FALSE;
-	}
-}
 #else
 static void MovieStamp_TimerOpen(void)
 {
@@ -435,9 +409,11 @@ void MovieStamp_Enable(void)
 	// open movie stamp task to wait for stamp update flag
 	MovieStampTsk_Open();
 
+#if defined(_UI_STYLE_LVGL_)
+#else
 	// use SW timer to check current time
-	//MovieStamp_SwTimerOpen();
 	MovieStamp_TimerOpen();
+#endif
 }
 
 void MovieStamp_Disable(void)
@@ -445,33 +421,13 @@ void MovieStamp_Disable(void)
 	UINT32 i;
 
 	// close SW timer
-	//MovieStamp_SwTimerClose();
+#if defined(_UI_STYLE_LVGL_)
+#else
 	MovieStamp_TimerClose();
+#endif
 
 	// close movie stamp task
-#if defined(_UI_STYLE_LVGL_)
-
-	/*****************************************************************************
-	 * MovieStampTsk_Close might cause deadlock if invoked by ui task
-	 *
-	 * UI task:
-	 * 1. lock -> ui flow
-	 * 2. wait movie stamp task idle (stuck in here)
-	 * 3. unlock
-	 *
-	 * MovieStamp task:
-	 * 1. busy
-	 * 2. lock (stuck in here)
-	 * 3. idle
-	 *
-	 * lv_user_task_handler_temp_release will unlock temporarily until MovieStampTsk_Close finished
-	 ****************************************************************************/
-
-	lv_user_task_handler_temp_release(MovieStampTsk_Close);
-
-#else
 	MovieStampTsk_Close();
-#endif
 
 	MovieStamp_VsClose();
 	for (i = 0; i < VIDEO_IN_MAX; i++) {

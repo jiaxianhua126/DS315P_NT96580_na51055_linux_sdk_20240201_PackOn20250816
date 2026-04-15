@@ -460,7 +460,10 @@ void System_OnInputInit(void)
 		SX_TIMER_DET_TOUCH_ID = SxTimer_AddItem(&Timer_Input_DetTP);
 #endif
 
+#if defined(_UI_STYLE_LVGL_)
+#else
 		SX_TIMER_DET_MOVIESTAMP_ID = SxTimer_AddItem(&Timer_Input_DetMovieStamp);
+#endif
 
 #if (STATUSKEY_FUNCTION == ENABLE)
 		GxKey_DetStatusKey();
