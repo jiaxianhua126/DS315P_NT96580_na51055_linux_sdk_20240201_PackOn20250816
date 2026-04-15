@@ -157,6 +157,9 @@
                     "Mix": {
                         "radius": 0
                     },
+                    "Outline": {
+                        "outline_color": "0x00b495"
+                    },
                     "Value": {
                         "value_color": "0x3c3c3c",
                         "value_font": "montserrat 16 4bpp"

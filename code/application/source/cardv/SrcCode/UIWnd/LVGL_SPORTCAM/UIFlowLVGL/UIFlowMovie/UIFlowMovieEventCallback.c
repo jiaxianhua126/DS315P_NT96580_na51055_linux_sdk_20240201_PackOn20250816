@@ -772,19 +772,13 @@ static void UIFlowMovie_OnKeyMenu(lv_obj_t* obj)
 	DBG_DUMP("%s line = %d\r\n", __func__, __LINE__);
 
 	UINT32  uiSoundMask;
-//coming menu close ASR
-#if (ASR_FUNCTION == ENABLE)
-	if (SysGetFlag(FL_ASR) == ASR_STANDARD) {
-		//printf("call ASR_STANDARD \r\n",SysGetFlag(FL_ASR) );
-		ASR_Uninstall();
-	}
-#endif
 
 	switch (gMovData.State) {
 		case MOV_ST_VIEW:
 		case MOV_ST_VIEW|MOV_ST_ZOOM:
 		case MOV_ST_REC:
 		case MOV_ST_REC|MOV_ST_ZOOM:
+		case MOV_ST_REC_WAIT:
 
 		if(task_1sec_period)
 		{
@@ -821,6 +815,13 @@ static void UIFlowMovie_OnKeyMenu(lv_obj_t* obj)
 
 		// Open common mix (Item + Option) menu
 		lv_plugin_scr_open(UIFlowMenuCommonItem, NULL);
+		//coming menu close ASR
+#if (ASR_FUNCTION == ENABLE)
+		if (SysGetFlag(FL_ASR) == ASR_STANDARD) {
+			//printf("call ASR_STANDARD \r\n",SysGetFlag(FL_ASR) );
+			ASR_Uninstall();
+		}
+#endif
 		gMovData.State = MOV_ST_MENU;
 		break;
 

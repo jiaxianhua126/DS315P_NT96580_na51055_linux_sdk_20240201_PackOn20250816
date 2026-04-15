@@ -1,7 +1,7 @@
 {
     "event callback": "UIFlowMenuCommonItemEventCallback",
     "name": "UIFlowMenuCommonItem",
-    "screen color": "0x551f57",
+    "screen color": "0x000000",
     "widgets": [
         {
             "children": [
@@ -87,7 +87,7 @@
                     "styles": [
                         {
                             "Background": {
-                                "bg_color": "0x551f57"
+                                "bg_color": "0x000000"
                             },
                             "Border": {
                                 "border_color": "0xffffff",
@@ -231,7 +231,7 @@
                     "styles": [
                         {
                             "Background": {
-                                "bg_color": "0x551f57"
+                                "bg_color": "0x000000"
                             },
                             "Border": {
                                 "border_color": "0xffffff",
@@ -390,7 +390,7 @@
                     "styles": [
                         {
                             "Background": {
-                                "bg_color": "0x551f57"
+                                "bg_color": "0x000000"
                             },
                             "Border": {
                                 "border_color": "0xffffff",
@@ -549,7 +549,7 @@
                     "styles": [
                         {
                             "Background": {
-                                "bg_color": "0x551f57"
+                                "bg_color": "0x000000"
                             },
                             "Border": {
                                 "border_color": "0xffffff",
@@ -638,7 +638,7 @@
                 "height": 170,
                 "width": 620,
                 "x": 0,
-                "y": 35
+                "y": 40
             },
             "hidden": false,
             "layout": "Off",
@@ -697,6 +697,61 @@
         {
             "children": [
                 {
+                    "auto size": false,
+                    "class": "lv_img",
+                    "click": false,
+                    "drag": false,
+                    "event callback": "",
+                    "geometry": {
+                        "height": 40,
+                        "width": 620,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "hidden": false,
+                    "locked": false,
+                    "name": "image_title_bar",
+                    "offset": {
+                        "X": 0,
+                        "Y": 0
+                    },
+                    "source": "ICON_TITLE_BAR",
+                    "styles": [
+                        {
+                            "Image": {
+                                "image_recolor": "0x3c3c3c"
+                            },
+                            "part": 0,
+                            "state": 0
+                        },
+                        {
+                            "part": 0,
+                            "state": 1
+                        },
+                        {
+                            "part": 0,
+                            "state": 2
+                        },
+                        {
+                            "part": 0,
+                            "state": 3
+                        },
+                        {
+                            "part": 0,
+                            "state": 4
+                        },
+                        {
+                            "part": 0,
+                            "state": 5
+                        },
+                        {
+                            "part": 0,
+                            "state": 6
+                        }
+                    ],
+                    "widget": "Image"
+                },
+                {
                     "align": "Left",
                     "class": "lv_label",
                     "click": false,
@@ -706,7 +761,7 @@
                     "geometry": {
                         "height": 24,
                         "width": 310,
-                        "x": 29,
+                        "x": 12,
                         "y": 7
                     },
                     "hidden": false,
@@ -720,8 +775,8 @@
                             "Text": {
                                 "text_color": "0xffffff",
                                 "text_font": "montserrat 16 4bpp",
-                                "text_sel_bg_color": "0x0f86c4",
-                                "text_sel_color": "0x404040"
+                                "text_sel_bg_color": "0x0262b6",
+                                "text_sel_color": "0x3c3c3c"
                             },
                             "part": 0,
                             "state": 0
@@ -764,7 +819,7 @@
                     "geometry": {
                         "height": 24,
                         "width": 98,
-                        "x": 484,
+                        "x": 514,
                         "y": 7
                     },
                     "hidden": false,
@@ -778,8 +833,8 @@
                             "Text": {
                                 "text_color": "0xffffff",
                                 "text_font": "montserrat 16 4bpp",
-                                "text_sel_bg_color": "0x177db3",
-                                "text_sel_color": "0x3b3b3b"
+                                "text_sel_bg_color": "0x0262b6",
+                                "text_sel_color": "0x3c3c3c"
                             },
                             "part": 0,
                             "state": 0
@@ -818,7 +873,7 @@
             "drag": false,
             "event callback": "",
             "geometry": {
-                "height": 25,
+                "height": 40,
                 "width": 620,
                 "x": 0,
                 "y": 0
