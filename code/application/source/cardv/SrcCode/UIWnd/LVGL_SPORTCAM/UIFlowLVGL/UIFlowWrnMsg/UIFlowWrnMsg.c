@@ -196,7 +196,7 @@ lv_obj_t* UIFlowWrnMsg_create(){
 	lv_obj_set_hidden(message_box_1, false);
 	lv_obj_set_click(message_box_1, true);
 	lv_obj_set_drag(message_box_1, false);
-	lv_obj_set_pos(message_box_1, 60, 58);
+	lv_obj_set_pos(message_box_1, 210, 62);
 	lv_obj_set_size(message_box_1, 200, 116);
 	static const char* message_box_1_LVGLPropertyMsgBoxBtnmatrixButtonsText[] = {"OK","",""};
 	lv_msgbox_add_btns(message_box_1, message_box_1_LVGLPropertyMsgBoxBtnmatrixButtonsText);

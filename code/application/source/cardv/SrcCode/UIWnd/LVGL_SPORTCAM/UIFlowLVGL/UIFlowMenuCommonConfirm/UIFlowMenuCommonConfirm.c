@@ -199,7 +199,7 @@ lv_obj_t* UIFlowMenuCommonConfirm_create(){
 	lv_obj_set_hidden(message_box_1, false);
 	lv_obj_set_click(message_box_1, true);
 	lv_obj_set_drag(message_box_1, false);
-	lv_obj_set_pos(message_box_1, 21, 63);
+	lv_obj_set_pos(message_box_1, 170, 62);
 	lv_obj_set_size(message_box_1, 279, 116);
 	static const char* message_box_1_LVGLPropertyMsgBoxBtnmatrixButtonsText[] = {"AAAAAA","BBBBBB","",""};
 	lv_msgbox_add_btns(message_box_1, message_box_1_LVGLPropertyMsgBoxBtnmatrixButtonsText);

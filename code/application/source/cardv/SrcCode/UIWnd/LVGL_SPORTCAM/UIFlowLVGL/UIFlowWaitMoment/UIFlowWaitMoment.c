@@ -55,7 +55,7 @@ lv_obj_t* UIFlowWaitMoment_create(){
 	lv_obj_set_hidden(container_1, false);
 	lv_obj_set_click(container_1, true);
 	lv_obj_set_drag(container_1, false);
-	lv_obj_set_pos(container_1, 5, 60);
+	lv_obj_set_pos(container_1, 154, 33);
 	lv_obj_set_size(container_1, 311, 174);
 	lv_cont_set_layout(container_1, LV_LAYOUT_COLUMN_MID);
 	lv_obj_add_style(container_1, 0, &container_1_s0);
