@@ -117,7 +117,7 @@ lv_obj_t* UIFlowMenuSetupVersion_create(){
 	lv_plugin_label_set_font_type(label_version, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_label_set_align(label_version, LV_LABEL_ALIGN_CENTER);
 	lv_label_set_long_mode(label_version, LV_LABEL_LONG_CROP);
-	lv_obj_set_pos(label_version, 20, 19);
+	lv_obj_set_pos(label_version, 16, 16);
 	lv_obj_set_size(label_version, 480, 18);
 	lv_obj_add_style(label_version, 0, &label_version_s0);
 

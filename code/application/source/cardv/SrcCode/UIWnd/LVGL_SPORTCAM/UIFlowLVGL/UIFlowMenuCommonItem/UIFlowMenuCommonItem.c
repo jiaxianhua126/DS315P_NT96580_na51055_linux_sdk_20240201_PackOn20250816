@@ -1091,7 +1091,7 @@ lv_obj_t* UIFlowMenuCommonItem_create(){
 	lv_obj_set_drag(label_menu_title, false);
 	lv_plugin_label_allocate_ext_attr(label_menu_title);
 	lv_plugin_label_set_text(label_menu_title, LV_PLUGIN_STRING_ID_STRID_SET);
-	lv_label_set_text(label_menu_title,"Set");
+	lv_label_set_text(label_menu_title,"Setup");
 	lv_plugin_label_allocate_ext_attr(label_menu_title);
 	lv_plugin_label_set_font_type(label_menu_title, LV_PLUGIN_LANGUAGE_FONT_TYPE_0);
 	lv_label_set_long_mode(label_menu_title, LV_LABEL_LONG_CROP);
