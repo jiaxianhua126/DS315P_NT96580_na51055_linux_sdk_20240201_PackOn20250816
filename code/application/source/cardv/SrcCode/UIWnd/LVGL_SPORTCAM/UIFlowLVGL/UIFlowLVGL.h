@@ -26,6 +26,7 @@ void UIFlowLVGL(void);
 #include "UIFlowLVGL/UIFlowWifiLinkOK/UIFlowWifiLinkOK.h"
 #include "UIFlowLVGL/UIFlowWifiWait/UIFlowWifiWait.h"
 #include "UIFlowLVGL/UIFlowMovieWiFi/UIFlowMovieWiFi.h"
+#include "UIFlowLVGL/UIFlowMenuSetupVersion/UIFlowMenuSetupVersion.h"
 
 
 #if LV_COLOR_DEPTH == 8
@@ -52,6 +53,7 @@ extern lv_obj_t *UIFlowWifiLink;
 extern lv_obj_t *UIFlowWifiLinkOK;
 extern lv_obj_t *UIFlowWifiWait;
 extern lv_obj_t *UIFlowMovieWiFi;
+extern lv_obj_t *UIFlowMenuSetupVersion;
 
 LV_FONT_DECLARE(notosans_black_32_1bpp);
 LV_FONT_DECLARE(notosans_black_48_1bpp);

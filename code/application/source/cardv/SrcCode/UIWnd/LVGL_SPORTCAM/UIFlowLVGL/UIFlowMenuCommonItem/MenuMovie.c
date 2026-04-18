@@ -378,8 +378,7 @@ static int MenuCustom_Default(UINT32 uiMessage, UINT32 uiParam)
 
 static int MenuCustom_Version(UINT32 uiMessage, UINT32 uiParam)
 {
-	(void)uiMessage;
-	(void)uiParam;
+	lv_plugin_scr_open(UIFlowMenuSetupVersion, NULL);
 	return TMF_PROCESSED;
 }
 

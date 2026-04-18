@@ -5630,6 +5630,7 @@
         "UIFlowLVGL.UIFlowWifiLink.lvglscr",
         "UIFlowLVGL.UIFlowWifiLinkOK.lvglscr",
         "UIFlowLVGL.UIFlowWifiWait.lvglscr",
-        "UIFlowLVGL.UIFlowMovieWiFi.lvglscr"
+        "UIFlowLVGL.UIFlowMovieWiFi.lvglscr",
+        "UIFlowLVGL.UIFlowMenuSetupVersion.lvglscr"
     ]
 }

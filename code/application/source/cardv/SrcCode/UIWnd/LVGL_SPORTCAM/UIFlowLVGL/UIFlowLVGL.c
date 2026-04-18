@@ -21,6 +21,7 @@ lv_obj_t *UIFlowWifiLink;
 lv_obj_t *UIFlowWifiLinkOK;
 lv_obj_t *UIFlowWifiWait;
 lv_obj_t *UIFlowMovieWiFi;
+lv_obj_t *UIFlowMenuSetupVersion;
 
 
 extern lv_plugin_string_t lv_plugin_EN_string_table[];
@@ -1763,5 +1764,6 @@ void UIFlowLVGL(){
 	UIFlowWifiLinkOK = UIFlowWifiLinkOK_create();
 	UIFlowWifiWait = UIFlowWifiWait_create();
 	UIFlowMovieWiFi = UIFlowMovieWiFi_create();
+	UIFlowMenuSetupVersion = UIFlowMenuSetupVersion_create();
 
 }

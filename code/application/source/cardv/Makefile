@@ -259,6 +259,8 @@ SRC += \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowPlay/UIFlowPlayFuncs.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowPlayThumb/UIFlowPlayThumb.c \
 	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowPlayThumb/UIFlowPlayThumbEventCallback.c \
+	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowMenuSetupVersion/UIFlowMenuSetupVersion.c \
+	./SrcCode/UIWnd/LVGL_SPORTCAM/UIFlowLVGL/UIFlowMenuSetupVersion/UIFlowMenuSetupVersionEventCallback.c \
 	./SrcCode/lv_drivers/display/fbdev.c \
 	
 endif
