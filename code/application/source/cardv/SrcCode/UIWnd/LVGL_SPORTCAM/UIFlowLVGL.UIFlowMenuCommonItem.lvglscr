@@ -9,6 +9,61 @@
                     "checkable": false,
                     "children": [
                         {
+                            "auto size": true,
+                            "class": "lv_img",
+                            "click": false,
+                            "drag": false,
+                            "event callback": "",
+                            "geometry": {
+                                "height": 28,
+                                "width": 28,
+                                "x": 7,
+                                "y": 7
+                            },
+                            "hidden": false,
+                            "locked": false,
+                            "name": "image_1",
+                            "offset": {
+                                "X": 0,
+                                "Y": 0
+                            },
+                            "source": "ICON_RESOLUTION",
+                            "styles": [
+                                {
+                                    "Image": {
+                                        "image_recolor": "0x214c3c"
+                                    },
+                                    "part": 0,
+                                    "state": 0
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 1
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 2
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 3
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 4
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 5
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 6
+                                }
+                            ],
+                            "widget": "Image"
+                        },
+                        {
                             "align": "Left",
                             "class": "lv_label",
                             "click": false,
@@ -18,7 +73,7 @@
                             "geometry": {
                                 "height": 24,
                                 "width": 443,
-                                "x": 29,
+                                "x": 50,
                                 "y": 9
                             },
                             "hidden": false,
@@ -153,6 +208,61 @@
                     "checkable": false,
                     "children": [
                         {
+                            "auto size": true,
+                            "class": "lv_img",
+                            "click": false,
+                            "drag": false,
+                            "event callback": "",
+                            "geometry": {
+                                "height": 28,
+                                "width": 28,
+                                "x": 7,
+                                "y": 7
+                            },
+                            "hidden": false,
+                            "locked": false,
+                            "name": "image_2",
+                            "offset": {
+                                "X": 0,
+                                "Y": 0
+                            },
+                            "source": "ICON_RESOLUTION",
+                            "styles": [
+                                {
+                                    "Image": {
+                                        "image_recolor": "0x214c3c"
+                                    },
+                                    "part": 0,
+                                    "state": 0
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 1
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 2
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 3
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 4
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 5
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 6
+                                }
+                            ],
+                            "widget": "Image"
+                        },
+                        {
                             "align": "Left",
                             "class": "lv_label",
                             "click": false,
@@ -162,8 +272,8 @@
                             "geometry": {
                                 "height": 24,
                                 "width": 455,
-                                "x": 29,
-                                "y": 8
+                                "x": 50,
+                                "y": 9
                             },
                             "hidden": false,
                             "locked": false,
@@ -176,8 +286,8 @@
                                     "Text": {
                                         "text_color": "0xffffff",
                                         "text_font": "montserrat 16 4bpp",
-                                        "text_sel_bg_color": "0x0f86c4",
-                                        "text_sel_color": "0x404040"
+                                        "text_sel_bg_color": "0x0262b6",
+                                        "text_sel_color": "0x3c3c3c"
                                     },
                                     "part": 0,
                                     "state": 0
@@ -312,6 +422,61 @@
                     "checkable": false,
                     "children": [
                         {
+                            "auto size": true,
+                            "class": "lv_img",
+                            "click": false,
+                            "drag": false,
+                            "event callback": "",
+                            "geometry": {
+                                "height": 28,
+                                "width": 28,
+                                "x": 7,
+                                "y": 7
+                            },
+                            "hidden": false,
+                            "locked": false,
+                            "name": "image_3",
+                            "offset": {
+                                "X": 0,
+                                "Y": 0
+                            },
+                            "source": "ICON_RESOLUTION",
+                            "styles": [
+                                {
+                                    "Image": {
+                                        "image_recolor": "0x214c3c"
+                                    },
+                                    "part": 0,
+                                    "state": 0
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 1
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 2
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 3
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 4
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 5
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 6
+                                }
+                            ],
+                            "widget": "Image"
+                        },
+                        {
                             "align": "Left",
                             "class": "lv_label",
                             "click": false,
@@ -321,7 +486,7 @@
                             "geometry": {
                                 "height": 24,
                                 "width": 443,
-                                "x": 29,
+                                "x": 50,
                                 "y": 9
                             },
                             "hidden": false,
@@ -335,8 +500,8 @@
                                     "Text": {
                                         "text_color": "0xffffff",
                                         "text_font": "montserrat 16 4bpp",
-                                        "text_sel_bg_color": "0x0f86c4",
-                                        "text_sel_color": "0x404040"
+                                        "text_sel_bg_color": "0x0262b6",
+                                        "text_sel_color": "0x3c3c3c"
                                     },
                                     "part": 0,
                                     "state": 0
@@ -471,6 +636,61 @@
                     "checkable": false,
                     "children": [
                         {
+                            "auto size": true,
+                            "class": "lv_img",
+                            "click": false,
+                            "drag": false,
+                            "event callback": "",
+                            "geometry": {
+                                "height": 28,
+                                "width": 28,
+                                "x": 7,
+                                "y": 7
+                            },
+                            "hidden": false,
+                            "locked": false,
+                            "name": "image_4",
+                            "offset": {
+                                "X": 0,
+                                "Y": 0
+                            },
+                            "source": "ICON_RESOLUTION",
+                            "styles": [
+                                {
+                                    "Image": {
+                                        "image_recolor": "0x214c3c"
+                                    },
+                                    "part": 0,
+                                    "state": 0
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 1
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 2
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 3
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 4
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 5
+                                },
+                                {
+                                    "part": 0,
+                                    "state": 6
+                                }
+                            ],
+                            "widget": "Image"
+                        },
+                        {
                             "align": "Left",
                             "class": "lv_label",
                             "click": false,
@@ -480,8 +700,8 @@
                             "geometry": {
                                 "height": 24,
                                 "width": 443,
-                                "x": 29,
-                                "y": 8
+                                "x": 50,
+                                "y": 9
                             },
                             "hidden": false,
                             "locked": false,

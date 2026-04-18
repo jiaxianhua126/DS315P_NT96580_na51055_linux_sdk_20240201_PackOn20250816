@@ -504,7 +504,7 @@
                             "styles": [
                                 {
                                     "Image": {
-                                        "image_recolor": "0x204254"
+                                        "image_recolor": "0x214c3c"
                                     },
                                     "part": 0,
                                     "state": 0
@@ -719,7 +719,7 @@
                             "styles": [
                                 {
                                     "Image": {
-                                        "image_recolor": "0x204254"
+                                        "image_recolor": "0x214c3c"
                                     },
                                     "part": 0,
                                     "state": 0
