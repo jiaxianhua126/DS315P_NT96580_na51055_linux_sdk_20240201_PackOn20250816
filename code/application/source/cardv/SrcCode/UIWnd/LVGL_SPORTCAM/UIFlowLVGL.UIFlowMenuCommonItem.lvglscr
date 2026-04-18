@@ -164,7 +164,7 @@
                         },
                         {
                             "Background": {
-                                "bg_color": "0xff7800"
+                                "bg_color": "0x0000ff"
                             },
                             "Value": {
                                 "value_color": "0xffffff"
@@ -174,7 +174,7 @@
                         },
                         {
                             "Background": {
-                                "bg_color": "0xff7800"
+                                "bg_color": "0x0000ff"
                             },
                             "Outline": {
                                 "outline_opa": 255
@@ -192,7 +192,7 @@
                         },
                         {
                             "Background": {
-                                "bg_color": "0xff7800"
+                                "bg_color": "0x0000ff"
                             },
                             "part": 0,
                             "state": 5
@@ -363,29 +363,29 @@
                         },
                         {
                             "Background": {
-                                "bg_color": "0xff7800"
+                                "bg_color": "0x0000ff"
                             },
                             "Patter": {
-                                "pattern_recolor": "0xff7800"
+                                "pattern_recolor": "0x0000ff"
                             },
                             "Shadow": {
-                                "shadow_color": "0xff7800"
+                                "shadow_color": "0x0000ff"
                             },
                             "part": 0,
                             "state": 1
                         },
                         {
                             "Background": {
-                                "bg_color": "0xff7800"
+                                "bg_color": "0x0000ff"
                             },
                             "Outline": {
                                 "outline_opa": 255
                             },
                             "Patter": {
-                                "pattern_recolor": "0xff7800"
+                                "pattern_recolor": "0x0000ff"
                             },
                             "Shadow": {
-                                "shadow_color": "0xff7800"
+                                "shadow_color": "0x0000ff"
                             },
                             "part": 0,
                             "state": 2
@@ -577,29 +577,29 @@
                         },
                         {
                             "Background": {
-                                "bg_color": "0xff7800"
+                                "bg_color": "0x0000ff"
                             },
                             "Patter": {
-                                "pattern_recolor": "0xff7800"
+                                "pattern_recolor": "0x0000ff"
                             },
                             "Shadow": {
-                                "shadow_color": "0xff7800"
+                                "shadow_color": "0x0000ff"
                             },
                             "part": 0,
                             "state": 1
                         },
                         {
                             "Background": {
-                                "bg_color": "0xff7800"
+                                "bg_color": "0x0000ff"
                             },
                             "Outline": {
                                 "outline_opa": 255
                             },
                             "Patter": {
-                                "pattern_recolor": "0xff7800"
+                                "pattern_recolor": "0x0000ff"
                             },
                             "Shadow": {
-                                "shadow_color": "0xff7800"
+                                "shadow_color": "0x0000ff"
                             },
                             "part": 0,
                             "state": 2
@@ -791,32 +791,32 @@
                         },
                         {
                             "Background": {
-                                "bg_color": "0xff7800"
+                                "bg_color": "0x0000ff"
                             },
                             "Outline": {
                                 "outline_opa": 127
                             },
                             "Patter": {
-                                "pattern_recolor": "0xff7800"
+                                "pattern_recolor": "0x0000ff"
                             },
                             "Shadow": {
-                                "shadow_color": "0xff7800"
+                                "shadow_color": "0x0000ff"
                             },
                             "part": 0,
                             "state": 1
                         },
                         {
                             "Background": {
-                                "bg_color": "0xff7800"
+                                "bg_color": "0x0000ff"
                             },
                             "Outline": {
                                 "outline_opa": 255
                             },
                             "Patter": {
-                                "pattern_recolor": "0xff7800"
+                                "pattern_recolor": "0x0000ff"
                             },
                             "Shadow": {
-                                "shadow_color": "0xff7800"
+                                "shadow_color": "0x0000ff"
                             },
                             "part": 0,
                             "state": 2
@@ -831,13 +831,13 @@
                         },
                         {
                             "Background": {
-                                "bg_color": "0xff7800"
+                                "bg_color": "0x0000ff"
                             },
                             "Patter": {
-                                "pattern_recolor": "0xff7800"
+                                "pattern_recolor": "0x0000ff"
                             },
                             "Shadow": {
-                                "shadow_color": "0xff7800"
+                                "shadow_color": "0x0000ff"
                             },
                             "part": 0,
                             "state": 5
