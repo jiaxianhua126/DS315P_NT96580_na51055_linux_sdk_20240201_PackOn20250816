@@ -14,6 +14,7 @@ lv_obj_t *UIFlowMenuCommonOption;
 lv_obj_t *UIFlowMenuCommonConfirm;
 lv_obj_t *UIFlowWaitMoment;
 lv_obj_t *UIFlowSetupDateTime;
+lv_obj_t *UIFlowSetupGPS;
 lv_obj_t *UIFlowPlayThumb;
 lv_obj_t *UIFlowUSB;
 lv_obj_t *UIFlowUSBMenu;
@@ -1722,6 +1723,7 @@ lv_plugin_res_id lv_plugin_fixed_language_string_id_table[] = {
 	LV_PLUGIN_RES_ID_NONE, /* 897*/
 	LV_PLUGIN_RES_ID_NONE, /* 898*/
 	LV_PLUGIN_RES_ID_NONE, /* 899*/
+	LV_PLUGIN_RES_ID_NONE, /* 900*/
 };
 
 lv_plugin_res_t lv_plugin_UIFlowLVGL_res =
@@ -1757,6 +1759,7 @@ void UIFlowLVGL(){
 	UIFlowMenuCommonConfirm = UIFlowMenuCommonConfirm_create();
 	UIFlowWaitMoment = UIFlowWaitMoment_create();
 	UIFlowSetupDateTime = UIFlowSetupDateTime_create();
+	UIFlowSetupGPS = UIFlowSetupGPS_create();
 	UIFlowPlayThumb = UIFlowPlayThumb_create();
 	UIFlowUSB = UIFlowUSB_create();
 	UIFlowUSBMenu = UIFlowUSBMenu_create();

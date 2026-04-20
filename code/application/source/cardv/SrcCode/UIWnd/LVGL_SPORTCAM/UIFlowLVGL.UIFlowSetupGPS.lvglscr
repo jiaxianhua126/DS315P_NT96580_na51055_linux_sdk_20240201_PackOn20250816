@@ -1,0 +1,3929 @@
+{
+    "event callback": "UIFlowSetupGPSCallback",
+    "name": "UIFlowSetupGPS",
+    "screen color": "0x076b9e",
+    "widgets": [
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type0",
+            "geometry": {
+                "height": 23,
+                "width": 67,
+                "x": 273,
+                "y": 1
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_gps_title",
+            "recolor": false,
+            "string id": "None",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "arial unicode ms 18 4bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "Text",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 7,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_01",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 13,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_01",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 63,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_02",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 114,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_03",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 164,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_04",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 215,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_05",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 42,
+                "x": 265,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_06",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 315,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_07",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 366,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_08",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 416,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_09",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 466,
+                "y": 48
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_10",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 517,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_11",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 567,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_green_12",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0x00ff00"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 58,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_02",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 110,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_03",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 166,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_04",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 217,
+                "y": 212
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_05",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 269,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_06",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 321,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_07",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 370,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_08",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 420,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_09",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 472,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_10",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 523,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_11",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 573,
+                "y": 211
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_12",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 7,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_01",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 58,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_02",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 110,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_03",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 166,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_04",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 217,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_05",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 269,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_06",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 321,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_07",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 370,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_08",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 420,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_09",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 472,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_10",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 523,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_11",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "align": "Left",
+            "class": "lv_label",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "font type": "Font_Type1",
+            "geometry": {
+                "height": 19,
+                "width": 40,
+                "x": 573,
+                "y": 21
+            },
+            "hidden": false,
+            "locked": false,
+            "long mode": "Expand",
+            "name": "label_sat_val_12",
+            "recolor": false,
+            "string id": "STRID_A0",
+            "styles": [
+                {
+                    "Text": {
+                        "text_color": "0xffffff",
+                        "text_font": "NotoSans-Black 16 1bpp",
+                        "text_sel_bg_color": "0x0f86c4",
+                        "text_sel_color": "0x404040"
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                }
+            ],
+            "text": "A0",
+            "widget": "Label"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 13,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_01",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 63,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_02",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 114,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_03",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 164,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_04",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 215,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_05",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 267,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_06",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 315,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_07",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 366,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_08",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 416,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_09",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 466,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_10",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 517,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_11",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        },
+        {
+            "animation state": "On",
+            "animation time": 200,
+            "class": "lv_bar",
+            "click": false,
+            "drag": false,
+            "event callback": "",
+            "geometry": {
+                "height": 158,
+                "width": 38,
+                "x": 567,
+                "y": 47
+            },
+            "hidden": false,
+            "locked": false,
+            "name": "bar_sat_red_12",
+            "range": {
+                "max": 50,
+                "min": 0
+            },
+            "style": "Custome Style",
+            "styles": [
+                {
+                    "Background": {
+                        "bg_color": "0x076b9e"
+                    },
+                    "Border": {
+                        "border_width": 1
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "Outline": {
+                        "outline_color": "0x000000",
+                        "outline_opa": 255,
+                        "outline_width": 1
+                    },
+                    "part": 0,
+                    "state": 0
+                },
+                {
+                    "part": 0,
+                    "state": 1
+                },
+                {
+                    "part": 0,
+                    "state": 2
+                },
+                {
+                    "part": 0,
+                    "state": 3
+                },
+                {
+                    "part": 0,
+                    "state": 4
+                },
+                {
+                    "part": 0,
+                    "state": 5
+                },
+                {
+                    "part": 0,
+                    "state": 6
+                },
+                {
+                    "Background": {
+                        "bg_color": "0xe10000"
+                    },
+                    "Mix": {
+                        "radius": 0
+                    },
+                    "part": 1,
+                    "state": 0
+                },
+                {
+                    "part": 1,
+                    "state": 1
+                },
+                {
+                    "part": 1,
+                    "state": 2
+                },
+                {
+                    "part": 1,
+                    "state": 3
+                },
+                {
+                    "part": 1,
+                    "state": 4
+                },
+                {
+                    "part": 1,
+                    "state": 5
+                },
+                {
+                    "part": 1,
+                    "state": 6
+                }
+            ],
+            "type": "Normal",
+            "value": 25,
+            "widget": "Bar"
+        }
+    ]
+}

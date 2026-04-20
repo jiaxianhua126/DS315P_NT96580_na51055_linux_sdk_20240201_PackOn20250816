@@ -5624,6 +5624,7 @@
         "UIFlowLVGL.UIFlowMenuCommonConfirm.lvglscr",
         "UIFlowLVGL.UIFlowWaitMoment.lvglscr",
         "UIFlowLVGL.UIFlowSetupDateTime.lvglscr",
+        "UIFlowLVGL.UIFlowSetupGPS.lvglscr",
         "UIFlowLVGL.UIFlowPlayThumb.lvglscr",
         "UIFlowLVGL.UIFlowUSB.lvglscr",
         "UIFlowLVGL.UIFlowUSBMenu.lvglscr",

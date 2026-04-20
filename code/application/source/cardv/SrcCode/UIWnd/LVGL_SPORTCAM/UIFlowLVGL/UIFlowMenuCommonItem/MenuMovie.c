@@ -345,10 +345,7 @@ static int MenuCustom_ADASCordon(UINT32 uiMessage, UINT32 uiParam)
 
 static int MenuCustom_GPSStatus(UINT32 uiMessage, UINT32 uiParam)
 {
-	(void)uiMessage;
-	(void)uiParam;
-	// TODO: Implement GPS status screen
-	// lv_plugin_scr_open(UIFlowWndGpsStatus, NULL);
+	lv_plugin_scr_open(UIFlowSetupGPS, NULL);
 	return TMF_PROCESSED;
 }
 
