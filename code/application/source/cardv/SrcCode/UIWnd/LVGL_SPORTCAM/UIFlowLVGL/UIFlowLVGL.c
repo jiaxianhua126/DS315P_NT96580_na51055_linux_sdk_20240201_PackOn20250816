@@ -1724,6 +1724,7 @@ lv_plugin_res_id lv_plugin_fixed_language_string_id_table[] = {
 	LV_PLUGIN_RES_ID_NONE, /* 898*/
 	LV_PLUGIN_RES_ID_NONE, /* 899*/
 	LV_PLUGIN_RES_ID_NONE, /* 900*/
+	LV_PLUGIN_RES_ID_NONE, /* 901*/
 };
 
 lv_plugin_res_t lv_plugin_UIFlowLVGL_res =
