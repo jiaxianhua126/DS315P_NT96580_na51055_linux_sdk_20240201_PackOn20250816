@@ -265,7 +265,31 @@ static void MenuItem_OnOpen(lv_obj_t* obj, TM_MENU *data)
 	pItem = &pPage->pItems[pPage->SelItem];
 	SelectOption = SysGetFlag(pItem->SysFlag);
 	SelectCount = pItem->Count;
-	
+
+#if (SENSOR_CAPS_COUNT == 2)
+	// Set resolution options based on single/dual camera mode
+	if (pItem->ItemId == IDM_MOVIE_SIZE) {
+		UINT32 j;
+		if (System_GetEnableSensor() == (SENSOR_1|SENSOR_2)) {
+			// Dual camera mode - disable single camera options, enable dual camera options
+			for (j = 0; j < MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30; j++) {
+				pItem->pOptions[j].Status = TM_OPTION_NOT_SUPPORT;
+			}
+			for (j = MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30; j < MOVIE_SIZE_ID_MAX; j++) {
+				pItem->pOptions[j].Status = TM_OPTION_ENABLE;
+			}
+		} else {
+			// Single camera mode - enable single camera options, disable dual camera options
+			for (j = 0; j < MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30; j++) {
+				pItem->pOptions[j].Status = TM_OPTION_ENABLE;
+			}
+			for (j = MOVIE_SIZE_DUAL_3840x2160P30_1920x1080P30; j < MOVIE_SIZE_ID_MAX; j++) {
+				pItem->pOptions[j].Status = TM_OPTION_NOT_SUPPORT;
+			}
+		}
+	}
+#endif
+
 	DBG_DUMP("MenuOptionYnd_OnOpen.SysGetFlag(pItem->SysFlag)=%d\r\n",SysGetFlag(pItem->SysFlag));
 	DBG_DUMP("MenuOptionYnd_OnOpen.SysGetFlag(pItem->SysFlag)..OPTIONPAGE=%d\r\n",SysGetFlag(pItem->SysFlag)%PAGE);
 	/* check menu item is init */
